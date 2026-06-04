@@ -52,9 +52,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/show/{id}', [BeritaController::class, 'show'])->name('berita.show');
         Route::delete('/delete/{id}', [BeritaController::class, 'destroy'])->name('berita.destroy');
         Route::post('/upload-image', [BeritaController::class, 'uploadImage'])->name('berita.upload-image');
-
-        // API endpoint for DataTables
-        // Route::get('/api/list', [BeritaController::class, 'apiList'])->name('berita.api.list');
+        Route::post('/kategori/store-ajax', [BeritaController::class, 'storeKategoriAjax'])
+            ->name('berita.kategori.store-ajax');
     });
     Route::prefix('data-master')->group(function () {
         Route::resource('kategori-berita', KategoriBeritaController::class)->names('kategori-berita');

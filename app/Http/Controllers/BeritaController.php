@@ -5,6 +5,7 @@ use App\Models\Berita;
 use App\Models\KategoriBerita;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 
@@ -196,5 +197,20 @@ class BeritaController extends Controller
         }
 
         return response()->json(['error' => 'Upload gagal'], 400);
+    }
+    public function storeKategoriAjax(Request $request)
+    {
+        // dd($request->all());
+
+
+        $kategori = KategoriBerita::create([
+            'NamaKategori' => $request->NamaKategori,
+        ]);
+
+        return response()->json([
+            'status' => 200,
+            'message' => "Kategori \"{$kategori->NamaKategori}\" berhasil ditambahkan.",
+            'data' => $kategori,
+        ]);
     }
 }

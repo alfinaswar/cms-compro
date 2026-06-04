@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\KategoriBerita;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 
 class KategoriBeritaController extends Controller
@@ -29,19 +30,21 @@ class KategoriBeritaController extends Controller
     }
 
     // Endpoint untuk AJAX on-the-fly & standar form
+    // Store method
     public function store(Request $request)
     {
         $request->validate([
-            'NamaKategori' => 'required|string|max:100|unique:kategori_berita,NamaKategori'
+            'NamaKategori' => 'required'
         ]);
 
         $kategori = KategoriBerita::create([
             'NamaKategori' => $request->NamaKategori,
+            'Slug' => Str::slug($request->NamaKategori),
             'UserCreate' => auth()->user()->name,
         ]);
 
-        // Jika request dari AJAX (tambah langsung di form berita)
-        if ($request->ajax()) {
+        // Return JSON untuk AJAX
+        if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'status' => 200,
                 'message' => 'Kategori berhasil ditambahkan',
@@ -49,9 +52,11 @@ class KategoriBeritaController extends Controller
             ]);
         }
 
-        return redirect()->route('kategori-berita.index')->with('success', 'Kategori berhasil ditambahkan.');
+        return redirect()->route('kategori-berita.index')
+            ->with('success', 'Kategori berhasil ditambahkan');
     }
 
+    // Update method
     public function update(Request $request, $id)
     {
         $kategori = KategoriBerita::findOrFail($id);
@@ -62,22 +67,31 @@ class KategoriBeritaController extends Controller
 
         $kategori->update([
             'NamaKategori' => $request->NamaKategori,
+            'Slug' => Str::slug($request->NamaKategori),
             'UserUpdate' => auth()->user()->name,
         ]);
 
-        return response()->json(['status' => 200, 'message' => 'Kategori berhasil diperbarui']);
+        return response()->json([
+            'status' => 200,
+            'message' => 'Kategori berhasil diperbarui'
+        ]);
     }
 
+    // Destroy method
     public function destroy($id)
     {
         $kategori = KategoriBerita::find($id);
-        if (!$kategori)
-            return response()->json(['status' => 404, 'message' => 'Data tidak ditemukan']);
+        if (!$kategori) {
+            return response()->json(['status' => 404, 'message' => 'Data tidak ditemukan'], 404);
+        }
 
         $kategori->update(['UserDelete' => auth()->user()->name]);
         $kategori->delete();
 
-        return response()->json(['status' => 200, 'message' => 'Kategori berhasil dihapus']);
+        return response()->json([
+            'status' => 200,
+            'message' => 'Kategori berhasil dihapus'
+        ]);
     }
 
     // Endpoint khusus untuk mengambil list kategori (JSON)

@@ -244,13 +244,14 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form id="formKategoriBaru">
+                    <!-- FIX: Pakai action kosong, biar native submit tidak ke mana-mana -->
+                    <form id="formKategoriBaru" action="" method="POST" autocomplete="off">
                         @csrf
                         <div class="modal-body">
                             <div class="form-group">
                                 <label>Nama Kategori</label>
                                 <input type="text" name="NamaKategori" id="inputNamaKategori" class="form-control"
-                                    placeholder="Contoh: Prestasi" required>
+                                    placeholder="Contoh: Prestasi" required autocomplete="off">
                                 <small class="text-danger" id="kategoriError" style="display:none;"></small>
                             </div>
                         </div>
@@ -280,8 +281,16 @@
     <script src="{{ asset('adminlte/plugins/summernote/summernote-bs4.min.js') }}"></script>
     <!-- Select2 -->
     <script src="{{ asset('adminlte/plugins/select2/js/select2.full.min.js') }}"></script>
+    <!-- SweetAlert2, wajib untuk notifikasi jika belum -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
         $(document).ready(function() {
             // ========== SUMMERNOTE ==========
             $('#summernote').summernote({
@@ -343,31 +352,39 @@
                 $('#counterDesc').text($(this).val().length + '/160');
             });
 
-            // ========== TAMBAH KATEGORI ON-THE-FLY ==========
+            // ======== TAMBAH KATEGORI AJAX =========
             $('#formKategoriBaru').on('submit', function(e) {
                 e.preventDefault();
-
                 var btn = $('#btnSimpanKategori');
                 var input = $('#inputNamaKategori');
                 var errorMsg = $('#kategoriError');
-
+                var originalBtnText = btn.html();
+                // Loading state
                 btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin mr-1"></i> Menyimpan...');
                 input.removeClass('is-invalid');
-                errorMsg.hide();
+                errorMsg.hide().text('');
 
                 $.ajax({
-                    url: '{{ route('kategori-berita.store') }}',
-                    method: 'POST',
-                    data: $(this).serialize(),
+                    type: 'POST',
+                    url: '{{ route('berita.kategori.store-ajax') }}',
+                    data: {
+                        NamaKategori: input.val(),
+                        _token: '{{ csrf_token() }}'
+                    },
                     dataType: 'json',
                     success: function(response) {
                         if (response.status === 200) {
-                            var newOption = new Option(response.data.NamaKategori, response.data
-                                .NamaKategori, false, true);
+                            // Append new option and select it
+                            var newOption = new Option(
+                                response.data.NamaKategori,
+                                response.data.NamaKategori,
+                                true,
+                                true
+                            );
                             $('#selectKategori').append(newOption).trigger('change');
+                            // Reset form & close modal
                             input.val('');
                             $('#modalTambahKategori').modal('hide');
-
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Berhasil!',
@@ -375,26 +392,33 @@
                                 timer: 1500,
                                 showConfirmButton: false
                             });
+                        } else {
+                            Swal.fire('Gagal!', response.message || 'Gagal simpan kategori.',
+                                'error');
                         }
                     },
                     error: function(xhr) {
-                        var errors = xhr.responseJSON.errors;
+                        var errors = xhr.responseJSON && xhr.responseJSON.errors;
+                        var message = (xhr.responseJSON && xhr.responseJSON.message) ? xhr
+                            .responseJSON.message : 'Terjadi kesalahan server.';
+
                         if (errors && errors.NamaKategori) {
                             input.addClass('is-invalid');
                             errorMsg.text(errors.NamaKategori[0]).show();
+                        } else {
+                            Swal.fire('Gagal!', message, 'error');
                         }
                     },
                     complete: function() {
-                        btn.prop('disabled', false).html(
-                            '<i class="fa fa-save mr-1"></i> Simpan');
+                        btn.prop('disabled', false).html(originalBtnText);
                     }
                 });
             });
 
-            // Reset modal saat ditutup
+            // Reset modal saat modal ditutup
             $('#modalTambahKategori').on('hidden.bs.modal', function() {
                 $('#inputNamaKategori').val('').removeClass('is-invalid');
-                $('#kategoriError').hide();
+                $('#kategoriError').hide().text('');
             });
 
             // ========== BUTTON ACTION (DRAFT/PUBLISH) ==========
