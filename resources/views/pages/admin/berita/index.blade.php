@@ -152,7 +152,7 @@
                         name: 'Judul'
                     },
                     {
-                        data: 'KategoriBadge',
+                        data: 'Kategori',
                         name: 'Kategori',
                         orderable: false
                     },

@@ -53,7 +53,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::delete('/delete/{id}', [BeritaController::class, 'destroy'])->name('berita.destroy');
         Route::post('/upload-image', [BeritaController::class, 'uploadImage'])->name('berita.upload-image');
         Route::post('/kategori/store-ajax', [BeritaController::class, 'storeKategoriAjax'])
-            ->name('berita.kategori.store-ajax');
+            ->name('berita.store-ajax');
     });
     Route::prefix('data-master')->group(function () {
         Route::resource('kategori-berita', KategoriBeritaController::class)->names('kategori-berita');

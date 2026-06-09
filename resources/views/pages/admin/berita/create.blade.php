@@ -1,6 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
+    @push('styles')
+        <!-- summernote -->
+        <link rel="stylesheet" href="{{ asset('') }}assets/plugins/summernote/summernote-bs4.css">
+    @endpush
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
@@ -107,6 +111,27 @@
                                 @enderror
                             </div>
                         </div>
+
+                    </div>
+                    <div class="row mb-5">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body d-flex justify-content-between align-items-center">
+                                    <a href="{{ route('berita.index') }}" class="btn btn-secondary">
+                                        <i class="fa fa-arrow-left mr-2"></i> Kembali
+                                    </a>
+                                    <div class="ml-auto">
+                                        <button type="submit" name="action" value="draft" class="btn btn-info mr-2">
+                                            <i class="fa fa-save mr-1"></i> Simpan Draf
+                                        </button>
+                                        <button type="submit" name="action" value="publish" class="btn btn-success">
+                                            <i class="fa fa-paper-plane mr-1"></i> Publikasi
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -121,8 +146,8 @@
                         <div class="card-body text-center">
                             <img id="previewThumb" src="{{ asset('img/no-image.png') }}" class="img-fluid mb-3"
                                 style="max-height: 180px; border-radius: 8px; border: 1px solid #ddd;">
-                            <input type="file" name="PathThumbnail" class="form-control form-control-sm" accept="image/*"
-                                onchange="previewImage(this, 'previewThumb')" required>
+                            <input type="file" name="PathThumbnail" class="form-control form-control-sm"
+                                accept="image/*" onchange="previewImage(this, 'previewThumb')" required>
                             @error('PathThumbnail')
                                 <span class="text-danger text-sm d-block mt-1">{{ $message }}</span>
                             @enderror
@@ -211,27 +236,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- ==================== FOOTER ACTIONS ==================== -->
-            <div class="row mb-5">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-body d-flex justify-content-between align-items-center">
-                            <a href="{{ route('berita.index') }}" class="btn btn-secondary">
-                                <i class="fa fa-arrow-left mr-2"></i> Kembali
-                            </a>
-                            <div>
-                                <button type="submit" name="action" value="draft" class="btn btn-info mr-2">
-                                    <i class="fa fa-save mr-1"></i> Simpan Draf
-                                </button>
-                                <button type="submit" name="action" value="publish" class="btn btn-success">
-                                    <i class="fa fa-paper-plane mr-1"></i> Publikasi
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </form>
 
         <!-- ==================== MODAL TAMBAH KATEGORI ==================== -->
@@ -270,17 +274,17 @@
 
 @push('styles')
     <!-- Summernote -->
-    <link rel="stylesheet" href="{{ asset('adminlte/plugins/summernote/summernote-bs4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/plugins/summernote/summernote-bs4.min.css') }}">
     <!-- Select2 -->
-    <link rel="stylesheet" href="{{ asset('adminlte/plugins/select2/css/select2.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('adminlte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
 @endpush
 
 @push('scripts')
     <!-- Summernote -->
-    <script src="{{ asset('adminlte/plugins/summernote/summernote-bs4.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/summernote/summernote-bs4.min.js') }}"></script>
     <!-- Select2 -->
-    <script src="{{ asset('adminlte/plugins/select2/js/select2.full.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/select2/js/select2.full.min.js') }}"></script>
     <!-- SweetAlert2, wajib untuk notifikasi jika belum -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -352,75 +356,6 @@
                 $('#counterDesc').text($(this).val().length + '/160');
             });
 
-            // ======== TAMBAH KATEGORI AJAX =========
-            $('#formKategoriBaru').on('submit', function(e) {
-                e.preventDefault();
-                var btn = $('#btnSimpanKategori');
-                var input = $('#inputNamaKategori');
-                var errorMsg = $('#kategoriError');
-                var originalBtnText = btn.html();
-                // Loading state
-                btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin mr-1"></i> Menyimpan...');
-                input.removeClass('is-invalid');
-                errorMsg.hide().text('');
-
-                $.ajax({
-                    type: 'POST',
-                    url: '{{ route('berita.kategori.store-ajax') }}',
-                    data: {
-                        NamaKategori: input.val(),
-                        _token: '{{ csrf_token() }}'
-                    },
-                    dataType: 'json',
-                    success: function(response) {
-                        if (response.status === 200) {
-                            // Append new option and select it
-                            var newOption = new Option(
-                                response.data.NamaKategori,
-                                response.data.NamaKategori,
-                                true,
-                                true
-                            );
-                            $('#selectKategori').append(newOption).trigger('change');
-                            // Reset form & close modal
-                            input.val('');
-                            $('#modalTambahKategori').modal('hide');
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil!',
-                                text: response.message,
-                                timer: 1500,
-                                showConfirmButton: false
-                            });
-                        } else {
-                            Swal.fire('Gagal!', response.message || 'Gagal simpan kategori.',
-                                'error');
-                        }
-                    },
-                    error: function(xhr) {
-                        var errors = xhr.responseJSON && xhr.responseJSON.errors;
-                        var message = (xhr.responseJSON && xhr.responseJSON.message) ? xhr
-                            .responseJSON.message : 'Terjadi kesalahan server.';
-
-                        if (errors && errors.NamaKategori) {
-                            input.addClass('is-invalid');
-                            errorMsg.text(errors.NamaKategori[0]).show();
-                        } else {
-                            Swal.fire('Gagal!', message, 'error');
-                        }
-                    },
-                    complete: function() {
-                        btn.prop('disabled', false).html(originalBtnText);
-                    }
-                });
-            });
-
-            // Reset modal saat modal ditutup
-            $('#modalTambahKategori').on('hidden.bs.modal', function() {
-                $('#inputNamaKategori').val('').removeClass('is-invalid');
-                $('#kategoriError').hide().text('');
-            });
-
             // ========== BUTTON ACTION (DRAFT/PUBLISH) ==========
             $('button[name="action"]').on('click', function() {
                 var action = $(this).val();
@@ -431,7 +366,6 @@
                 }
             });
         });
-
         // ========== PREVIEW IMAGE ==========
         function previewImage(input, previewId) {
             if (input.files && input.files[0]) {
