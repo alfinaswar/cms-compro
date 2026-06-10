@@ -94,6 +94,18 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
+                                                <label>Deskripsi Singkat</label>
+                                                <input type="text" name="DeskripsiSingkat"
+                                                    class="form-control @error('DeskripsiSingkat') is-invalid @enderror"
+                                                    value="{{ old('DeskripsiSingkat', $pengaturan->DeskripsiSingkat) }}"
+                                                    placeholder="Masukkan deskripsi singkat perusahaan">
+                                                @error('DeskripsiSingkat')
+                                                    <span class="error invalid-feedback">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
                                                 <label>Tagline Website</label>
                                                 <input type="text" name="TaglineWebsite" class="form-control"
                                                     value="{{ old('TaglineWebsite', $pengaturan->TaglineWebsite) }}"
@@ -108,11 +120,13 @@
                                             </div>
                                         </div>
                                     </div>
+
                                 </div>
 
                                 <!-- TAB 2: KONTAK & SOSIAL -->
                                 <div class="tab-pane fade" id="tab-kontak" role="tabpanel">
-                                    <h5 class="mb-3 text-primary"><i class="fas fa-phone-alt mr-2"></i>Informasi Kontak</h5>
+                                    <h5 class="mb-3 text-primary"><i class="fas fa-phone-alt mr-2"></i>Informasi Kontak
+                                    </h5>
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">

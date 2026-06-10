@@ -59,4 +59,14 @@ class PengaturanWebsite extends Model
         }
         return Storage::disk('public')->url($path);
     }
+    protected static function booted(): void
+    {
+        static::saved(function () {
+            Cache::forget('website_settings');
+        });
+
+        static::deleted(function () {
+            Cache::forget('website_settings');
+        });
+    }
 }

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Login | PT Jasuindo Tiga Perkasa Tbk</title>
+    <title>Login | {{ $websiteSettings->NamaPerusahaan }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
@@ -33,10 +33,12 @@
 <body>
     <div class="login-box">
         <div class="text-center mb-3">
-            <img src="{{ asset('assets/img/login/logo-login.png') }}" alt="Jasuindo Logo" class="jasuindo-logo">
+            <img src="{{ $websiteSettings->PathLogo ? asset('storage/' . $websiteSettings->PathLogo) : asset('assets/img/login/logo-login.png') }}"
+                alt="{{ $websiteSettings->NamaPerusahaan }} Logo" class="jasuindo-logo">
+
             <h5 class="fw-bold mb-1 mt-2">PT Jasuindo Tiga Perkasa Tbk</h5>
             <small class="text-secondary d-block mb-2">
-                Perusahaan percetakan keamanan terkemuka di Indonesia untuk dokumen sekuriti & solusi identitas.
+                {{ $websiteSettings->DeskripsiSingkat ?? '-' }}
             </small>
         </div>
         <div class="card shadow-sm">
