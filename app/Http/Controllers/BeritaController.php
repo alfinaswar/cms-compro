@@ -198,10 +198,10 @@ class BeritaController extends Controller
 
         return response()->json(['error' => 'Upload gagal'], 400);
     }
+
     public function storeKategoriAjax(Request $request)
     {
         // dd($request->all());
-
 
         $kategori = KategoriBerita::create([
             'NamaKategori' => $request->NamaKategori,
@@ -212,5 +212,60 @@ class BeritaController extends Controller
             'message' => "Kategori \"{$kategori->NamaKategori}\" berhasil ditambahkan.",
             'data' => $kategori,
         ]);
+    }
+
+    public function news(Request $request)
+    {
+        $query = Berita::query();
+
+        // Fitur Pencarian
+        if ($request->filled('search')) {
+            $query
+                ->where('Judul', 'like', '%' . $request->search . '%')
+                ->orWhere('Ringkasan', 'like', '%' . $request->search . '%');
+        }
+        if ($request->filled('kategori')) {
+            $query->where('Kategori', $request->kategori);
+        }
+        if ($request->filled('tag')) {
+            $query->where('Tags', 'like', '%' . $request->tag . '%');
+        }
+        $news = $query->latest()->paginate(10);
+        $recentNews = Berita::latest()->take(3)->get();
+
+        $categories = Berita::select('Kategori')->distinct()->pluck('Kategori');
+
+        return view('frontend.news', compact('news', 'recentNews', 'categories'));
+    }
+
+    public function newsDetail($slug)
+    {
+        $news = Berita::where('Slug', $slug)->firstOrFail();
+
+        $recentNews = Berita::where('id', '!=', $news->id)
+            ->latest()
+            ->take(3)
+            ->get();
+        $categories = Berita::select('Kategori')->distinct()->pluck('Kategori');
+        $prevPost = Berita::where('TanggalPublikasi', '<', $news->TanggalPublikasi)
+            ->latest('TanggalPublikasi')
+            ->first();
+        $nextPost = Berita::where('TanggalPublikasi', '>', $news->TanggalPublikasi)
+            ->oldest('TanggalPublikasi')
+            ->first();
+        $relatedPosts = Berita::where('Kategori', $news->Kategori)
+            ->where('id', '!=', $news->id)
+            ->latest()
+            ->take(3)
+            ->get();
+
+        return view('frontend.news-detail', compact(
+            'news',
+            'recentNews',
+            'categories',
+            'prevPost',
+            'nextPost',
+            'relatedPosts'
+        ));
     }
 }

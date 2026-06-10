@@ -10,12 +10,16 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('frontend.index');
+    return view('frontend.main');
 });
 
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::prefix('/')->group(function () {
+    Route::get('/news', [BeritaController::class, 'news'])->name('frontend.news');
+    Route::get('/news/{slug}', [BeritaController::class, 'newsDetail'])->name('frontend.detail');
+});
 Route::group(['middleware' => ['auth']], function () {
     // === GROUP DASHBOARD ===
     Route::resource('manajemen-akun/roles', RoleController::class)->names('roles');
