@@ -21,6 +21,7 @@ Route::prefix('/')->group(function () {
     Route::get('/news/{slug}', [BeritaController::class, 'newsDetail'])->name('frontend.detail');
     Route::get('/career', [LowonganKerjaController::class, 'career'])->name('frontend.career');
     Route::get('/career/{id}-{slug}', [LowonganKerjaController::class, 'careerDetail'])->name('frontend.career.detail');
+    Route::post('/career/{id}/apply', [LowonganKerjaController::class, 'apply'])->name('frontend.career.apply');
 });
 Route::group(['middleware' => ['auth']], function () {
     // === GROUP DASHBOARD ===

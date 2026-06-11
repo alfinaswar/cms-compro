@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LamaranKerja;
 use App\Models\LowonganKerja;
 use App\Models\MasterKota;
 use Illuminate\Http\Request;
@@ -168,6 +169,7 @@ class LowonganKerjaController extends Controller
             'message' => 'Lowongan kerja berhasil dihapus'
         ]);
     }
+
     public function career(Request $request)
     {
         $query = LowonganKerja::query();
@@ -177,12 +179,13 @@ class LowonganKerjaController extends Controller
         }
         if ($request->filled('status')) {
             $query->where('Status', $request->status);
-            $query->withoutGlobalScope('active'); // kalau pakai global scope
+            $query->withoutGlobalScope('active');  // kalau pakai global scope
         }
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('Posisi', 'like', '%' . $search . '%')
+                $q
+                    ->where('Posisi', 'like', '%' . $search . '%')
                     ->orWhere('Deskripsi', 'like', '%' . $search . '%')
                     ->orWhere('Kualifikasi', 'like', '%' . $search . '%');
             });
@@ -210,9 +213,42 @@ class LowonganKerjaController extends Controller
 
         return view('frontend.career', compact('lowongans', 'totalJobs', 'kotas'));
     }
+
     public function careerDetail($id, $slug)
     {
         $lowongan = LowonganKerja::findOrFail($id);
         return view('frontend.career-detail', compact('lowongan'));
+    }
+
+    public function apply(Request $request, $id)
+    {
+        $request->validate([
+            'NamaLengkap' => 'required|string|max:255',
+            'Email' => 'required|email|max:255',
+            'NoHp' => 'required|string|max:20',
+            'EkspetasiGaji' => 'required|string|max:100',
+            'DeskripsiSingkat' => 'required|string|max:1000',
+            'PathCv' => 'required|file|mimes:pdf,doc,docx|max:2048',  // Max 2MB
+        ], [
+            'PathCv.mimes' => 'File CV harus berformat PDF, DOC, atau DOCX.',
+            'PathCv.max' => 'Ukuran file CV maksimal 2MB.',
+        ]);
+
+        $file = $request->file('PathCv');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $filePath = $file->storeAs('public/cv_lamaran', $fileName);
+
+        LamaranKerja::create([
+            'LowonganKerjaId' => $id,
+            'NamaLengkap' => $request->NamaLengkap,
+            'Email' => $request->Email,
+            'NoHp' => $request->NoHp,
+            'PathCv' => str_replace('public/', '', $filePath),
+            'EkspetasiGaji' => $request->EkspetasiGaji,
+            'DeskripsiSingkat' => $request->DeskripsiSingkat,
+            'Status' => 'Menunggu'
+        ]);
+
+        return redirect()->back()->with('success', 'Lamaran Anda berhasil dikirim! Kami akan menghubungi Anda segera.');
     }
 }
