@@ -34,8 +34,9 @@ class BeritaController extends Controller
                 })
                 ->addColumn('action', function ($row) {
                     $btn = '<div class="btn-group btn-group-sm">';
-                    $btn .= '<a href="' . route('berita.edit', $row->id) . '" class="btn btn-warning" title="Edit"><i class="fa fa-edit"></i></a>';
-                    $btn .= '<a href="' . route('berita.show', $row->id) . '" target="_blank" class="btn btn-info" title="Lihat"><i class="fa fa-eye"></i></a>';
+                    $btn .= '<a href="' . route('berita.edit', $row->Slug) . '" class="btn btn-warning" title="Edit"><i class="fa fa-edit"></i></a>';
+                    $btn .= '<a href="' . route('berita.show', $row->Slug) . '" target="_blank" class="btn btn-info" title="Lihat"><i class="fa fa-eye"></i></a>';
+
                     $btn .= '<button class="btn btn-danger btn-delete" data-id="' . $row->id . '" title="Hapus"><i class="fa fa-trash"></i></button>';
                     $btn .= '</div>';
                     return $btn;
@@ -104,9 +105,9 @@ class BeritaController extends Controller
      */
     public function edit($id)
     {
-        $berita = Berita::findOrFail($id);
-        $kategoris = \App\Models\KategoriBerita::orderBy('NamaKategori')->get();
-        return view('berita.edit', compact('berita', 'kategoris'));
+        $berita = Berita::where('Slug', $id)->first();
+        $kategoris = KategoriBerita::orderBy('NamaKategori')->get();
+        return view('pages.admin.berita.edit', compact('berita', 'kategoris'));
     }
 
     /**
@@ -114,7 +115,7 @@ class BeritaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $berita = Berita::findOrFail($id);
+        $berita = Berita::where('Slug', $id)->first();
 
         $validated = $request->validate([
             'Judul' => 'required|string|max:255',

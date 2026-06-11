@@ -266,6 +266,10 @@
 
                     </li>
                     <li class="menu-item-has-children">
+                        <a href="{{ route('frontend.career') }}">Career</a>
+                    </li>
+
+                    <li class="menu-item-has-children">
                         <a href="contact.html">Contact us</a>
                         <ul class="sub-menu">
                             <li><a href="contact.html">Contact Us</a></li>
@@ -389,6 +393,10 @@
                                         <a href="{{ route('frontend.news') }}">News</a>
 
                                     </li>
+                                    <li class="menu-item-has-children">
+                                        <a href="{{ route('frontend.career') }}">Carreer</a>
+                                    </li>
+
                                     <li class="menu-item-has-children">
                                         <a href="contact.html">Contact us</a>
                                         <ul class="sub-menu">

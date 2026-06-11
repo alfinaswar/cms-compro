@@ -19,6 +19,8 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::prefix('/')->group(function () {
     Route::get('/news', [BeritaController::class, 'news'])->name('frontend.news');
     Route::get('/news/{slug}', [BeritaController::class, 'newsDetail'])->name('frontend.detail');
+    Route::get('/career', [LowonganKerjaController::class, 'career'])->name('frontend.career');
+    Route::get('/career/{id}-{slug}', [LowonganKerjaController::class, 'careerDetail'])->name('frontend.career.detail');
 });
 Route::group(['middleware' => ['auth']], function () {
     // === GROUP DASHBOARD ===
@@ -30,8 +32,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/', [LowonganKerjaController::class, 'index'])->name('karir.index');
         Route::get('/create', [LowonganKerjaController::class, 'create'])->name('karir.create');
         Route::post('/store', [LowonganKerjaController::class, 'store'])->name('karir.store');
-        Route::get('/edit', [LowonganKerjaController::class, 'edit'])->name('karir.edit');
-        Route::put('/update', [LowonganKerjaController::class, 'update'])->name('karir.update');
+        Route::get('/edit/{id}', [LowonganKerjaController::class, 'edit'])->name('karir.edit');
+        Route::put('/update/{id}', [LowonganKerjaController::class, 'update'])->name('karir.update');
         Route::get('/show/{id}', [LowonganKerjaController::class, 'show'])->name('karir.show');
         Route::delete('/delete/{id}', [LowonganKerjaController::class, 'destroy'])->name('karir.destroy');
     });

@@ -62,7 +62,7 @@
                                                 data-placeholder="Pilih kota penempatan">
                                                 <option value="">-- Pilih Kota --</option>
                                                 @foreach ($Kota as $kota)
-                                                    <option value="{{ $kota->p }}"
+                                                    <option value="{{ $kota->code }}"
                                                         {{ old('Kota') == $kota->code ? 'selected' : '' }}>
                                                         {{ $kota->name }}
                                                     </option>
@@ -74,15 +74,7 @@
                                         @enderror
                                     </div>
                                 </div>
-                                <script>
-                                    $(document).ready(function() {
-                                        $('#Kota').select2({
-                                            theme: 'bootstrap4',
-                                            placeholder: 'Pilih kota penempatan',
-                                            allowClear: true
-                                        });
-                                    });
-                                </script>
+
 
                             </div>
                             <div class="row">
@@ -159,3 +151,14 @@
         </div>
     </section>
 @endsection
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            $('#Kota').select2({
+                theme: 'bootstrap4',
+                placeholder: 'Pilih kota penempatan',
+                allowClear: true
+            });
+        });
+    </script>
+@endpush
