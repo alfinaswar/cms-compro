@@ -11,6 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('lamaran_kerja', function (Blueprint $table) {
+            $table->id();
             $table->string('LowonganKerjaId');
             $table->string('NamaLengkap');
             $table->string('Email');
@@ -19,6 +20,8 @@ return new class extends Migration {
             $table->string('EkspetasiGaji')->nullable();
             $table->text('DeskripsiSingkat')->nullable();
             $table->enum('Status', ['Menunggu', 'Diterima', 'Ditolak'])->default('Menunggu');
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 

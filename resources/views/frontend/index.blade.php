@@ -45,10 +45,6 @@
     <meta name="msapplication-TileImage"
         content="{{ asset('') }}assets-landing-page/img/favicons/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
-
-    <!--==============================
- Google Fonts
- ============================== -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -57,24 +53,12 @@
         href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
         rel="stylesheet">
 
-    <!--==============================
- All CSS File
- ============================== -->
-    <!--==============================
- All CSS File
- ============================== -->
-    <!-- Bootstrap -->
     <link rel="stylesheet" href="{{ asset('') }}assets-landing-page/css/bootstrap.min.css">
-    <!-- Fontawesome Icon -->
     <link rel="stylesheet" href="{{ asset('') }}assets-landing-page/css/fontawesome.min.css">
-    <!-- Magnific Popup -->
     <link rel="stylesheet" href="{{ asset('') }}assets-landing-page/css/magnific-popup.min.css">
-
-    <!-- Swiper css -->
     <link rel="stylesheet" href="{{ asset('') }}assets-landing-page/css/swiper-bundle.min.css">
-
-    <!-- Theme Custom CSS -->
     <link rel="stylesheet" href="{{ asset('') }}assets-landing-page/css/style.css">
+    @stack('fontend-css')
 
 </head>
 
@@ -643,6 +627,7 @@
 
     <!-- Main Js File -->
     <script src="{{ asset('') }}assets-landing-page/js/main.js"></script>
+    @stack('frontend-js')
 </body>
 
 </html>

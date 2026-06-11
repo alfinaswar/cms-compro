@@ -222,16 +222,17 @@ class LowonganKerjaController extends Controller
 
     public function apply(Request $request, $id)
     {
+        // dd($request->all());
         $request->validate([
             'NamaLengkap' => 'required|string|max:255',
             'Email' => 'required|email|max:255',
             'NoHp' => 'required|string|max:20',
             'EkspetasiGaji' => 'required|string|max:100',
             'DeskripsiSingkat' => 'required|string|max:1000',
-            'PathCv' => 'required|file|mimes:pdf,doc,docx|max:2048',  // Max 2MB
+            'PathCv' => 'required|file|mimes:pdf|max:3072',
         ], [
-            'PathCv.mimes' => 'File CV harus berformat PDF, DOC, atau DOCX.',
-            'PathCv.max' => 'Ukuran file CV maksimal 2MB.',
+            'PathCv.mimes' => 'File CV harus berformat PDF.',
+            'PathCv.max' => 'Ukuran file CV maksimal 3MB.',
         ]);
 
         $file = $request->file('PathCv');
@@ -244,7 +245,7 @@ class LowonganKerjaController extends Controller
             'Email' => $request->Email,
             'NoHp' => $request->NoHp,
             'PathCv' => str_replace('public/', '', $filePath),
-            'EkspetasiGaji' => $request->EkspetasiGaji,
+            'EkspetasiGaji' => preg_replace('/\D/', '', $request->EkspetasiGaji),
             'DeskripsiSingkat' => $request->DeskripsiSingkat,
             'Status' => 'Menunggu'
         ]);
