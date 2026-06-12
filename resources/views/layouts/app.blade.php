@@ -154,7 +154,9 @@
                         </li>
 
                         <li class="nav-header">Manajemen Akun</li>
-                        <li class="nav-item has-treeview menu-open">
+                        <li
+                            class="nav-item has-treeview {{ request()->segment(1) == 'manajemen-akun' ? 'menu-open' : '' }}">
+
                             <a href="#"
                                 class="nav-link {{ request()->segment(1) == 'manajemen-akun' ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-users-cog"></i>

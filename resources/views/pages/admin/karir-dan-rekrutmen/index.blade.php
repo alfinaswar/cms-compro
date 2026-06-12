@@ -42,6 +42,7 @@
                                     <th>Deskripsi</th>
                                     <th>Batas Waktu</th>
                                     <th>Status</th>
+                                    <th>Pelamar</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -154,6 +155,12 @@
                         data: 'StatusBadge',
                         name: 'Status',
                         orderable: false
+                    },
+                    {
+                        data: 'JumlahPelamar',
+                        name: 'JumlahPelamar',
+                        orderable: false,
+                        searchable: false
                     },
                     {
                         data: 'action',

@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+    @push('styles')
+        <link rel="stylesheet" href="{{ asset('') }}assets/plugins/summernote/summernote-bs4.css">
+    @endpush
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
@@ -55,9 +58,6 @@
                                         <label for="Kota"><strong>Kota Penempatan</strong> <span
                                                 class="text-danger">*</span></label>
                                         <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text"><i class="fa fa-map-marker-alt"></i></span>
-                                            </div>
                                             <select name="Kota" id="Kota"
                                                 class="form-control select2 @error('Kota') is-invalid @enderror"
                                                 data-placeholder="Pilih kota penempatan">
@@ -75,15 +75,6 @@
                                         @enderror
                                     </div>
                                 </div>
-                                <script>
-                                    $(document).ready(function() {
-                                        $('#Kota').select2({
-                                            theme: 'bootstrap4',
-                                            placeholder: 'Pilih kota penempatan',
-                                            allowClear: true
-                                        });
-                                    });
-                                </script>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
@@ -114,8 +105,8 @@
                                             <select name="Status" id="Status"
                                                 class="form-control @error('Status') is-invalid @enderror">
                                                 <option value="Buka"
-                                                    {{ old('Status', $lowongan->Status) == 'Buka' ? 'selected' : '' }}>Buka
-                                                    (Dapat Dilamar)</option>
+                                                    {{ old('Status', $lowongan->Status) == 'Buka' ? 'selected' : '' }}>
+                                                    Buka (Dapat Dilamar)</option>
                                                 <option value="Tutup"
                                                     {{ old('Status', $lowongan->Status) == 'Tutup' ? 'selected' : '' }}>
                                                     Tutup (Tidak Dapat Dilamar)</option>
@@ -137,14 +128,16 @@
                             </div>
                             <div class="form-group">
                                 <label for="Kualifikasi"><strong>Kualifikasi Kandidat</strong></label>
-                                <textarea name="Kualifikasi" id="Kualifikasi" rows="6"
+                                <textarea name="Kualifikasi" id="summernote" rows="6"
                                     class="form-control @error('Kualifikasi') is-invalid @enderror"
                                     placeholder="Contoh:&#10;- Minimal S1 Teknik Informatika&#10;- Pengalaman 1 tahun di bidang terkait&#10;- Menguasai Laravel & MySQL">{{ old('Kualifikasi', $lowongan->Kualifikasi) }}</textarea>
                                 @error('Kualifikasi')
                                     <span class="invalid-feedback d-block mt-1">{{ $message }}</span>
                                 @enderror
-                                <small class="text-muted"><i class="fa fa-info-circle"></i> Gunakan tanda strip (-) atau
-                                    bintang (*) untuk membuat daftar poin.</small>
+                                <small class="text-muted">
+                                    <i class="fa fa-info-circle"></i> Gunakan tanda strip (-) atau bintang (*) untuk
+                                    membuat daftar poin.
+                                </small>
                             </div>
                         </div>
                         <div class="card-footer d-flex justify-content-end gap-3">
@@ -161,3 +154,45 @@
         </div>
     </section>
 @endsection
+
+@push('scripts')
+    <!-- Summernote -->
+    <script src="{{ asset('assets/plugins/summernote/summernote-bs4.min.js') }}"></script>
+    <!-- Select2 -->
+    <script src="{{ asset('assets/plugins/select2/js/select2.full.min.js') }}"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $(document).ready(function() {
+            // ========== SUMMERNOTE - Kualifikasi ==========
+            $('#summernote').summernote({
+                height: 300,
+                placeholder: 'Tuliskan kualifikasi kandidat...\nContoh:\n- Minimal S1 Teknik Informatika\n- Pengalaman 1 tahun di bidang terkait\n- Menguasai Laravel & MySQL',
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'italic', 'underline', 'clear']],
+                    ['fontname', ['fontname']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['table', ['table']],
+                    ['insert', ['link']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ]
+            });
+
+            // ========== SELECT2 - Kota ==========
+            $('#Kota').select2({
+                theme: 'bootstrap4',
+                placeholder: '-- Pilih Kota --',
+                allowClear: true,
+                width: '100%'
+            });
+        });
+    </script>
+@endpush

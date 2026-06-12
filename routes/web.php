@@ -37,6 +37,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::put('/update/{id}', [LowonganKerjaController::class, 'update'])->name('karir.update');
         Route::get('/show/{id}', [LowonganKerjaController::class, 'show'])->name('karir.show');
         Route::delete('/delete/{id}', [LowonganKerjaController::class, 'destroy'])->name('karir.destroy');
+        Route::get('karir/{id}/pelamar', [LowonganKerjaController::class, 'pelamar'])->name('karir.pelamar');
+        Route::post('karir/pelamar/{id}/update-status', [LowonganKerjaController::class, 'updateStatus'])->name('karir.update-status');
     });
 
     // Pengaturan Website Section

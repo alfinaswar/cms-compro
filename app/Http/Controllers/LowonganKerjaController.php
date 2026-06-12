@@ -17,7 +17,7 @@ class LowonganKerjaController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = LowonganKerja::latest();
+            $data = LowonganKerja::withCount('getLamaran')->latest();
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('StatusBadge', function ($row) {
@@ -34,20 +34,28 @@ class LowonganKerjaController extends Controller
                 ->addColumn('DeskripsiSingkat', function ($row) {
                     return Str::limit(strip_tags($row->Deskripsi ?? ''), 50, '...');
                 })
+                ->addColumn('JumlahPelamar', function ($row) {
+                    $jumlah = $row->getLamaran()->count();
+                    $url = route('karir.pelamar', encrypt($row->id));
+                    return '<a href="' . $url . '" class="btn btn-sm btn-info" title="Lihat Pelamar">
+                            <i class="fa fa-users mr-1"></i> ' . $jumlah . ' Pelamar
+                        </a>';
+                })
+
                 ->addColumn('action', function ($row) {
                     return '
-                        <div class="btn-group btn-group-sm">
-                            <a href="' . route('karir.edit', encrypt($row->id)) . '" class="btn btn-sm btn-warning" title="Edit">
-                                <i class="fa fa-edit"></i>
-                            </a>
+                    <div class="btn-group btn-group-sm">
+                        <a href="' . route('karir.edit', encrypt($row->id)) . '" class="btn btn-sm btn-warning" title="Edit">
+                            <i class="fa fa-edit"></i>
+                        </a>
 
-                            <button class="btn btn-sm btn-danger btn-delete" data-id="' . $row->id . '" title="Hapus">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </div>
-                    ';
+                        <button class="btn btn-sm btn-danger btn-delete" data-id="' . $row->id . '" title="Hapus">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                ';
                 })
-                ->rawColumns(['StatusBadge', 'action'])
+                ->rawColumns(['StatusBadge', 'JumlahPelamar', 'action'])
                 ->make(true);
         }
 
@@ -237,7 +245,8 @@ class LowonganKerjaController extends Controller
 
         $file = $request->file('PathCv');
         $fileName = time() . '_' . $file->getClientOriginalName();
-        $filePath = $file->storeAs('public/cv_lamaran', $fileName);
+        $filePath = $file->storeAs('cv_lamaran', $fileName, 'public');
+
 
         LamaranKerja::create([
             'LowonganKerjaId' => $id,
@@ -251,5 +260,114 @@ class LowonganKerjaController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Lamaran Anda berhasil dikirim! Kami akan menghubungi Anda segera.');
+    }
+    public function pelamar(Request $request, $id)
+    {
+        $lowongan = LowonganKerja::find(decrypt($id));
+
+        if (!$lowongan) {
+            return redirect()->route('karir.index')->with('error', 'Lowongan tidak ditemukan');
+        }
+
+        if ($request->ajax()) {
+            $data = LamaranKerja::where('LowonganKerjaId', $lowongan->id)->latest();
+
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('EmailLink', function ($row) {
+                    return '<a href="mailto:' . $row->Email . '" class="text-primary" title="Kirim Email">
+                            <i class="fa fa-envelope mr-1"></i>' . $row->Email . '
+                        </a>';
+                })
+                ->addColumn('NoHpLink', function ($row) {
+                    // Konversi format nomor ke WhatsApp (08xxx -> 62xxx)
+                    $waNumber = preg_replace('/^0/', '62', $row->NoHp);
+                    $waNumber = preg_replace('/[^0-9]/', '', $waNumber);
+
+                    return '<a href="https://wa.me/' . $waNumber . '" target="_blank" class="text-success" title="Chat WhatsApp">
+                            <i class="fab fa-whatsapp mr-1"></i>' . $row->NoHp . '
+                        </a>';
+                })
+                ->addColumn('EkspetasiGajiFormatted', function ($row) {
+                    return $row->EkspetasiGaji
+                        ? 'Rp ' . number_format($row->EkspetasiGaji, 0, ',', '.')
+                        : '-';
+                })
+                ->addColumn('TanggalLamar', function ($row) {
+                    return \Carbon\Carbon::parse($row->created_at)->format('d M Y H:i');
+                })
+                ->addColumn('StatusDropdown', function ($row) {
+                    $status = $row->Status ?? 'Menunggu';
+                    $badgeClass = [
+                        'Menunggu' => 'badge-warning',
+                        'Diterima' => 'badge-success',
+                        'Ditolak' => 'badge-danger'
+                    ][$status] ?? 'badge-secondary';
+
+                    return '
+                    <select class="form-control form-control-sm change-status"
+                            data-id="' . $row->id . '"
+                            style="width: auto; display: inline-block;">
+                        <option value="Menunggu" ' . ($status == 'Menunggu' ? 'selected' : '') . '>Menunggu</option>
+                        <option value="Diterima" ' . ($status == 'Diterima' ? 'selected' : '') . '>Diterima</option>
+                        <option value="Ditolak" ' . ($status == 'Ditolak' ? 'selected' : '') . '>Ditolak</option>
+                    </select>
+                    <span class="badge ' . $badgeClass . ' ml-2">' . $status . '</span>
+                ';
+                })
+                ->addColumn('CV', function ($row) {
+                    if ($row->PathCv && file_exists(public_path('storage/' . $row->PathCv))) {
+                        return '<a href="' . asset('storage/' . $row->PathCv) . '" target="_blank" class="btn btn-sm btn-secondary" title="Download CV">
+                                <i class="fa fa-file-pdf"></i> CV
+                            </a>';
+                    }
+                    return '<span class="text-muted">-</span>';
+                })
+                ->addColumn('action', function ($row) {
+                    return '
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-sm btn-info btn-detail"
+                            data-nama="' . $row->NamaLengkap . '"
+                            data-email="' . $row->Email . '"
+                            data-hp="' . $row->NoHp . '"
+                            data-gaji="' . ($row->EkspetasiGaji ? "Rp " . number_format($row->EkspetasiGaji, 0, ",", ".") : "-") . '"
+                            data-deskripsi="' . htmlspecialchars($row->DeskripsiSingkat ?? "-") . '"
+                            data-cv="' . ($row->PathCv ? asset($row->PathCv) : "") . '"
+                            data-status="' . ($row->Status ?? "Menunggu") . '"
+                            data-tanggal="' . \Carbon\Carbon::parse($row->created_at)->format("d M Y H:i") . '"
+                            title="Detail">
+                            <i class="fa fa-eye"></i>
+                        </button>
+                    </div>
+                ';
+                })
+                ->rawColumns(['StatusDropdown', 'CV', 'action', 'EmailLink', 'NoHpLink'])
+                ->make(true);
+        }
+
+        return view('pages.admin.karir-dan-rekrutmen.pelamar', compact('lowongan'));
+    }
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'Status' => 'required|in:Menunggu,Diterima,Ditolak'
+        ]);
+
+        $lamaran = LamaranKerja::find($id);
+
+        if (!$lamaran) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Data pelamar tidak ditemukan'
+            ], 404);
+        }
+
+        $lamaran->Status = $request->Status;
+        $lamaran->save();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Status berhasil diubah menjadi ' . $request->Status
+        ]);
     }
 }

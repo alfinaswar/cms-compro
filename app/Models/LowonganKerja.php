@@ -43,4 +43,8 @@ class LowonganKerja extends Model
     {
         return Carbon::parse($this->BatasWaktu)->isFuture();
     }
+    public function getLamaran()
+    {
+        return $this->hasMany(LamaranKerja::class, 'LowonganKerjaId', 'id');
+    }
 }
