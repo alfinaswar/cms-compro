@@ -209,15 +209,34 @@
                         </li>
 
                         <li class="nav-header">Pengaturan Website</li>
-                        <li class="nav-item">
-                            <a href="{{ route('pengaturan-website.edit') }}"
-                                class="nav-link {{ request()->segment(2) == 'pengaturan-website' ? 'active' : '' }}">
+                        <li
+                            class="nav-item has-treeview {{ request()->segment(2) == 'pengaturan-website' || request()->segment(2) == 'pages' ? 'menu-open' : '' }}">
+                            <a href="#"
+                                class="nav-link {{ request()->segment(2) == 'pengaturan-website' || request()->segment(2) == 'pages' ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-cogs"></i>
                                 <p>
                                     Pengaturan Website
+                                    <i class="fas fa-angle-left right"></i>
                                 </p>
                             </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('pengaturan-website.edit') }}"
+                                        class="nav-link {{ request()->segment(2) == 'pengaturan-website' ? 'active' : '' }}">
+                                        <i class="fas fa-cog nav-icon"></i>
+                                        <p>Pengaturan Website</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href=""
+                                        class="nav-link {{ request()->segment(2) == 'pages' ? 'active' : '' }}">
+                                        <i class="fas fa-file-alt nav-icon"></i>
+                                        <p>Pages</p>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
+
                         <li class="nav-item has-treeview {{ request()->segment(1) == 'menu' ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link {{ request()->segment(1) == 'menu' ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-bars"></i>
