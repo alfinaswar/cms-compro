@@ -5,6 +5,7 @@ use App\Models\KategoriBerita;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Log;
 
 class KategoriBeritaController extends Controller
 {
@@ -43,6 +44,13 @@ class KategoriBeritaController extends Controller
             'UserCreate' => auth()->user()->name,
         ]);
 
+        // Activity Log untuk simpan
+        activity()
+            ->performedOn($kategori)
+            ->causedBy(auth()->user())
+            ->withProperties(['attributes' => $kategori->toArray()])
+            ->log('Membuat kategori baru: ' . $request->NamaKategori);
+
         // Return JSON untuk AJAX
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
@@ -65,11 +73,23 @@ class KategoriBeritaController extends Controller
             'NamaKategori' => 'required|string|max:100|unique:kategori_berita,NamaKategori,' . $id
         ]);
 
+        $oldData = $kategori->getOriginal();
+
         $kategori->update([
             'NamaKategori' => $request->NamaKategori,
             'Slug' => Str::slug($request->NamaKategori),
             'UserUpdate' => auth()->user()->name,
         ]);
+
+        // Activity Log untuk update
+        activity()
+            ->performedOn($kategori)
+            ->causedBy(auth()->user())
+            ->withProperties([
+                'old' => $oldData,
+                'attributes' => $kategori->toArray()
+            ])
+            ->log('Memperbarui kategori: ' . $request->NamaKategori);
 
         return response()->json([
             'status' => 200,

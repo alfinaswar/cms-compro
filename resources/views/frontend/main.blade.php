@@ -6,7 +6,7 @@
             <div class="swiper-wrapper">
                 <div class="swiper-slide">
                     <div class="hero-inner">
-                        <div class="th-hero-bg" data-bg-src="{{ asset('') }}assets-landing-page/img/hero/hero_bg_1_1.jpg">
+                        <div class="th-hero-bg" data-bg-src="{{ asset('') }}assets-landing-page/img/hero/hero_bg_1_2.jpg">
                         </div>
                         <div class="hero-1-shape d-none d-lg-block" data-ani="slideinleft" data-ani-delay="0.4s">
                             <img src="{{ asset('') }}assets-landing-page/img/shape/hero-1-shape.png" alt="hero-shape">
@@ -15,94 +15,19 @@
                             <div class="row">
                                 <div class="col-xl-9 col-lg-8">
                                     <div class="hero-style1">
-                                        <span class="sub-title style1" data-ani="slideinup" data-ani-delay="0.2s">Dynamic
-                                            IT, Dynamic Results.</span>
+                                        <span class="sub-title style1" data-ani="slideinup" data-ani-delay="0.2s">
+                                            The Fastest Growing
+                                        </span>
                                         <h1 class="hero-title" data-ani="slideinup" data-ani-delay="0.4s">
-                                            Precision IT Solutions, Tailored for You </h1>
-                                        <p class="hero-text text-white" data-ani="slideinup" data-ani-delay="0.6s">
-                                            Welcome to Atek where we specialize in delivering tailored technology and IT
-                                            solutions.</p>
-                                        <div class="btn-group" data-ani="slideinup" data-ani-delay="0.8s">
-                                            <a href="contact.html" class="th-btn style7 th-icon">
-                                                Discover More <i class="fa-light fa-arrow-right-long"></i>
-                                            </a>
-                                            <a href="service.html" class="th-btn style2 th-icon">
-                                                Our Services <i class="fa-light fa-arrow-right-long"></i>
-                                            </a>
-                                        </div>
+                                            Identity & Payment Company In Asia
+                                        </h1>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="hero-inner">
-                        <div class="th-hero-bg"
-                            data-bg-src="{{ asset('') }}assets-landing-page/img/hero/hero_bg_1_2.jpg">
-                        </div>
-                        <div class="hero-1-shape d-none d-lg-block" data-ani="slideinleft" data-ani-delay="0.4s">
-                            <img src="{{ asset('') }}assets-landing-page/img/shape/hero-1-shape.png" alt="hero-shape">
-                        </div>
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-xl-9 col-lg-8">
-                                    <div class="hero-style1">
-                                        <span class="sub-title style1" data-ani="slideinup" data-ani-delay="0.2s">Dynamic
-                                            IT, Dynamic Results.</span>
-                                        <h1 class="hero-title" data-ani="slideinup" data-ani-delay="0.4s">
-                                            Smart IT Consulting for Modern Businesses </h1>
-                                        <p class="hero-text text-white" data-ani="slideinup" data-ani-delay="0.6s">
-                                            Welcome to Atek where we specialize in delivering tailored technology and IT
-                                            solutions.</p>
-                                        <div class="btn-group" data-ani="slideinup" data-ani-delay="0.8s">
-                                            <a href="contact.html" class="th-btn style7 th-icon">
-                                                Discover More <i class="fa-light fa-arrow-right-long"></i>
-                                            </a>
-                                            <a href="service.html" class="th-btn style2 th-icon">
-                                                Our Services <i class="fa-light fa-arrow-right-long"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="hero-inner">
-                        <div class="th-hero-bg"
-                            data-bg-src="{{ asset('') }}assets-landing-page/img/hero/hero_bg_1_3.jpg">
-                        </div>
-                        <div class="hero-1-shape d-none d-lg-block" data-ani="slideinleft" data-ani-delay="0.4s">
-                            <img src="{{ asset('') }}assets-landing-page/img/shape/hero-1-shape.png" alt="hero-shape">
-                        </div>
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-xl-9 col-lg-8">
-                                    <div class="hero-style1">
-                                        <span class="sub-title style1" data-ani="slideinup" data-ani-delay="0.2s">Dynamic
-                                            IT, Dynamic Results.</span>
-                                        <h1 class="hero-title" data-ani="slideinup" data-ani-delay="0.4s">
-                                            Your Trusted Partner in Tech & Strategy </h1>
-                                        <p class="hero-text text-white" data-ani="slideinup" data-ani-delay="0.6s">
-                                            Welcome to Atek where we specialize in delivering tailored technology and IT
-                                            solutions.</p>
-                                        <div class="btn-group" data-ani="slideinup" data-ani-delay="0.8s">
-                                            <a href="contact.html" class="th-btn style7 th-icon">
-                                                Discover More <i class="fa-light fa-arrow-right-long"></i>
-                                            </a>
-                                            <a href="service.html" class="th-btn style2 th-icon">
-                                                Our Services <i class="fa-light fa-arrow-right-long"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="th-swiper-custom">
                 <button data-slider-prev="#heroSlide1" class="slider-arrow slider-prev"><img
@@ -118,8 +43,8 @@
     <section class="">
         <div class="feature-list-wrap">
             <!--==============================
-    feature Area
-    ==============================-->
+                feature Area
+                ==============================-->
             <div class="feature-area overflow-hidden " id="feature-area">
                 <div class="row gx-0 justify-content-center">
                     <div class="col-xl-4 col-lg-6">
@@ -149,8 +74,7 @@
                     <div class="col-xl-4 col-lg-6">
                         <div class="feature-item d-flex align-items-start">
                             <div class="feature-item_icon">
-                                <img src="{{ asset('') }}assets-landing-page/img/icon/feature_1_3.svg"
-                                    alt="icon">
+                                <img src="{{ asset('') }}assets-landing-page/img/icon/feature_1_3.svg" alt="icon">
                             </div>
                             <div class="media-body">
                                 <h3 class="box-title text-anime-style-2">Competitive Pricing</h3>
@@ -163,8 +87,8 @@
             </div>
         </div>
     </section><!--==============================
-    Category Area
-    ==============================-->
+                Category Area
+                ==============================-->
     <section class="category-area bg-top-center space"
         data-bg-src="{{ asset('') }}assets-landing-page/img/bg/category_bg_1.png">
         <div class="container th-container">
@@ -344,8 +268,8 @@
             </div>
         </div>
     </section><!--==============================
-    About Area
-    ==============================-->
+                About Area
+                ==============================-->
     <div class="about-area position-relative overflow-hidden " id="about-sec">
         <div class="container">
             <div class="row">
@@ -419,8 +343,8 @@
 
     </div>
     <!--==============================
-    destination Area
-    ==============================-->
+                destination Area
+                ==============================-->
     <div class="case-area position-relative overflow-hidden space">
         <div class="container">
             <div class="row justify-content-center">
@@ -1500,8 +1424,8 @@
             </div>
         </div>
     </div><!--==============================
-    Servce Area
-    ==============================-->
+                Servce Area
+                ==============================-->
     <section class="position-relative bg-top-center overflow-hidden space" id="service-sec"
         data-bg-src="{{ asset('') }}assets-landing-page/img/bg/service_bg_1.jpg">
         <div class="container">
@@ -1714,8 +1638,8 @@
             </div>
         </div>
     </section><!--==============================
-    Gallery Area
-    ==============================-->
+                Gallery Area
+                ==============================-->
     <div class="gallery-area overflow-hidden">
         <div class="container th-container">
             <div class="title-area text-center">
@@ -1824,8 +1748,8 @@
             </div>
         </div>
     </div><!--==============================
-    Counter Area
-    ==============================-->
+                Counter Area
+                ==============================-->
     <div class="counter-area space space-extra3-bottom overflow-hidden">
         <div class="container">
             <div class="counter-wrap1">
@@ -1877,8 +1801,8 @@
             </div>
         </div>
     </div><!--==============================
-    Team Area
-    ==============================-->
+                Team Area
+                ==============================-->
     <section class="bg-smoke space overflow-hidden"
         data-bg-src="{{ asset('') }}assets-landing-page/img/bg/team_bg_1.png">
         <div class="container z-index-common">
@@ -2128,8 +2052,8 @@
             </div>
         </div>
     </section><!--==============================
-    Testimonial Area
-    ==============================-->
+                Testimonial Area
+                ==============================-->
     <section class="testi-area overflow-hidden space" id="testi-sec">
         <div class="container-fluid p-0">
             <div class="title-area mb-20 text-center">
@@ -2416,8 +2340,8 @@
             <img src="{{ asset('') }}assets-landing-page/img/shape/shape_7.png" alt="shape">
         </div>
     </section><!--==============================
-    Brand Area
-    ==============================-->
+                Brand Area
+                ==============================-->
     <div class="brand-area overflow-hidden space-bottom">
         <div class="container th-container">
             <div class="swiper th-slider brandSlider1" id="brandSlider1"
@@ -2597,8 +2521,8 @@
             </div>
         </div>
     </div><!--==============================
-    Blog Area
-    ==============================-->
+                Blog Area
+                ==============================-->
     <section class="overflow-hidden space bg-smoke overflow-hidden" id="blog-sec">
         <div class="container">
             <div class="mb-30 text-center text-md-start">

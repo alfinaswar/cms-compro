@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\LamaranDiterimaMail;
 use App\Models\LamaranKerja;
 use App\Models\LowonganKerja;
 use App\Models\MasterKota;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class LowonganKerjaController extends Controller
 {
@@ -94,7 +98,7 @@ class LowonganKerjaController extends Controller
             'Status.required' => 'Status lowongan wajib dipilih.',
         ]);
 
-        LowonganKerja::create([
+        $lowongan = LowonganKerja::create([
             'Posisi' => $request->Posisi,
             'Kota' => $request->Kota,
             'Deskripsi' => $request->Deskripsi,
@@ -103,6 +107,15 @@ class LowonganKerjaController extends Controller
             'Status' => $request->Status,
             'UserCreate' => auth()->user()->name,
         ]);
+
+        // Tambah activity log untuk aksi simpan
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($lowongan)
+            ->withProperties([
+                'attributes' => $lowongan->toArray()
+            ])
+            ->log('Menambah lowongan kerja: ' . $lowongan->Posisi);
 
         return redirect()
             ->route('karir.index')
@@ -139,6 +152,9 @@ class LowonganKerjaController extends Controller
         ]);
 
         $lowongan = LowonganKerja::findOrFail($id);
+
+        $old = $lowongan->getOriginal();
+
         $lowongan->update([
             'Posisi' => $request->Posisi,
             'Kota' => $request->Kota,
@@ -149,14 +165,20 @@ class LowonganKerjaController extends Controller
             'UserUpdate' => auth()->user()->name,
         ]);
 
+        // Tambah activity log untuk aksi update
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($lowongan)
+            ->withProperties([
+                'old' => $old,
+                'attributes' => $lowongan->toArray()
+            ])
+            ->log('Mengubah lowongan kerja: ' . $lowongan->Posisi);
+
         return redirect()
             ->route('karir.index')
             ->with('success', 'Lowongan kerja berhasil diperbarui.');
     }
-
-    /**
-     * Remove the specified resource from storage (Soft Delete).
-     */
     public function destroy($id)
     {
         $lowongan = LowonganKerja::find($id);
@@ -230,25 +252,23 @@ class LowonganKerjaController extends Controller
 
     public function apply(Request $request, $id)
     {
-        // dd($request->all());
         $request->validate([
             'NamaLengkap' => 'required|string|max:255',
             'Email' => 'required|email|max:255',
             'NoHp' => 'required|string|max:20',
             'EkspetasiGaji' => 'required|string|max:100',
             'DeskripsiSingkat' => 'required|string|max:1000',
-            'PathCv' => 'required|file|mimes:pdf|max:3072',
+            'PathCv' => 'required|file|mimes:pdf|max:2048',
         ], [
             'PathCv.mimes' => 'File CV harus berformat PDF.',
-            'PathCv.max' => 'Ukuran file CV maksimal 3MB.',
+            'PathCv.max' => 'Ukuran file CV maksimal 2MB.',
         ]);
 
         $file = $request->file('PathCv');
         $fileName = time() . '_' . $file->getClientOriginalName();
         $filePath = $file->storeAs('cv_lamaran', $fileName, 'public');
 
-
-        LamaranKerja::create([
+        $lamaran = LamaranKerja::create([
             'LowonganKerjaId' => $id,
             'NamaLengkap' => $request->NamaLengkap,
             'Email' => $request->Email,
@@ -259,7 +279,20 @@ class LowonganKerjaController extends Controller
             'Status' => 'Menunggu'
         ]);
 
-        return redirect()->back()->with('success', 'Lamaran Anda berhasil dikirim! Kami akan menghubungi Anda segera.');
+        $lowongan = LowonganKerja::find($id);
+        try {
+            Mail::to($lamaran->Email)->send(new LamaranDiterimaMail($lamaran, $lowongan));
+        } catch (\Exception $e) {
+            \Log::error('Gagal mengirim email konfirmasi lamaran: ' . $e->getMessage());
+        }
+        // try {
+        //     $adminEmail = config('mail.admin_email', 'hr@company.com');
+        //     Mail::to($adminEmail)->send(new \App\Mail\LamaranBaruNotificationMail($lamaran, $lowongan));
+        // } catch (\Exception $e) {
+        //     \Log::error('Gagal mengirim notifikasi ke admin: ' . $e->getMessage());
+        // }
+
+        return redirect()->back()->with('success', 'Lamaran Anda berhasil dikirim! Kami telah mengirim konfirmasi ke email Anda.');
     }
     public function pelamar(Request $request, $id)
     {
@@ -362,8 +395,20 @@ class LowonganKerjaController extends Controller
             ], 404);
         }
 
+        $oldStatus = $lamaran->Status;
+
         $lamaran->Status = $request->Status;
         $lamaran->save();
+
+        // Tambah activity log untuk update status lamaran
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($lamaran)
+            ->withProperties([
+                'old' => ['Status' => $oldStatus],
+                'attributes' => ['Status' => $lamaran->Status]
+            ])
+            ->log('Mengubah status lamaran kerja menjadi: ' . $lamaran->Status);
 
         return response()->json([
             'status' => 200,

@@ -26,10 +26,12 @@ class PengaturanWebsiteController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * (NOTE: default implementation is empty, but let's add activity log here if ever used)
      */
     public function store(Request $request)
     {
-        //
+        // Example skeleton for store, just in case
+        // If you ever enable this, ensure to include activity log as per update below.
     }
 
     /**
@@ -145,8 +147,22 @@ class PengaturanWebsiteController extends Controller
                 $validated[$field] = $newPath;
             }
         }
+
+        // Catat data lama untuk log
+        $oldData = $pengaturan->getOriginal();
+
         $pengaturan->update($validated);
         PengaturanWebsite::clearCache();
+
+        // Activity log
+        activity()
+            ->performedOn($pengaturan)
+            ->causedBy(auth()->user())
+            ->withProperties([
+                'old' => $oldData,
+                'attributes' => $pengaturan->toArray()
+            ])
+            ->log('Memperbarui pengaturan website.');
 
         return redirect()
             ->route('pengaturan-website.edit')

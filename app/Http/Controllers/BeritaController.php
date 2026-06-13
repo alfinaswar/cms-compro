@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
+use Spatie\Activitylog\Models\Activity;
 
 class BeritaController extends Controller
 {
@@ -95,7 +96,14 @@ class BeritaController extends Controller
             $validated['Tags'] = implode(', ', $validated['Tags']);
         }
 
-        Berita::create($validated);
+        $berita = Berita::create($validated);
+
+        // Activity log di sini
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($berita)
+            ->withProperties(['attributes' => $berita->toArray()])
+            ->log('Menambahkan berita baru: ' . $berita->Judul);
 
         return redirect()->route('berita.index')->with('success', 'Berita berhasil ditambahkan.');
     }
@@ -148,7 +156,19 @@ class BeritaController extends Controller
             $validated['Tags'] = implode(', ', $validated['Tags']);
         }
 
+        $oldBerita = $berita->replicate();
+
         $berita->update($validated);
+
+        // Activity log di sini
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($berita)
+            ->withProperties([
+                'attributes' => $berita->toArray(),
+                'old' => $oldBerita->toArray(),
+            ])
+            ->log('Memperbarui berita: ' . $berita->Judul);
 
         return redirect()->route('berita.index')->with('success', 'Berita berhasil diperbarui.');
     }

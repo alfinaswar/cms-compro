@@ -12,6 +12,7 @@ use Spatie\Permission\Models\Role;
 use Yajra\DataTables\DataTables;
 use DB;
 use Hash;
+use Spatie\Activitylog\Models\Activity;
 
 class UserController extends Controller
 {
@@ -94,6 +95,15 @@ class UserController extends Controller
         $user = User::create($input);
         $user->assignRole($request->input('roles'));
 
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($user)
+            ->withProperties([
+                'attributes' => $user->toArray(),
+                'roles' => $request->input('roles'),
+            ])
+            ->log('Membuat user baru: ' . $user->name);
+
         return redirect()
             ->route('users.index')
             ->with('success', 'User created successfully');
@@ -149,10 +159,23 @@ class UserController extends Controller
         }
 
         $user = User::find($id);
+        $oldAttributes = $user->getOriginal();
+
         $user->update($input);
         DB::table('model_has_roles')->where('model_id', $id)->delete();
 
         $user->assignRole($request->input('roles'));
+
+        // Activity Log: update
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($user)
+            ->withProperties([
+                'old' => $oldAttributes,
+                'attributes' => $user->toArray(),
+                'roles' => $user->getRoleNames(),
+            ])
+            ->log('Mengupdate user: ' . $user->name);
 
         return redirect()
             ->route('users.index')
@@ -167,7 +190,22 @@ class UserController extends Controller
      */
     public function destroy($id): RedirectResponse
     {
-        User::find($id)->delete();
+        $user = User::find($id);
+        if ($user) {
+            $userName = $user->name;
+            $userData = $user->toArray();
+            $userRoles = $user->getRoleNames();
+            $user->delete();
+
+            // Activity Log: hapus (delete)
+            activity()
+                ->causedBy(auth()->user())
+                ->withProperties([
+                    'attributes' => $userData,
+                    'roles' => $userRoles,
+                ])
+                ->log('Menghapus user: ' . $userName);
+        }
         return redirect()
             ->route('users.index')
             ->with('success', 'User deleted successfully');

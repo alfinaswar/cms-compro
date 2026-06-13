@@ -11,6 +11,7 @@
         "laravel/tinker": "^2.10.1",
         "laravel/ui": "^4.6",
         "laravolt/indonesia": "^0.41.0",
+        "spatie/laravel-activitylog": "^4.12",
         "spatie/laravel-permission": "^6.25",
         "yajra/laravel-datatables": "^12.0"
     },

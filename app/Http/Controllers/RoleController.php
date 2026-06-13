@@ -10,6 +10,7 @@ use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Yajra\DataTables\DataTables;
 use DB;
+use Illuminate\Support\Facades\Log;
 
 class RoleController extends Controller
 {
@@ -91,6 +92,16 @@ class RoleController extends Controller
         $role = Role::create(['name' => $request->input('name')]);
         $role->syncPermissions($request->input('permission'));
 
+        // Activity Log for Create
+        activity()
+            ->performedOn($role)
+            ->causedBy(auth()->user())
+            ->withProperties([
+                'attributes' => $role->toArray(),
+                'permissions' => $role->permissions->pluck('name'),
+            ])
+            ->log('Membuat Role baru: ' . $role->name);
+
         return redirect()
             ->route('roles.index')
             ->with('success', 'Role created successfully');
@@ -145,10 +156,22 @@ class RoleController extends Controller
         ]);
 
         $role = Role::find($id);
+        $oldData = $role->toArray();
         $role->name = $request->input('name');
         $role->save();
 
         $role->syncPermissions($request->input('permission'));
+
+        // Activity Log for Update
+        activity()
+            ->performedOn($role)
+            ->causedBy(auth()->user())
+            ->withProperties([
+                'old' => $oldData,
+                'attributes' => $role->toArray(),
+                'permissions' => $role->permissions->pluck('name'),
+            ])
+            ->log('Mengupdate Role: ' . $role->name);
 
         return redirect()
             ->route('roles.index')

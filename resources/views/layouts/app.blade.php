@@ -218,7 +218,41 @@
                                 </p>
                             </a>
                         </li>
+                        <li class="nav-item has-treeview {{ request()->segment(1) == 'menu' ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ request()->segment(1) == 'menu' ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-bars"></i>
+                                <p>
+                                    Menu
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('menu.index') }}"
+                                        class="nav-link {{ request()->segment(1) == 'menu' && request()->segment(2) == null ? 'active' : '' }}">
+                                        <i class="fas fa-list nav-icon"></i>
+                                        <p>Menu List</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('menu.create') }}"
+                                        class="nav-link {{ request()->segment(1) == 'menu' && request()->segment(2) == 'create' ? 'active' : '' }}">
+                                        <i class="fas fa-plus nav-icon"></i>
+                                        <p>Tambah Menu</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
+                        <li class="nav-item">
+                            <a href="{{ route('log.index') }}"
+                                class="nav-link {{ request()->segment(2) == 'activity-log' ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-clipboard-list"></i>
+                                <p>
+                                    Log Aktifitas
+                                </p>
+                            </a>
+                        </li>
 
                     </ul>
                 </nav>

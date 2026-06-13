@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+
+class ActivityLog extends Model
+{
+    protected $table = 'activity_log';
+
+    /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = ['id'];
+
+    public function causer()
+    {
+        return $this->morphTo();
+    }
+    public function subject()
+    {
+        return $this->morphTo();
+    }
+}

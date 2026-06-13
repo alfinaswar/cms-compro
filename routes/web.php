@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\BlogPostController;
 use App\Http\Controllers\KategoriBeritaController;
 use App\Http\Controllers\LowonganKerjaController;
+use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PengaturanWebsiteController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -23,7 +25,7 @@ Route::prefix('/')->group(function () {
     Route::get('/career/{id}-{slug}', [LowonganKerjaController::class, 'careerDetail'])->name('frontend.career.detail');
     Route::post('/career/{id}/apply', [LowonganKerjaController::class, 'apply'])->name('frontend.career.apply');
 });
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     // === GROUP DASHBOARD ===
     Route::resource('manajemen-akun/roles', RoleController::class)->names('roles');
     Route::resource('manajemen-akun/users', UserController::class)->names('users');
@@ -64,10 +66,20 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/kategori/store-ajax', [BeritaController::class, 'storeKategoriAjax'])
             ->name('berita.store-ajax');
     });
+    //Menu
+    Route::prefix('menu')->group(function () {
+        Route::get('/', [MenuController::class, 'index'])->name('menu.index');
+        Route::get('/create', [MenuController::class, 'create'])->name('menu.create');
+        Route::post('/', [MenuController::class, 'store'])->name('menu.store');
+        Route::get('/{id}/edit', [MenuController::class, 'edit'])->name('menu.edit');
+        Route::put('/{id}', [MenuController::class, 'update'])->name('menu.update');
+        Route::delete('/{id}', [MenuController::class, 'destroy'])->name('menu.destroy');
+        Route::post('/update-order', [MenuController::class, 'updateOrder'])->name('menu.update-order');
+    });
     Route::prefix('data-master')->group(function () {
         Route::resource('kategori-berita', KategoriBeritaController::class)->names('kategori-berita');
         Route::get('/api/kategori-berita', [KategoriBeritaController::class, 'apiKategori'])->name('api.kategori-berita');
     });
 
-    // Blog Section
+    Route::get('log-aktivitas-user', [ActivityLogController::class, 'index'])->name('log.index');
 });
