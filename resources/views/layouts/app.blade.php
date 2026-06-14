@@ -91,56 +91,31 @@
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                         data-accordion="false">
-                        <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-                        <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-tachometer-alt"></i>
+
+
+                        <li class="nav-header">Blog / Berita</li>
+                        <li
+                            class="nav-item has-treeview {{ request()->segment(1) == 'berita' || request()->segment(1) == 'halaman-solusi' ? 'menu-open' : '' }}">
+                            <a href="#"
+                                class="nav-link {{ request()->segment(1) == 'berita' || request()->segment(1) == 'halaman-solusi' ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-newspaper"></i>
                                 <p>
-                                    Dashboard
-                                    <i class="right fas fa-angle-left"></i>
+                                    Blog / Berita & Solusi
+                                    <i class="fas fa-angle-left right"></i>
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{ asset('') }}assets/index.html" class="nav-link">
+                                    <a href="{{ route('berita.index') }}"
+                                        class="nav-link {{ request()->segment(1) == 'berita' ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Dashboard v1</p>
+                                        <p>Blog / Berita</p>
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a href="{{ asset('') }}assets/index2.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Dashboard v2</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ asset('') }}assets/index3.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Dashboard v3</p>
-                                    </a>
-                                </li>
+
                             </ul>
                         </li>
-                        <li class="nav-item">
-                            <a href="../widgets.html" class="nav-link">
-                                <i class="nav-icon fas fa-th"></i>
-                                <p>
-                                    Widgets
-                                    <span class="right badge badge-danger">New</span>
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-header">Blog / Berita</li>
-                        <li class="nav-item">
-                            <a href="{{ route('berita.index') }}"
-                                class="nav-link {{ request()->segment(1) == 'berita' ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-newspaper"></i>
-                                <p>
-                                    Blog / Berita
-                                </p>
-                            </a>
-                        </li>
+
 
                         <li class="nav-header">Karir dan Rekrutmen</li>
                         <li class="nav-item">
@@ -149,6 +124,16 @@
                                 <i class="nav-icon fas fa-briefcase"></i>
                                 <p>
                                     Karir dan Rekrutmen
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-header">Contact</li>
+                        <li class="nav-item">
+                            <a href="{{ route('contact.list') }}"
+                                class="nav-link {{ request()->segment(1) == 'contact' ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-envelope"></i>
+                                <p>
+                                    Contact Masuk
                                 </p>
                             </a>
                         </li>
@@ -227,15 +212,86 @@
                                         <p>Pengaturan Website</p>
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a href=""
-                                        class="nav-link {{ request()->segment(2) == 'pages' ? 'active' : '' }}">
-                                        <i class="fas fa-file-alt nav-icon"></i>
-                                        <p>Pages</p>
-                                    </a>
-                                </li>
                             </ul>
                         </li>
+                        <li
+                            class="nav-item has-treeview {{ request()->segment(1) == 'landing-page' ? 'menu-open' : '' }}">
+                            <a href="#"
+                                class="nav-link {{ request()->segment(1) == 'landing-page' ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-home"></i>
+                                <p>
+                                    Landing Page
+                                    <i class="fas fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('hero-slider.index') }}"
+                                        class="nav-link {{ request()->segment(2) == 'hero' ? 'active' : '' }}">
+                                        <i class="fas fa-image nav-icon"></i>
+                                        <p>Hero</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('pengaturan-key-figure.index') }}"
+                                        class="nav-link {{ request()->segment(2) == 'key-figures' ? 'active' : '' }}">
+                                        <i class="fas fa-chart-bar nav-icon"></i>
+                                        <p>Key Figures</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#"
+                                        class="nav-link {{ request()->segment(2) == 'logo-sertifikasi' ? 'active' : '' }}">
+                                        <i class="fas fa-certificate nav-icon"></i>
+                                        <p>Logo Sertifikasi</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('halaman-solusi.index') }}"
+                                        class="nav-link {{ request()->segment(1) == 'halaman-solusi' ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Halaman Solusi</p>
+                                    </a>
+                                </li>
+                                <li
+                                    class="nav-item has-treeview {{ request()->segment(2) == 'about-us' ? 'menu-open' : '' }}">
+                                    <a href="#"
+                                        class="nav-link {{ request()->segment(2) == 'about-us' ? 'active' : '' }}">
+                                        <i class="fas fa-info-circle nav-icon"></i>
+                                        <p>
+                                            About Us
+                                            <i class="fas fa-angle-left right"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a href="{{ route('history-perusahaan.index') }}"
+                                                class="nav-link {{ request()->segment(3) == 'history-perusahaan' ? 'active' : '' }}">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>History Perusahaan</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ route('value-perusahaan.index') }}"
+                                                class="nav-link {{ request()->segment(3) == 'value-perusahaan' ? 'active' : '' }}">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Value Perusahaan</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ route('penghargaan-perusahaan.index') }}"
+                                                class="nav-link {{ request()->segment(3) == 'penghargaan-perusahaan' ? 'active' : '' }}">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Award / Sertifikat</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+
+                            </ul>
+                        </li>
+
 
                         <li class="nav-item has-treeview {{ request()->segment(1) == 'menu' ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link {{ request()->segment(1) == 'menu' ? 'active' : '' }}">

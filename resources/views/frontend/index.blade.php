@@ -5,9 +5,9 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>{{ $websiteSettings->NamaPerusahaan }}</title>
-    <meta name="author" content="Atek">
+    <meta name="author" content="Jasuindo">
     <meta name="description" content="{{ $websiteSettings->TentangPerusahaan }}">
-    <meta name="keywords" content="Atek - It Business and Consulting Service Html Template">
+    <meta name="keywords" content="Jasuindo, Identity, Payment, Security, Printing, Card, Company, Asia">
     <meta name="robots" content="INDEX,FOLLOW">
 
     <!-- Mobile Specific Metas -->
@@ -58,6 +58,7 @@
     <link rel="stylesheet" href="{{ asset('') }}assets-landing-page/css/magnific-popup.min.css">
     <link rel="stylesheet" href="{{ asset('') }}assets-landing-page/css/swiper-bundle.min.css">
     <link rel="stylesheet" href="{{ asset('') }}assets-landing-page/css/style.css">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     @stack('fontend-css')
 
 </head>
@@ -214,7 +215,7 @@
     </div>
 
     <header class="th-header header-layout1">
-        <div class="header-top">
+        {{-- <div class="header-top">
             <div class="container th-container">
                 <div class="row justify-content-center justify-content-xl-between align-items-center">
                     <div class="col-auto d-none d-md-block">
@@ -239,7 +240,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <div class="sticky-wrapper">
             <div class="menu-area">
@@ -309,173 +310,117 @@
     <footer class="footer-wrapper footer-layout1 black-bg space-top">
         <div class="widget-area">
             <div class="container">
-                <div class="newsletter-area">
-                    <div class="newsletter-top">
-                        <div class="row gy-4 align-items-center">
-                            <div class="col-lg-5">
-                                <h2 class="newsletter-title text-white text-capitalize mb-0">get updated the latest
-                                    newsletter</h2>
-                            </div>
-                            <div class="col-lg-7">
-                                <form class="newsletter-form">
-                                    <input class="form-control " type="email" placeholder="Enter Email"
-                                        required="">
-                                    <button type="submit" class="th-btn style3">Subscribe Now <img
-                                            src="{{ asset('') }}assets-landing-page/img/icon/plane.svg"
-                                            alt=""></button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div class="row justify-content-between">
+                    {{-- Kantor Surabaya --}}
                     <div class="col-md-6 col-xl-3">
                         <div class="widget footer-widget">
-                            <div class="th-widget-about">
-                                <div class="about-logo">
-                                    <a href="index.html"><img
-                                            src="{{ asset('') }}assets-landing-page/img/logo3.svg"
-                                            alt="Atek"></a>
-                                </div>
-                                <p class="about-text">Rapidiously myocardinate cross-platform intellectual capital
-                                    model. Appropriately create interactive infrastructures</p>
-                                <div class="th-social">
-                                    <a href="https://www.facebook.com/"><i class="fab fa-facebook-f"></i></a>
-                                    <a href="https://www.twitter.com/"><i class="fab fa-twitter"></i></a>
-                                    <a href="https://www.linkedin.com/"><i class="fab fa-linkedin-in"></i></a>
-                                    <a href="https://www.whatsapp.com/"><i class="fab fa-whatsapp"></i></a>
-                                    <a href="https://instagram.com/"><i class="fab fa-instagram"></i></a>
+                            <h3 class="widget_title">Kantor Surabaya</h3>
+                            <div class="th-widget-contact">
+                                <div class="info-box_text">
+                                    <div class="details">
+                                        <p>Jalan Raya Betro Nomor 21,<br>
+                                            Sedati – Sidoarjo 61253<br>
+                                            Indonesia<br>
+                                            Telp +62 31 8910919 (Hunting)</p>
+                                        <p>Jalan Raya Lingkar Timur Km 1,<br>
+                                            Desa Banjarsari, Buduran,<br>
+                                            Sidoarjo 61252 – Indonesia</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    {{-- Kantor Jakarta --}}
+                    <div class="col-md-6 col-xl-3">
+                        <div class="widget footer-widget">
+                            <h3 class="widget_title">Kantor Jakarta</h3>
+                            <div class="th-widget-contact">
+                                <div class="info-box_text">
+                                    <div class="details">
+                                        <p>Office 8 Building, Floor 31st<br>
+                                            Unit B-E, SCBD Lot. 28<br>
+                                            Jalan Jenderal Sudirman Kav. 52-53<br>
+                                            (Jalan Senopati Raya 8B)<br>
+                                            Jakarta Selatan 12190<br>
+                                            Indonesia<br>
+                                            Telp +62 21 293 33101 (Hunting)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Perusahaan --}}
                     <div class="col-md-6 col-xl-auto">
                         <div class="widget widget_nav_menu footer-widget">
-                            <h3 class="widget_title">Useful Link</h3>
+                            <h3 class="widget_title">Perusahaan</h3>
                             <div class="menu-all-pages-container">
                                 <ul class="menu">
-
-                                    <li><a href="index.html">Home</a></li>
-                                    <li><a href="about.html">About us</a></li>
-                                    <li><a href="service.html">Our Service</a></li>
-                                    <li><a href="contact.html">Terms of Service</a></li>
-                                    <li><a href="service.html">News & Media</a></li>
+                                    <li><a href="#">Hubungi Kami</a></li>
+                                    <li><a href="#">Berita</a></li>
+                                    <li><a href="#">Karir</a></li>
                                 </ul>
                             </div>
                         </div>
                     </div>
+
+                    {{-- Solusi --}}
                     <div class="col-md-6 col-xl-auto">
-                        <div class="widget footer-widget">
-                            <h3 class="widget_title">Get In Touch</h3>
-                            <div class="th-widget-contact">
-                                <div class="info-box_text">
-                                    <div class="icon">
-                                        <img src="{{ asset('') }}assets-landing-page/img/icon/phone.svg"
-                                            alt="img">
-                                    </div>
-                                    <div class="details">
-                                        <p><a href="tel:+01234567890" class="info-box_link">+01 234 567 890</a></p>
-                                        <p><a href="tel:+09876543210" class="info-box_link">+09 876 543 210</a></p>
-                                    </div>
-                                </div>
-                                <div class="info-box_text">
-                                    <div class="icon">
-                                        <img src="{{ asset('') }}assets-landing-page/img/icon/envelope.svg"
-                                            alt="img">
-                                    </div>
-                                    <div class="details">
-                                        <p><a href="mailto:mailinfo00@atek.com"
-                                                class="info-box_link">mailinfo00@atek.com</a></p>
-                                        <p><a href="mailto:support24@atek.com"
-                                                class="info-box_link">support24@atek.com</a></p>
-                                    </div>
-                                </div>
-                                <div class="info-box_text">
-                                    <div class="icon"><img
-                                            src="{{ asset('') }}assets-landing-page/img/icon/location-dot.svg"
-                                            alt="img"></div>
-                                    <div class="details">
-                                        <p><a href="https://maps.app.goo.gl/QyH2fFoJ9fii93mt7" target="_blank">789
-                                                Inner Lane, Holy park, California, USA</a></p>
-                                    </div>
-                                </div>
+                        <div class="widget widget_nav_menu footer-widget">
+                            <h3 class="widget_title">Solusi</h3>
+                            <div class="menu-all-pages-container">
+                                <ul class="menu">
+                                    <li><a href="#">Identitas</a></li>
+                                    <li><a href="#">Pembayaran</a></li>
+                                    <li><a href="#">Perlindungan Merek</a></li>
+                                    <li><a href="#">Percetakan Komersial</a></li>
+                                </ul>
                             </div>
                         </div>
                     </div>
+
+                    {{-- Support --}}
                     <div class="col-md-6 col-xl-auto">
-                        <div class="widget footer-widget">
-                            <h3 class="widget_title">Instagram Post</h3>
-                            <div class="sidebar-gallery">
-                                <div class="gallery-thumb">
-                                    <img src="{{ asset('') }}assets-landing-page/img/widget/gallery_1_1.jpg"
-                                        alt="Gallery Image">
-                                    <a target="_blank" href="https://www.instagram.com/" class="gallery-btn"><i
-                                            class="fab fa-instagram"></i></a>
-                                </div>
-                                <div class="gallery-thumb">
-                                    <img src="{{ asset('') }}assets-landing-page/img/widget/gallery_1_2.jpg"
-                                        alt="Gallery Image">
-                                    <a target="_blank" href="https://www.instagram.com/" class="gallery-btn"><i
-                                            class="fab fa-instagram"></i></a>
-                                </div>
-                                <div class="gallery-thumb">
-                                    <img src="{{ asset('') }}assets-landing-page/img/widget/gallery_1_3.jpg"
-                                        alt="Gallery Image">
-                                    <a target="_blank" href="https://www.instagram.com/" class="gallery-btn"><i
-                                            class="fab fa-instagram"></i></a>
-                                </div>
-                                <div class="gallery-thumb">
-                                    <img src="{{ asset('') }}assets-landing-page/img/widget/gallery_1_4.jpg"
-                                        alt="Gallery Image">
-                                    <a target="_blank" href="https://www.instagram.com/" class="gallery-btn"><i
-                                            class="fab fa-instagram"></i></a>
-                                </div>
-                                <div class="gallery-thumb">
-                                    <img src="{{ asset('') }}assets-landing-page/img/widget/gallery_1_5.jpg"
-                                        alt="Gallery Image">
-                                    <a target="_blank" href="https://www.instagram.com/" class="gallery-btn"><i
-                                            class="fab fa-instagram"></i></a>
-                                </div>
-                                <div class="gallery-thumb">
-                                    <img src="{{ asset('') }}assets-landing-page/img/widget/gallery_1_6.jpg"
-                                        alt="Gallery Image">
-                                    <a target="_blank" href="https://www.instagram.com/" class="gallery-btn"><i
-                                            class="fab fa-instagram"></i></a>
-                                </div>
+                        <div class="widget widget_nav_menu footer-widget">
+                            <h3 class="widget_title">Support</h3>
+                            <div class="menu-all-pages-container">
+                                <ul class="menu">
+                                    <li><a href="#">Syarat &amp; Ketentuan</a></li>
+                                    <li><a href="#">Kebijakan Privasi</a></li>
+                                    <li><a href="#">Cookies</a></li>
+                                    <li><a href="#">Peta Situs</a></li>
+                                </ul>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
         <div class="copyright-wrap">
             <div class="container">
                 <div class="row justify-content-lg-between align-items-center">
-                    <div class="col-lg-6">
-                        <p class="copyright-text">Copyright © 2025 <a href="index.html">Atek</a>. All Rights
-                            Reserved.</p>
-                    </div>
-                    <div class="col-lg-6 text-center text-lg-end">
-                        <div class="footer-links">
-                            <ul>
-                                <li><a href="about.html">Terms & Conditions</a></li>
-                                <li><a href="about.html">Careers</a></li>
-                                <li><a href="about.html">Privacy Policy</a></li>
-                            </ul>
+                    <div class="col-lg-3">
+                        <div class="about-logo">
+                            <a href="index.html">
+                                <img src="{{ asset('storage/' . $websiteSettings->PathLogo) }}" alt="Jasuindo">
+                            </a>
                         </div>
                     </div>
+                    <div class="col-lg-5 text-center">
+                        <p class="copyright-text mb-0">The Fastest Growing Identity &amp; Payment Company in Asia</p>
+                    </div>
+                    <div class="col-lg-4 text-center text-lg-end">
+                        <p class="copyright-text mb-0">Copyright 2025 PT Jasuindo Tiga Perkasa Tbk All rights reserved
+                        </p>
+                    </div>
                 </div>
-
             </div>
         </div>
-
     </footer>
 
-    <!--********************************
-   Code End  Here
- ******************************** -->
 
-    <!-- Scroll To Top -->
     <div class="scroll-top">
         <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
             <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"
@@ -522,6 +467,7 @@
 
     <!-- Main Js File -->
     <script src="{{ asset('') }}assets-landing-page/js/main.js"></script>
+
     @stack('frontend-js')
 </body>
 
