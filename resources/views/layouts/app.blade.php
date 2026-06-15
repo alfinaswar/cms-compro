@@ -253,6 +253,14 @@
                                         <p>Halaman Solusi</p>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('about-us.index') }}"
+                                        class="nav-link {{ request()->segment(2) == 'about-us' ? 'active' : '' }}">
+                                        <i class="fas fa-info-circle nav-icon"></i>
+                                        <p>About Us</p>
+                                    </a>
+                                </li>
+
                                 <li
                                     class="nav-item has-treeview {{ request()->segment(2) == 'about-us' ? 'menu-open' : '' }}">
                                     <a href="#"
@@ -287,8 +295,6 @@
                                         </li>
                                     </ul>
                                 </li>
-
-
                             </ul>
                         </li>
 
@@ -307,13 +313,6 @@
                                         class="nav-link {{ request()->segment(1) == 'menu' && request()->segment(2) == null ? 'active' : '' }}">
                                         <i class="fas fa-list nav-icon"></i>
                                         <p>Menu List</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('menu.create') }}"
-                                        class="nav-link {{ request()->segment(1) == 'menu' && request()->segment(2) == 'create' ? 'active' : '' }}">
-                                        <i class="fas fa-plus nav-icon"></i>
-                                        <p>Tambah Menu</p>
                                     </a>
                                 </li>
                             </ul>

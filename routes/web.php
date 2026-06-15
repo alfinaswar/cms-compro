@@ -110,6 +110,16 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         Route::put('/landing-page/value-perusahaan/update/{id}', [ValuePerusahaanController::class, 'update'])->name('value-perusahaan.update');
         Route::delete('/landing-page/value-perusahaan/delete/{id}', [ValuePerusahaanController::class, 'destroy'])->name('value-perusahaan.destroy');
         Route::get('/landing-page/value-perusahaan/show/{id}', [ValuePerusahaanController::class, 'show'])->name('value-perusahaan.show');
+
+        // Crud About Us
+        Route::get('/landing-page/about-us', [AboutUsController::class, 'index'])->name('about-us.index');
+        Route::get('/landing-page/about-us/create', [AboutUsController::class, 'create'])->name('about-us.create');
+        Route::post('/landing-page/about-us/store', [AboutUsController::class, 'store'])->name('about-us.store');
+        Route::get('/landing-page/about-us/edit/{id}', [AboutUsController::class, 'edit'])->name('about-us.edit');
+        Route::put('/landing-page/about-us/update/{id}', [AboutUsController::class, 'update'])->name('about-us.update');
+        Route::delete('/landing-page/about-us/delete/{id}', [AboutUsController::class, 'destroy'])->name('about-us.destroy');
+        Route::get('/landing-page/about-us/show/{id}', [AboutUsController::class, 'show'])->name('about-us.show');
+
     });
     // === ROUTE UNTUK BERITA ===
     Route::prefix('post')->group(function () {

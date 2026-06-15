@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AboutUs extends Model
+class AboutUsDetail extends Model
 {
-    protected $table = 'about_us';
+    protected $table = 'about_us_details';
 
     /**
      * The attributes that aren't mass assignable.
