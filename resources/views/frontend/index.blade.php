@@ -1,474 +1,734 @@
-<!doctype html>
-<html class="no-js" lang="zxx">
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>{{ $websiteSettings->NamaPerusahaan }}</title>
-    <meta name="author" content="Jasuindo">
-    <meta name="description" content="{{ $websiteSettings->TentangPerusahaan }}">
-    <meta name="keywords" content="Jasuindo, Identity, Payment, Security, Printing, Card, Company, Asia">
-    <meta name="robots" content="INDEX,FOLLOW">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jasuindo - Transformasi Digital Identitas & Pembayaran Nasional</title>
 
-    <!-- Mobile Specific Metas -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Favicons - Place favicon.ico in the root directory -->
-    <link rel="apple-touch-icon" sizes="57x57"
-        href="{{ asset('') }}assets-landing-page/img/favicons/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60"
-        href="{{ asset('') }}assets-landing-page/img/favicons/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72"
-        href="{{ asset('') }}assets-landing-page/img/favicons/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76"
-        href="{{ asset('') }}assets-landing-page/img/favicons/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114"
-        href="{{ asset('') }}assets-landing-page/img/favicons/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120"
-        href="{{ asset('') }}assets-landing-page/img/favicons/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144"
-        href="{{ asset('') }}assets-landing-page/img/favicons/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152"
-        href="{{ asset('') }}assets-landing-page/img/favicons/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180"
-        href="{{ asset('') }}assets-landing-page/img/favicons/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"
-        href="{{ asset('') }}assets-landing-page/img/favicons/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32"
-        href="{{ asset('') }}assets-landing-page/img/favicons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96"
-        href="{{ asset('') }}assets-landing-page/img/favicons/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16"
-        href="{{ asset('') }}assets-landing-page/img/favicons/favicon-16x16.png">
-    <link rel="manifest" href="{{ asset('') }}assets-landing-page/img/favicons/manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage"
-        content="{{ asset('') }}assets-landing-page/img/favicons/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
+    <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="{{ asset('') }}assets-landing-page/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ asset('') }}assets-landing-page/css/fontawesome.min.css">
-    <link rel="stylesheet" href="{{ asset('') }}assets-landing-page/css/magnific-popup.min.css">
-    <link rel="stylesheet" href="{{ asset('') }}assets-landing-page/css/swiper-bundle.min.css">
-    <link rel="stylesheet" href="{{ asset('') }}assets-landing-page/css/style.css">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    @stack('fontend-css')
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom Config for Brand Colors -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                            950: '#082f49',
+                        }
+                    },
+                    animation: {
+                        'marquee': 'marquee 30s linear infinite',
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                    },
+                    keyframes: {
+                        marquee: {
+                            '0%': {
+                                transform: 'translateX(0%)'
+                            },
+                            '100%': {
+                                transform: 'translateX(-50%)'
+                            },
+                        },
+                        fadeInUp: {
+                            '0%': {
+                                opacity: '0',
+                                transform: 'translateY(20px)'
+                            },
+                            '100%': {
+                                opacity: '1',
+                                transform: 'translateY(0)'
+                            },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Navbar scroll effect */
+        .navbar-scrolled {
+            background-color: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Navbar transparent on hero */
+        .navbar-transparent {
+            background-color: transparent;
+            box-shadow: none;
+        }
+
+        .navbar-transparent .nav-link {
+            color: white;
+        }
+
+        .navbar-transparent .logo-text {
+            color: white;
+        }
+
+        .navbar-transparent .nav-icon {
+            color: white;
+        }
+
+        .navbar-transparent .mobile-btn {
+            color: white;
+        }
+
+        /* Solution card hover */
+        .solution-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .solution-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Smooth scroll offset for fixed navbar */
+        section[id] {
+            scroll-margin-top: 80px;
+        }
+    </style>
 </head>
 
-<body>
-    <div class="slider-drag-cursor d-flex align-items-center justify-content-between">
-        <span class="drag-icon-left"><img src="{{ asset('') }}assets-landing-page/img/icon/drag-arrow-left.svg"
-                alt=""></span>
-        DRAG
-        <span class="drag-icon-right">
-            <img src="{{ asset('') }}assets-landing-page/img/icon/drag-arrow-right.svg" alt="">
-        </span>
-    </div>
-    <div class="sidemenu-wrapper sidemenu-info ">
-        <div class="sidemenu-content">
-            <button class="closeButton sideMenuCls">
-                <i class="far fa-times"></i>
-            </button>
-            <div class="widget  ">
-                <div class="th-widget-about">
-                    <div class="about-logo">
-                        <a href="index.html"><img src="{{ asset('') }}assets-landing-page/img/logo2.svg"
-                                alt="Atek"></a>
-                    </div>
-                    <p class="about-text">Quick access to essential system features, including the dashboard for an
-                        overview of operations, network settings for managing connectivity, system logs for tracking
-                        activities.</p>
-                    <div class="th-social">
-                        <a href="https://www.facebook.com/"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://www.twitter.com/"><i class="fab fa-twitter"></i></a>
-                        <a href="https://www.linkedin.com/"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="https://www.whatsapp.com/"><i class="fab fa-whatsapp"></i></a>
-                        <a href="https://instagram.com/"><i class="fab fa-instagram"></i></a>
-                    </div>
+<body class="font-sans text-slate-600 antialiased bg-white">
+
+    <!-- ========================================== -->
+    <!-- NAVIGATION MENU -->
+    <!-- ========================================== -->
+    <nav id="main-navbar" class="navbar-transparent fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="#" class="flex items-center space-x-2">
+                        <svg class="w-10 h-10" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5 20L12 12L19 20L26 12L33 20" stroke="#0284c7" stroke-width="3"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M5 28L12 20L19 28" stroke="#0ea5e9" stroke-width="3" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                        <span
+                            class="logo-text text-2xl font-bold text-brand-950 tracking-tight transition-colors duration-300">JASUINDO</span>
+                    </a>
                 </div>
-            </div>
-            <div class="widget  ">
-                <h3 class="widget_title">Recent Posts</h3>
-                <div class="recent-post-wrap">
-                    <div class="recent-post d-flex align-items-center">
-                        <div class="media-img">
-                            <a href="blog-details.html"><img
-                                    src="{{ asset('') }}assets-landing-page/img/blog/recent-post-1-1.jpg"
-                                    alt="Blog Image"></a>
-                        </div>
-                        <div class="media-body">
-                            <div class="recent-post-meta">
-                                <a href="blog.html"><i class="far fa-calendar"></i>24 Jun , 2025</a>
-                            </div>
-                            <h4 class="post-title"><a class="text-inherit" href="blog-details.html">Where Vision
-                                    Meets Concrete
-                                    Reality</a></h4>
-                        </div>
-                    </div>
-                    <div class="recent-post d-flex align-items-center">
-                        <div class="media-img">
-                            <a href="blog-details.html"><img
-                                    src="{{ asset('') }}assets-landing-page/img/blog/recent-post-1-2.jpg"
-                                    alt="Blog Image"></a>
-                        </div>
-                        <div class="media-body">
-                            <div class="recent-post-meta">
-                                <a href="blog.html"><i class="far fa-calendar"></i>22 Jun , 2025</a>
-                            </div>
-                            <h4 class="post-title"><a class="text-inherit" href="blog-details.html">Raising the Bar
-                                    in
-                                    Construction.</a></h4>
-                        </div>
-                    </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden lg:flex items-center space-x-8">
+                    <a href="#home"
+                        class="nav-link text-white hover:text-brand-500 font-medium transition-colors duration-200">Home</a>
+                    <a href="#about"
+                        class="nav-link text-white hover:text-brand-500 font-medium transition-colors duration-200">About
+                        Us</a>
+                    <a href="#solusi"
+                        class="nav-link text-white hover:text-brand-500 font-medium transition-colors duration-200">Solutions</a>
+                    <a href="#sertifikasi"
+                        class="nav-link text-white hover:text-brand-500 font-medium transition-colors duration-200">Certification</a>
+                    <a href="#kontak"
+                        class="nav-link text-white hover:text-brand-500 font-medium transition-colors duration-200">Contact</a>
                 </div>
-            </div>
-            <div class="widget  ">
-                <h3 class="widget_title">Get In Touch</h3>
-                <div class="th-widget-contact">
-                    <div class="info-box_text">
-                        <div class="icon">
-                            <img src="{{ asset('') }}assets-landing-page/img/icon/phone.svg" alt="img">
-                        </div>
-                        <div class="details">
-                            <p><a href="tel:+01234567890" class="info-box_link">+01 234 567 890</a></p>
-                            <p><a href="tel:+09876543210" class="info-box_link">+09 876 543 210</a></p>
-                        </div>
-                    </div>
-                    <div class="info-box_text">
-                        <div class="icon">
-                            <img src="{{ asset('') }}assets-landing-page/img/icon/envelope.svg" alt="img">
-                        </div>
-                        <div class="details">
-                            <p><a href="mailto:mailinfo00@atek.com" class="info-box_link">mailinfo00@atek.com</a></p>
-                            <p><a href="mailto:support24@atek.com" class="info-box_link">support24@atek.com</a></p>
-                        </div>
-                    </div>
-                    <div class="info-box_text">
-                        <div class="icon"><img
-                                src="{{ asset('') }}assets-landing-page/img/icon/location-dot.svg"
-                                alt="img"></div>
-                        <div class="details">
-                            <p>789 Inner Lane, Holy park, California, USA</p>
-                        </div>
-                    </div>
+
+                <!-- Right Side Actions -->
+                <div class="hidden lg:flex items-center space-x-4">
+                    <button class="nav-icon text-white hover:text-brand-500 transition-colors duration-200 p-2">
+                        <i class="fa-solid fa-magnifying-glass text-lg"></i>
+                    </button>
+                    <button
+                        class="nav-icon flex items-center space-x-1 text-white hover:text-brand-500 transition-colors duration-200">
+                        <img src="https://flagcdn.com/w20/id.png" alt="Indonesia" class="w-5 h-auto rounded-sm">
+                        <span class="font-medium text-sm">ID</span>
+                        <i class="fa-solid fa-chevron-down text-xs"></i>
+                    </button>
+                    <a href="#kontak"
+                        class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-2.5 rounded-full font-medium transition-all duration-200 shadow-md hover:shadow-lg">
+                        Contact Us
+                    </a>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="popup-search-box">
-        <button class="searchClose"><i class="fal fa-times"></i></button>
-        <form action="#">
-            <input type="text" placeholder="What are you looking for?">
-            <button type="submit"><i class="fal fa-search"></i></button>
-        </form>
-    </div>
-    @php
-        $menus = \App\Models\Menu::menuHeader()->with('children')->get();
-    @endphp
 
-    <div class="th-menu-wrapper onepage-nav">
-        <div class="th-menu-area text-center">
-            <button class="th-menu-toggle"><i class="fal fa-times"></i></button>
-            <div class="mobile-logo">
-                <a href="index.html"><img src="{{ asset('') }}assets-landing-page/img/logo2.svg"
-                        alt="Atek"></a>
-            </div>
-            <div class="th-mobile-menu">
-                <ul>
-                    @foreach ($menus as $menu)
-                        <li class="{{ $menu->children->count() > 0 ? 'menu-item-has-children' : '' }}">
-                            <a href="{{ $menu->Link }}" target="{{ $menu->Target }}"
-                                class="{{ request()->is(ltrim(parse_url($menu->Link, PHP_URL_PATH), '/')) ? 'active' : '' }}">
-                                @if ($menu->Icon)
-                                    <i class="{{ $menu->Icon }} mr-1"></i>
-                                @endif
-                                {{ $menu->NamaMenu }}
-                            </a>
-
-                            @if ($menu->children->count() > 0)
-                                <ul class="sub-menu">
-                                    @foreach ($menu->children as $child)
-                                        <li>
-                                            <a href="{{ $child->Link }}" target="{{ $child->Target }}">
-                                                @if ($child->Icon)
-                                                    <i class="{{ $child->Icon }} mr-1"></i>
-                                                @endif
-                                                {{ $child->NamaMenu }}
-                                            </a>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            @endif
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <header class="th-header header-layout1">
-        {{-- <div class="header-top">
-            <div class="container th-container">
-                <div class="row justify-content-center justify-content-xl-between align-items-center">
-                    <div class="col-auto d-none d-md-block">
-                        <div class="header-links">
-                            <ul>
-                                <li class="d-none d-xl-inline-block">
-                                    <i class="fa-sharp fa-regular fa-location-dot"></i>
-                                    <span>{{ $websiteSettings->AlamatKantor ?? 'Alamat Belum Diatur' }}</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-auto">
-                        <div class="header-right style2">
-                            <div class="header-links">
-                                <ul>
-                                    <li class="d-none d-md-inline-block"><a href="">FAQ</a></li>
-                                    <li class="d-none d-md-inline-block"><a href="">Support</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
-
-        <div class="sticky-wrapper">
-            <div class="menu-area">
-                <div class="container th-container">
-                    <div class="row align-items-center justify-content-between">
-                        <div class="col-auto">
-                            <div class="header-logo">
-                                <a href="{{ url('/') }}">
-                                    <img src="{{ asset('storage/' . $websiteSettings->PathLogo) }}"
-                                        alt="{{ $websiteSettings->TentangPerusahaan }}"
-                                        style="width: 180px; max-width: 100%;">
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="col-auto me-xxl-auto">
-                            <nav class="main-menu d-none d-xl-inline-block">
-                                <ul>
-                                    @foreach ($menus as $menu)
-                                        <li
-                                            class="{{ $menu->children->count() > 0 ? 'menu-item-has-children' : '' }}">
-                                            <a href="{{ $menu->Link }}" target="{{ $menu->Target }}"
-                                                class="{{ request()->is(ltrim(parse_url($menu->Link, PHP_URL_PATH), '/')) ? 'active' : '' }}">
-                                                {{ $menu->NamaMenu }}
-                                            </a>
-
-                                            @if ($menu->children->count() > 0)
-                                                <ul class="sub-menu">
-                                                    @foreach ($menu->children as $child)
-                                                        <li>
-                                                            <a href="{{ $child->Link }}"
-                                                                target="{{ $child->Target }}">
-                                                                {{ $child->NamaMenu }}
-                                                            </a>
-                                                        </li>
-                                                    @endforeach
-                                                </ul>
-                                            @endif
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            </nav>
-                            <button type="button" class="th-menu-toggle d-block d-xl-none">
-                                <i class="far fa-bars"></i>
-                            </button>
-                        </div>
-
-                        <div class="col-auto d-none d-xl-block">
-                            <div class="header-button">
-                                <button type="button" class="icon-btn searchBoxToggler">
-                                    <img src="{{ asset('') }}assets-landing-page/img/icon/search.svg"
-                                        alt="icon">
-                                </button>
-                                <a href="" class="th-btn th-icon">
-                                    Get In Touch <i class="fa-light fa-arrow-right-long"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="logo-bg" data-mask-src="{{ asset('') }}assets-landing-page/img/logo_bg_mask.png">
-                </div>
-            </div>
-        </div>
-    </header>
-    @yield('content-frontend')
-    <footer class="footer-wrapper footer-layout1 black-bg space-top">
-        <div class="widget-area">
-            <div class="container">
-                <div class="row justify-content-between">
-                    {{-- Kantor Surabaya --}}
-                    <div class="col-md-6 col-xl-3">
-                        <div class="widget footer-widget">
-                            <h3 class="widget_title">Kantor Surabaya</h3>
-                            <div class="th-widget-contact">
-                                <div class="info-box_text">
-                                    <div class="details">
-                                        <p>Jalan Raya Betro Nomor 21,<br>
-                                            Sedati – Sidoarjo 61253<br>
-                                            Indonesia<br>
-                                            Telp +62 31 8910919 (Hunting)</p>
-                                        <p>Jalan Raya Lingkar Timur Km 1,<br>
-                                            Desa Banjarsari, Buduran,<br>
-                                            Sidoarjo 61252 – Indonesia</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Kantor Jakarta --}}
-                    <div class="col-md-6 col-xl-3">
-                        <div class="widget footer-widget">
-                            <h3 class="widget_title">Kantor Jakarta</h3>
-                            <div class="th-widget-contact">
-                                <div class="info-box_text">
-                                    <div class="details">
-                                        <p>Office 8 Building, Floor 31st<br>
-                                            Unit B-E, SCBD Lot. 28<br>
-                                            Jalan Jenderal Sudirman Kav. 52-53<br>
-                                            (Jalan Senopati Raya 8B)<br>
-                                            Jakarta Selatan 12190<br>
-                                            Indonesia<br>
-                                            Telp +62 21 293 33101 (Hunting)</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Perusahaan --}}
-                    <div class="col-md-6 col-xl-auto">
-                        <div class="widget widget_nav_menu footer-widget">
-                            <h3 class="widget_title">Perusahaan</h3>
-                            <div class="menu-all-pages-container">
-                                <ul class="menu">
-                                    <li><a href="#">Hubungi Kami</a></li>
-                                    <li><a href="#">Berita</a></li>
-                                    <li><a href="#">Karir</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Solusi --}}
-                    <div class="col-md-6 col-xl-auto">
-                        <div class="widget widget_nav_menu footer-widget">
-                            <h3 class="widget_title">Solusi</h3>
-                            <div class="menu-all-pages-container">
-                                <ul class="menu">
-                                    <li><a href="#">Identitas</a></li>
-                                    <li><a href="#">Pembayaran</a></li>
-                                    <li><a href="#">Perlindungan Merek</a></li>
-                                    <li><a href="#">Percetakan Komersial</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Support --}}
-                    <div class="col-md-6 col-xl-auto">
-                        <div class="widget widget_nav_menu footer-widget">
-                            <h3 class="widget_title">Support</h3>
-                            <div class="menu-all-pages-container">
-                                <ul class="menu">
-                                    <li><a href="#">Syarat &amp; Ketentuan</a></li>
-                                    <li><a href="#">Kebijakan Privasi</a></li>
-                                    <li><a href="#">Cookies</a></li>
-                                    <li><a href="#">Peta Situs</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Mobile Menu Button -->
+                <div class="lg:hidden flex items-center space-x-2">
+                    <button class="mobile-btn text-white hover:text-brand-500 transition-colors duration-200 p-2">
+                        <i class="fa-solid fa-magnifying-glass text-lg"></i>
+                    </button>
+                    <button id="mobile-menu-btn"
+                        class="mobile-btn text-white hover:text-brand-500 focus:outline-none p-2">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
                 </div>
             </div>
         </div>
 
-        <div class="copyright-wrap">
-            <div class="container">
-                <div class="row justify-content-lg-between align-items-center">
-                    <div class="col-lg-3">
-                        <div class="about-logo">
-                            <a href="index.html">
-                                <img src="{{ asset('storage/' . $websiteSettings->PathLogo) }}" alt="Jasuindo">
-                            </a>
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="lg:hidden hidden bg-white border-t border-gray-100 shadow-lg">
+            <div class="container mx-auto px-4 py-4 space-y-2">
+                <a href="#home"
+                    class="mobile-link block px-4 py-3 text-slate-700 hover:bg-brand-50 hover:text-brand-600 rounded-lg font-medium transition-colors">Home</a>
+                <a href="#about"
+                    class="mobile-link block px-4 py-3 text-slate-700 hover:bg-brand-50 hover:text-brand-600 rounded-lg font-medium transition-colors">About
+                    Us</a>
+                <a href="#solusi"
+                    class="mobile-link block px-4 py-3 text-slate-700 hover:bg-brand-50 hover:text-brand-600 rounded-lg font-medium transition-colors">Solutions</a>
+                <a href="#sertifikasi"
+                    class="mobile-link block px-4 py-3 text-slate-700 hover:bg-brand-50 hover:text-brand-600 rounded-lg font-medium transition-colors">Certification</a>
+                <a href="#kontak"
+                    class="mobile-link block px-4 py-3 text-slate-700 hover:bg-brand-50 hover:text-brand-600 rounded-lg font-medium transition-colors">Contact</a>
+
+                <div class="border-t border-gray-200 pt-4 mt-4 space-y-2">
+                    <button
+                        class="w-full flex items-center justify-center space-x-2 px-4 py-3 text-slate-700 hover:bg-brand-50 rounded-lg transition-colors">
+                        <img src="https://flagcdn.com/w20/id.png" alt="Indonesia" class="w-5 h-auto rounded-sm">
+                        <span class="font-medium">Bahasa Indonesia</span>
+                    </button>
+                    <a href="#kontak"
+                        class="block w-full text-center bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
+                        Contact Us
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ========================================== -->
+    <!-- 1. HERO SECTION -->
+    <!-- ========================================== -->
+    <section id="home" class="relative min-h-screen flex items-center bg-brand-900 overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop"
+                alt="Technology Background" class="w-full h-full object-cover opacity-20">
+            <div class="absolute inset-0 bg-gradient-to-r from-brand-900 via-brand-900/95 to-brand-900/80"></div>
+        </div>
+
+        <div
+            class="absolute top-0 right-0 w-96 h-96 bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse">
+        </div>
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"
+            style="animation-delay: 2s;"></div>
+
+        <div class="container mx-auto px-6 relative z-10 pt-20">
+            <div class="max-w-3xl animate-fade-in-up">
+                <span
+                    class="inline-block py-1.5 px-4 rounded-full bg-brand-500/20 text-brand-100 text-sm font-semibold tracking-wide mb-6 border border-brand-500/30 backdrop-blur-sm">
+                    <i class="fa-solid fa-star mr-2 text-yellow-400"></i> Mitra Teknologi Terpercaya Sejak 1990
+                </span>
+                <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6">
+                    Transformasi Digital <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-cyan-300">Identitas &
+                        Pembayaran</span> Nasional
+                </h1>
+                <p class="text-lg md:text-xl text-slate-300 mb-8 leading-relaxed max-w-2xl">
+                    Kami menyediakan infrastruktur teknologi yang aman, handal, dan terintegrasi untuk mendukung
+                    ekosistem digital pemerintah dan perbankan di seluruh Asia.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="#solusi"
+                        class="inline-flex justify-center items-center px-8 py-4 text-base font-bold text-white transition-all duration-200 bg-brand-600 rounded-xl hover:bg-brand-500 hover:shadow-lg hover:shadow-brand-500/30 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-600 focus:ring-offset-brand-900">
+                        Jelajahi Solusi
+                        <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </a>
+                    <a href="#kontak"
+                        class="inline-flex justify-center items-center px-8 py-4 text-base font-bold text-white transition-all duration-200 bg-transparent border-2 border-slate-600 rounded-xl hover:bg-white/10 hover:border-white focus:outline-none">
+                        Hubungi Kami
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce text-slate-400">
+            <i class="fa-solid fa-chevron-down text-2xl"></i>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 2. KEY FIGURES SECTION -->
+    <!-- ========================================== -->
+    <section id="about" class="relative py-20 bg-white -mt-16 z-20">
+        <div class="container mx-auto px-6">
+            <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-8 md:p-12">
+                <div
+                    class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center divide-x-0 md:divide-x divide-slate-100">
+
+                    <div class="p-4 group cursor-default">
+                        <div
+                            class="w-16 h-16 mx-auto bg-brand-50 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-brand-600 transition-colors duration-300">
+                            <i
+                                class="fa-solid fa-calendar-check text-2xl text-brand-600 group-hover:text-white transition-colors"></i>
                         </div>
+                        <h3 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-2">1990</h3>
+                        <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider">Tahun Berdiri</p>
                     </div>
-                    <div class="col-lg-5 text-center">
-                        <p class="copyright-text mb-0">The Fastest Growing Identity &amp; Payment Company in Asia</p>
-                    </div>
-                    <div class="col-lg-4 text-center text-lg-end">
-                        <p class="copyright-text mb-0">Copyright 2025 PT Jasuindo Tiga Perkasa Tbk All rights reserved
+
+                    <div class="p-4 group cursor-default">
+                        <div
+                            class="w-16 h-16 mx-auto bg-brand-50 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-brand-600 transition-colors duration-300">
+                            <i
+                                class="fa-solid fa-users text-2xl text-brand-600 group-hover:text-white transition-colors"></i>
+                        </div>
+                        <h3 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-2">800+</h3>
+                        <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider">Karyawan Profesional
                         </p>
                     </div>
+
+                    <div class="p-4 group cursor-default">
+                        <div
+                            class="w-16 h-16 mx-auto bg-brand-50 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-brand-600 transition-colors duration-300">
+                            <i
+                                class="fa-solid fa-building-columns text-2xl text-brand-600 group-hover:text-white transition-colors"></i>
+                        </div>
+                        <h3 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-2">100+</h3>
+                        <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider">Institusi Pemerintah
+                        </p>
+                    </div>
+
+                    <div class="p-4 group cursor-default">
+                        <div
+                            class="w-16 h-16 mx-auto bg-brand-50 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-brand-600 transition-colors duration-300">
+                            <i
+                                class="fa-solid fa-vault text-2xl text-brand-600 group-hover:text-white transition-colors"></i>
+                        </div>
+                        <h3 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-2">80+</h3>
+                        <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider">Mitra Perbankan</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 3. SOLUTIONS SECTION -->
+    <!-- ========================================== -->
+    <section id="solusi" class="py-24 bg-slate-50">
+        <div class="container mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-brand-600 font-bold tracking-wider uppercase text-sm">What We're Offering</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-2 mb-4">Jasuindo Solutions</h2>
+                <p class="text-slate-600 text-lg">Solusi teknologi end-to-end yang dirancang untuk memenuhi kebutuhan
+                    spesifik bisnis Anda, merampingkan operasional, dan mendorong pertumbuhan.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+                <div class="solution-card group bg-white rounded-2xl overflow-hidden border border-slate-100">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?q=80&w=2070&auto=format&fit=crop"
+                            alt="Digital Identity"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-brand-600 transition-colors">
+                            Manajemen Identitas Digital</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-4">Solusi biometrik dan verifikasi
+                            identitas terintegrasi yang akurat, cepat, dan memenuhi standar keamanan tertinggi.</p>
+                        <a href="#"
+                            class="inline-flex items-center text-sm font-bold text-brand-600 hover:text-brand-800 transition-colors">
+                            Baca Selengkapnya <i
+                                class="fa-solid fa-arrow-right-long ml-2 group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="solution-card group bg-white rounded-2xl overflow-hidden border border-slate-100">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=2070&auto=format&fit=crop"
+                            alt="Payment Gateway"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-brand-600 transition-colors">
+                            Payment & Switching</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-4">Infrastruktur pembayaran multichannel
+                            yang handal dengan tingkat ketersediaan (uptime) 99.9% untuk transaksi tanpa hambatan.</p>
+                        <a href="#"
+                            class="inline-flex items-center text-sm font-bold text-brand-600 hover:text-brand-800 transition-colors">
+                            Baca Selengkapnya <i
+                                class="fa-solid fa-arrow-right-long ml-2 group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="solution-card group bg-white rounded-2xl overflow-hidden border border-slate-100">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=2034&auto=format&fit=crop"
+                            alt="Data Center"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-brand-600 transition-colors">
+                            Data Center & Cloud</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-4">Layanan hosting dan cloud privat
+                            berstandar Tier-III dengan keamanan fisik dan siber berlapis untuk data kritis Anda.</p>
+                        <a href="#"
+                            class="inline-flex items-center text-sm font-bold text-brand-600 hover:text-brand-800 transition-colors">
+                            Baca Selengkapnya <i
+                                class="fa-solid fa-arrow-right-long ml-2 group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="solution-card group bg-white rounded-2xl overflow-hidden border border-slate-100">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop"
+                            alt="Cybersecurity"
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-brand-600 transition-colors">
+                            Cybersecurity Intelligence</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-4">Pemantauan ancaman siber secara
+                            real-time dan respons insiden proaktif untuk melindungi aset digital organisasi.</p>
+                        <a href="#"
+                            class="inline-flex items-center text-sm font-bold text-brand-600 hover:text-brand-800 transition-colors">
+                            Baca Selengkapnya <i
+                                class="fa-solid fa-arrow-right-long ml-2 group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 4. CERTIFICATION & LOGOS SECTION (Marquee) -->
+    <!-- ========================================== -->
+    <section id="sertifikasi" class="py-20 bg-white border-t border-slate-100 overflow-hidden">
+        <div class="container mx-auto px-6 mb-12 text-center">
+            <span class="text-brand-600 font-bold tracking-wider uppercase text-sm">Trust & Compliance</span>
+            <h2 class="text-3xl font-extrabold text-slate-900 mt-2">Sertifikasi & Penghargaan</h2>
+        </div>
+
+        <div class="relative w-full">
+            <div class="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white to-transparent z-10"></div>
+            <div class="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white to-transparent z-10"></div>
+
+            <div class="flex overflow-hidden">
+                <div class="flex animate-marquee whitespace-nowrap">
+                    <!-- Logo Set 1 -->
+                    <div class="flex items-center space-x-16 mx-8">
+                        <div
+                            class="flex flex-col items-center justify-center w-32 h-24 grayscale hover:grayscale-0 transition-all duration-300 opacity-50 hover:opacity-100 cursor-pointer">
+                            <i class="fa-solid fa-certificate text-4xl text-slate-800 mb-2"></i>
+                            <span class="text-xs font-bold text-slate-600">ISO 27001</span>
+                        </div>
+                        <div
+                            class="flex flex-col items-center justify-center w-32 h-24 grayscale hover:grayscale-0 transition-all duration-300 opacity-50 hover:opacity-100 cursor-pointer">
+                            <i class="fa-solid fa-shield-halved text-4xl text-slate-800 mb-2"></i>
+                            <span class="text-xs font-bold text-slate-600">ISO 9001:2015</span>
+                        </div>
+                        <div
+                            class="flex flex-col items-center justify-center w-32 h-24 grayscale hover:grayscale-0 transition-all duration-300 opacity-50 hover:opacity-100 cursor-pointer">
+                            <i class="fa-solid fa-building-shield text-4xl text-slate-800 mb-2"></i>
+                            <span class="text-xs font-bold text-slate-600">PCI-DSS</span>
+                        </div>
+                        <div
+                            class="flex flex-col items-center justify-center w-32 h-24 grayscale hover:grayscale-0 transition-all duration-300 opacity-50 hover:opacity-100 cursor-pointer">
+                            <i class="fa-solid fa-award text-4xl text-slate-800 mb-2"></i>
+                            <span class="text-xs font-bold text-slate-600">BSI Certified</span>
+                        </div>
+                        <div
+                            class="flex flex-col items-center justify-center w-32 h-24 grayscale hover:grayscale-0 transition-all duration-300 opacity-50 hover:opacity-100 cursor-pointer">
+                            <i class="fa-solid fa-trophy text-4xl text-slate-800 mb-2"></i>
+                            <span class="text-xs font-bold text-slate-600">Top IT Solution</span>
+                        </div>
+                        <div
+                            class="flex flex-col items-center justify-center w-32 h-24 grayscale hover:grayscale-0 transition-all duration-300 opacity-50 hover:opacity-100 cursor-pointer">
+                            <i class="fa-solid fa-globe text-4xl text-slate-800 mb-2"></i>
+                            <span class="text-xs font-bold text-slate-600">Kominfo RI</span>
+                        </div>
+                    </div>
+                    <!-- Logo Set 2 (Duplicate for seamless loop) -->
+                    <div class="flex items-center space-x-16 mx-8">
+                        <div
+                            class="flex flex-col items-center justify-center w-32 h-24 grayscale hover:grayscale-0 transition-all duration-300 opacity-50 hover:opacity-100 cursor-pointer">
+                            <i class="fa-solid fa-certificate text-4xl text-slate-800 mb-2"></i>
+                            <span class="text-xs font-bold text-slate-600">ISO 27001</span>
+                        </div>
+                        <div
+                            class="flex flex-col items-center justify-center w-32 h-24 grayscale hover:grayscale-0 transition-all duration-300 opacity-50 hover:opacity-100 cursor-pointer">
+                            <i class="fa-solid fa-shield-halved text-4xl text-slate-800 mb-2"></i>
+                            <span class="text-xs font-bold text-slate-600">ISO 9001:2015</span>
+                        </div>
+                        <div
+                            class="flex flex-col items-center justify-center w-32 h-24 grayscale hover:grayscale-0 transition-all duration-300 opacity-50 hover:opacity-100 cursor-pointer">
+                            <i class="fa-solid fa-building-shield text-4xl text-slate-800 mb-2"></i>
+                            <span class="text-xs font-bold text-slate-600">PCI-DSS</span>
+                        </div>
+                        <div
+                            class="flex flex-col items-center justify-center w-32 h-24 grayscale hover:grayscale-0 transition-all duration-300 opacity-50 hover:opacity-100 cursor-pointer">
+                            <i class="fa-solid fa-award text-4xl text-slate-800 mb-2"></i>
+                            <span class="text-xs font-bold text-slate-600">BSI Certified</span>
+                        </div>
+                        <div
+                            class="flex flex-col items-center justify-center w-32 h-24 grayscale hover:grayscale-0 transition-all duration-300 opacity-50 hover:opacity-100 cursor-pointer">
+                            <i class="fa-solid fa-trophy text-4xl text-slate-800 mb-2"></i>
+                            <span class="text-xs font-bold text-slate-600">Top IT Solution</span>
+                        </div>
+                        <div
+                            class="flex flex-col items-center justify-center w-32 h-24 grayscale hover:grayscale-0 transition-all duration-300 opacity-50 hover:opacity-100 cursor-pointer">
+                            <i class="fa-solid fa-globe text-4xl text-slate-800 mb-2"></i>
+                            <span class="text-xs font-bold text-slate-600">Kominfo RI</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 5. CTA / CONTACT SECTION -->
+    <!-- ========================================== -->
+    <section id="kontak"
+        class="py-20 bg-gradient-to-br from-brand-900 via-brand-800 to-brand-950 relative overflow-hidden">
+        <div
+            class="absolute top-0 right-0 w-96 h-96 bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10">
+        </div>
+        <div
+            class="absolute bottom-0 left-0 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10">
+        </div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="max-w-4xl mx-auto text-center">
+                <span
+                    class="inline-block py-1.5 px-4 rounded-full bg-brand-500/20 text-brand-100 text-sm font-semibold tracking-wide mb-6 border border-brand-500/30">
+                    <i class="fa-solid fa-handshake mr-2"></i> Mari Berkolaborasi
+                </span>
+                <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-6 leading-tight">
+                    Siap Memulai Transformasi Digital <br class="hidden md:block">Bersama Kami?
+                </h2>
+                <p class="text-lg text-slate-300 mb-10 max-w-2xl mx-auto">
+                    Tim ahli kami siap membantu Anda merancang solusi teknologi yang tepat untuk kebutuhan bisnis Anda.
+                    Hubungi kami untuk konsultasi gratis.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="mailto:info@jasuindo.co.id"
+                        class="inline-flex justify-center items-center px-8 py-4 text-base font-bold text-white transition-all duration-200 bg-brand-600 rounded-xl hover:bg-brand-500 hover:shadow-lg hover:shadow-brand-500/30">
+                        <i class="fa-solid fa-envelope mr-2"></i> Email Kami
+                    </a>
+                    <a href="tel:+62318910919"
+                        class="inline-flex justify-center items-center px-8 py-4 text-base font-bold text-white transition-all duration-200 bg-transparent border-2 border-white/30 rounded-xl hover:bg-white/10 hover:border-white">
+                        <i class="fa-solid fa-phone mr-2"></i> +62 31 8910919
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- FOOTER -->
+    <!-- ========================================== -->
+    <footer class="bg-brand-950 text-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">
+
+                <!-- Surabaya Office -->
+                <div class="lg:col-span-3">
+                    <h3 class="text-lg font-bold mb-4 text-white">Surabaya Office</h3>
+                    <div class="space-y-3 text-slate-300 text-sm leading-relaxed">
+                        <p>Jalan Raya Betro No. 21,<br>Sedati - Sidoarjo 61253<br>Indonesia</p>
+                        <p class="pt-2"><i class="fa-solid fa-phone text-brand-500 mr-2"></i>+62 31 8910919
+                            (Hunting)</p>
+                        <div class="border-t border-slate-700 pt-3 mt-3">
+                            <p>Jalan Raya Lingkar Timur Km 1,<br>Desa Banjarsari, Buduran,<br>Sidoarjo 61252 - Indonesia
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Jakarta Office -->
+                <div class="lg:col-span-3">
+                    <h3 class="text-lg font-bold mb-4 text-white">Jakarta Office</h3>
+                    <div class="space-y-3 text-slate-300 text-sm leading-relaxed">
+                        <p>Office 8 Building, Floor 31st<br>Unit B-E, SCBD Lot. 28<br>Jalan Jenderal Sudirman Kav.
+                            52-53<br>(Jalan Senopati Raya 8B)<br>Jakarta Selatan 12190<br>Indonesia</p>
+                        <p class="pt-2"><i class="fa-solid fa-phone text-brand-500 mr-2"></i>+62 21 293 33101
+                            (Hunting)</p>
+                    </div>
+                </div>
+
+                <!-- Company Links -->
+                <div class="lg:col-span-2">
+                    <h3 class="text-lg font-bold mb-4 text-white">Company</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#"
+                                class="text-slate-300 hover:text-white transition-colors duration-200 text-sm">Contact
+                                Us</a></li>
+                        <li><a href="#"
+                                class="text-slate-300 hover:text-white transition-colors duration-200 text-sm">Careers</a>
+                        </li>
+                        <li><a href="#"
+                                class="text-slate-300 hover:text-white transition-colors duration-200 text-sm">News</a>
+                        </li>
+                        <li><a href="#"
+                                class="text-slate-300 hover:text-white transition-colors duration-200 text-sm">Investor
+                                Relations</a></li>
+                    </ul>
+                </div>
+
+                <!-- Solutions Links -->
+                <div class="lg:col-span-2">
+                    <h3 class="text-lg font-bold mb-4 text-white">Solutions</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#"
+                                class="text-slate-300 hover:text-white transition-colors duration-200 text-sm">Identity</a>
+                        </li>
+                        <li><a href="#"
+                                class="text-slate-300 hover:text-white transition-colors duration-200 text-sm">Payment</a>
+                        </li>
+                        <li><a href="#"
+                                class="text-slate-300 hover:text-white transition-colors duration-200 text-sm">Brand
+                                Protection</a></li>
+                        <li><a href="#"
+                                class="text-slate-300 hover:text-white transition-colors duration-200 text-sm">Commercial
+                                Printing</a></li>
+                    </ul>
+                </div>
+
+                <!-- Support Links -->
+                <div class="lg:col-span-2">
+                    <h3 class="text-lg font-bold mb-4 text-white">Support</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#"
+                                class="text-slate-300 hover:text-white transition-colors duration-200 text-sm">Terms &
+                                Conditions</a></li>
+                        <li><a href="#"
+                                class="text-slate-300 hover:text-white transition-colors duration-200 text-sm">Privacy
+                                Policy</a></li>
+                        <li><a href="#"
+                                class="text-slate-300 hover:text-white transition-colors duration-200 text-sm">Cookies</a>
+                        </li>
+                        <li><a href="#"
+                                class="text-slate-300 hover:text-white transition-colors duration-200 text-sm">Sitemap</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom Footer -->
+            <div class="border-t border-slate-700 mt-12 pt-8">
+                <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                    <div class="flex items-center space-x-3">
+                        <svg class="w-8 h-8" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5 20L12 12L19 20L26 12L33 20" stroke="white" stroke-width="3"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M5 28L12 20L19 28" stroke="#0ea5e9" stroke-width="3" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                        <span class="text-xl font-bold text-white">JASUINDO</span>
+                    </div>
+
+                    <p class="text-slate-300 text-sm font-medium text-center">The Fastest Growing Identity & Payment
+                        Company in Asia</p>
+
+                    <p class="text-slate-400 text-xs">Copyright © 2026 PT Jasuindo Tiga Perkasa Tbk. All rights
+                        reserved</p>
                 </div>
             </div>
         </div>
     </footer>
 
+    <!-- ========================================== -->
+    <!-- SCRIPTS -->
+    <!-- ========================================== -->
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
 
-    <div class="scroll-top">
-        <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
-            <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"
-                style="transition: stroke-dashoffset 10ms linear 0s; stroke-dasharray: 307.919, 307.919; stroke-dashoffset: 307.919;">
-            </path>
-        </svg>
-    </div>
-    <!--==============================
-    All Js File
-============================== -->
-    <!-- Jquery -->
-    <script src="{{ asset('') }}assets-landing-page/js/vendor/jquery-3.7.1.min.js"></script>
-    <!-- Swiper Js -->
-    <script src="{{ asset('') }}assets-landing-page/js/swiper-bundle.min.js"></script>
-    <!-- Bootstrap -->
-    <script src="{{ asset('') }}assets-landing-page/js/bootstrap.min.js"></script>
-    <!-- Magnific Popup -->
-    <script src="{{ asset('') }}assets-landing-page/js/jquery.magnific-popup.min.js"></script>
-    <!-- Counter Up -->
-    <script src="{{ asset('') }}assets-landing-page/js/jquery.counterup.min.js"></script>
-    <!-- circle-progress -->
-    <script src="{{ asset('') }}assets-landing-page/js/circle-progress.js"></script>
-    <!-- Range Slider -->
-    <script src="{{ asset('') }}assets-landing-page/js/jquery-ui.min.js"></script>
-    <!-- imagesloaded -->
-    <script src="{{ asset('') }}assets-landing-page/js/imagesloaded.pkgd.min.js"></script>
-    <!-- isotope -->
-    <script src="{{ asset('') }}assets-landing-page/js/isotope.pkgd.min.js"></script>
+        mobileMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            mobileMenu.classList.toggle('hidden');
+            const icon = mobileMenuBtn.querySelector('i');
+            if (mobileMenu.classList.contains('hidden')) {
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            } else {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-xmark');
+            }
+        });
 
-    <!-- nice select -->
-    <script src="{{ asset('') }}assets-landing-page/js/nice-select.min.js"></script>
-    <!-- wow -->
-    <script src="{{ asset('') }}assets-landing-page/js/wow.min.js"></script>
-    <!-- gsap -->
-    <script src="{{ asset('') }}assets-landing-page/js/gsap.min.js"></script>
-    <script src="{{ asset('') }}assets-landing-page/js/ScrollTrigger.min.js"></script>
-    <script src="{{ asset('') }}assets-landing-page/js/SplitText.js"></script>
-    <!-- Scroll Trigger -->
-    <script src="{{ asset('') }}assets-landing-page/js/ScrollTrigger.min.js"></script>
-    <!-- Lenis Smooth Scroll -->
-    <script src="{{ asset('') }}assets-landing-page/js/lenis.min.js"></script>
+        // Close mobile menu when clicking a link
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                const icon = mobileMenuBtn.querySelector('i');
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            });
+        });
 
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                mobileMenu.classList.add('hidden');
+                const icon = mobileMenuBtn.querySelector('i');
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            }
+        });
 
+        // Navbar scroll effect - change from transparent to white
+        const navbar = document.getElementById('main-navbar');
+        const heroSection = document.getElementById('home');
 
-    <!-- Main Js File -->
-    <script src="{{ asset('') }}assets-landing-page/js/main.js"></script>
+        function handleScroll() {
+            const scrollY = window.scrollY;
+            const heroHeight = heroSection.offsetHeight;
 
-    @stack('frontend-js')
+            if (scrollY > 100) {
+                navbar.classList.remove('navbar-transparent');
+                navbar.classList.add('navbar-scrolled');
+
+                // Change mobile menu button color
+                document.querySelectorAll('.mobile-btn').forEach(btn => {
+                    btn.classList.remove('text-white');
+                    btn.classList.add('text-slate-700');
+                });
+            } else {
+                navbar.classList.add('navbar-transparent');
+                navbar.classList.remove('navbar-scrolled');
+
+                document.querySelectorAll('.mobile-btn').forEach(btn => {
+                    btn.classList.add('text-white');
+                    btn.classList.remove('text-slate-700');
+                });
+            }
+        }
+
+        window.addEventListener('scroll', handleScroll);
+        handleScroll(); // Run on load
+    </script>
+
 </body>
 
 </html>
