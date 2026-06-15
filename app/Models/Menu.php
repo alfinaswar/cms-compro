@@ -10,7 +10,7 @@ class Menu extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'Menu';
+    protected $table = 'menu';
 
     /**
      * The attributes that aren't mass assignable.
