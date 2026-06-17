@@ -313,17 +313,17 @@
                     Hubungi kami untuk konsultasi gratis.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="mailto:info@jasuindo.co.id"
+                    <a href="mailto:{{ $websiteSettings->AlamatEamail ?? 'info@jasuindo.co.id' }}"
                         class="inline-flex justify-center items-center px-8 py-4 text-base font-bold text-white transition-all duration-200 bg-brand-600 rounded-xl hover:bg-brand-500 hover:shadow-lg hover:shadow-brand-500/30">
                         <i class="fa-solid fa-envelope mr-2"></i> Email Kami
                     </a>
-                    <a href="tel:+62318910919"
+                    <a href="tel:{{ $websiteSettings->NomorTelepon ?? '+62318910919' }}"
                         class="inline-flex justify-center items-center px-8 py-4 text-base font-bold text-white transition-all duration-200 bg-transparent border-2 border-white/30 rounded-xl hover:bg-white/10 hover:border-white">
-                        <i class="fa-solid fa-phone mr-2"></i> +62 31 8910919
+                        <i class="fa-solid fa-phone mr-2"></i> {{ $websiteSettings->TelpPerusahaan ?? '+62 31 8910919' }}
                     </a>
+
                 </div>
             </div>
         </div>
     </section>
-
 @endsection

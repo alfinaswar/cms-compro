@@ -553,15 +553,19 @@
             <!-- Bottom Footer -->
             <div class="border-t border-slate-700 mt-12 pt-8">
                 <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-                    <div class="flex items-center space-x-3">
-                        <svg class="w-8 h-8" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M5 20L12 12L19 20L26 12L33 20" stroke="white" stroke-width="3"
+                    @if (!empty($websiteSettings) && !empty($websiteSettings->PathLogo))
+                        <img src="{{ asset('storage/' . $websiteSettings->PathLogo) }}"
+                            alt="{{ $websiteSettings->NamaPerusahaan ?? 'Logo' }}" width="180" height="64"
+                            style="object-fit: contain;">
+                    @else
+                        <svg width="64" height="64" viewBox="0 0 40 40" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5 20L12 12L19 20L26 12L33 20" stroke="#0284c7" stroke-width="3"
                                 stroke-linecap="round" stroke-linejoin="round" />
                             <path d="M5 28L12 20L19 28" stroke="#0ea5e9" stroke-width="3" stroke-linecap="round"
                                 stroke-linejoin="round" />
                         </svg>
-                        <span class="text-xl font-bold text-white">JASUINDO</span>
-                    </div>
+                    @endif
 
                     <p class="text-slate-300 text-sm font-medium text-center">The Fastest Growing Identity & Payment
                         Company in Asia</p>
