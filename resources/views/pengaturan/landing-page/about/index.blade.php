@@ -54,6 +54,34 @@
 @endsection
 
 @push('scripts')
+    @if (session('success'))
+        <script>
+            $(document).ready(function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: "{{ session('success') }}",
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            });
+        </script>
+    @endif
+
+    @if (session('error'))
+        <script>
+            $(document).ready(function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: "{{ session('error') }}",
+                    showConfirmButton: false,
+                    timer: 2500
+                });
+            });
+        </script>
+    @endif
+
     <script>
         $(document).ready(function() {
             var table = $('#tableAboutUs').DataTable({

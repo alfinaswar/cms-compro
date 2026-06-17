@@ -20,28 +20,14 @@
         <div class="container mx-auto px-6">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div>
-                    <span class="text-brand-600 font-bold tracking-wider uppercase text-sm">Our Journey</span>
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-2 mb-6">Company's Brief History</h2>
+                    <span
+                        class="text-brand-600 font-bold tracking-wider uppercase text-sm">{{ $Riwayat->SubJudul ?? null }}</span>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-2 mb-6">{{ $Riwayat->Judul }}</h2>
                     <div class="space-y-4 text-slate-600 leading-relaxed">
-                        <p>
-                            <strong class="text-slate-900">PT Jasuindo Tiga Perkasa Tbk</strong> didirikan pada tahun
-                            <strong>1990</strong> sebagai respons terhadap kebutuhan Indonesia akan sistem identifikasi dan
-                            pembayaran yang modern dan terpercaya.
-                        </p>
-                        <p>
-                            Selama lebih dari <strong>3 dekade</strong>, kami telah berkembang dari perusahaan pencetakan
-                            dokumen keamanan menjadi pemimpin industri dalam penyediaan solusi teknologi identitas digital
-                            dan pembayaran terintegrasi.
-                        </p>
-                        <p>
-                            Kini, dengan lebih dari <strong>800 profesional</strong> yang berdedikasi, Jasuindo melayani
-                            lebih dari <strong>100 institusi pemerintah</strong> dan <strong>80+ bank</strong> di seluruh
-                            Indonesia dan Asia, menjadi salah satu perusahaan identitas dan pembayaran dengan pertumbuhan
-                            tercepat di kawasan ini.
-                        </p>
+                        {!! $Riwayat->Deskripsi !!}
                     </div>
 
-                    <div class="mt-8 grid grid-cols-3 gap-6">
+                    {{-- <div class="mt-8 grid grid-cols-3 gap-6">
                         <div class="text-center">
                             <div class="text-3xl font-bold text-brand-600">1990</div>
                             <div class="text-sm text-slate-500">Tahun Berdiri</div>
@@ -54,7 +40,7 @@
                             <div class="text-3xl font-bold text-brand-600">Tbk</div>
                             <div class="text-sm text-slate-500">Perusahaan Publik</div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
 
                 <div class="relative">
@@ -70,52 +56,30 @@
     <section class="py-20 bg-slate-50">
         <div class="container mx-auto px-6">
             <div class="text-center max-w-3xl mx-auto mb-16">
-                <span class="text-brand-600 font-bold tracking-wider uppercase text-sm">What Drives Us</span>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-2 mb-4">Our Values</h2>
-                <p class="text-slate-600 text-lg">Nilai-nilai inti yang menjadi fondasi setiap langkah kami dalam melayani
-                    pelanggan</p>
+                <span class="text-brand-600 font-bold tracking-wider uppercase text-sm">{{ $Value->SubJudul }}</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-2 mb-4">{{ $Value->Judul }}</h2>
+                <p class="text-slate-600 text-lg">{!! $Value->Deskripsi !!}</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-                <!-- Customer Centricity -->
-                <div class="value-card bg-white rounded-2xl p-8 shadow-lg border border-slate-100">
-                    <div class="w-16 h-16 bg-brand-100 rounded-2xl flex items-center justify-center mb-6">
-                        <i class="fa-solid fa-users text-3xl text-brand-600"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-slate-900 mb-4">Customer Centricity</h3>
-                    <p class="text-slate-600 leading-relaxed">
-                        Kami menempatkan kebutuhan pelanggan di pusat setiap keputusan bisnis. Tim kami berkomitmen untuk
-                        memahami tantangan unik Anda dan memberikan solusi yang benar-benar sesuai.
-                    </p>
-                </div>
+                @forelse ($Value->getDetail as $detail)
+                    <div class="value-card bg-white rounded-2xl p-8 shadow-lg border border-slate-100">
+                        <div class="w-16 h-16 bg-brand-100 rounded-2xl flex items-center justify-center mb-6">
+                            <i class="fa-solid fa-users text-3xl text-brand-600"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-slate-900 mb-4">{{ $detail->Judul }}</h3>
+                        <p class="text-slate-600 leading-relaxed">
+                            {!! $detail->Deskripsi !!}
 
-                <!-- Reliability -->
-                <div class="value-card bg-white rounded-2xl p-8 shadow-lg border border-slate-100">
-                    <div class="w-16 h-16 bg-brand-100 rounded-2xl flex items-center justify-center mb-6">
-                        <i class="fa-solid fa-shield-halved text-3xl text-brand-600"></i>
+                        </p>
                     </div>
-                    <h3 class="text-2xl font-bold text-slate-900 mb-4">Reliability</h3>
-                    <p class="text-slate-600 leading-relaxed">
-                        Dengan uptime 99.9% dan standar keamanan internasional, kami menjamin layanan yang konsisten dan
-                        dapat diandalkan untuk mendukung operasional bisnis Anda 24/7.
-                    </p>
-                </div>
 
-                <!-- Flexibility -->
-                <div class="value-card bg-white rounded-2xl p-8 shadow-lg border border-slate-100">
-                    <div class="w-16 h-16 bg-brand-100 rounded-2xl flex items-center justify-center mb-6">
-                        <i class="fa-solid fa-sliders text-3xl text-brand-600"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-slate-900 mb-4">Flexibility</h3>
-                    <p class="text-slate-600 leading-relaxed">
-                        Kami memahami bahwa setiap organisasi unik. Itulah mengapa kami menawarkan solusi yang dapat
-                        disesuaikan dan diskalakan sesuai dengan pertumbuhan dan kebutuhan spesifik Anda.
-                    </p>
-                </div>
+                @empty
+                @endforelse
+
+
             </div>
-
-            <!-- Differentiator Text -->
-            <div class="bg-gradient-to-br from-brand-900 to-brand-800 rounded-3xl p-8 md:p-12 text-white">
+            {{-- <div class="bg-gradient-to-br from-brand-900 to-brand-800 rounded-3xl p-8 md:p-12 text-white">
                 <div class="max-w-4xl mx-auto">
                     <div class="flex items-start space-x-4 mb-6">
                         <div class="flex-shrink-0">
@@ -143,79 +107,48 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
     </section>
 
     <!-- CORPORATE SOCIAL RESPONSIBILITY -->
-    <section class="py-20 bg-white">
+    <section id="solusi" class="py-24 bg-white">
         <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <div class="order-2 lg:order-1">
-                    <div class="grid grid-cols-2 gap-4">
-                        <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop"
-                            alt="CSR Activity 1" class="rounded-2xl shadow-lg w-full h-64 object-cover">
-                        <img src="https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=2070&auto=format&fit=crop"
-                            alt="CSR Activity 2" class="rounded-2xl shadow-lg w-full h-64 object-cover mt-8">
-                    </div>
-                </div>
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span
+                    class="text-brand-600 font-bold tracking-wider uppercase text-sm">{{ $TanggungJawab->SubJudul }}</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-2 mb-4">{{ $TanggungJawab->Judul }}</h2>
+                <p class="text-slate-600 text-lg">{!! $TanggungJawab->Deskripsi !!}</p>
+            </div>
 
-                <div class="order-1 lg:order-2">
-                    <span class="text-brand-600 font-bold tracking-wider uppercase text-sm">Giving Back</span>
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-2 mb-6">Corporate Social Responsibility
-                    </h2>
-                    <div class="space-y-4 text-slate-600 leading-relaxed">
-                        <p>
-                            Sebagai perusahaan yang tumbuh bersama masyarakat Indonesia, Jasuindo berkomitmen untuk
-                            memberikan dampak positif yang berkelanjutan bagi lingkungan dan komunitas di sekitar kami.
-                        </p>
-                        <p>
-                            Program CSR kami berfokus pada tiga pilar utama:
-                        </p>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
 
-                    <div class="mt-6 space-y-4">
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0 w-12 h-12 bg-brand-100 rounded-xl flex items-center justify-center">
-                                <i class="fa-solid fa-graduation-cap text-brand-600 text-xl"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-slate-900 mb-1">Pendidikan & Pengembangan SDM</h4>
-                                <p class="text-slate-600 text-sm">Beasiswa untuk mahasiswa berprestasi dan program pelatihan
-                                    teknologi untuk masyarakat</p>
-                            </div>
+                @forelse ($TanggungJawab->getDetail as $detail)
+                    <div class="solution-card group bg-white rounded-2xl overflow-hidden border border-slate-100">
+                        <div class="relative h-48 overflow-hidden">
+                            @if (!empty($detail->Gambar))
+                                <img src="{{ asset('storage/' . $detail->Gambar) }}" alt="{{ $detail->Judul }}"
+                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            @else
+                                <img src="https://via.placeholder.com/400x192?text=No+Image" alt="No Image"
+                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            @endif
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                         </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-brand-600 transition-colors">
+                                {{ $detail->Judul }}
+                            </h3>
+                            <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                                {!! $detail->Deskripsi !!}
+                            </p>
 
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0 w-12 h-12 bg-brand-100 rounded-xl flex items-center justify-center">
-                                <i class="fa-solid fa-leaf text-brand-600 text-xl"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-slate-900 mb-1">Pelestarian Lingkungan</h4>
-                                <p class="text-slate-600 text-sm">Program penanaman pohon, pengelolaan limbah, dan
-                                    penggunaan energi terbarukan</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0 w-12 h-12 bg-brand-100 rounded-xl flex items-center justify-center">
-                                <i class="fa-solid fa-hand-holding-heart text-brand-600 text-xl"></i>
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-slate-900 mb-1">Pemberdayaan Masyarakat</h4>
-                                <p class="text-slate-600 text-sm">Bantuan sosial, program kesehatan, dan pengembangan UMKM
-                                    lokal</p>
-                            </div>
                         </div>
                     </div>
+                @empty
+                @endforelse
 
-                    <div class="mt-8 p-6 bg-brand-50 rounded-2xl border-l-4 border-brand-600">
-                        <p class="text-slate-700 italic">
-                            "Kami percaya bahwa kesuksesan bisnis harus sejalan dengan kontribusi positif bagi masyarakat
-                            dan lingkungan."
-                        </p>
-                    </div>
-                </div>
+
             </div>
         </div>
     </section>
@@ -224,155 +157,50 @@
     <section class="py-20 bg-slate-50">
         <div class="container mx-auto px-6">
             <div class="text-center max-w-3xl mx-auto mb-12">
-                <span class="text-brand-600 font-bold tracking-wider uppercase text-sm">Recognition</span>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-2 mb-4">Awards & Certifications</h2>
+                <span class="text-brand-600 font-bold tracking-wider uppercase text-sm">{{ $Award->SubJudul }}</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-2 mb-4">{{ $Award->Judul }}</h2>
                 <p class="text-slate-600 text-lg">
-                    Pengakuan atas komitmen kami dalam memberikan layanan berkualitas tinggi dan memenuhi standar
-                    internasional
+                    {!! $Award->Deskripsi !!}
                 </p>
             </div>
 
-            <div class="mb-12 bg-white rounded-2xl p-8 shadow-lg">
-                <div class="flex items-start space-x-4">
-                    <div class="flex-shrink-0">
-                        <i class="fa-solid fa-trophy text-4xl text-yellow-500"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-slate-900 mb-2">Prestasi dan Pengakuan</h3>
-                        <p class="text-slate-600 leading-relaxed">
-                            Sepanjang perjalanan kami, Jasuindo telah menerima berbagai penghargaan dan sertifikasi yang
-                            mencerminkan dedikasi kami terhadap keunggulan operasional, inovasi teknologi, dan kepatuhan
-                            terhadap standar internasional. Pengakuan ini menjadi bukti nyata komitmen kami untuk terus
-                            memberikan yang terbaik bagi pelanggan dan stakeholder.
-                        </p>
-                    </div>
-                </div>
-            </div>
+            <!-- Awards & Certifications (List Style) -->
+            <div class="divide-y divide-slate-200 bg-white rounded-xl shadow border border-slate-100 overflow-hidden">
 
-            <!-- Awards Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
-                <!-- Award 1 -->
-                <div class="award-card bg-white rounded-2xl overflow-hidden shadow-md border border-slate-100">
-                    <div class="h-48 bg-gradient-to-br from-brand-100 to-brand-50 flex items-center justify-center">
-                        <i class="fa-solid fa-certificate text-6xl text-brand-600"></i>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center space-x-2 mb-3">
-                            <span
-                                class="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full">2024</span>
-                            <span
-                                class="px-3 py-1 bg-brand-100 text-brand-700 text-xs font-bold rounded-full">International</span>
+                @forelse ($Award->getDetail as $awardDetail)
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 px-8 py-7">
+                        <div class="flex-shrink-0 w-32 flex items-center justify-center">
+                            @if (!empty($awardDetail->Gambar))
+                                <img src="{{ asset('storage/' . $awardDetail->Gambar) }}" alt="{{ $awardDetail->Judul }}"
+                                    class="w-28 h-auto object-contain grayscale opacity-80" />
+                            @else
+                                <img src="https://via.placeholder.com/120x64?text=No+Image" alt="No Image"
+                                    class="w-28 h-auto object-contain grayscale opacity-80" />
+                            @endif
                         </div>
-                        <h4 class="text-lg font-bold text-slate-900 mb-2">ISO 27001:2022</h4>
-                        <p class="text-slate-600 text-sm mb-3">Information Security Management System</p>
-                        <p class="text-xs text-slate-500">Sertifikasi internasional untuk sistem manajemen keamanan
-                            informasi</p>
-                    </div>
-                </div>
-
-                <!-- Award 2 -->
-                <div class="award-card bg-white rounded-2xl overflow-hidden shadow-md border border-slate-100">
-                    <div class="h-48 bg-gradient-to-br from-brand-100 to-brand-50 flex items-center justify-center">
-                        <i class="fa-solid fa-shield-halved text-6xl text-brand-600"></i>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center space-x-2 mb-3">
-                            <span
-                                class="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full">2024</span>
-                            <span
-                                class="px-3 py-1 bg-brand-100 text-brand-700 text-xs font-bold rounded-full">Quality</span>
+                        <div>
+                            <div class="font-semibold text-slate-700 mb-1">{{ $awardDetail->Judul }}</div>
+                            <div class="text-slate-600 text-sm leading-relaxed">
+                                {!! $awardDetail->Deskripsi !!}
+                            </div>
                         </div>
-                        <h4 class="text-lg font-bold text-slate-900 mb-2">ISO 9001:2015</h4>
-                        <p class="text-slate-600 text-sm mb-3">Quality Management System</p>
-                        <p class="text-xs text-slate-500">Standar internasional untuk sistem manajemen mutu</p>
                     </div>
-                </div>
-
-                <!-- Award 3 -->
-                <div class="award-card bg-white rounded-2xl overflow-hidden shadow-md border border-slate-100">
-                    <div class="h-48 bg-gradient-to-br from-brand-100 to-brand-50 flex items-center justify-center">
-                        <i class="fa-solid fa-credit-card text-6xl text-brand-600"></i>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center space-x-2 mb-3">
-                            <span
-                                class="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full">2024</span>
-                            <span
-                                class="px-3 py-1 bg-brand-100 text-brand-700 text-xs font-bold rounded-full">Security</span>
-                        </div>
-                        <h4 class="text-lg font-bold text-slate-900 mb-2">PCI-DSS Level 1</h4>
-                        <p class="text-slate-600 text-sm mb-3">Payment Card Industry Data Security Standard</p>
-                        <p class="text-xs text-slate-500">Sertifikasi tertinggi untuk keamanan data transaksi kartu
-                            pembayaran</p>
-                    </div>
-                </div>
-
-                <!-- Award 4 -->
-                <div class="award-card bg-white rounded-2xl overflow-hidden shadow-md border border-slate-100">
-                    <div class="h-48 bg-gradient-to-br from-brand-100 to-brand-50 flex items-center justify-center">
-                        <i class="fa-solid fa-award text-6xl text-brand-600"></i>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center space-x-2 mb-3">
-                            <span
-                                class="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full">2023</span>
-                            <span
-                                class="px-3 py-1 bg-purple-100 text-purple-700 text-xs font-bold rounded-full">Award</span>
-                        </div>
-                        <h4 class="text-lg font-bold text-slate-900 mb-2">Best IT Solution Provider</h4>
-                        <p class="text-slate-600 text-sm mb-3">Indonesia Technology Excellence Awards</p>
-                        <p class="text-xs text-slate-500">Penghargaan untuk penyedia solusi teknologi terbaik di Indonesia
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Award 5 -->
-                <div class="award-card bg-white rounded-2xl overflow-hidden shadow-md border border-slate-100">
-                    <div class="h-48 bg-gradient-to-br from-brand-100 to-brand-50 flex items-center justify-center">
-                        <i class="fa-solid fa-building-shield text-6xl text-brand-600"></i>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center space-x-2 mb-3">
-                            <span
-                                class="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full">2023</span>
-                            <span
-                                class="px-3 py-1 bg-brand-100 text-brand-700 text-xs font-bold rounded-full">Compliance</span>
-                        </div>
-                        <h4 class="text-lg font-bold text-slate-900 mb-2">BSI Certified</h4>
-                        <p class="text-slate-600 text-sm mb-3">British Standards Institution</p>
-                        <p class="text-xs text-slate-500">Sertifikasi dari lembaga standar internasional terkemuka</p>
-                    </div>
-                </div>
-
-                <!-- Award 6 -->
-                <div class="award-card bg-white rounded-2xl overflow-hidden shadow-md border border-slate-100">
-                    <div class="h-48 bg-gradient-to-br from-brand-100 to-brand-50 flex items-center justify-center">
-                        <i class="fa-solid fa-globe text-6xl text-brand-600"></i>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center space-x-2 mb-3">
-                            <span
-                                class="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full">2024</span>
-                            <span
-                                class="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">Government</span>
-                        </div>
-                        <h4 class="text-lg font-bold text-slate-900 mb-2">Tersertifikasi Kominfo</h4>
-                        <p class="text-slate-600 text-sm mb-3">Kementerian Komunikasi dan Informatika RI</p>
-                        <p class="text-xs text-slate-500">Sertifikasi penyelenggara sistem elektronik dari pemerintah
-                            Indonesia</p>
-                    </div>
-                </div>
+                @empty
+                @endforelse
 
             </div>
 
-            <!-- Additional Note -->
-            <div class="mt-12 text-center">
-                <p class="text-slate-500 text-sm">
-                    <i class="fa-solid fa-info-circle mr-2"></i>
-                    Dan berbagai penghargaan lainnya yang terus kami raih sebagai bentuk komitmen terhadap excellence
-                </p>
-            </div>
+
+        </div>
+
+        <!-- Additional Note -->
+        <div class="mt-12 text-center">
+            <p class="text-slate-500 text-sm">
+                <i class="fa-solid fa-info-circle mr-2"></i>
+                Dan berbagai penghargaan lainnya yang terus kami raih sebagai bentuk komitmen terhadap
+                excellence
+            </p>
+        </div>
         </div>
     </section>
 

@@ -1,0 +1,387 @@
+@extends('frontend.index')
+
+@section('content-frontend')
+
+    <!-- Hero Section -->
+    <section class="bg-brand-900 py-20">
+        <div class="container mx-auto px-6">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Contact Us</h1>
+            <nav class="flex items-center space-x-2 text-sm text-slate-300">
+                <a href="{{ url('/') }}" class="hover:text-white">Home</a>
+                <span>/</span>
+                <span class="text-white">Contact Us</span>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="py-16 bg-slate-50">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+
+                <!-- Contact Info -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-xl p-8 shadow-sm border border-slate-200">
+                        <h2 class="text-2xl font-bold text-slate-900 mb-2">Contact Information</h2>
+                        <p class="text-slate-600 mb-8">
+                            {{ $websiteSettings->DeskripsiSingkat ?? 'Hubungi kami untuk informasi lebih lanjut tentang produk dan layanan kami.' }}
+                        </p>
+
+                        <div class="space-y-6">
+                            <!-- Phone -->
+                            <div class="flex items-start">
+                                <div
+                                    class="w-10 h-10 bg-brand-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                    <i class="fa-solid fa-phone text-brand-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-slate-500 mb-1">Call Us</p>
+                                    <a href="tel:{{ isset($websiteSettings) && $websiteSettings->NomorTelepon ? preg_replace('/[^0-9+]/', '', $websiteSettings->NomorTelepon) : '+62318910919' }}"
+                                        class="text-slate-900 font-semibold hover:text-brand-600">
+                                        {{ $websiteSettings->NomorTelepon ?? '+62 31 8910919' }}
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- WhatsApp -->
+                            <div class="flex items-start">
+                                <div
+                                    class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                    <i class="fa-brands fa-whatsapp text-green-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-slate-500 mb-1">WhatsApp</p>
+                                    <a href="https://wa.me/{{ isset($websiteSettings) && $websiteSettings->NomorWhatsApp ? preg_replace('/[^0-9]/', '', $websiteSettings->NomorWhatsApp) : '6281234567890' }}"
+                                        target="_blank" class="text-slate-900 font-semibold hover:text-green-600">
+                                        {{ $websiteSettings->NomorWhatsApp ?? '+62 812-3456-7890' }}
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="flex items-start">
+                                <div
+                                    class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                    <i class="fa-solid fa-envelope text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-slate-500 mb-1">Email</p>
+                                    <a href="mailto:{{ $websiteSettings->AlamatEmail ?? 'info@jasuindo.co.id' }}"
+                                        class="text-slate-900 font-semibold hover:text-blue-600 break-all">
+                                        {{ $websiteSettings->AlamatEmail ?? 'info@jasuindo.co.id' }}
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Address -->
+                            <div class="flex items-start">
+                                <div
+                                    class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                    <i class="fa-solid fa-location-dot text-red-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-slate-500 mb-1">Address</p>
+                                    <a href="{{ $websiteSettings->TautanGoogleMaps ?? '#' }}" target="_blank"
+                                        class="text-slate-900 font-semibold hover:text-red-600 leading-relaxed">
+                                        @if (isset($websiteSettings) && $websiteSettings->AlamatKantor)
+                                            {{ $websiteSettings->AlamatKantor }}
+                                            @if ($websiteSettings->Kota)
+                                                , {{ $websiteSettings->Kota }}
+                                            @endif
+                                            @if ($websiteSettings->Provinsi)
+                                                , {{ $websiteSettings->Provinsi }}
+                                            @endif
+                                            @if ($websiteSettings->KodePos)
+                                                {{ $websiteSettings->KodePos }}
+                                            @endif
+                                        @else
+                                            Jalan Raya Betro No. 21, Sedati, Sidoarjo 61253
+                                        @endif
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Social Media -->
+                        <div class="mt-8 pt-6 border-t border-slate-200">
+                            <p class="text-sm font-semibold text-slate-700 mb-3">Follow Us</p>
+                            <div class="flex gap-3">
+                                @if (!empty($websiteSettings->SosialFacebook))
+                                    <a href="{{ $websiteSettings->SosialFacebook }}" target="_blank"
+                                        class="w-9 h-9 bg-slate-100 hover:bg-blue-600 hover:text-white text-slate-600 rounded-lg flex items-center justify-center transition-colors">
+                                        <i class="fa-brands fa-facebook-f"></i>
+                                    </a>
+                                @endif
+                                @if (!empty($websiteSettings->SosialInstagram))
+                                    <a href="{{ $websiteSettings->SosialInstagram }}" target="_blank"
+                                        class="w-9 h-9 bg-slate-100 hover:bg-pink-600 hover:text-white text-slate-600 rounded-lg flex items-center justify-center transition-colors">
+                                        <i class="fa-brands fa-instagram"></i>
+                                    </a>
+                                @endif
+                                @if (!empty($websiteSettings->SosialTwitter))
+                                    <a href="{{ $websiteSettings->SosialTwitter }}" target="_blank"
+                                        class="w-9 h-9 bg-slate-100 hover:bg-sky-500 hover:text-white text-slate-600 rounded-lg flex items-center justify-center transition-colors">
+                                        <i class="fa-brands fa-twitter"></i>
+                                    </a>
+                                @endif
+                                @if (!empty($websiteSettings->SosialLinkedIn))
+                                    <a href="{{ $websiteSettings->SosialLinkedIn }}" target="_blank"
+                                        class="w-9 h-9 bg-slate-100 hover:bg-blue-700 hover:text-white text-slate-600 rounded-lg flex items-center justify-center transition-colors">
+                                        <i class="fa-brands fa-linkedin-in"></i>
+                                    </a>
+                                @endif
+                                @if (!empty($websiteSettings->SosialYoutube))
+                                    <a href="{{ $websiteSettings->SosialYoutube }}" target="_blank"
+                                        class="w-9 h-9 bg-slate-100 hover:bg-red-600 hover:text-white text-slate-600 rounded-lg flex items-center justify-center transition-colors">
+                                        <i class="fa-brands fa-youtube"></i>
+                                    </a>
+                                @endif
+                                @if (!empty($websiteSettings->SosialTiktok))
+                                    <a href="{{ $websiteSettings->SosialTiktok }}" target="_blank"
+                                        class="w-9 h-9 bg-slate-100 hover:bg-black hover:text-white text-slate-600 rounded-lg flex items-center justify-center transition-colors">
+                                        <i class="fa-brands fa-tiktok"></i>
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="lg:col-span-3">
+                    <div class="bg-white rounded-xl p-8 shadow-sm border border-slate-200">
+                        <h2 class="text-2xl font-bold text-slate-900 mb-2">Send Us a Message</h2>
+                        <p class="text-slate-600 mb-6">Isi form di bawah ini dan kami akan segera menghubungi Anda.</p>
+
+                        <form id="contactForm" action="{{ route('frontend.contact.store') }}" method="POST">
+                            @csrf
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">
+                                        Nama Lengkap <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="text" name="NamaLengkap" required
+                                        class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">
+                                        Email <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="email" name="Email" required
+                                        class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">
+                                        No. Handphone <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="tel" name="NomorHandphone" required
+                                        class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">
+                                        Nama Perusahaan
+                                    </label>
+                                    <input type="text" name="CompanyName"
+                                        class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">
+                                        Lokasi Perusahaan
+                                    </label>
+                                    <input type="text" name="LokasiPerusahaan"
+                                        class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">
+                                        Produk/Jasa yang Dibutuhkan
+                                    </label>
+                                    <input type="text" name="ProdukYangDibutuhkan"
+                                        class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-slate-700 mb-2">
+                                    Pesan <span class="text-red-500">*</span>
+                                </label>
+                                <textarea name="Pesan" rows="5" required
+                                    class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none resize-none"></textarea>
+                            </div>
+
+                            <button type="submit" id="btnSubmit"
+                                class="w-full md:w-auto px-8 py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-lg transition-colors">
+                                <span class="btn-text">Kirim Pesan</span>
+                                <span class="btn-loader hidden">
+                                    <svg class="animate-spin inline h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10"
+                                            stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                        </path>
+                                    </svg>
+                                    Mengirim...
+                                </span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Map Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-slate-900 mb-2">Our Location</h2>
+                <p class="text-slate-600">Kunjungi kantor kami di lokasi berikut</p>
+            </div>
+
+            <div class="rounded-xl overflow-hidden shadow-lg border border-slate-200">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6884.752860529671!2d112.73386551003723!3d-7.4182974915552915!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd7e5a826db497d%3A0x9f2f2fe8700ab414!2sPT.%20Jasuindo%20Informatika%20Pratama!5e1!3m2!1sid!2sid!4v1781381089029!5m2!1sid!2sid"
+                    width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+
+            <!-- Office Hours -->
+            <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-slate-50 rounded-xl p-6 border border-slate-200">
+                    <div class="flex items-center mb-3">
+                        <i class="fa-regular fa-clock text-brand-600 text-xl mr-3"></i>
+                        <h3 class="font-bold text-slate-900">Senin - Jumat</h3>
+                    </div>
+                    <p class="text-slate-600 font-semibold">08:00 - 17:00 WIB</p>
+                </div>
+
+                <div class="bg-slate-50 rounded-xl p-6 border border-slate-200">
+                    <div class="flex items-center mb-3">
+                        <i class="fa-regular fa-calendar text-brand-600 text-xl mr-3"></i>
+                        <h3 class="font-bold text-slate-900">Sabtu</h3>
+                    </div>
+                    <p class="text-slate-600 font-semibold">08:00 - 12:00 WIB</p>
+                </div>
+
+                <div class="bg-slate-50 rounded-xl p-6 border border-slate-200">
+                    <div class="flex items-center mb-3">
+                        <i class="fa-regular fa-calendar-xmark text-brand-600 text-xl mr-3"></i>
+                        <h3 class="font-bold text-slate-900">Minggu & Hari Libur</h3>
+                    </div>
+                    <p class="text-slate-600 font-semibold">Tutup</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+@endsection
+
+@push('frontend-js')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('contactForm');
+            const btnSubmit = document.getElementById('btnSubmit');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(form);
+                const btnText = btnSubmit.querySelector('.btn-text');
+                const btnLoader = btnSubmit.querySelector('.btn-loader');
+
+                // Show loading
+                btnSubmit.disabled = true;
+                btnText.classList.add('hidden');
+                btnLoader.classList.remove('hidden');
+
+                // Clear previous errors
+                form.querySelectorAll('.error-message').forEach(el => el.remove());
+                form.querySelectorAll('input, textarea').forEach(el => {
+                    el.classList.remove('border-red-500');
+                });
+
+                fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                ?.content || '',
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(data => {
+                                throw {
+                                    status: response.status,
+                                    data: data
+                                };
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Success
+                        btnSubmit.disabled = false;
+                        btnText.classList.remove('hidden');
+                        btnLoader.classList.add('hidden');
+                        form.reset();
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Pesan Terkirim!',
+                            text: 'Terima kasih telah menghubungi kami.',
+                            confirmButtonColor: '#0284c7',
+                            timer: 3000,
+                            timerProgressBar: true
+                        });
+                    })
+                    .catch(error => {
+                        btnSubmit.disabled = false;
+                        btnText.classList.remove('hidden');
+                        btnLoader.classList.add('hidden');
+
+                        if (error.status === 422 && error.data.errors) {
+                            // Show validation errors
+                            const errors = error.data.errors;
+                            let errorMsg = '';
+
+                            Object.keys(errors).forEach(key => {
+                                errorMsg += errors[key][0] + '<br>';
+                                const input = form.querySelector('[name="' + key + '"]');
+                                if (input) {
+                                    input.classList.add('border-red-500');
+                                }
+                            });
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Validasi Gagal',
+                                html: errorMsg,
+                                confirmButtonColor: '#ef4444'
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Terjadi kesalahan. Silakan coba lagi.',
+                                confirmButtonColor: '#ef4444'
+                            });
+                        }
+                    });
+            });
+        });
+    </script>
+@endpush

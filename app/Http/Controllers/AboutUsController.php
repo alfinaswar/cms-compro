@@ -9,6 +9,7 @@ use App\Models\PenghargaanPerusahaan;
 use App\Models\ValuePerusahaan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\DataTables;
 
 class AboutUsController extends Controller
@@ -135,7 +136,11 @@ class AboutUsController extends Controller
      */
     public function show(AboutUs $aboutUs)
     {
-        return view('frontend.about');
+        $Riwayat = AboutUs::with('getDetail')->find('1');
+        $Value = AboutUs::with('getDetail')->find('2');
+        $TanggungJawab = AboutUs::with('getDetail')->find('3');
+        $Award = AboutUs::with('getDetail')->find('4');
+        return view('frontend.about', compact('Riwayat', 'Value', 'TanggungJawab', 'Award'));
     }
 
     /**
@@ -144,7 +149,8 @@ class AboutUsController extends Controller
     public function edit($id)
     {
         $id = decrypt($id);
-        $aboutUs = AboutUs::findOrFail($id);
+        $aboutUs = AboutUs::with('getDetail')->findOrFail($id);
+        // dd($aboutUs);
         return view('pengaturan.landing-page.about.edit', compact('aboutUs'));
     }
 
@@ -157,7 +163,7 @@ class AboutUsController extends Controller
             'SubJudul' => 'nullable|string',
             'Judul' => 'required|string|max:255',
             'Deskripsi' => 'required|string',
-            'Gambar' => 'nullable|file|image|max:2048',
+            'Gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
         ]);
 
         $aboutUs = AboutUs::findOrFail($id);
@@ -165,8 +171,8 @@ class AboutUsController extends Controller
         $gambarPath = $aboutUs->Gambar;
 
         if ($request->hasFile('Gambar')) {
-            if ($gambarPath && \Storage::disk('public')->exists($gambarPath)) {
-                \Storage::disk('public')->delete($gambarPath);
+            if ($gambarPath && Storage::disk('public')->exists($gambarPath)) {
+                Storage::disk('public')->delete($gambarPath);
             }
             $gambarPath = $request->file('Gambar')->store('about-us', 'public');
         }
@@ -179,7 +185,7 @@ class AboutUsController extends Controller
             'UserUpdate' => auth()->check() ? auth()->user()->name : null,
         ]);
 
-        return redirect()->route('pengaturan-about.index')->with('success', 'About Us berhasil diupdate.');
+        return redirect()->route('about-us.index')->with('success', 'About Us berhasil diupdate.');
     }
 
     /**

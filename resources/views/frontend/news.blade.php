@@ -1,130 +1,213 @@
 @extends('frontend.index')
 
 @section('content-frontend')
-    <div class="breadcumb-wrapper " data-bg-src="assets/img/bg/breadcumb-bg.jpg">
-        <div class="container">
-            <div class="breadcumb-content">
-                <h1 class="breadcumb-title">News</h1>
-                <ul class="breadcumb-menu">
-                    <li><a href="{{ url('/') }}">Home</a></li>
-                    <li>News</li>
-                </ul>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 bg-gradient-to-br from-brand-900 via-brand-800 to-brand-900 overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <img src="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?q=80&w=2070&auto=format&fit=crop"
+                alt="News Background" class="w-full h-full object-cover">
+        </div>
+        <div
+            class="absolute top-0 right-0 w-96 h-96 bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10">
+        </div>
+        <div
+            class="absolute bottom-0 left-0 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10">
+        </div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="max-w-4xl mx-auto text-center">
+                <span
+                    class="inline-block py-1.5 px-4 rounded-full bg-brand-500/20 text-brand-100 text-sm font-semibold tracking-wide mb-6 border border-brand-500/30 backdrop-blur-sm">
+                    <i class="fa-solid fa-newspaper mr-2"></i> UNTUK BERITA INI
+                </span>
+                <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight">
+                    Berita <span
+                        class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-cyan-300">Terbaru</span>
+                </h1>
+                <p class="text-xl text-slate-300 max-w-2xl mx-auto">
+                    Dapatkan informasi terkini, update terbaru dan insight perusahaan kami di sini.
+                </p>
+
+                <!-- Breadcrumb -->
+                <nav class="mt-8 flex items-center justify-center space-x-2 text-sm text-slate-300">
+                    <a href="{{ url('/') }}" class="hover:text-white transition-colors">
+                        <i class="fa-solid fa-house mr-1"></i> Home
+                    </a>
+                    <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
+                    <span class="text-white font-semibold">Berita</span>
+                </nav>
             </div>
         </div>
-    </div>
+    </section>
 
-    <section class="th-blog-wrapper space-top space-extra-bottom">
-        <div class="container">
-            <div class="row">
-                <div class="col-xxl-8 col-lg-7">
-                    {{-- LOOPING UTAMA UNTUK MENAMPILKAN BERITA --}}
+    <!-- Main Content -->
+    <section class="py-12 bg-slate-50">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                <!-- Main Content: News List -->
+                <div class="lg:col-span-2">
+
                     @forelse($news as $item)
-                        <div class="th-blog blog-single has-post-thumbnail">
-                            <div class="blog-img">
-                                <a href="{{ url('news/' . $item->Slug) }}">
-                                    {{-- PENTING: Sesuaikan path asset jika gambar disimpan di folder public biasa --}}
-                                    <img src="{{ asset('storage/' . $item->PathThumbnail) }}" alt="{{ $item->Judul }}">
+                        <article
+                            class="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 mb-6 hover:shadow-md transition-shadow">
+                            <!-- Image -->
+                            <a href="{{ url('news/' . $item->Slug) }}" class="block overflow-hidden">
+                                <img src="{{ asset('storage/' . $item->PathThumbnail) }}" alt="{{ $item->Judul }}"
+                                    class="w-full h-64 object-cover hover:scale-105 transition-transform duration-300">
+                            </a>
+
+                            <!-- Content -->
+                            <div class="p-6">
+                                <!-- Meta -->
+                                <div class="flex flex-wrap items-center gap-4 text-sm text-slate-500 mb-3">
+                                    <span>
+                                        <i class="fa-regular fa-user mr-1"></i>
+                                        {{ $item->Penulis }}
+                                    </span>
+                                    <span>
+                                        <i class="fa-regular fa-calendar mr-1"></i>
+                                        {{ \Carbon\Carbon::parse($item->TanggalPublikasi)->format('d M, Y') }}
+                                    </span>
+                                    <span class="px-2 py-1 bg-brand-50 text-brand-700 text-xs font-semibold rounded">
+                                        {{ $item->Kategori }}
+                                    </span>
+                                </div>
+
+                                <!-- Title -->
+                                <h2 class="text-2xl font-bold text-slate-900 mb-3 hover:text-brand-600 transition-colors">
+                                    <a href="{{ url('news/' . $item->Slug) }}">
+                                        {{ $item->Judul }}
+                                    </a>
+                                </h2>
+
+                                <!-- Excerpt -->
+                                <p class="text-slate-600 mb-4 leading-relaxed">
+                                    {{ $item->Ringkasan }}
+                                </p>
+
+                                <!-- Read More -->
+                                <a href="{{ url('news/' . $item->Slug) }}"
+                                    class="inline-flex items-center text-brand-600 hover:text-brand-700 font-semibold">
+                                    Baca Selengkapnya
+                                    <i class="fa-solid fa-arrow-right ml-2"></i>
                                 </a>
                             </div>
-                            <div class="blog-content">
-                                <div class="blog-meta">
-                                    <a class="author" href="#"><i class="fa-light fa-user"></i>by
-                                        {{ $item->Penulis }}</a>
-                                    <a href="#"><i
-                                            class="fa-regular fa-calendar"></i>{{ \Carbon\Carbon::parse($item->TanggalPublikasi)->format('d M, Y') }}</a>
-                                    <a href="#"><i class="fa-light fa-folder"></i> {{ $item->Kategori }}</a>
-                                </div>
-                                <h2 class="blog-title">
-                                    <a href="{{ url('news/' . $item->Slug) }}">{{ $item->Judul }}</a>
-                                </h2>
-                                <p class="blog-text">{{ $item->Ringkasan }}</p>
-
-                                <a href="{{ url('news/' . $item->Slug) }}" class="th-btn style4 th-icon">Lebih Lengkap <i
-                                        class="fa-light fa-arrow-right-long"></i></a>
-                            </div>
-                        </div>
+                        </article>
                     @empty
-                        <div class="col-12 text-center">
-                            <p class="text-muted">Belum ada berita yang tersedia.</p>
+                        <!-- Empty State -->
+                        <div class="text-center py-16 bg-white rounded-xl border border-slate-200">
+                            <i class="fa-regular fa-newspaper text-5xl text-slate-400 mb-4"></i>
+                            <h3 class="text-xl font-bold text-slate-900 mb-2">Belum Ada Berita</h3>
+                            <p class="text-slate-600">Saat ini belum ada berita yang tersedia.</p>
                         </div>
                     @endforelse
 
-                    {{-- PAGINATION DINAMIS (Mempertahankan style HTML asli template) --}}
+                    <!-- Pagination -->
                     @if ($news->hasPages())
-                        <div class="th-pagination mt-60 ">
-                            <ul>
-                                {{-- Previous Page Link --}}
+                        <div class="mt-8 flex justify-center">
+                            <nav class="inline-flex items-center space-x-1">
+                                {{-- Previous --}}
                                 @if ($news->onFirstPage())
-                                    <li><a class="disabled"><i class="fa-sharp fa-light fa-arrow-left"></i></a></li>
+                                    <span
+                                        class="px-3 py-2 border border-slate-300 rounded-lg text-slate-400 cursor-not-allowed">
+                                        <i class="fa-solid fa-chevron-left"></i>
+                                    </span>
                                 @else
-                                    <li><a href="{{ $news->previousPageUrl() }}"><i
-                                                class="fa-sharp fa-light fa-arrow-left"></i></a></li>
+                                    <a href="{{ $news->previousPageUrl() }}"
+                                        class="px-3 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50">
+                                        <i class="fa-solid fa-chevron-left"></i>
+                                    </a>
                                 @endif
 
-                                {{-- Pagination Elements --}}
+                                {{-- Page Numbers --}}
                                 @foreach ($news->getUrlRange(1, $news->lastPage()) as $page => $url)
                                     @if ($page == $news->currentPage())
-                                        <li><a class="active" href="#">{{ $page }}</a></li>
+                                        <span class="px-4 py-2 bg-brand-600 text-white font-semibold rounded-lg">
+                                            {{ $page }}
+                                        </span>
                                     @else
-                                        <li><a href="{{ $url }}">{{ $page }}</a></li>
+                                        <a href="{{ $url }}"
+                                            class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50">
+                                            {{ $page }}
+                                        </a>
                                     @endif
                                 @endforeach
 
-                                {{-- Next Page Link --}}
+                                {{-- Next --}}
                                 @if ($news->hasMorePages())
-                                    <li><a class="next-page" href="{{ $news->nextPageUrl() }}"><i
-                                                class="fa-sharp fa-light fa-arrow-right"></i></a></li>
+                                    <a href="{{ $news->nextPageUrl() }}"
+                                        class="px-3 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50">
+                                        <i class="fa-solid fa-chevron-right"></i>
+                                    </a>
                                 @else
-                                    <li><a class="next-page disabled"><i class="fa-sharp fa-light fa-arrow-right"></i></a>
-                                    </li>
+                                    <span
+                                        class="px-3 py-2 border border-slate-300 rounded-lg text-slate-400 cursor-not-allowed">
+                                        <i class="fa-solid fa-chevron-right"></i>
+                                    </span>
                                 @endif
-                            </ul>
+                            </nav>
                         </div>
                     @endif
                 </div>
 
-                <div class="col-xxl-4 col-lg-5">
-                    <aside class="sidebar-area">
-                        {{-- WIDGET SEARCH --}}
-                        <div class="widget widget_search">
-                            <form class="search-form" action="{{ url('news') }}" method="GET">
-                                <input type="text" name="search" placeholder="Search" value="{{ request('search') }}">
-                                <button type="submit"><i class="far fa-search"></i></button>
+                <!-- Sidebar -->
+                <aside class="lg:col-span-1">
+                    <div class="sticky top-24 space-y-6">
+
+                        <!-- Search Widget -->
+                        <div class="bg-white rounded-xl p-6 border border-slate-200">
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">Search</h3>
+                            <form action="{{ url('news') }}" method="GET" class="relative">
+                                <input type="text" name="search" value="{{ request('search') }}"
+                                    placeholder="Cari berita..."
+                                    class="w-full px-4 py-2.5 pr-10 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                                <button type="submit"
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand-600">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                </button>
                             </form>
                         </div>
 
-                        {{-- WIDGET CATEGORIES DINAMIS --}}
-                        <div class="widget widget_categories">
-                            <h3 class="widget_title">Categories</h3>
-                            <ul>
+                        <!-- Categories Widget -->
+                        <div class="bg-white rounded-xl p-6 border border-slate-200">
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">Categories</h3>
+                            <ul class="space-y-2">
                                 @foreach ($categories as $category)
                                     <li>
-                                        <a href="{{ url('news?kategori=' . $category) }}">{{ $category }}</a>
-                                        <span><i class="fa-regular fa-arrow-up-right"></i></span>
+                                        <a href="{{ url('news?kategori=' . $category) }}"
+                                            class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-slate-50 transition-colors group">
+                                            <span
+                                                class="text-slate-700 group-hover:text-brand-600">{{ $category }}</span>
+                                            <i
+                                                class="fa-solid fa-chevron-right text-xs text-slate-400 group-hover:text-brand-600"></i>
+                                        </a>
                                     </li>
                                 @endforeach
                             </ul>
                         </div>
 
-                        {{-- WIDGET RECENT POSTS DINAMIS --}}
-                        <div class="widget">
-                            <h3 class="widget_title">Recent Posts</h3>
-                            <div class="recent-post-wrap">
+                        <!-- Recent Posts Widget -->
+                        <div class="bg-white rounded-xl p-6 border border-slate-200">
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">Recent Posts</h3>
+                            <div class="space-y-4">
                                 @foreach ($recentNews as $recent)
-                                    <div class="recent-post">
-                                        <div class="media-img">
-                                            <a href="{{ url('news/' . $recent->Slug) }}">
-                                                <img src="{{ asset('storage/' . $recent->PathThumbnail) }}"
-                                                    alt="{{ $recent->Judul }}">
-                                            </a>
-                                        </div>
-                                        <div class="media-body">
-                                            <div class="recent-post-meta">
-                                                <a href="#"><i
-                                                        class="fa-solid fa-calendar-days"></i>{{ \Carbon\Carbon::parse($recent->TanggalPublikasi)->format('d M, Y') }}</a>
-                                            </div>
-                                            <h4 class="post-title"><a class="text-inherit"
-                                                    href="{{ url('news/' . $recent->Slug) }}">{{ $recent->Judul }}</a>
+                                    <div class="flex gap-3">
+                                        <a href="{{ url('news/' . $recent->Slug) }}" class="flex-shrink-0">
+                                            <img src="{{ asset('storage/' . $recent->PathThumbnail) }}"
+                                                alt="{{ $recent->Judul }}" class="w-20 h-20 object-cover rounded-lg">
+                                        </a>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-xs text-slate-500 mb-1">
+                                                <i class="fa-regular fa-calendar mr-1"></i>
+                                                {{ \Carbon\Carbon::parse($recent->TanggalPublikasi)->format('d M, Y') }}
+                                            </p>
+                                            <h4
+                                                class="text-sm font-semibold text-slate-900 hover:text-brand-600 line-clamp-2">
+                                                <a href="{{ url('news/' . $recent->Slug) }}">
+                                                    {{ $recent->Judul }}
+                                                </a>
                                             </h4>
                                         </div>
                                     </div>
@@ -132,12 +215,11 @@
                             </div>
                         </div>
 
-                        {{-- WIDGET TAGS DINAMIS --}}
-                        <div class="widget widget_tag_cloud">
-                            <h3 class="widget_title">Popular Tags</h3>
-                            <div class="tagcloud">
+                        <!-- Tags Widget -->
+                        <div class="bg-white rounded-xl p-6 border border-slate-200">
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">Popular Tags</h3>
+                            <div class="flex flex-wrap gap-2">
                                 @php
-                                    // Mengambil tags dari recent news dan memecahnya jika dipisahkan koma
                                     $allTags = [];
                                     foreach ($recentNews as $r) {
                                         if ($r->Tags) {
@@ -151,26 +233,37 @@
                                 @endphp
 
                                 @forelse($allTags as $tag)
-                                    <a href="{{ url('news?tag=' . $tag) }}">{{ $tag }}</a>
+                                    <a href="{{ url('news?tag=' . $tag) }}"
+                                        class="px-3 py-1.5 bg-slate-100 hover:bg-brand-600 text-slate-700 hover:text-white text-sm rounded-lg transition-colors">
+                                        {{ $tag }}
+                                    </a>
                                 @empty
-                                    <a href="#">Technology</a>
-                                    <a href="#">Consulting</a>
+                                    <span class="text-sm text-slate-500">No tags available</span>
                                 @endforelse
                             </div>
                         </div>
 
-                        <div class="widget widget_banner" data-bg-src="assets/img/bg/widget_banner.jpg">
-                            <div class="widget-banner position-relative text-center">
-                                <span class="icon"><i class="fa-solid fa-phone"></i></span>
-                                <span class="text">Need Help? Call Here</span>
-                                <a class="phone" href="tel:+25669872564">+256 6987 2564</a>
-                                <a href="contact.html" class="th-btn style6">Get A Quote <i
-                                        class="fa-light fa-arrow-right-long"></i></a>
+                        <!-- CTA Widget -->
+                        <div class="bg-gradient-to-br from-brand-600 to-brand-700 rounded-xl p-6 text-white text-center">
+                            <div class="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fa-solid fa-phone text-2xl"></i>
                             </div>
+                            <h3 class="text-lg font-bold mb-2">Need Help?</h3>
+                            <p class="text-brand-100 text-sm mb-4">Hubungi kami untuk informasi lebih lanjut</p>
+                            <a href="tel:+62318910919" class="block text-xl font-bold mb-4 hover:text-brand-200">
+                                +62 31 8910919
+                            </a>
+                            <a href="{{ url('contact') }}"
+                                class="inline-flex items-center px-6 py-2.5 bg-white text-brand-700 font-semibold rounded-lg hover:bg-brand-50 transition-colors">
+                                Contact Us
+                                <i class="fa-solid fa-arrow-right ml-2"></i>
+                            </a>
                         </div>
-                    </aside>
-                </div>
+
+                    </div>
+                </aside>
             </div>
         </div>
     </section>
+
 @endsection

@@ -29,7 +29,7 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::prefix('/')->group(function () {
     Route::get('/news', [BeritaController::class, 'news'])->name('frontend.news');
-    Route::get('/about-us', [AboutUsController::class, 'index'])->name('frontend.about-us');
+    Route::get('/about-us', [AboutUsController::class, 'show'])->name('frontend.about-us');
     Route::get('/news/{slug}', [BeritaController::class, 'newsDetail'])->name('frontend.detail');
     Route::get('/career', [LowonganKerjaController::class, 'career'])->name('frontend.career');
     Route::get('/career/{id}-{slug}', [LowonganKerjaController::class, 'careerDetail'])->name('frontend.career.detail');

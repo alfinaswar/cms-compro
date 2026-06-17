@@ -8,24 +8,32 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Tambah About Us</h1>
+                    <h1>Edit About Us</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
                         <li class="breadcrumb-item"><a href="{{ route('about-us.index') }}">About Us</a></li>
-                        <li class="breadcrumb-item active">Tambah</li>
+                        <li class="breadcrumb-item active">Edit</li>
                     </ol>
                 </div>
             </div>
         </div>
     </section>
 
+    @php
+        // Pastikan $aboutUs dan detail sudah dikirim ke view pada controller:
+        // $aboutUs = AboutUs::with('getDetail')->findOrFail($id);
+        // return view('pengaturan.landing-page.about.edit', compact('aboutUs'));
+        $details = $aboutUs->getDetail ?? collect();
+    @endphp
+
     <section class="content">
         <div class="row justify-content-center">
             <div class="col-lg-12">
-                <form action="{{ route('about-us.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('about-us.update', $aboutUs->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
+                    @method('PUT')
 
                     {{-- Card Utama About Us --}}
                     <div class="card card-outline card-primary shadow-sm">
@@ -39,7 +47,7 @@
                                 <label for="SubJudul"><strong>Sub Judul</strong></label>
                                 <input type="text" name="SubJudul" id="SubJudul"
                                     class="form-control @error('SubJudul') is-invalid @enderror"
-                                    placeholder="contoh: Tentang Kami" value="{{ old('SubJudul') }}">
+                                    placeholder="contoh: Tentang Kami" value="{{ old('SubJudul', $aboutUs->SubJudul) }}">
                                 @error('SubJudul')
                                     <span class="invalid-feedback d-block">{{ $message }}</span>
                                 @enderror
@@ -48,15 +56,17 @@
                                 <label for="Judul"><strong>Judul</strong> <span class="text-danger">*</span></label>
                                 <input type="text" name="Judul" id="Judul"
                                     class="form-control @error('Judul') is-invalid @enderror"
-                                    placeholder="contoh: Visi & Misi Perusahaan" value="{{ old('Judul') }}" required>
+                                    placeholder="contoh: Visi & Misi Perusahaan" value="{{ old('Judul', $aboutUs->Judul) }}"
+                                    required>
                                 @error('Judul')
                                     <span class="invalid-feedback d-block">{{ $message }}</span>
                                 @enderror
                             </div>
                             <div class="form-group">
                                 <label for="Deskripsi"><strong>Deskripsi</strong> <span class="text-danger">*</span></label>
-                                <textarea name="Deskripsi" id="Deskripsi" rows="6" class="form-control @error('Deskripsi') is-invalid @enderror"
-                                    placeholder="Masukkan deskripsi lengkap tentang perusahaan..." required>{{ old('Deskripsi') }}</textarea>
+                                <textarea name="Deskripsi" id="Deskripsi" rows="6"
+                                    class="form-control @error('Deskripsi') is-invalid @enderror summernote"
+                                    placeholder="Masukkan deskripsi lengkap tentang perusahaan..." required>{{ old('Deskripsi', $aboutUs->Deskripsi) }}</textarea>
                                 @error('Deskripsi')
                                     <span class="invalid-feedback d-block">{{ $message }}</span>
                                 @enderror
@@ -69,20 +79,15 @@
                                     <span class="invalid-feedback d-block">{{ $message }}</span>
                                 @enderror
                                 <small class="text-muted">Upload gambar latar untuk About Us.</small>
+                                @if ($aboutUs->Gambar)
+                                    <div class="mt-2">
+                                        <img src="{{ asset('storage/' . $aboutUs->Gambar) }}"
+                                            style="max-width: 200px; max-height: 150px;" class="img-thumbnail"
+                                            alt="Gambar Saat Ini">
+                                    </div>
+                                @endif
                             </div>
-                            <div class="form-group">
-                                <label for="Status"><strong>Status</strong> <span class="text-danger">*</span></label>
-                                <select name="Status" id="Status"
-                                    class="form-control @error('Status') is-invalid @enderror" required>
-                                    <option value="">-- Pilih Status --</option>
-                                    <option value="1" {{ old('Status') == '1' ? 'selected' : '' }}>Aktif</option>
-                                    <option value="0" {{ old('Status') == '0' ? 'selected' : '' }}>Tidak Aktif
-                                    </option>
-                                </select>
-                                @error('Status')
-                                    <span class="invalid-feedback d-block">{{ $message }}</span>
-                                @enderror
-                            </div>
+
                         </div>
                     </div>
 
@@ -98,23 +103,75 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="card-body p-0">
+
+                        <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table mb-0" id="detailTable">
-                                    <thead class="thead-light">
+                                <table class="table table-bordered" id="tableDetail">
+                                    <thead class="bg-light">
                                         <tr>
-                                            <th style="width: 5%;">#</th>
-                                            <th style="width: 22%;">Gambar</th>
-                                            <th style="width: 18%;">Judul</th>
-                                            <th>Deskripsi</th>
-                                            <th style="width: 6%;"></th>
+                                            <th style="width: 5%" class="text-center">No</th>
+                                            <th style="width: 25%">Gambar</th>
+                                            <th style="width: 30%">Judul</th>
+                                            <th style="width: 35%">Deskripsi</th>
+                                            <th style="width: 5%" class="text-center">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody id="detailContainer">
-                                        {{-- Baris detail di-generate lewat JS --}}
+                                        {{-- Jika ada data lama, tampilkan --}}
+                                        @php $idx = 0; @endphp
+                                        @foreach ($aboutUs->getDetail as $detail)
+                                            <tr class="detail-row" data-index="{{ $idx }}">
+                                                <td class="text-center row-number">{{ $idx + 1 }}</td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="mr-2"
+                                                            style="width: 80px; height: 80px; border: 1px dashed #ccc; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                                            @if ($detail->Gambar)
+                                                                <img src="{{ asset('storage/' . $detail->Gambar) }}"
+                                                                    alt="Preview" class="img-preview"
+                                                                    style="max-width: 100%; max-height: 100%;">
+                                                            @else
+                                                                <img src="" alt="Preview" class="img-preview"
+                                                                    style="max-width: 100%; max-height: 100%; display: none;">
+                                                                <i class="fa fa-image text-muted preview-placeholder"
+                                                                    style="font-size: 24px;"></i>
+                                                            @endif
+                                                        </div>
+                                                        <div class="flex-grow-1">
+                                                            <input type="file"
+                                                                name="details[{{ $idx }}][Gambar]"
+                                                                class="form-control-file input-gambar" accept="image/*">
+                                                            <small class="text-muted">Maks. 2MB</small>
+                                                            @if ($detail->Gambar)
+                                                                <input type="hidden"
+                                                                    name="details[{{ $idx }}][Gambar_lama]"
+                                                                    value="{{ $detail->Gambar }}">
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="details[{{ $idx }}][Judul]"
+                                                        class="form-control" placeholder="Judul detail"
+                                                        value="{{ $detail->Judul }}">
+                                                </td>
+                                                <td>
+                                                    <textarea name="details[{{ $idx }}][Deskripsi]" class="form-control" rows="3"
+                                                        placeholder="Deskripsi detail">{{ $detail->Deskripsi }}</textarea>
+                                                </td>
+                                                <td class="text-center">
+                                                    <button type="button" class="btn btn-danger btn-sm btn-hapus-detail"
+                                                        title="Hapus">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            @php $idx++; @endphp
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
+                            <small class="text-muted">Tambahkan detail-detail tentang perusahaan (opsional).</small>
                         </div>
                     </div>
 
@@ -123,7 +180,7 @@
                             <i class="fa fa-times mr-1"></i> Batal
                         </a>
                         <button type="submit" class="btn btn-primary">
-                            <i class="fa fa-save mr-1"></i> Simpan About Us
+                            <i class="fa fa-save mr-1"></i> Update About Us
                         </button>
                     </div>
                 </form>
@@ -136,7 +193,9 @@
     <script src="{{ asset('assets/plugins/summernote/summernote-bs4.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-            let rowIndex = 0;
+            let rowIndex = $('#detailContainer tr').length || 0;
+
+            // Inisialisasi summernote
             $('#Deskripsi').summernote({
                 height: 400,
                 placeholder: 'Tulis konten berita lengkap di sini...',
@@ -168,28 +227,37 @@
                     }
                 }
             });
+
             // Fungsi untuk menambah row detail
-            function addDetailRow() {
+            function addDetailRow(detail = null) {
+                const idx = rowIndex;
+                const gambarPreview = detail && detail.Gambar ? '{{ asset('storage/') }}/' + detail.Gambar : '';
+                const gambarLamaInput = detail && detail.Gambar ?
+                    `<input type="hidden" name="details[${idx}][Gambar_lama]" value="${detail.Gambar}">` : '';
+
                 const row = `
-                    <tr class="detail-row" data-index="${rowIndex}">
-                        <td class="text-center row-number">${rowIndex + 1}</td>
+                    <tr class="detail-row" data-index="${idx}">
+                        <td class="text-center row-number">${idx + 1}</td>
                         <td>
                             <div class="d-flex align-items-center">
                                 <div class="mr-2" style="width: 80px; height: 80px; border: 1px dashed #ccc; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                                    <img src="" alt="Preview" class="img-preview" style="max-width: 100%; max-height: 100%; display: none;">
-                                    <i class="fa fa-image text-muted preview-placeholder" style="font-size: 24px;"></i>
+                                    ${gambarPreview ? `<img src="${gambarPreview}" alt="Preview" class="img-preview" style="max-width: 100%; max-height: 100%;">` :
+                                        '<img src="" alt="Preview" class="img-preview" style="max-width: 100%; max-height: 100%; display: none;">' +
+                                        '<i class="fa fa-image text-muted preview-placeholder" style="font-size: 24px;"></i>'
+                                    }
                                 </div>
                                 <div class="flex-grow-1">
-                                    <input type="file" name="details[${rowIndex}][Gambar]" class="form-control-file input-gambar" accept="image/*">
+                                    <input type="file" name="details[${idx}][Gambar]" class="form-control-file input-gambar" accept="image/*">
                                     <small class="text-muted">Maks. 2MB</small>
+                                    ${gambarLamaInput}
                                 </div>
                             </div>
                         </td>
                         <td>
-                            <input type="text" name="details[${rowIndex}][Judul]" class="form-control" placeholder="Judul detail" required>
+                            <input type="text" name="details[${idx}][Judul]" class="form-control" placeholder="Judul detail" value="${detail ? (detail.Judul ?? '') : ''}">
                         </td>
                         <td>
-                            <textarea name="details[${rowIndex}][Deskripsi]" class="form-control" rows="3" placeholder="Deskripsi detail" required></textarea>
+                            <textarea name="details[${idx}][Deskripsi]" class="form-control" rows="3" placeholder="Deskripsi detail">${detail ? (detail.Deskripsi ?? '') : ''}</textarea>
                         </td>
                         <td class="text-center">
                             <button type="button" class="btn btn-danger btn-sm btn-hapus-detail" title="Hapus">
@@ -211,8 +279,7 @@
             }
 
             // Event: Tambah Detail
-            $('#btnTambahDetail').on('click', function(e) {
-                e.preventDefault();
+            $('#btnTambahDetail').on('click', function() {
                 addDetailRow();
             });
 
@@ -231,12 +298,7 @@
                 if (file) {
                     // Validasi ukuran file (maks 2MB)
                     if (file.size > 2 * 1024 * 1024) {
-                        // Gunakan alert jika SweetAlert tidak tersedia
-                        if (typeof Swal !== "undefined") {
-                            Swal.fire('Error!', 'Ukuran gambar maksimal 2MB', 'error');
-                        } else {
-                            alert('Ukuran gambar maksimal 2MB');
-                        }
+                        Swal.fire('Error!', 'Ukuran gambar maksimal 2MB', 'error');
                         $(this).val('');
                         preview.hide();
                         placeholder.show();
@@ -255,7 +317,7 @@
                 }
             });
 
-            // Tambah 1 row default jika kosong
+            // Tambah row default jika kosong
             if ($('#detailContainer tr').length === 0) {
                 addDetailRow();
             }

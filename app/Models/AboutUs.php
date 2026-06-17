@@ -14,4 +14,9 @@ class AboutUs extends Model
      * @var array
      */
     protected $guarded = ['id'];
+
+    public function getDetail()
+    {
+        return $this->hasMany(AboutUsDetail::class, 'IdAbout', 'id');
+    }
 }

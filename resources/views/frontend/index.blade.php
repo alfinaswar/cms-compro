@@ -129,15 +129,24 @@
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center">
                     <a href="{{ url('/') }}" class="flex items-center space-x-2">
-                        <svg class="w-10 h-10" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M5 20L12 12L19 20L26 12L33 20" stroke="#0284c7" stroke-width="3"
-                                stroke-linecap="round" stroke-linejoin="round" />
-                            <path d="M5 28L12 20L19 28" stroke="#0ea5e9" stroke-width="3" stroke-linecap="round"
-                                stroke-linejoin="round" />
-                        </svg>
-                        <span
-                            class="logo-text text-2xl font-bold text-brand-950 tracking-tight transition-colors duration-300">JASUINDO</span>
+                        @if (!empty($websiteSettings) && !empty($websiteSettings->PathLogo))
+                            <img src="{{ asset('storage/' . $websiteSettings->PathLogo) }}"
+                                alt="{{ $websiteSettings->NamaPerusahaan ?? 'Logo' }}" width="180" height="64"
+                                style="object-fit: contain;">
+                        @else
+                            <svg width="64" height="64" viewBox="0 0 40 40" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M5 20L12 12L19 20L26 12L33 20" stroke="#0284c7" stroke-width="3"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M5 28L12 20L19 28" stroke="#0ea5e9" stroke-width="3" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                        @endif
+
+
+
                     </a>
+
                 </div>
 
                 <!-- Desktop Menu -->

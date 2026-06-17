@@ -286,8 +286,8 @@
                                         <i class="fa-solid fa-location-dot text-brand-400 text-lg transition-colors"></i>
                                     </div>
                                     <div class="flex-1 min-w-0">
-                                        <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-1">Lokasi
-                                            Kantor</p>
+                                        <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-1">Visit
+                                            Our Office</p>
                                         <a href="{{ $websiteSettings->TautanGoogleMaps ?? '#' }}" target="_blank"
                                             class="text-white font-semibold hover:text-brand-400 transition-colors block leading-relaxed">
                                             @if (isset($websiteSettings) && $websiteSettings->AlamatKantor)
@@ -570,8 +570,8 @@
 
             <!-- Section Header -->
             <div class="text-center max-w-3xl mx-auto mb-10">
-                <span class="text-brand-600 font-bold tracking-wider uppercase text-sm">Temukan Kami</span>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-2 mb-4">Lokasi Kantor Kami</h2>
+                <span class="text-brand-600 font-bold tracking-wider uppercase text-sm">Find Us</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-2 mb-4">Our Office Location</h2>
                 <p class="text-slate-600">Kunjungi kantor kami atau lihat lokasi kami di peta</p>
             </div>
 
@@ -605,7 +605,7 @@
                 </div>
             </div>
 
-            {{-- <!-- Office Hours -->
+            <!-- Office Hours -->
             <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
                     <div class="flex items-center mb-3">
@@ -636,7 +636,7 @@
                     </div>
                     <p class="text-slate-600 font-semibold">Tutup</p>
                 </div>
-            </div> --}}
+            </div>
         </div>
     </section>
 
