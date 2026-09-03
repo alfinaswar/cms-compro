@@ -17,57 +17,7 @@
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Custom Config for Brand Colors -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            400: '#38bdf8',
-                            500: '#0ea5e9',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                            800: '#075985',
-                            900: '#0c4a6e',
-                            950: '#082f49',
-                        }
-                    },
-                    animation: {
-                        'marquee': 'marquee 30s linear infinite',
-                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
-                    },
-                    keyframes: {
-                        marquee: {
-                            '0%': {
-                                transform: 'translateX(0%)'
-                            },
-                            '100%': {
-                                transform: 'translateX(-50%)'
-                            },
-                        },
-                        fadeInUp: {
-                            '0%': {
-                                opacity: '0',
-                                transform: 'translateY(20px)'
-                            },
-                            '100%': {
-                                opacity: '1',
-                                transform: 'translateY(0)'
-                            },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-
+@stack('styles')
     <style>
         /* Navbar scroll effect */
         .navbar-scrolled {
@@ -113,6 +63,62 @@
             scroll-margin-top: 80px;
         }
     </style>
+      <!-- Custom Styles for Navbar -->
+    <style>
+        /* Navbar transparent state */
+        .navbar-transparent {
+            background-color: transparent;
+        }
+
+        .navbar-transparent .logo-text {
+            color: white !important;
+        }
+
+        .navbar-transparent .nav-link {
+            color: white;
+        }
+
+        .navbar-transparent .mobile-btn {
+            color: white;
+        }
+
+        /* Navbar scrolled state */
+        .navbar-scrolled {
+            background-color: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar-scrolled .logo-text {
+            color: #082f49 !important;
+        }
+
+        .navbar-scrolled .nav-link {
+            color: #334155;
+        }
+
+        .navbar-scrolled .nav-link:hover {
+            color: #0ea5e9;
+        }
+
+        .navbar-scrolled .mobile-btn {
+            color: #334155;
+        }
+
+        .navbar-scrolled .nav-icon {
+            color: #334155;
+        }
+
+        .navbar-scrolled .nav-icon:hover {
+            color: #0ea5e9;
+        }
+
+        /* Dropdown hover effect */
+        .group:hover .group-hover\:rotate-180 {
+            transform: rotate(180deg);
+        }
+    </style>
+
 </head>
 
 <body class="font-sans text-slate-600 antialiased bg-white">
@@ -313,147 +319,6 @@
         </div>
     </nav>
 
-    <!-- Custom Styles for Navbar -->
-    <style>
-        /* Navbar transparent state */
-        .navbar-transparent {
-            background-color: transparent;
-        }
-
-        .navbar-transparent .logo-text {
-            color: white !important;
-        }
-
-        .navbar-transparent .nav-link {
-            color: white;
-        }
-
-        .navbar-transparent .mobile-btn {
-            color: white;
-        }
-
-        /* Navbar scrolled state */
-        .navbar-scrolled {
-            background-color: rgba(255, 255, 255, 0.98);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-        }
-
-        .navbar-scrolled .logo-text {
-            color: #082f49 !important;
-        }
-
-        .navbar-scrolled .nav-link {
-            color: #334155;
-        }
-
-        .navbar-scrolled .nav-link:hover {
-            color: #0ea5e9;
-        }
-
-        .navbar-scrolled .mobile-btn {
-            color: #334155;
-        }
-
-        .navbar-scrolled .nav-icon {
-            color: #334155;
-        }
-
-        .navbar-scrolled .nav-icon:hover {
-            color: #0ea5e9;
-        }
-
-        /* Dropdown hover effect */
-        .group:hover .group-hover\:rotate-180 {
-            transform: rotate(180deg);
-        }
-    </style>
-
-    <!-- Scripts -->
-    <script>
-        // Mobile Menu Toggle
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const mobileLinks = document.querySelectorAll('.mobile-link');
-
-        mobileMenuBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            mobileMenu.classList.toggle('hidden');
-            const icon = mobileMenuBtn.querySelector('i');
-            if (mobileMenu.classList.contains('hidden')) {
-                icon.classList.remove('fa-xmark');
-                icon.classList.add('fa-bars');
-            } else {
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-xmark');
-            }
-        });
-
-        // Mobile Dropdown Accordion
-        document.querySelectorAll('.mobile-dropdown-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const content = btn.nextElementSibling;
-                const icon = btn.querySelector('.fa-chevron-down');
-
-                // Toggle current
-                content.classList.toggle('hidden');
-                icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' :
-                    'rotate(180deg)';
-
-                // Close other dropdowns (optional - accordion behavior)
-                document.querySelectorAll('.mobile-dropdown-btn').forEach(otherBtn => {
-                    if (otherBtn !== btn) {
-                        const otherContent = otherBtn.nextElementSibling;
-                        const otherIcon = otherBtn.querySelector('.fa-chevron-down');
-                        if (!otherContent.classList.contains('hidden')) {
-                            otherContent.classList.add('hidden');
-                            otherIcon.style.transform = 'rotate(0deg)';
-                        }
-                    }
-                });
-            });
-        });
-
-        // Close mobile menu when clicking a link
-        mobileLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
-                const icon = mobileMenuBtn.querySelector('i');
-                icon.classList.remove('fa-xmark');
-                icon.classList.add('fa-bars');
-            });
-        });
-
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-                mobileMenu.classList.add('hidden');
-                const icon = mobileMenuBtn.querySelector('i');
-                icon.classList.remove('fa-xmark');
-                icon.classList.add('fa-bars');
-            }
-        });
-
-        // Navbar scroll effect
-        const navbar = document.getElementById('main-navbar');
-        const heroSection = document.getElementById('home');
-
-        function handleScroll() {
-            const scrollY = window.scrollY;
-
-            if (scrollY > 100) {
-                navbar.classList.remove('navbar-transparent');
-                navbar.classList.add('navbar-scrolled');
-            } else {
-                navbar.classList.add('navbar-transparent');
-                navbar.classList.remove('navbar-scrolled');
-            }
-        }
-
-        window.addEventListener('scroll', handleScroll);
-        handleScroll();
-    </script>
 
     <!-- ========================================== -->
     <!-- 1. HERO SECTION -->
@@ -650,7 +515,55 @@
         window.addEventListener('scroll', handleScroll);
         handleScroll(); // Run on load
     </script>
-
+ <!-- Custom Config for Brand Colors -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                            950: '#082f49',
+                        }
+                    },
+                    animation: {
+                        'marquee': 'marquee 30s linear infinite',
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                    },
+                    keyframes: {
+                        marquee: {
+                            '0%': {
+                                transform: 'translateX(0%)'
+                            },
+                            '100%': {
+                                transform: 'translateX(-50%)'
+                            },
+                        },
+                        fadeInUp: {
+                            '0%': {
+                                opacity: '0',
+                                transform: 'translateY(20px)'
+                            },
+                            '100%': {
+                                opacity: '1',
+                                transform: 'translateY(0)'
+                            },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 </body>
 
 </html>

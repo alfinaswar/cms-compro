@@ -138,8 +138,25 @@ class KeyFiguresController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(KeyFigures $keyFigures)
+    public function destroy($id)
     {
-        //
+        try {
+            $keyFigure = KeyFigures::findOrFail($id);
+
+            // Hapus icon jika ada
+            if ($keyFigure->Icon && Storage::disk('public')->exists($keyFigure->Icon)) {
+                Storage::disk('public')->delete($keyFigure->Icon);
+            }
+
+            $keyFigure->delete();
+
+            return response()->json([
+                'message' => 'Key Figure berhasil dihapus.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Gagal menghapus Key Figure. ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

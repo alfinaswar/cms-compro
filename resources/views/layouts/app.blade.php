@@ -239,6 +239,14 @@
                                         <p>Key Figures</p>
                                     </a>
                                 </li>
+                                             <li class="nav-item">
+                                    <a href="{{ route('why-choose-us.index') }}"
+                                        class="nav-link {{ request()->segment(2) == 'why-choose-us' ? 'active' : '' }}">
+                                        <i class="fas fa-star nav-icon"></i>
+                                        <p>Why Choose Us</p>
+                                    </a>
+                                </li>
+
                                 <li class="nav-item">
                                     <a href="#"
                                         class="nav-link {{ request()->segment(2) == 'logo-sertifikasi' ? 'active' : '' }}">
@@ -253,6 +261,13 @@
                                         <p>Halaman Solusi</p>
                                     </a>
                                 </li>
+                                 <li class="nav-item">
+                                    <a href="{{ route('client-logo.index') }}"
+                                        class="nav-link {{ request()->segment(4) == 'halaman-solusi' ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Logo Klien</p>
+                                    </a>
+                                </li>
                                 <li class="nav-item">
                                     <a href="{{ route('about-us.index') }}"
                                         class="nav-link {{ request()->segment(2) == 'about-us' ? 'active' : '' }}">
@@ -261,40 +276,14 @@
                                     </a>
                                 </li>
 
-                                <li
-                                    class="nav-item has-treeview {{ request()->segment(2) == 'about-us' ? 'menu-open' : '' }}">
-                                    <a href="#"
-                                        class="nav-link {{ request()->segment(2) == 'about-us' ? 'active' : '' }}">
-                                        <i class="fas fa-info-circle nav-icon"></i>
-                                        <p>
-                                            About Us
-                                            <i class="fas fa-angle-left right"></i>
-                                        </p>
+                                <li class="nav-item">
+                                    <a href="{{ route('struktur-organisasi.index') }}"
+                                        class="nav-link {{ request()->segment(1) == 'struktur-organisasi' ? 'active' : '' }}">
+                                        <i class="fas fa-sitemap nav-icon"></i>
+                                        <p>Struktur Organisasi</p>
                                     </a>
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a href="{{ route('history-perusahaan.index') }}"
-                                                class="nav-link {{ request()->segment(3) == 'history-perusahaan' ? 'active' : '' }}">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>History Perusahaan</p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="{{ route('value-perusahaan.index') }}"
-                                                class="nav-link {{ request()->segment(3) == 'value-perusahaan' ? 'active' : '' }}">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>Value Perusahaan</p>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="{{ route('penghargaan-perusahaan.index') }}"
-                                                class="nav-link {{ request()->segment(3) == 'penghargaan-perusahaan' ? 'active' : '' }}">
-                                                <i class="far fa-dot-circle nav-icon"></i>
-                                                <p>Award / Sertifikat</p>
-                                            </a>
-                                        </li>
-                                    </ul>
                                 </li>
+
                             </ul>
                         </li>
 
@@ -374,6 +363,13 @@
     <script src="{{ asset('') }}assets/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+    </script>
     @stack('scripts')
 </body>
 

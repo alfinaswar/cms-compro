@@ -5,12 +5,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Manajemen Hero Slider</h1>
+                    <h1>Manajemen Why Choose Us</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                        <li class="breadcrumb-item active">Hero Slider</li>
+                        <li class="breadcrumb-item active">Why Choose Us</li>
                     </ol>
                 </div>
             </div>
@@ -23,28 +23,27 @@
                 <div class="card shadow-sm border-0">
                     <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
                         <h3 class="card-title mb-0">
-                            <i class="fa fa-images text-primary mr-2"></i><strong>Daftar Hero Slider</strong>
+                            <i class="fa fa-star text-warning mr-2"></i><strong>Daftar Keunggulan</strong>
                         </h3>
                         <div class="ml-auto">
-                            <a href="{{ route('hero-slider.create') }}" class="btn btn-primary btn-sm px-3">
-                                <i class="fa fa-plus mr-1"></i> Tambah
+                            <a href="{{ route('why-choose-us.create') }}" class="btn btn-primary btn-sm px-3">
+                                <i class="fa fa-plus mr-1"></i> Tambah Data
                             </a>
                         </div>
                     </div>
 
 
                     <div class="card-body">
-                        <table id="tableHeroSlider" class="table table-bordered table-striped table-hover" style="width: 100%;">
+                        <table id="tableWhyChooseUs" class="table table-bordered table-striped" style="width: 100%;">
                             <thead class="bg-light">
                                 <tr>
                                     <th style="width: 5%" class="text-center">No</th>
-                                    <th style="width: 10%" class="text-center">Tipe</th>
-                                    <th style="width: 25%">Judul Utama</th>
-                                    <th style="width: 20%">Deskripsi</th>
-                                    <th style="width: 10%" class="text-center">Preview</th>
-                                    <th style="width: 8%" class="text-center">Urutan</th>
+                                    <th style="width: 10%" class="text-center">Icon</th>
+                                    <th style="width: 20%">Judul</th>
+                                    <th style="width: 30%">Deskripsi</th>
+                                    <th style="width: 10%" class="text-center">Urutan</th>
                                     <th style="width: 10%" class="text-center">Status</th>
-                                    <th style="width: 12%" class="text-center">Aksi</th>
+                                    <th style="width: 15%" class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -59,17 +58,17 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            var table = $('#tableHeroSlider').DataTable({
+            var table = $('#tableWhyChooseUs').DataTable({
                 responsive: true,
                 serverSide: true,
                 processing: true,
                 bDestroy: true,
                 ajax: {
-                    url: "{{ route('hero-slider.index') }}"
+                    url: "{{ route('why-choose-us.index') }}"
                 },
                 language: {
                     processing: '<i class="fa fa-spinner fa-spin fa-2x fa-fw"></i><span class="sr-only">Memuat...</span>',
-                    emptyTable: 'Tidak ada data Hero Slider',
+                    emptyTable: 'Tidak ada data Why Choose Us',
                     info: 'Menampilkan _START_ sampai _END_ dari _TOTAL_ data',
                     search: 'Cari:',
                     paginate: {
@@ -86,19 +85,13 @@
                         className: 'text-center'
                     },
                     {
-                        data: 'TipeMedia',
-                        name: 'TipeMedia',
+                        data: 'Icon',
+                        name: 'Icon',
                         className: 'text-center',
-                        render: function(data) {
-                            if (data === 'video') {
-                                return '<span class="badge badge-info"><i class="fa fa-video mr-1"></i>Video</span>';
-                            }
-                            return '<span class="badge badge-secondary"><i class="fa fa-image mr-1"></i>Gambar</span>';
-                        }
                     },
                     {
-                        data: 'JudulUtama',
-                        name: 'JudulUtama',
+                        data: 'Judul',
+                        name: 'Judul',
                         render: function(data) {
                             return data ? '<strong>' + data + '</strong>' : '<span class="text-muted">-</span>';
                         }
@@ -108,14 +101,8 @@
                         name: 'Deskripsi',
                         render: function(data) {
                             if (!data) return '<span class="text-muted">-</span>';
-                            return data.length > 60 ? data.substring(0, 60) + '...' : data;
+                            return data.length > 80 ? data.substring(0, 80) + '...' : data;
                         }
-                    },
-                    {
-                        data: 'GambarLatar',
-                        name: 'GambarLatar',
-                        className: 'text-center',
-
                     },
                     {
                         data: 'Urutan',
@@ -123,10 +110,9 @@
                         className: 'text-center'
                     },
                     {
-                        data: 'Status',
+                        data: 'status', // Ini dari addColumn di Controller (yang sudah di-render jadi badge)
                         name: 'Status',
-                        className: 'text-center',
-
+                        className: 'text-center'
                     },
                     {
                         data: 'action',
@@ -136,8 +122,8 @@
                         className: 'text-center'
                     }
                 ],
-                // Urutkan berdasarkan kolom 'Urutan' (index 5) secara Ascending
-                order: [[5, 'asc']]
+                // Default sorting berdasarkan kolom Urutan (index 4) ascending
+                order: [[4, 'asc']]
             });
 
             // Handler Delete
@@ -145,8 +131,8 @@
                 var id = $(this).data('id');
 
                 Swal.fire({
-                    title: 'Hapus Hero Slider?',
-                    html: `Apakah Anda yakin ingin menghapus slider ini?<br><small class="text-muted">Data dan file media terkait akan dihapus permanen.</small>`,
+                    title: 'Hapus Data?',
+                    html: `Apakah Anda yakin ingin menghapus keunggulan ini?<br><small class="text-muted">Data yang dihapus tidak bisa dikembalikan.</small>`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Ya, Hapus!',
@@ -155,7 +141,7 @@
                     confirmButtonColor: '#dc3545'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Tampilkan loading saat proses delete
+                        // Tampilkan loading
                         Swal.fire({
                             title: 'Menghapus...',
                             allowOutsideClick: false,
@@ -163,7 +149,7 @@
                         });
 
                         $.ajax({
-                            url: "{{ route('hero-slider.destroy', ':id') }}".replace(':id', id),
+                            url: "{{ route('why-choose-us.destroy', ':id') }}".replace(':id', id),
                             type: 'DELETE',
                             data: {
                                 _token: '{{ csrf_token() }}'
@@ -172,7 +158,7 @@
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'Berhasil!',
-                                    text: res.message, // Sesuai dengan key 'message' di controller
+                                    text: res.message,
                                     timer: 1500,
                                     showConfirmButton: false
                                 });

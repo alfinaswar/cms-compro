@@ -40,11 +40,10 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Nama Menu</th>
-                                    <th>Link</th>
                                     <th>Posisi</th>
                                     <th>Urutan</th>
                                     <th>Status</th>
-                                    <th>Aksi</th>
+                                    <th style="width: 10%">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -147,11 +146,7 @@
                         name: 'NamaMenu',
                         orderable: false
                     },
-                    {
-                        data: 'LinkDisplay',
-                        name: 'JenisLink',
-                        orderable: false
-                    },
+
                     {
                         data: 'PosisiBadge',
                         name: 'Posisi',

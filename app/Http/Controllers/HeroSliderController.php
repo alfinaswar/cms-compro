@@ -20,26 +20,30 @@ class HeroSliderController extends Controller
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $encryptedId = encrypt($row->Id);
                     return '
-                        <div class="btn-group btn-group-sm">
-                            <a href="' . route('hero-slider.edit', $encryptedId) . '" class="btn btn-warning btn-edit" title="Edit">
-                                <i class="fa fa-edit"></i>
-                            </a>
-                            <button class="btn btn-danger btn-delete" data-id="' . $row->Id . '" title="Hapus">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </div>
-                    ';
+                    <div class="btn-group btn-group-sm">
+                        <a href="' . route('hero-slider.edit', [$row->id]) . '" class="btn btn-warning" title="Edit">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                        <button class="btn btn-danger btn-delete" data-id="' . $row->id . '" title="Hapus">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                ';
                 })
+
                 ->addColumn('GambarLatar', function ($row) {
+                    // Menampilkan preview bisa berupa gambar ATAU ikon video sesuai TipeMedia
+                    if ($row->TipeMedia === 'video' && $row->Video) {
+                        return '<i class="fa fa-film text-muted" style="font-size: 24px;" title="Video: ' . htmlspecialchars($row->Video) . '"></i>';
+                    }
                     if ($row->GambarLatar) {
                         $url = asset('storage/' . $row->GambarLatar);
                         return '<img src="' . $url . '" alt="Gambar Latar" style="height:40px;max-width:60px;object-fit:contain;">';
-                    } else {
-                        return '<span class="text-muted">-</span>';
                     }
+                    return '<span class="text-muted">-</span>';
                 })
+
                 ->addColumn('GambarBentuk', function ($row) {
                     if ($row->GambarBentuk) {
                         $url = asset('storage/' . $row->GambarBentuk);
@@ -49,8 +53,15 @@ class HeroSliderController extends Controller
                     }
                 })
                 ->addColumn('Status', function ($row) {
-                    return $row->Status ? '<span class="badge bg-success">Aktif</span>' : '<span class="badge bg-secondary">Nonaktif</span>';
+                    if ($row->Status == 1) {
+                        return '<span class="badge bg-success">Aktif</span>';
+                    } elseif ($row->Status == 2) {
+                        return '<span class="badge bg-secondary">Tidak Aktif</span>';
+                    } else {
+                        return '<span class="badge bg-light text-dark">Tidak Diketahui</span>';
+                    }
                 })
+
                 ->rawColumns(['action', 'GambarLatar', 'GambarBentuk', 'Status'])
                 ->make(true);
         }
@@ -74,33 +85,54 @@ class HeroSliderController extends Controller
         $request->validate([
             'SubJudul' => 'nullable|string|max:255',
             'JudulUtama' => 'required|string|max:255',
+            'Deskripsi' => 'nullable|string|max:500',
+            'TipeMedia' => 'required|in:image,video',
             'GambarLatar' => 'nullable|file|image|max:2048',
+            'Video' => 'nullable|file|mimetypes:video/mp4,video/quicktime|max:20480', // max 20MB
             'GambarBentuk' => 'nullable|file|image|max:2048',
+            'TeksCTA' => 'nullable|string|max:100',
+            'LinkCTA' => 'nullable|url|max:255',
+            'TeksCTA2' => 'nullable|string|max:100',
+            'LinkCTA2' => 'nullable|url|max:255',
             'Status' => 'nullable|boolean',
         ]);
-
-        $gambarLatarPath = null;
-        if ($request->hasFile('GambarLatar')) {
-            $gambarLatarPath = $request->file('GambarLatar')->store('hero-sliders/backgrounds', 'public');
-        }
-
-        $gambarBentukPath = null;
-        if ($request->hasFile('GambarBentuk')) {
-            $gambarBentukPath = $request->file('GambarBentuk')->store('hero-sliders/shapes', 'public');
-        }
 
         $data = [
             'SubJudul' => $request->SubJudul,
             'JudulUtama' => $request->JudulUtama,
-            'GambarLatar' => $gambarLatarPath,
-            'GambarBentuk' => $gambarBentukPath,
+            'Deskripsi' => $request->Deskripsi,
+            'TipeMedia' => $request->TipeMedia,
+            'TeksCTA' => $request->TeksCTA,
+            'LinkCTA' => $request->LinkCTA,
+            'TeksCTA2' => $request->TeksCTA2,
+            'LinkCTA2' => $request->LinkCTA2,
             'Status' => $request->Status ? 1 : 0,
-            'UserCreate' => auth()->user() ? auth()->user()->name : null,
+            'Urutan' => $request->Urutan ?? ((HeroSlider::max('Urutan') ?? 0) + 1),
+            'UserCreate' => auth()->user()?->name,
         ];
+
+        // Upload Gambar Latar
+        if ($request->hasFile('GambarLatar')) {
+            $data['GambarLatar'] = $request->file('GambarLatar')
+                ->store('hero-sliders/backgrounds', 'public');
+        }
+
+        // Upload Video
+        if ($request->hasFile('Video')) {
+            $data['Video'] = $request->file('Video')
+                ->store('hero-sliders/videos', 'public');
+        }
+
+        // Upload Gambar Bentuk (overlay decoration)
+        if ($request->hasFile('GambarBentuk')) {
+            $data['GambarBentuk'] = $request->file('GambarBentuk')
+                ->store('hero-sliders/shapes', 'public');
+        }
 
         HeroSlider::create($data);
 
-        return redirect()->route('hero-slider.index')->with('success', 'Hero Slider berhasil ditambahkan.');
+        return redirect()->route('hero-slider.index')
+            ->with('success', 'Hero Slider berhasil ditambahkan.');
     }
 
     /**
@@ -117,7 +149,6 @@ class HeroSliderController extends Controller
      */
     public function edit($id)
     {
-        $id = decrypt($id);
         $heroSlider = HeroSlider::findOrFail($id);
         return view('pengaturan.landing-page.hero-slider.edit', compact('heroSlider'));
     }
@@ -127,44 +158,73 @@ class HeroSliderController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // 1. Validasi Input
         $request->validate([
-            'SubJudul' => 'nullable|string|max:255',
+            'TipeMedia' => 'required|in:image,video',
             'JudulUtama' => 'required|string|max:255',
-            'GambarLatar' => 'nullable|file|image|max:2048',
+            'SubJudul' => 'nullable|string|max:255',
+            'Deskripsi' => 'nullable|string|max:1000',
+            'GambarLatar' => 'nullable|file|image|max:2048', // Maks 2MB
+            'Video' => 'nullable|file|mimetypes:video/mp4,video/quicktime|max:20480', // Maks 20MB
             'GambarBentuk' => 'nullable|file|image|max:2048',
-            'Urutan' => 'required|integer',
+            'TeksCTA' => 'nullable|string|max:100',
+            'LinkCTA' => 'nullable|url|max:255',
+            'TeksCTA2' => 'nullable|string|max:100',
+            'LinkCTA2' => 'nullable|url|max:255',
+            'Urutan' => 'required|integer|min:1',
             'Status' => 'nullable|boolean',
         ]);
 
         $heroSlider = HeroSlider::findOrFail($id);
+        $disk = \Illuminate\Support\Facades\Storage::disk('public');
 
+        // 2. Handle Upload & Hapus Gambar Latar Lama
         $gambarLatarPath = $heroSlider->GambarLatar;
         if ($request->hasFile('GambarLatar')) {
-            if ($gambarLatarPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($gambarLatarPath)) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($gambarLatarPath);
+            if ($gambarLatarPath && $disk->exists($gambarLatarPath)) {
+                $disk->delete($gambarLatarPath);
             }
             $gambarLatarPath = $request->file('GambarLatar')->store('hero-sliders/backgrounds', 'public');
         }
 
+        // 3. Handle Upload & Hapus Video Lama
+        $videoPath = $heroSlider->Video;
+        if ($request->hasFile('Video')) {
+            if ($videoPath && $disk->exists($videoPath)) {
+                $disk->delete($videoPath);
+            }
+            $videoPath = $request->file('Video')->store('hero-sliders/videos', 'public');
+        }
+
+        // 4. Handle Upload & Hapus Gambar Bentuk Lama
         $gambarBentukPath = $heroSlider->GambarBentuk;
         if ($request->hasFile('GambarBentuk')) {
-            if ($gambarBentukPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($gambarBentukPath)) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($gambarBentukPath);
+            if ($gambarBentukPath && $disk->exists($gambarBentukPath)) {
+                $disk->delete($gambarBentukPath);
             }
             $gambarBentukPath = $request->file('GambarBentuk')->store('hero-sliders/shapes', 'public');
         }
 
+        // 5. Update Data ke Database
         $heroSlider->update([
+            'TipeMedia' => $request->TipeMedia,
             'SubJudul' => $request->SubJudul,
             'JudulUtama' => $request->JudulUtama,
+            'Deskripsi' => $request->Deskripsi,
             'GambarLatar' => $gambarLatarPath,
+            'Video' => $videoPath,
             'GambarBentuk' => $gambarBentukPath,
+            'TeksCTA' => $request->TeksCTA,
+            'LinkCTA' => $request->LinkCTA,
+            'TeksCTA2' => $request->TeksCTA2,
+            'LinkCTA2' => $request->LinkCTA2,
             'Urutan' => $request->Urutan,
             'Status' => $request->Status ? 1 : 0,
-            'UserUpdate' => auth()->user() ? auth()->user()->name : null,
+            'UserUpdate' => auth()->check() ? auth()->user()->name : 'System',
         ]);
 
-        return redirect()->route('pengaturan-hero-slider.index')->with('success', 'Hero Slider berhasil diupdate.');
+        // Catatan: Sesuaikan 'hero-slider.index' dengan nama route Anda jika berbeda (misal: 'pengaturan-hero-slider.index')
+        return redirect()->route('hero-slider.index')->with('success', 'Hero Slider berhasil diupdate.');
     }
 
     /**
@@ -172,19 +232,38 @@ class HeroSliderController extends Controller
      */
     public function destroy($id)
     {
-        $heroSlider = HeroSlider::findOrFail($id);
+        try {
+            $heroSlider = HeroSlider::findOrFail($id);
+            $disk = \Illuminate\Support\Facades\Storage::disk('public');
 
-        if ($heroSlider->GambarLatar && \Illuminate\Support\Facades\Storage::disk('public')->exists($heroSlider->GambarLatar)) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($heroSlider->GambarLatar);
+            // 1. Hapus file-file terkait dari storage
+            if ($heroSlider->GambarLatar && $disk->exists($heroSlider->GambarLatar)) {
+                $disk->delete($heroSlider->GambarLatar);
+            }
+            if ($heroSlider->GambarBentuk && $disk->exists($heroSlider->GambarBentuk)) {
+                $disk->delete($heroSlider->GambarBentuk);
+            }
+            if (!empty($heroSlider->Video) && $disk->exists($heroSlider->Video)) {
+                $disk->delete($heroSlider->Video);
+            }
+
+            // 2. Catat siapa yang menghapus (Hanya berguna jika menggunakan SoftDeletes)
+            $heroSlider->UserDelete = auth()->check() ? auth()->user()->name : 'System';
+
+            // 3. Hapus record
+            // Gunakan delete() jika model punya trait SoftDeletes.
+            // Jika ingin hard delete total, gunakan forceDelete() (tapi UserDelete akan hilang).
+            $heroSlider->delete();
+
+            // 4. Return JSON dengan key 'message' agar cocok dengan JS
+            return response()->json([
+                'message' => 'Hero Slider berhasil dihapus!'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Gagal menghapus: ' . $e->getMessage()
+            ], 500);
         }
-        if ($heroSlider->GambarBentuk && \Illuminate\Support\Facades\Storage::disk('public')->exists($heroSlider->GambarBentuk)) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($heroSlider->GambarBentuk);
-        }
-
-        $heroSlider->UserDelete = auth()->user() ? auth()->user()->name : null;
-        $heroSlider->save();
-        $heroSlider->delete();
-
-        return response()->json(['success' => 'Hero Slider berhasil dihapus!']);
     }
 }

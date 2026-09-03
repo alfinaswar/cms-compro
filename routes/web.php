@@ -4,29 +4,34 @@ use App\Http\Controllers\AboutUsController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\BlogPostController;
+use App\Http\Controllers\ClientLogoController;
 use App\Http\Controllers\ContactUsController;
 use App\Http\Controllers\HalamanSolusiController;
 use App\Http\Controllers\HeroSliderController;
 use App\Http\Controllers\HistoryPerusahaanController;
 use App\Http\Controllers\KategoriBeritaController;
 use App\Http\Controllers\KeyFiguresController;
+use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\LowonganKerjaController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PengaturanWebsiteController;
 use App\Http\Controllers\PenghargaanPerusahaanController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\StrukturOrganisasiController;
+use App\Http\Controllers\StrukturOrganisasiDetailController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ValuePerusahaanController;
+use App\Http\Controllers\WhyChooseUsController;
 use App\Models\ContactUs;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('frontend.main');
-});
-
+Route::get('/', [LandingPageController::class, 'index'])->name('frontend.main'); // Hanya Tampil Footer saja
+// Route::get('/', function () {
+//     return view('frontend.main');
+// }); Tampil Semua
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/admin/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::prefix('/')->group(function () {
     Route::get('/news', [BeritaController::class, 'news'])->name('frontend.news');
     Route::get('/about-us', [AboutUsController::class, 'show'])->name('frontend.about-us');
@@ -57,6 +62,9 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
 
     // Pengaturan Website Section
     Route::prefix('pengaturan')->group(function () {
+
+
+
         Route::get('/', [PengaturanWebsiteController::class, 'index'])->name('pengaturan-website.index');
         Route::get('/create', [PengaturanWebsiteController::class, 'create'])->name('pengaturan-website.create');
         Route::post('/store', [PengaturanWebsiteController::class, 'store'])->name('pengaturan-website.store');
@@ -120,6 +128,15 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         Route::delete('/landing-page/about-us/delete/{id}', [AboutUsController::class, 'destroy'])->name('about-us.destroy');
         Route::get('/landing-page/about-us/show/{id}', [AboutUsController::class, 'show'])->name('about-us.show');
 
+        Route::resource('/landing-page/why-choose-us', WhyChooseUsController::class);
+        Route::resource('/landing-page/client-logo', ClientLogoController::class)->names('client-logo');
+        Route::get('/landing-page/client-logo/create-detail/{id}', [ClientLogoController::class, 'createDetail'])->name('client-logo.create-detail');
+        Route::post('/landing-page/client-logo/store-detail/{id}', [ClientLogoController::class, 'storeDetail'])->name('client-logo.store-detail');
+
+        //untuk detail client logo
+        Route::put('/landing-page/client-logo/update-detail/{id}', [ClientLogoController::class, 'updateDetail'])->name('client-logo.update-detail');
+        Route::delete('/landing-page/client-logo/delete/{id}', [ClientLogoController::class, 'destroyDetail'])->name('client-logo.destroy-detail');
+
     });
     // === ROUTE UNTUK BERITA ===
     Route::prefix('post')->group(function () {
@@ -154,6 +171,30 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         Route::get('/export', [ContactUsController::class, 'encuxport'])->name('contact.export');
         Route::delete('/contact/{id}', [ContactUsController::class, 'destroy']);
     });
-
+    Route::prefix('struktur-organisasi')->group(function () {
+        Route::get('/', [StrukturOrganisasiController::class, 'index'])->name('struktur-organisasi.index');
+        Route::get('/create', [StrukturOrganisasiController::class, 'create'])->name('struktur-organisasi.create');
+        Route::post('/store', [StrukturOrganisasiController::class, 'store'])->name('struktur-organisasi.store');
+        Route::get('/edit/{id}', [StrukturOrganisasiController::class, 'edit'])->name('struktur-organisasi.edit');
+        Route::put('/update/{id}', [StrukturOrganisasiController::class, 'update'])->name('struktur-organisasi.update');
+        Route::delete('/delete/{id}', [StrukturOrganisasiController::class, 'destroy'])->name('struktur-organisasi.destroy');
+        Route::get('/show/{id}', [StrukturOrganisasiController::class, 'show'])->name('struktur-organisasi.show');
+        Route::get('struktur-organisasi/{section}/details', [StrukturOrganisasiController::class, 'getDetails'])
+            ->name('struktur-organisasi.details');
+        Route::post('struktur-organisasi/detail/store', [StrukturOrganisasiController::class, 'storeDetail'])
+            ->name('struktur-organisasi.detail.store');
+        Route::put('struktur-organisasi/detail/{id}/update', [StrukturOrganisasiController::class, 'updateDetail'])
+            ->name('struktur-organisasi.detail.update');
+        Route::delete('struktur-organisasi/detail/{id}/delete', [StrukturOrganisasiController::class, 'destroyDetail'])
+            ->name('struktur-organisasi.detail.destroy');
+    });
+    Route::prefix('struktur-organisasi/{section}/anggota')->name('struktur-organisasi.anggota.')->group(function () {
+        Route::get('/', [StrukturOrganisasiDetailController::class, 'index'])->name('index');
+        Route::get('/create', [StrukturOrganisasiDetailController::class, 'create'])->name('create');
+        Route::post('/', [StrukturOrganisasiDetailController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [StrukturOrganisasiDetailController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [StrukturOrganisasiDetailController::class, 'update'])->name('update');
+        Route::delete('/{id}', [StrukturOrganisasiDetailController::class, 'destroy'])->name('destroy');
+    });
     Route::get('log-aktivitas-user', [ActivityLogController::class, 'index'])->name('log.index');
 });

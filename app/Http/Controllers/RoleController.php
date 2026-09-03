@@ -44,20 +44,18 @@ class RoleController extends Controller
                 ->addColumn('action', function ($role) {
                     $btn = '';
 
-                    // Show button
-                    $btn .= '<a href="' . route('roles.show', $role->id) . '" class="btn btn-info btn-sm me-1">';
-                    $btn .= '<i class="fa fa-eye"></i> Show</a> ';
 
-                    // Edit button - tanpa cek permission
+                    // Tombol Edit - tanpa cek izin
                     $btn .= '<a href="' . route('roles.edit', $role->id) . '" class="btn btn-primary btn-sm me-1">';
-                    $btn .= '<i class="fa fa-edit"></i> Edit</a> ';
+                    $btn .= '<i class="fa fa-edit"></i> Ubah</a> ';
 
-                    // Delete button - tanpa cek permission
+                    // Tombol Hapus - tanpa cek izin
                     $btn .= '<button class="btn btn-danger btn-sm btn-delete" data-id="' . $role->id . '" data-name="' . $role->name . '">';
                     $btn .= '<i class="fa fa-trash"></i> Hapus</button>';
 
                     return $btn;
                 })
+
                 ->rawColumns(['action'])
                 ->make(true);
         }

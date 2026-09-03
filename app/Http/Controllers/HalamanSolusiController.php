@@ -194,8 +194,24 @@ class HalamanSolusiController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(HalamanSolusi $halamanSolusi)
+    public function destroy($id)
     {
-        //
+        $id = decrypt($id);
+        try {
+            $halamanSolusi = HalamanSolusi::findOrFail($id);
+            HalamanSolusiDetail::where('HalamanSolusiId', $halamanSolusi->id)->delete();
+            // Hapus data utama
+            $halamanSolusi->delete();
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Halaman Solusi berhasil dihapus.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Gagal menghapus data. Silakan coba lagi.'
+            ], 500);
+        }
     }
 }
