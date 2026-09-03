@@ -17,7 +17,7 @@
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-@stack('styles')
+    @stack('styles')
     <style>
         /* Navbar scroll effect */
         .navbar-scrolled {
@@ -63,7 +63,7 @@
             scroll-margin-top: 80px;
         }
     </style>
-      <!-- Custom Styles for Navbar -->
+    <!-- Custom Styles for Navbar -->
     <style>
         /* Navbar transparent state */
         .navbar-transparent {
@@ -224,17 +224,45 @@
                     <button class="nav-icon text-white hover:text-brand-500 transition-colors duration-200 p-2">
                         <i class="fa-solid fa-magnifying-glass text-lg"></i>
                     </button>
-                    <button
-                        class="nav-icon flex items-center space-x-1 text-white hover:text-brand-500 transition-colors duration-200">
-                        <img src="https://flagcdn.com/w20/id.png" alt="Indonesia" class="w-5 h-auto rounded-sm">
-                        <span class="font-medium text-sm">ID</span>
-                        <i class="fa-solid fa-chevron-down text-xs"></i>
-                    </button>
+
+                    <div class="relative group">
+                        <button
+                            class="nav-icon flex items-center space-x-1 hover:text-brand-500 transition-colors duration-200 py-2
+                            {{ app()->getLocale() == 'id' ? 'text-white' : 'text-white' }}">
+                            @if (app()->getLocale() == 'id')
+                                <img src="https://flagcdn.com/w20/id.png" alt="Indonesia" class="w-5 h-auto rounded-sm">
+                                <span class="font-medium text-sm">ID</span>
+                            @else
+                                <img src="https://flagcdn.com/w20/gb.png" alt="English" class="w-5 h-auto rounded-sm">
+                                <span class="font-medium text-sm">EN</span>
+                            @endif
+                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                        </button>
+                        <!-- Dropdown Panel -->
+                        <div
+                            class="absolute top-full right-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                            <div
+                                class="bg-white rounded-xl shadow-xl border border-slate-100 py-2 min-w-[140px] overflow-hidden">
+                                <a href="?lang=id"
+                                    class="flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-brand-50 hover:text-brand-600 transition-colors {{ app()->getLocale() == 'id' ? 'bg-brand-50 text-brand-600 font-semibold' : '' }}">
+                                    <img src="https://flagcdn.com/w20/id.png" class="w-5 h-auto rounded-sm mr-2">
+                                    Bahasa Indonesia
+                                </a>
+                                <a href="?lang=en"
+                                    class="flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-brand-50 hover:text-brand-600 transition-colors {{ app()->getLocale() == 'en' ? 'bg-brand-50 text-brand-600 font-semibold' : '' }}">
+                                    <img src="https://flagcdn.com/w20/gb.png" class="w-5 h-auto rounded-sm mr-2">
+                                    English
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
                     <a href="#kontak"
                         class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-2.5 rounded-full font-medium transition-all duration-200 shadow-md hover:shadow-lg">
                         Contact Us
                     </a>
                 </div>
+
 
                 <!-- Mobile Menu Button -->
                 <div class="lg:hidden flex items-center space-x-2">
@@ -515,7 +543,7 @@
         window.addEventListener('scroll', handleScroll);
         handleScroll(); // Run on load
     </script>
- <!-- Custom Config for Brand Colors -->
+    <!-- Custom Config for Brand Colors -->
     <script>
         tailwind.config = {
             theme: {

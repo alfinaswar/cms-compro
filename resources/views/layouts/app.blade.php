@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>AdminLTE 3 | Fixed Sidebar</title>
+    <title>{{ $websiteSettings->NamaPerusahaan ?? 'Admin' }}</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Font Awesome -->
@@ -25,6 +25,9 @@
     <!-- Select2 -->
     <link rel="stylesheet" href="{{ asset('') }}assets/plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="{{ asset('') }}assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/x-icon" href="{{ asset('storage/' . ($websiteSettings->PathFavicon ?? '-')) }}"
+        title="{{ $websiteSettings->NamaPerusahaan ?? 'Admin' }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @stack('styles')
 </head>
@@ -189,6 +192,14 @@
                                         <p>Kategori Berita</p>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('master-kantor.index') }}"
+                                        class="nav-link {{ request()->segment(2) == 'master-kantor' ? 'active' : '' }}">
+                                        <i class="fas fa-building nav-icon"></i>
+                                        <p>Master Kantor</p>
+                                    </a>
+                                </li>
+
                                 <!-- Tambahkan data master lain di sini jika ada -->
                             </ul>
                         </li>
@@ -239,7 +250,7 @@
                                         <p>Key Figures</p>
                                     </a>
                                 </li>
-                                             <li class="nav-item">
+                                <li class="nav-item">
                                     <a href="{{ route('why-choose-us.index') }}"
                                         class="nav-link {{ request()->segment(2) == 'why-choose-us' ? 'active' : '' }}">
                                         <i class="fas fa-star nav-icon"></i>
@@ -261,7 +272,7 @@
                                         <p>Halaman Solusi</p>
                                     </a>
                                 </li>
-                                 <li class="nav-item">
+                                <li class="nav-item">
                                     <a href="{{ route('client-logo.index') }}"
                                         class="nav-link {{ request()->segment(4) == 'halaman-solusi' ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>

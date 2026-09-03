@@ -13,6 +13,7 @@ use App\Http\Controllers\KategoriBeritaController;
 use App\Http\Controllers\KeyFiguresController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\LowonganKerjaController;
+use App\Http\Controllers\MasterKantorController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PengaturanWebsiteController;
 use App\Http\Controllers\PenghargaanPerusahaanController;
@@ -25,7 +26,7 @@ use App\Http\Controllers\WhyChooseUsController;
 use App\Models\ContactUs;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [LandingPageController::class, 'index'])->name('frontend.main'); // Hanya Tampil Footer saja
+Route::get('/', [LandingPageController::class, 'index'])->name('frontend.main');  // Hanya Tampil Footer saja
 // Route::get('/', function () {
 //     return view('frontend.main');
 // }); Tampil Semua
@@ -62,9 +63,6 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
 
     // Pengaturan Website Section
     Route::prefix('pengaturan')->group(function () {
-
-
-
         Route::get('/', [PengaturanWebsiteController::class, 'index'])->name('pengaturan-website.index');
         Route::get('/create', [PengaturanWebsiteController::class, 'create'])->name('pengaturan-website.create');
         Route::post('/store', [PengaturanWebsiteController::class, 'store'])->name('pengaturan-website.store');
@@ -133,10 +131,9 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         Route::get('/landing-page/client-logo/create-detail/{id}', [ClientLogoController::class, 'createDetail'])->name('client-logo.create-detail');
         Route::post('/landing-page/client-logo/store-detail/{id}', [ClientLogoController::class, 'storeDetail'])->name('client-logo.store-detail');
 
-        //untuk detail client logo
+        // untuk detail client logo
         Route::put('/landing-page/client-logo/update-detail/{id}', [ClientLogoController::class, 'updateDetail'])->name('client-logo.update-detail');
         Route::delete('/landing-page/client-logo/delete/{id}', [ClientLogoController::class, 'destroyDetail'])->name('client-logo.destroy-detail');
-
     });
     // === ROUTE UNTUK BERITA ===
     Route::prefix('post')->group(function () {
@@ -163,6 +160,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         Route::post('/update-order', [MenuController::class, 'updateOrder'])->name('menu.update-order');
     });
     Route::prefix('data-master')->group(function () {
+        Route::resource('kantor', MasterKantorController::class)->names('master-kantor');
         Route::resource('kategori-berita', KategoriBeritaController::class)->names('kategori-berita');
         Route::get('/api/kategori-berita', [KategoriBeritaController::class, 'apiKategori'])->name('api.kategori-berita');
     });
