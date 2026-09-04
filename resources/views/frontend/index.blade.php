@@ -512,36 +512,38 @@
             }
         });
 
-        // Navbar scroll effect - change from transparent to white
-        const navbar = document.getElementById('main-navbar');
-        const heroSection = document.getElementById('home');
+        // Navbar scroll effect
+const navbar = document.getElementById('main-navbar');
+const heroSection = document.getElementById('home');
 
-        function handleScroll() {
-            const scrollY = window.scrollY;
-            const heroHeight = heroSection.offsetHeight;
+function handleScroll() {
+    const scrollY = window.scrollY;
 
-            if (scrollY > 100) {
-                navbar.classList.remove('navbar-transparent');
-                navbar.classList.add('navbar-scrolled');
+    // Jika tidak ada section #home (halaman career, news, dll),
+    // pakai threshold tetap 100px
+    const threshold = heroSection ? heroSection.offsetHeight : 100;
 
-                // Change mobile menu button color
-                document.querySelectorAll('.mobile-btn').forEach(btn => {
-                    btn.classList.remove('text-white');
-                    btn.classList.add('text-slate-700');
-                });
-            } else {
-                navbar.classList.add('navbar-transparent');
-                navbar.classList.remove('navbar-scrolled');
+    if (scrollY > threshold) {
+        navbar.classList.remove('navbar-transparent');
+        navbar.classList.add('navbar-scrolled');
 
-                document.querySelectorAll('.mobile-btn').forEach(btn => {
-                    btn.classList.add('text-white');
-                    btn.classList.remove('text-slate-700');
-                });
-            }
-        }
+        document.querySelectorAll('.mobile-btn').forEach(btn => {
+            btn.classList.remove('text-white');
+            btn.classList.add('text-slate-700');
+        });
+    } else {
+        navbar.classList.add('navbar-transparent');
+        navbar.classList.remove('navbar-scrolled');
 
-        window.addEventListener('scroll', handleScroll);
-        handleScroll(); // Run on load
+        document.querySelectorAll('.mobile-btn').forEach(btn => {
+            btn.classList.add('text-white');
+            btn.classList.remove('text-slate-700');
+        });
+    }
+}
+
+window.addEventListener('scroll', handleScroll);
+handleScroll();
     </script>
     <!-- Custom Config for Brand Colors -->
     <script>

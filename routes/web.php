@@ -9,9 +9,11 @@ use App\Http\Controllers\ContactUsController;
 use App\Http\Controllers\HalamanSolusiController;
 use App\Http\Controllers\HeroSliderController;
 use App\Http\Controllers\HistoryPerusahaanController;
+use App\Http\Controllers\JenisLaporanKeuanganController;
 use App\Http\Controllers\KategoriBeritaController;
 use App\Http\Controllers\KeyFiguresController;
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\LaporanKeuanganDetailController;
 use App\Http\Controllers\LowonganKerjaController;
 use App\Http\Controllers\MasterKantorController;
 use App\Http\Controllers\MenuController;
@@ -24,6 +26,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ValuePerusahaanController;
 use App\Http\Controllers\WhyChooseUsController;
 use App\Models\ContactUs;
+use App\Models\JenisLaporanKeuangan;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingPageController::class, 'index'])->name('frontend.main');  // Hanya Tampil Footer saja
@@ -35,6 +38,7 @@ Auth::routes();
 Route::get('/admin/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::prefix('/')->group(function () {
     Route::get('/news', [BeritaController::class, 'news'])->name('frontend.news');
+    Route::get('/laporan-keuangan', [JenisLaporanKeuanganController::class, 'laporanKeuanganFe'])->name('frontend.laporan-keuangan');
     Route::get('/about-us', [AboutUsController::class, 'show'])->name('frontend.about-us');
     Route::get('/news/{slug}', [BeritaController::class, 'newsDetail'])->name('frontend.detail');
     Route::get('/career', [LowonganKerjaController::class, 'career'])->name('frontend.career');
@@ -134,6 +138,8 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         // untuk detail client logo
         Route::put('/landing-page/client-logo/update-detail/{id}', [ClientLogoController::class, 'updateDetail'])->name('client-logo.update-detail');
         Route::delete('/landing-page/client-logo/delete/{id}', [ClientLogoController::class, 'destroyDetail'])->name('client-logo.destroy-detail');
+
+
     });
     // === ROUTE UNTUK BERITA ===
     Route::prefix('post')->group(function () {
@@ -160,6 +166,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         Route::post('/update-order', [MenuController::class, 'updateOrder'])->name('menu.update-order');
     });
     Route::prefix('data-master')->group(function () {
+        //Investor Relation Section
         Route::resource('kantor', MasterKantorController::class)->names('master-kantor');
         Route::resource('kategori-berita', KategoriBeritaController::class)->names('kategori-berita');
         Route::get('/api/kategori-berita', [KategoriBeritaController::class, 'apiKategori'])->name('api.kategori-berita');
@@ -169,6 +176,17 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         Route::get('/export', [ContactUsController::class, 'encuxport'])->name('contact.export');
         Route::delete('/contact/{id}', [ContactUsController::class, 'destroy']);
     });
+    Route::resource('jenis-laporan', JenisLaporanKeuanganController::class)->names('jenis-laporan');
+    Route::prefix('jenis-laporan/{jenisId}/dokumen')->name('jenis-laporan.details.')->group(function () {
+        Route::get('/', [LaporanKeuanganDetailController::class, 'index'])->name('index');
+        Route::post('/', [LaporanKeuanganDetailController::class, 'store'])->name('store');
+        Route::put('/{id}', [LaporanKeuanganDetailController::class, 'update'])->name('update');
+        Route::delete('/{id}', [LaporanKeuanganDetailController::class, 'destroy'])->name('destroy');
+    });
+
+    // Download dokumen (public)
+    Route::get('laporan-download/{id}', [LaporanKeuanganDetailController::class, 'download'])
+        ->name('laporan.download');
     Route::prefix('struktur-organisasi')->group(function () {
         Route::get('/', [StrukturOrganisasiController::class, 'index'])->name('struktur-organisasi.index');
         Route::get('/create', [StrukturOrganisasiController::class, 'create'])->name('struktur-organisasi.create');

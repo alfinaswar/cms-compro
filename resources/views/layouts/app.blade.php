@@ -130,6 +130,17 @@
                                 </p>
                             </a>
                         </li>
+                        <li class="nav-header">Invenstor / Jenis Laporan</li>
+                        <li class="nav-item">
+                            <a href="{{ route('jenis-laporan.index') }}"
+                                class="nav-link {{ request()->segment(1) == 'jenis-laporan' ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-file-alt"></i>
+                                <p>
+                                    Jenis Laporan Keuangan
+                                </p>
+                            </a>
+                        </li>
+
                         <li class="nav-header">Contact</li>
                         <li class="nav-item">
                             <a href="{{ route('contact.list') }}"

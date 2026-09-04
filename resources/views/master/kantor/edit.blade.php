@@ -10,7 +10,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('master.master-kantor.index') }}">Kantor</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('master-kantor.index') }}">Kantor</a></li>
                         <li class="breadcrumb-item active">Edit</li>
                     </ol>
                 </div>
@@ -20,8 +20,8 @@
 
     <section class="content">
         <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <form action="{{ route('master.master-kantor.update', $kantor->id) }}" method="POST">
+            <div class="col-lg-12">
+                <form action="{{ route('master-kantor.update', $kantor->id) }}" method="POST">
                     @csrf @method('PUT')
                     <div class="card card-outline card-warning shadow-sm">
                         <div class="card-header">
@@ -196,7 +196,7 @@
 
                         </div>
                         <div class="card-footer d-flex justify-content-end gap-3">
-                            <a href="{{ route('master.master-kantor.index') }}" class="btn btn-secondary">
+                            <a href="{{ route('master-kantor.index') }}" class="btn btn-secondary">
                                 <i class="fa fa-times mr-2"></i>Batal
                             </a>
                             <button type="submit" class="btn btn-warning">

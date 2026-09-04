@@ -1,8 +1,8 @@
 @extends('frontend.index')
 
 @section('content-frontend')
-
-    <style>
+@push('styles')
+     <style>
         /* Job Card Hover Effect */
         .job-card {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -65,6 +65,8 @@
             cursor: not-allowed;
         }
     </style>
+@endpush
+
 
     <!-- ========================================== -->
     <!-- HERO / BREADCRUMB SECTION -->
