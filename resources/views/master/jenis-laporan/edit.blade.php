@@ -18,7 +18,7 @@
 
     <section class="content">
         <div class="row justify-content-center">
-            <div class="col-lg-8">
+            <div class="col-lg-12">
                 <form action="{{ route('jenis-laporan.update', $jenis->id) }}" method="POST">
                     @csrf @method('PUT')
                     <div class="card card-outline card-warning shadow-sm">

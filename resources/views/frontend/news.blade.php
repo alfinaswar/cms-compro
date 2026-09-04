@@ -6,7 +6,7 @@
     <section class="relative pt-32 pb-20 bg-gradient-to-br from-brand-900 via-brand-800 to-brand-900 overflow-hidden">
         <div class="absolute inset-0 opacity-10">
             <img src="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?q=80&w=2070&auto=format&fit=crop"
-                alt="News Background" class="w-full h-full object-cover">
+                alt="{{ __('News Background') }}" class="w-full h-full object-cover">
         </div>
         <div
             class="absolute top-0 right-0 w-96 h-96 bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10">
@@ -19,23 +19,23 @@
             <div class="max-w-4xl mx-auto text-center">
                 <span
                     class="inline-block py-1.5 px-4 rounded-full bg-brand-500/20 text-brand-100 text-sm font-semibold tracking-wide mb-6 border border-brand-500/30 backdrop-blur-sm">
-                    <i class="fa-solid fa-newspaper mr-2"></i> UNTUK BERITA INI
+                    <i class="fa-solid fa-newspaper mr-2"></i> {{ __('FOR THIS NEWS') }}
                 </span>
                 <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight">
-                    Berita <span
-                        class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-cyan-300">Terbaru</span>
+                    {{ __('Latest News') }} <span
+                        class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-cyan-300"></span>
                 </h1>
                 <p class="text-xl text-slate-300 max-w-2xl mx-auto">
-                    Dapatkan informasi terkini, update terbaru dan insight perusahaan kami di sini.
+                    {{ __('Get the latest information, updates and company insights here.') }}
                 </p>
 
                 <!-- Breadcrumb -->
                 <nav class="mt-8 flex items-center justify-center space-x-2 text-sm text-slate-300">
                     <a href="{{ url('/') }}" class="hover:text-white transition-colors">
-                        <i class="fa-solid fa-house mr-1"></i> Home
+                        <i class="fa-solid fa-house mr-1"></i> {{ __('Home') }}
                     </a>
                     <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
-                    <span class="text-white font-semibold">Berita</span>
+                    <span class="text-white font-semibold">{{ __('News') }}</span>
                 </nav>
             </div>
         </div>
@@ -68,7 +68,7 @@
                                     </span>
                                     <span>
                                         <i class="fa-regular fa-calendar mr-1"></i>
-                                        {{ \Carbon\Carbon::parse($item->TanggalPublikasi)->format('d M, Y') }}
+                                        {{ \Carbon\Carbon::parse($item->TanggalPublikasi)->isoFormat('D MMM, Y') }}
                                     </span>
                                     <span class="px-2 py-1 bg-brand-50 text-brand-700 text-xs font-semibold rounded">
                                         {{ $item->Kategori }}
@@ -90,7 +90,7 @@
                                 <!-- Read More -->
                                 <a href="{{ url('news/' . $item->Slug) }}"
                                     class="inline-flex items-center text-brand-600 hover:text-brand-700 font-semibold">
-                                    Baca Selengkapnya
+                                    {{ __('Read More') }}
                                     <i class="fa-solid fa-arrow-right ml-2"></i>
                                 </a>
                             </div>
@@ -99,8 +99,8 @@
                         <!-- Empty State -->
                         <div class="text-center py-16 bg-white rounded-xl border border-slate-200">
                             <i class="fa-regular fa-newspaper text-5xl text-slate-400 mb-4"></i>
-                            <h3 class="text-xl font-bold text-slate-900 mb-2">Belum Ada Berita</h3>
-                            <p class="text-slate-600">Saat ini belum ada berita yang tersedia.</p>
+                            <h3 class="text-xl font-bold text-slate-900 mb-2">{{ __('No News Yet') }}</h3>
+                            <p class="text-slate-600">{{ __('Currently there is no news available.') }}</p>
                         </div>
                     @endforelse
 
@@ -158,10 +158,10 @@
 
                         <!-- Search Widget -->
                         <div class="bg-white rounded-xl p-6 border border-slate-200">
-                            <h3 class="text-lg font-bold text-slate-900 mb-4">Search</h3>
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">{{ __('Search') }}</h3>
                             <form action="{{ url('news') }}" method="GET" class="relative">
                                 <input type="text" name="search" value="{{ request('search') }}"
-                                    placeholder="Cari berita..."
+                                    placeholder="{{ __('Search news...') }}"
                                     class="w-full px-4 py-2.5 pr-10 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
                                 <button type="submit"
                                     class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand-600">
@@ -172,7 +172,7 @@
 
                         <!-- Categories Widget -->
                         <div class="bg-white rounded-xl p-6 border border-slate-200">
-                            <h3 class="text-lg font-bold text-slate-900 mb-4">Categories</h3>
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">{{ __('Categories') }}</h3>
                             <ul class="space-y-2">
                                 @foreach ($categories as $category)
                                     <li>
@@ -190,7 +190,7 @@
 
                         <!-- Recent Posts Widget -->
                         <div class="bg-white rounded-xl p-6 border border-slate-200">
-                            <h3 class="text-lg font-bold text-slate-900 mb-4">Recent Posts</h3>
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">{{ __('Recent Posts') }}</h3>
                             <div class="space-y-4">
                                 @foreach ($recentNews as $recent)
                                     <div class="flex gap-3">
@@ -201,7 +201,7 @@
                                         <div class="flex-1 min-w-0">
                                             <p class="text-xs text-slate-500 mb-1">
                                                 <i class="fa-regular fa-calendar mr-1"></i>
-                                                {{ \Carbon\Carbon::parse($recent->TanggalPublikasi)->format('d M, Y') }}
+                                                {{ \Carbon\Carbon::parse($recent->TanggalPublikasi)->isoFormat('D MMM, Y') }}
                                             </p>
                                             <h4
                                                 class="text-sm font-semibold text-slate-900 hover:text-brand-600 line-clamp-2">
@@ -217,7 +217,7 @@
 
                         <!-- Tags Widget -->
                         <div class="bg-white rounded-xl p-6 border border-slate-200">
-                            <h3 class="text-lg font-bold text-slate-900 mb-4">Popular Tags</h3>
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">{{ __('Popular Tags') }}</h3>
                             <div class="flex flex-wrap gap-2">
                                 @php
                                     $allTags = [];
@@ -238,7 +238,7 @@
                                         {{ $tag }}
                                     </a>
                                 @empty
-                                    <span class="text-sm text-slate-500">No tags available</span>
+                                    <span class="text-sm text-slate-500">{{ __('No tags available') }}</span>
                                 @endforelse
                             </div>
                         </div>
@@ -248,14 +248,14 @@
                             <div class="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <i class="fa-solid fa-phone text-2xl"></i>
                             </div>
-                            <h3 class="text-lg font-bold mb-2">Need Help?</h3>
-                            <p class="text-brand-100 text-sm mb-4">Hubungi kami untuk informasi lebih lanjut</p>
+                            <h3 class="text-lg font-bold mb-2">{{ __('Need Help?') }}</h3>
+                            <p class="text-brand-100 text-sm mb-4">{{ __('Contact us for more information') }}</p>
                             <a href="tel:+62318910919" class="block text-xl font-bold mb-4 hover:text-brand-200">
                                 +62 31 8910919
                             </a>
                             <a href="{{ url('contact') }}"
                                 class="inline-flex items-center px-6 py-2.5 bg-white text-brand-700 font-semibold rounded-lg hover:bg-brand-50 transition-colors">
-                                Contact Us
+                                {{ __('Contact Us') }}
                                 <i class="fa-solid fa-arrow-right ml-2"></i>
                             </a>
                         </div>
