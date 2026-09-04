@@ -22,7 +22,7 @@ class HeroSliderController extends Controller
                 ->addColumn('action', function ($row) {
                     return '
                     <div class="btn-group btn-group-sm">
-                        <a href="' . route('hero-slider.edit', [$row->id]) . '" class="btn btn-warning" title="Edit">
+                        <a href="' . route('hero-slider.edit', $row->id) . '" class="btn btn-warning" title="Edit">
                             <i class="fa fa-edit"></i>
                         </a>
                         <button class="btn btn-danger btn-delete" data-id="' . $row->id . '" title="Hapus">
