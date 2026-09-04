@@ -3,7 +3,7 @@
 @section('content-frontend')
     @php
         use App\Models\HeroSlider;
-        $heroSliders = HeroSlider::where('Status', 'Aktif')->orderBy('Urutan', 'asc')->get();
+        $heroSliders = HeroSlider::where('Status', '1')->orderBy('Urutan', 'asc')->get();
         $heroCount = $heroSliders->count();
         $locale = app()->getLocale(); // Simpan locale saat ini untuk efisiensi
     @endphp
