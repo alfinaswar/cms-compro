@@ -1,6 +1,9 @@
 @extends('frontend.index')
 
 @section('content-frontend')
+    @php
+        $trans = $lowongan->translate($locale ?? 'id');
+    @endphp
     @push('style')
         <style>
             /* Zona Drag & Drop Kustom */
@@ -35,15 +38,8 @@
             }
 
             @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                    transform: translateY(-10px);
-                }
-
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
+                from { opacity: 0; transform: translateY(-10px); }
+                to { opacity: 1; transform: translateY(0); }
             }
 
             /* Styling Konten Deskripsi Pekerjaan */
@@ -59,60 +55,29 @@
                 margin-bottom: 0.75rem;
             }
 
-            .job-description-content h3 {
-                font-size: 1.25rem;
-            }
-
-            .job-description-content h4 {
-                font-size: 1.125rem;
-            }
-
-            .job-description-content p {
-                margin-bottom: 1rem;
-                line-height: 1.75;
-            }
-
+            .job-description-content h3 { font-size: 1.25rem; }
+            .job-description-content h4 { font-size: 1.125rem; }
+            .job-description-content p { margin-bottom: 1rem; line-height: 1.75; }
             .job-description-content ul,
-            .job-description-content ol {
-                margin-bottom: 1rem;
-                padding-left: 1.5rem;
-            }
+            .job-description-content ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+            .job-description-content li { margin-bottom: 0.5rem; line-height: 1.75; }
+            .job-description-content ul li { list-style-type: disc; }
+            .job-description-content ol li { list-style-type: decimal; }
+            .job-description-content strong { color: #0f172a; font-weight: 600; }
 
-            .job-description-content li {
-                margin-bottom: 0.5rem;
-                line-height: 1.75;
-            }
-
-            .job-description-content ul li {
-                list-style-type: disc;
-            }
-
-            .job-description-content ol li {
-                list-style-type: decimal;
-            }
-
-            .job-description-content strong {
-                color: #0f172a;
-                font-weight: 600;
-            }
-
-            /* Scroll lembut ke form apply */
-            html {
-                scroll-behavior: smooth;
-            }
+            html { scroll-behavior: smooth; }
         </style>
     @endpush
+
     <!-- ========================================== -->
-    <!-- HERO / BREADCRUMB BAGIAN -->
+    <!-- HERO / BREADCRUMB -->
     <!-- ========================================== -->
     <section class="relative pt-32 pb-16 bg-gradient-to-br from-brand-900 via-brand-800 to-brand-900 overflow-hidden">
         <div class="absolute inset-0 opacity-10">
             <img src="https://images.unsplash.com/photo-1454165804606-c3d57f86697dd?q=80&w=2070&auto=format&fit=crop"
                 alt="Latar Belakang" class="w-full h-full object-cover">
         </div>
-        <div
-            class="absolute top-0 right-0 w-96 h-96 bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10">
-        </div>
+        <div class="absolute top-0 right-0 w-96 h-96 bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
 
         <div class="container mx-auto px-6 relative z-10">
             <div class="max-w-4xl mx-auto">
@@ -120,20 +85,18 @@
                     <div>
                         <div class="flex items-center gap-3 mb-3">
                             @if ($lowongan->masih_berlaku)
-                                <span
-                                    class="inline-flex items-center px-3 py-1 bg-green-500/20 text-green-300 text-sm font-bold rounded-full border border-green-500/30">
+                                <span class="inline-flex items-center px-3 py-1 bg-green-500/20 text-green-300 text-sm font-bold rounded-full border border-green-500/30">
                                     <span class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
-                                    LOWONGAN TERBUKA
+                                    {{ __('Open Position') }}
                                 </span>
                             @else
-                                <span
-                                    class="inline-flex items-center px-3 py-1 bg-slate-500/20 text-slate-300 text-sm font-bold rounded-full border border-slate-500/30">
-                                    TUTUP
+                                <span class="inline-flex items-center px-3 py-1 bg-slate-500/20 text-slate-300 text-sm font-bold rounded-full border border-slate-500/30">
+                                    {{ __('Closed') }}
                                 </span>
                             @endif
                         </div>
                         <h1 class="text-3xl md:text-5xl font-extrabold text-white mb-4 leading-tight">
-                            {{ $lowongan->Posisi }}
+                            {{ $trans->Posisi ?? '-' }}
                         </h1>
                         <div class="flex flex-wrap items-center gap-4 text-slate-300">
                             <span class="inline-flex items-center">
@@ -146,7 +109,7 @@
                             </span>
                             <span class="inline-flex items-center">
                                 <i class="fa-regular fa-clock mr-2 text-brand-400"></i>
-                                Penuh Waktu
+                                {{ __('Full-time') }}
                             </span>
                         </div>
                     </div>
@@ -154,7 +117,7 @@
                     @if ($lowongan->masih_berlaku)
                         <a href="#apply-form"
                             class="inline-flex items-center justify-center px-6 py-3 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl whitespace-nowrap">
-                            Lamar Sekarang
+                            {{ __('Apply Now') }}
                             <i class="fa-solid fa-arrow-right ml-2"></i>
                         </a>
                     @endif
@@ -192,9 +155,7 @@
         <div class="container mx-auto px-6">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                <!-- ========================================== -->
-                <!-- KOLOM KIRI: DETAIL PEKERJAAN -->
-                <!-- ========================================== -->
+                <!-- KOLOM KIRI -->
                 <div class="lg:col-span-2 space-y-6">
 
                     <!-- KARTU DESKRIPSI PEKERJAAN -->
@@ -203,11 +164,11 @@
                             <div class="w-12 h-12 bg-brand-100 rounded-xl flex items-center justify-center mr-4">
                                 <i class="fa-regular fa-file-lines text-brand-600 text-xl"></i>
                             </div>
-                            <h2 class="text-2xl font-bold text-slate-900">Deskripsi Pekerjaan</h2>
+                            <h2 class="text-2xl font-bold text-slate-900">{{ __('Job Description') }}</h2>
                         </div>
 
                         <div class="job-description-content text-slate-600">
-                            {!! $lowongan->Deskripsi !!}
+                            {!! $trans->Deskripsi !!}
                         </div>
                     </div>
 
@@ -217,25 +178,24 @@
                             <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mr-4">
                                 <i class="fa-regular fa-circle-check text-green-600 text-xl"></i>
                             </div>
-                            <h2 class="text-2xl font-bold text-slate-900">Kualifikasi</h2>
+                            <h2 class="text-2xl font-bold text-slate-900">{{ __('Qualifications') }}</h2>
                         </div>
 
                         <div class="job-description-content text-slate-600">
-                            {!! $lowongan->Kualifikasi !!}
+                            {!! $trans->Kualifikasi !!}
                         </div>
                     </div>
 
                     <!-- Batas Terakhir Lamaran -->
-                    <div
-                        class="bg-gradient-to-r from-brand-600 to-brand-700 rounded-2xl p-6 md:p-8 text-white relative overflow-hidden">
+                    <div class="bg-gradient-to-r from-brand-600 to-brand-700 rounded-2xl p-6 md:p-8 text-white relative overflow-hidden">
                         <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
                         <div class="relative z-10">
                             <div class="flex items-center mb-4">
                                 <i class="fa-regular fa-calendar-days text-3xl mr-4"></i>
-                                <h3 class="text-xl font-bold">Batas Akhir Lamaran</h3>
+                                <h3 class="text-xl font-bold">{{ __('Application Deadline') }}</h3>
                             </div>
                             <p class="text-3xl font-extrabold mb-2">
-                                {{ \Carbon\Carbon::parse($lowongan->BatasWaktu)->format('j F Y') }}
+                                {{ \Carbon\Carbon::parse($lowongan->BatasWaktu)->translatedFormat('j F Y') }}
                             </p>
                             <p class="text-brand-100">
                                 ({{ \Carbon\Carbon::parse($lowongan->BatasWaktu)->diffForHumans() }})
@@ -243,17 +203,14 @@
                         </div>
                     </div>
 
-                    <!-- ========================================== -->
                     <!-- FORM LAMAR -->
-                    <!-- ========================================== -->
                     @if ($lowongan->masih_berlaku)
-                        <div id="apply-form"
-                            class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 scroll-mt-24">
+                        <div id="apply-form" class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 scroll-mt-24">
                             <div class="flex items-center mb-6">
                                 <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mr-4">
                                     <i class="fa-regular fa-paper-plane text-purple-600 text-xl"></i>
                                 </div>
-                                <h2 class="text-2xl font-bold text-slate-900">Lamar Posisi Ini</h2>
+                                <h2 class="text-2xl font-bold text-slate-900">{{ __('Apply for This Position') }}</h2>
                             </div>
 
                             <form action="{{ route('frontend.career.apply', $lowongan->id) }}" method="POST"
@@ -264,26 +221,24 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                                     <div>
                                         <label class="block text-sm font-semibold text-slate-700 mb-2">
-                                            Nama Lengkap <span class="text-red-500">*</span>
+                                            {{ __('Full Name') }} <span class="text-red-500">*</span>
                                         </label>
                                         <div class="relative">
-                                            <div
-                                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <i class="fa-solid fa-user text-slate-400"></i>
                                             </div>
                                             <input type="text" name="NamaLengkap" required
-                                                placeholder="Masukkan nama lengkap"
+                                                placeholder="{{ __('Enter your full name') }}"
                                                 class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:bg-white outline-none transition-all">
                                         </div>
                                     </div>
 
                                     <div>
                                         <label class="block text-sm font-semibold text-slate-700 mb-2">
-                                            Email <span class="text-red-500">*</span>
+                                            {{ __('Email') }} <span class="text-red-500">*</span>
                                         </label>
                                         <div class="relative">
-                                            <div
-                                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <i class="fa-solid fa-envelope text-slate-400"></i>
                                             </div>
                                             <input type="email" name="Email" required placeholder="contoh@email.com"
@@ -296,11 +251,10 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                                     <div>
                                         <label class="block text-sm font-semibold text-slate-700 mb-2">
-                                            No. Handphone <span class="text-red-500">*</span>
+                                            {{ __('Phone Number') }} <span class="text-red-500">*</span>
                                         </label>
                                         <div class="relative">
-                                            <div
-                                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <i class="fa-solid fa-phone text-slate-400"></i>
                                             </div>
                                             <input type="tel" name="NoHp" required placeholder="08xxxxxxxxxx"
@@ -310,11 +264,10 @@
 
                                     <div>
                                         <label class="block text-sm font-semibold text-slate-700 mb-2">
-                                            Ekspektasi Gaji <span class="text-red-500">*</span>
+                                            {{ __('Expected Salary') }} <span class="text-red-500">*</span>
                                         </label>
                                         <div class="relative">
-                                            <div
-                                                class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <i class="fa-solid fa-money-bill-wave text-slate-400"></i>
                                             </div>
                                             <input type="text" name="EkspetasiGaji" id="ekspetasiGaji" required
@@ -327,54 +280,45 @@
                                 <!-- Deskripsi Singkat -->
                                 <div>
                                     <label class="block text-sm font-semibold text-slate-700 mb-2">
-                                        Deskripsi Singkat Diri <span class="text-red-500">*</span>
+                                        {{ __('Brief Self Description') }} <span class="text-red-500">*</span>
                                     </label>
                                     <textarea name="DeskripsiSingkat" rows="5" required
-                                        placeholder="Ceritakan sedikit tentang pengalaman dan keahlian Anda..."
+                                        placeholder="{{ __('Tell us a little about your experience and skills...') }}"
                                         class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:bg-white outline-none transition-all resize-none"></textarea>
                                 </div>
 
                                 <!-- Upload CV -->
                                 <div>
                                     <label class="block text-sm font-semibold text-slate-700 mb-2">
-                                        Upload CV / Dokumen Pendukung <span class="text-red-500">*</span>
+                                        {{ __('Upload CV / Supporting Documents') }} <span class="text-red-500">*</span>
                                     </label>
 
                                     <div class="custom-drop-zone" id="dropZone">
                                         <input type="file" name="PathCv" id="fileInput" class="hidden"
                                             accept=".pdf,.doc,.docx" required>
 
-                                        <!-- Tampilan Default -->
                                         <div class="drop-zone-content" id="dropZoneContent">
-                                            <div
-                                                class="inline-flex items-center justify-center w-16 h-16 bg-brand-100 rounded-full mb-4">
+                                            <div class="inline-flex items-center justify-center w-16 h-16 bg-brand-100 rounded-full mb-4">
                                                 <i class="fa-solid fa-cloud-arrow-up text-brand-600 text-2xl"></i>
                                             </div>
-                                            <p class="text-lg font-bold text-slate-900 mb-1">Drag & Drop file CV di sini
-                                            </p>
+                                            <p class="text-lg font-bold text-slate-900 mb-1">{{ __('Drag & Drop your CV file here') }}</p>
                                             <p class="text-slate-600 text-sm mb-3">
-                                                atau <span class="text-brand-600 font-semibold underline">klik untuk
-                                                    mencari</span>
+                                                {{ __('or click to browse') }}
                                             </p>
                                             <p class="text-xs text-slate-500">
                                                 <i class="fa-solid fa-circle-info mr-1"></i>
-                                                Format: PDF, DOC, DOCX • Maksimal 2MB
+                                                {{ __('Format: PDF, DOC, DOCX • Max 2MB') }}
                                             </p>
                                         </div>
 
-                                        <!-- Tampilan File Dipilih -->
                                         <div class="file-info hidden" id="fileInfo">
-                                            <div
-                                                class="flex items-center justify-between bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                                            <div class="flex items-center justify-between bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
                                                 <div class="flex items-center flex-1 min-w-0">
-                                                    <div
-                                                        class="flex-shrink-0 w-12 h-12 bg-brand-100 rounded-xl flex items-center justify-center mr-4">
-                                                        <i class="fa-solid fa-file-lines text-brand-600 text-xl"
-                                                            id="fileIcon"></i>
+                                                    <div class="flex-shrink-0 w-12 h-12 bg-brand-100 rounded-xl flex items-center justify-center mr-4">
+                                                        <i class="fa-solid fa-file-lines text-brand-600 text-xl" id="fileIcon"></i>
                                                     </div>
                                                     <div class="flex-1 min-w-0">
-                                                        <p class="font-bold text-slate-900 truncate" id="fileName">
-                                                            nama_file.pdf</p>
+                                                        <p class="font-bold text-slate-900 truncate" id="fileName">nama_file.pdf</p>
                                                         <p class="text-sm text-slate-500" id="fileSize">1.2 MB</p>
                                                     </div>
                                                 </div>
@@ -399,12 +343,12 @@
                                     <button type="submit" id="submitBtn"
                                         class="flex-1 inline-flex items-center justify-center px-8 py-4 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl transition-all shadow-md hover:shadow-lg">
                                         <i class="fa-regular fa-paper-plane mr-2"></i>
-                                        Kirim Lamaran
+                                        {{ __('Submit Application') }}
                                     </button>
                                     <a href="{{ url('career') }}"
                                         class="flex-1 inline-flex items-center justify-center px-8 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all">
                                         <i class="fa-solid fa-arrow-left mr-2"></i>
-                                        Kembali
+                                        {{ __('Back') }}
                                     </a>
                                 </div>
                             </form>
@@ -417,14 +361,14 @@
                                     <i class="fa-regular fa-circle-exclamation text-yellow-500 text-2xl"></i>
                                 </div>
                                 <div class="ml-4">
-                                    <h3 class="text-lg font-bold text-yellow-900 mb-2">Lowongan Sudah Ditutup</h3>
+                                    <h3 class="text-lg font-bold text-yellow-900 mb-2">{{ __('Position Already Closed') }}</h3>
                                     <p class="text-yellow-800 mb-4">
-                                        Maaf, lowongan ini sudah tidak menerima aplikasi. Silakan cek lowongan lainnya.
+                                        {{ __('Sorry, this position is no longer accepting applications. Please check other openings.') }}
                                     </p>
                                     <a href="{{ url('career') }}"
                                         class="inline-flex items-center px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-xl transition-all">
                                         <i class="fa-solid fa-arrow-left mr-2"></i>
-                                        Lihat Lowongan Lain
+                                        {{ __('View Other Openings') }}
                                     </a>
                                 </div>
                             </div>
@@ -432,9 +376,7 @@
                     @endif
                 </div>
 
-                <!-- ========================================== -->
                 <!-- KOLOM KANAN: SIDEBAR -->
-                <!-- ========================================== -->
                 <div class="lg:col-span-1">
                     <div class="sticky top-24 space-y-6">
 
@@ -442,67 +384,59 @@
                         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
                             <h3 class="text-xl font-bold text-slate-900 mb-6 flex items-center">
                                 <i class="fa-solid fa-circle-info text-brand-600 mr-3"></i>
-                                Ringkasan Pekerjaan
+                                {{ __('Job Summary') }}
                             </h3>
 
                             <div class="space-y-5">
                                 <!-- Posisi -->
                                 <div class="flex items-start">
-                                    <div
-                                        class="flex-shrink-0 w-10 h-10 bg-brand-50 rounded-lg flex items-center justify-center mr-3">
+                                    <div class="flex-shrink-0 w-10 h-10 bg-brand-50 rounded-lg flex items-center justify-center mr-3">
                                         <i class="fa-regular fa-briefcase text-brand-600"></i>
                                     </div>
                                     <div class="flex-1">
-                                        <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">
-                                            Posisi</p>
-                                        <p class="text-slate-900 font-semibold">{{ $lowongan->Posisi }}</p>
+                                        <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">{{ __('Position') }}</p>
+                                        <p class="text-slate-900 font-semibold">{{ $trans->Posisi ?? '-' }}</p>
                                     </div>
                                 </div>
 
                                 <!-- Lokasi -->
                                 <div class="flex items-start">
-                                    <div
-                                        class="flex-shrink-0 w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center mr-3">
+                                    <div class="flex-shrink-0 w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center mr-3">
                                         <i class="fa-solid fa-location-dot text-green-600"></i>
                                     </div>
                                     <div class="flex-1">
-                                        <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">
-                                            Lokasi</p>
+                                        <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">{{ __('Location') }}</p>
                                         <p class="text-slate-900 font-semibold">{{ $lowongan->Kota }}</p>
                                     </div>
                                 </div>
 
                                 <!-- Deadline -->
                                 <div class="flex items-start">
-                                    <div
-                                        class="flex-shrink-0 w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center mr-3">
+                                    <div class="flex-shrink-0 w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center mr-3">
                                         <i class="fa-regular fa-calendar text-purple-600"></i>
                                     </div>
                                     <div class="flex-1">
-                                        <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">
-                                            Batas Akhir</p>
+                                        <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">{{ __('Deadline') }}</p>
                                         <p class="text-slate-900 font-semibold">
-                                            {{ \Carbon\Carbon::parse($lowongan->BatasWaktu)->format('j F Y') }}
+                                            {{ \Carbon\Carbon::parse($lowongan->BatasWaktu)->translatedFormat('j F Y') }}
                                         </p>
                                     </div>
                                 </div>
 
                                 <!-- Status -->
                                 <div class="flex items-start">
-                                    <div
-                                        class="flex-shrink-0 w-10 h-10 bg-yellow-50 rounded-lg flex items-center justify-center mr-3">
+                                    <div class="flex-shrink-0 w-10 h-10 bg-yellow-50 rounded-lg flex items-center justify-center mr-3">
                                         <i class="fa-regular fa-circle-check text-yellow-600"></i>
                                     </div>
                                     <div class="flex-1">
-                                        <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">
-                                            Status</p>
+                                        <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">{{ __('Status') }}</p>
                                         @if ($lowongan->masih_berlaku)
                                             <p class="text-green-600 font-bold">
-                                                <i class="fa-solid fa-circle text-xs mr-1"></i> Aktif
+                                                <i class="fa-solid fa-circle text-xs mr-1"></i> {{ __('Active') }}
                                             </p>
                                         @else
                                             <p class="text-slate-500 font-bold">
-                                                <i class="fa-solid fa-circle text-xs mr-1"></i> Tutup
+                                                <i class="fa-solid fa-circle text-xs mr-1"></i> {{ __('Closed') }}
                                             </p>
                                         @endif
                                     </div>
@@ -513,7 +447,7 @@
                                 <div class="mt-6 pt-6 border-t border-slate-100">
                                     <a href="#apply-form"
                                         class="block w-full text-center px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl transition-all shadow-md hover:shadow-lg">
-                                        Lamar Sekarang
+                                        {{ __('Apply Now') }}
                                         <i class="fa-solid fa-arrow-right ml-2"></i>
                                     </a>
                                 </div>
@@ -522,22 +456,18 @@
 
                         <!-- Widget Bagikan -->
                         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-                            <h3 class="text-lg font-bold text-slate-900 mb-4">Bagikan Pekerjaan Ini</h3>
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">{{ __('Share This Job') }}</h3>
                             <div class="flex gap-3">
-                                <a href="#"
-                                    class="flex-1 inline-flex items-center justify-center px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                                <a href="#" class="flex-1 inline-flex items-center justify-center px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
                                     <i class="fa-brands fa-facebook-f"></i>
                                 </a>
-                                <a href="#"
-                                    class="flex-1 inline-flex items-center justify-center px-4 py-2.5 bg-sky-500 hover:bg-sky-600 text-white rounded-lg transition-colors">
+                                <a href="#" class="flex-1 inline-flex items-center justify-center px-4 py-2.5 bg-sky-500 hover:bg-sky-600 text-white rounded-lg transition-colors">
                                     <i class="fa-brands fa-twitter"></i>
                                 </a>
-                                <a href="#"
-                                    class="flex-1 inline-flex items-center justify-center px-4 py-2.5 bg-blue-700 hover:bg-blue-800 text-white rounded-lg transition-colors">
+                                <a href="#" class="flex-1 inline-flex items-center justify-center px-4 py-2.5 bg-blue-700 hover:bg-blue-800 text-white rounded-lg transition-colors">
                                     <i class="fa-brands fa-linkedin-in"></i>
                                 </a>
-                                <a href="#"
-                                    class="flex-1 inline-flex items-center justify-center px-4 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
+                                <a href="#" class="flex-1 inline-flex items-center justify-center px-4 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
                                     <i class="fa-brands fa-whatsapp"></i>
                                 </a>
                             </div>
@@ -550,9 +480,15 @@
     </section>
 @endsection
 
-@push('frontend-js')
+@push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Terjemahan untuk pesan JavaScript (alert)
+            const t = {
+                maxSize: @json(__('File size maximum 2MB!')),
+                wrongType: @json(__('File format must be PDF, DOC, or DOCX!'))
+            };
+
             // ==========================================
             // 1. LOGIKA DRAG & DROP FILE
             // ==========================================
@@ -567,17 +503,14 @@
 
             if (!dropZone || !fileInput) return;
 
-            // Klik untuk cari file
             dropZone.addEventListener('click', () => fileInput.click());
 
-            // Perubahan input file
             fileInput.addEventListener('change', function() {
                 if (this.files && this.files[0]) {
                     validateAndShowFile(this.files[0]);
                 }
             });
 
-            // Event drag & drop
             ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
                 dropZone.addEventListener(eventName, preventDefaults, false);
             });
@@ -595,7 +528,6 @@
                 dropZone.addEventListener(eventName, () => dropZone.classList.remove('drag-over'), false);
             });
 
-            // Handler drop
             dropZone.addEventListener('drop', handleDrop, false);
 
             function handleDrop(e) {
@@ -608,14 +540,12 @@
             }
 
             function validateAndShowFile(file) {
-                // Validasi ukuran (max 2MB)
                 if (file.size > 2 * 1024 * 1024) {
-                    alert('Ukuran file maksimal 2MB!');
+                    alert(t.maxSize);
                     resetFileInput();
                     return;
                 }
 
-                // Validasi tipe file
                 const validTypes = [
                     'application/pdf',
                     'application/msword',
@@ -623,18 +553,16 @@
                 ];
 
                 if (!validTypes.includes(file.type)) {
-                    alert('Format file harus PDF, DOC, atau DOCX!');
+                    alert(t.wrongType);
                     resetFileInput();
                     return;
                 }
 
-                // Tampilkan info file
                 dropZoneContent.classList.add('hidden');
                 fileInfo.classList.remove('hidden');
                 fileName.textContent = file.name;
                 fileSize.textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
 
-                // Ganti ikon sesuai tipe file
                 if (file.type === 'application/pdf') {
                     fileIcon.className = 'fa-solid fa-file-pdf text-red-600 text-xl';
                 } else {
@@ -642,7 +570,6 @@
                 }
             }
 
-            // Hapus file
             removeFileBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 resetFileInput();
@@ -662,14 +589,8 @@
             if (gajiInput) {
                 gajiInput.addEventListener('input', function(e) {
                     let value = e.target.value.replace(/\D/g, '');
-
-                    if (value === '') {
-                        e.target.value = '';
-                        return;
-                    }
-
-                    let formatted = new Intl.NumberFormat('id-ID').format(value);
-                    e.target.value = 'Rp ' + formatted;
+                    if (value === '') { e.target.value = ''; return; }
+                    e.target.value = 'Rp ' + new Intl.NumberFormat('id-ID').format(value);
                 });
 
                 gajiInput.addEventListener('blur', function(e) {
@@ -687,14 +608,10 @@
                 anchor.addEventListener('click', function(e) {
                     const href = this.getAttribute('href');
                     if (href === '#') return;
-
                     const target = document.querySelector(href);
                     if (target) {
                         e.preventDefault();
-                        target.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }
                 });
             });

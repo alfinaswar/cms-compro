@@ -20,17 +20,20 @@ class HeroSliderController extends Controller
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
+                    // Pastikan parameter yang dibutuhkan (id) diberikan ke route
+                    $editUrl = route('hero-slider.edit', ['id' => $row->id]);
                     return '
                     <div class="btn-group btn-group-sm">
-                        <a href="' . route('hero-slider.edit', $row->id) . '" class="btn btn-warning" title="Edit">
+                        <a href="' . $editUrl . '" class="btn btn-warning" title="Edit">
                             <i class="fa fa-edit"></i>
                         </a>
                         <button class="btn btn-danger btn-delete" data-id="' . $row->id . '" title="Hapus">
                             <i class="fa fa-trash"></i>
                         </button>
                     </div>
-                ';
+                    ';
                 })
+
 
                 ->addColumn('GambarLatar', function ($row) {
                     // Menampilkan preview bisa berupa gambar ATAU ikon video sesuai TipeMedia

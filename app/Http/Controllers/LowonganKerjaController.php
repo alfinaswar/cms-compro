@@ -7,6 +7,7 @@ use App\Models\LamaranKerja;
 use App\Models\LowonganKerja;
 use App\Models\MasterKota;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
@@ -80,46 +81,50 @@ class LowonganKerjaController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $request->validate([
-            'Posisi' => 'required|string|max:255',
             'Kota' => 'required|string|max:255',
-            'Deskripsi' => 'required|string',
-            'Kualifikasi' => 'required|string',
             'BatasWaktu' => 'required|date|after_or_equal:today',
             'Status' => 'required|in:Buka,Tutup',
+            'translations.id.Posisi' => 'required|string|max:255',
+            'translations.id.Deskripsi' => 'required|string',
+            'translations.id.Kualifikasi' => 'required|string',
+            'translations.en.Posisi' => 'nullable|string|max:255',
+            'translations.en.Deskripsi' => 'nullable|string',
+            'translations.en.Kualifikasi' => 'nullable|string',
         ], [
-            'Posisi.required' => 'Posisi wajib diisi.',
+            'translations.id.Posisi.required' => 'Posisi (Indonesia) wajib diisi.',
+            'translations.id.Deskripsi.required' => 'Deskripsi (Indonesia) wajib diisi.',
+            'translations.id.Kualifikasi.required' => 'Kualifikasi (Indonesia) wajib diisi.',
             'Kota.required' => 'Kota penempatan wajib diisi.',
-            'Deskripsi.required' => 'Deskripsi pekerjaan wajib diisi.',
-            'Kualifikasi.required' => 'Kualifikasi kandidat wajib diisi.',
             'BatasWaktu.required' => 'Batas waktu wajib diisi.',
             'BatasWaktu.after_or_equal' => 'Batas waktu tidak boleh di masa lalu.',
             'Status.required' => 'Status lowongan wajib dipilih.',
         ]);
-
         $lowongan = LowonganKerja::create([
-            'Posisi' => $request->Posisi,
             'Kota' => $request->Kota,
-            'Deskripsi' => $request->Deskripsi,
-            'Kualifikasi' => $request->Kualifikasi,
+            'Posisi' => $request->Posisi,
             'BatasWaktu' => $request->BatasWaktu,
             'Status' => $request->Status,
             'UserCreate' => auth()->user()->name,
         ]);
-
-        // Tambah activity log untuk aksi simpan
+        $translationsData = $request->input('translations', []);
+        foreach ($translationsData as $locale => $data) {
+            if (!empty($data['Posisi'])) {
+                $lowongan->translations()->create([
+                    'Locale' => $locale,
+                    'Posisi' => $data['Posisi'],
+                    'Deskripsi' => $data['Deskripsi'],
+                    'Kualifikasi' => $data['Kualifikasi'],
+                ]);
+            }
+        }
         activity()
             ->causedBy(auth()->user())
             ->performedOn($lowongan)
-            ->withProperties([
-                'attributes' => $lowongan->toArray()
-            ])
-            ->log('Menambah lowongan kerja: ' . $lowongan->Posisi);
+            ->withProperties(['attributes' => $lowongan->toArray()])
+            ->log('Menambah lowongan kerja: ' . $lowongan->translate('id')->Posisi);
 
-        return redirect()
-            ->route('karir.index')
-            ->with('success', 'Lowongan kerja berhasil ditambahkan.');
+        return redirect()->route('karir.index')->with('success', 'Lowongan kerja berhasil ditambahkan.');
     }
 
     /**
@@ -128,7 +133,7 @@ class LowonganKerjaController extends Controller
     public function edit($id)
     {
         $id = decrypt($id);
-        $lowongan = LowonganKerja::findOrFail($id);
+        $lowongan = LowonganKerja::with('translations')->findOrFail($id);
         $Kota = MasterKota::get();
         return view('pages.admin.karir-dan-rekrutmen.edit', compact('lowongan', 'Kota'));
     }
@@ -138,42 +143,73 @@ class LowonganKerjaController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // 1. Validasi Data Utama & Terjemahan
         $request->validate([
-            'Posisi' => 'required|string|max:255',
             'Kota' => 'required|string|max:255',
-            'Deskripsi' => 'nullable|string',
-            'Kualifikasi' => 'nullable|string',
             'BatasWaktu' => 'nullable|date',
             'Status' => 'required|in:Buka,Tutup',
+
+            // Validasi Bahasa Indonesia (Wajib)
+            'translations.id.Posisi' => 'required|string|max:255',
+            'translations.id.Deskripsi' => 'nullable|string',
+            'translations.id.Kualifikasi' => 'nullable|string',
+
+            // Validasi Bahasa Inggris (Opsional)
+            'translations.en.Posisi' => 'nullable|string|max:255',
+            'translations.en.Deskripsi' => 'nullable|string',
+            'translations.en.Kualifikasi' => 'nullable|string',
         ], [
-            'Posisi.required' => 'Posisi wajib diisi.',
+            'translations.id.Posisi.required' => 'Posisi (Indonesia) wajib diisi.',
             'Kota.required' => 'Kota penempatan wajib diisi.',
             'Status.required' => 'Status lowongan wajib dipilih.',
         ]);
 
         $lowongan = LowonganKerja::findOrFail($id);
 
-        $old = $lowongan->getOriginal();
+        // Simpan data lama untuk Activity Log
+        $oldMain = $lowongan->getOriginal();
+        $oldTranslations = $lowongan->translations->pluck('Posisi', 'Locale')->toArray();
 
+        // 2. Update Data Utama (Hanya field non-translatable)
         $lowongan->update([
-            'Posisi' => $request->Posisi,
             'Kota' => $request->Kota,
-            'Deskripsi' => $request->Deskripsi,
-            'Kualifikasi' => $request->Kualifikasi,
             'BatasWaktu' => $request->BatasWaktu,
             'Status' => $request->Status,
             'UserUpdate' => auth()->user()->name,
         ]);
 
-        // Tambah activity log untuk aksi update
+        // 3. Update / Create Data Terjemahan
+        $translationsData = $request->input('translations', []);
+        foreach ($translationsData as $locale => $data) {
+            // Hanya proses jika ada input Posisi (menghindari save data kosong)
+            if (!empty($data['Posisi'])) {
+                $lowongan->translations()->updateOrCreate(
+                    ['Locale' => $locale], // Kondisi pencarian (berdasarkan bahasa)
+                    [
+                        'Posisi' => $data['Posisi'] ?? null,
+                        'Deskripsi' => $data['Deskripsi'] ?? null,
+                        'Kualifikasi' => $data['Kualifikasi'] ?? null,
+                    ]
+                );
+            }
+        }
+
+        // Refresh model agar data terjemahan terbaru ter-load
+        $lowongan->load('translations');
+
+        // 4. Activity Log
+        $posisiBaru = $lowongan->translate('id')->Posisi; // Ambil posisi bahasa ID untuk log
+
         activity()
             ->causedBy(auth()->user())
             ->performedOn($lowongan)
             ->withProperties([
-                'old' => $old,
-                'attributes' => $lowongan->toArray()
+                'old_main' => $oldMain,
+                'old_translations' => $oldTranslations,
+                'attributes' => $lowongan->toArray(),
+                'new_translations' => $translationsData
             ])
-            ->log('Mengubah lowongan kerja: ' . $lowongan->Posisi);
+            ->log('Mengubah lowongan kerja: ' . $posisiBaru);
 
         return redirect()
             ->route('karir.index')
@@ -202,24 +238,38 @@ class LowonganKerjaController extends Controller
 
     public function career(Request $request)
     {
-        $query = LowonganKerja::query();
+        // Ambil bahasa yang sedang aktif (default 'id' jika belum ada fitur switch language)
+        $locale = app()->getLocale();
+
+        $query = LowonganKerja::query()->with([
+            'translations' => function ($q) use ($locale) {
+                // Hanya load translasi sesuai bahasa yang aktif untuk menghemat memori
+                $q->where('Locale', $locale);
+            }
+        ]);
+
+        // Scope active (Status = 'Buka')
         $query->active();
+
+        // Filter Kota
         if ($request->filled('kota')) {
             $query->where('Kota', $request->kota);
         }
-        if ($request->filled('status')) {
-            $query->where('Status', $request->status);
-            $query->withoutGlobalScope('active');  // kalau pakai global scope
-        }
+
+        // Filter Search (Mencari di tabel terjemahan sesuai bahasa aktif)
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q
-                    ->where('Posisi', 'like', '%' . $search . '%')
-                    ->orWhere('Deskripsi', 'like', '%' . $search . '%')
-                    ->orWhere('Kualifikasi', 'like', '%' . $search . '%');
+            $query->whereHas('translations', function ($q) use ($search, $locale) {
+                $q->where('Locale', $locale)
+                    ->where(function ($subQ) use ($search) {
+                        $subQ->where('Posisi', 'like', '%' . $search . '%')
+                            ->orWhere('Deskripsi', 'like', '%' . $search . '%')
+                            ->orWhere('Kualifikasi', 'like', '%' . $search . '%');
+                    });
             });
         }
+
+        // Sorting
         $sortBy = $request->get('sort', 'latest');
         switch ($sortBy) {
             case 'deadline':
@@ -233,7 +283,11 @@ class LowonganKerjaController extends Controller
                 $query->latest();
                 break;
         }
+
+        // Pagination
         $lowongans = $query->paginate(9)->withQueryString();
+
+        // Stats (Tetap sama, karena tidak butuh translasi)
         $totalJobs = LowonganKerja::active()->count();
         $kotas = LowonganKerja::active()
             ->select('Kota')
@@ -241,13 +295,20 @@ class LowonganKerjaController extends Controller
             ->pluck('Kota')
             ->filter();
 
-        return view('frontend.career', compact('lowongans', 'totalJobs', 'kotas'));
+        return view('frontend.career', compact('lowongans', 'totalJobs', 'kotas', 'locale'));
     }
 
     public function careerDetail($id, $slug)
     {
-        $lowongan = LowonganKerja::findOrFail($id);
-        return view('frontend.career-detail', compact('lowongan'));
+        $locale = app()->getLocale();
+        Carbon::setLocale($locale);
+        $lowongan = LowonganKerja::with([
+            'translations' => function ($q) use ($locale) {
+                $q->where('Locale', $locale);
+            }
+        ])->findOrFail($id);
+
+        return view('frontend.career-detail', compact('lowongan', 'locale'));
     }
 
     public function apply(Request $request, $id)

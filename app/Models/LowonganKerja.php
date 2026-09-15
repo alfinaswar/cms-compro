@@ -7,44 +7,71 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class LowonganKerja extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, LogsActivity;
 
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
     protected $table = 'lowongan_kerjas';
 
-    /**
-     * The attributes that aren't mass assignable.
-     *
-     * @var array
-     */
-    protected $guarded = ['id'];
+    protected $fillable = [
+        'Posisi',
+        'Kota',
+        'Deskripsi',
+        'Kualifikasi',
+        'BatasWaktu',
+        'Status',
+        'UserCreate',
+        'UserUpdate',
+        'UserDelete',
+    ];
+
+    protected $casts = [
+        'BatasWaktu' => 'date',
+    ];
 
     // Scope untuk lowongan yang masih buka
     public function scopeActive($query)
     {
         return $query->where('Status', 'Buka');
     }
+
     public function getSlugAttribute()
     {
-        return Str::slug($this->Posisi) . '-' . $this->id;
+        return Str::slug($this->translate('id')->Posisi ?? 'lowongan') . '-' . $this->id;
     }
+
     public function getBatasWaktuFormattedAttribute()
     {
-        return Carbon::parse($this->BatasWaktu)->format('jS F, Y');
+        return $this->BatasWaktu ? Carbon::parse($this->BatasWaktu)->format('jS F, Y') : 'Secepatnya';
     }
+
     public function getMasihBerlakuAttribute()
     {
-        return Carbon::parse($this->BatasWaktu)->isFuture();
+        return $this->BatasWaktu ? Carbon::parse($this->BatasWaktu)->isFuture() : true;
     }
     public function getLamaran()
     {
         return $this->hasMany(LamaranKerja::class, 'LowonganKerjaId', 'id');
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['Kota', 'BatasWaktu', 'Status'])
+            ->logOnlyDirty()
+            ->setDescriptionForEvent(fn(string $eventName) => "Lowongan kerja telah {$eventName}");
+    }
+
+    // Relasi ke tabel terjemahan
+    public function translations()
+    {
+        return $this->hasMany(LowonganKerjaTranslation::class, 'LowonganKerjaId');
+    }
+    public function translate($locale = 'id')
+    {
+        return $this->translations->firstWhere('Locale', $locale) ?: new LowonganKerjaTranslation();
     }
 }
