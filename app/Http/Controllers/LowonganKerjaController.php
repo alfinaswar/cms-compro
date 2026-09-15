@@ -102,7 +102,6 @@ class LowonganKerjaController extends Controller
         ]);
         $lowongan = LowonganKerja::create([
             'Kota' => $request->Kota,
-            'Posisi' => $request->Posisi,
             'BatasWaktu' => $request->BatasWaktu,
             'Status' => $request->Status,
             'UserCreate' => auth()->user()->name,
