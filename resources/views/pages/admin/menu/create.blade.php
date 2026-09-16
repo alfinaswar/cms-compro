@@ -4,9 +4,7 @@
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1>Tambah Menu</h1>
-                </div>
+                <div class="col-sm-6"><h1>Tambah Menu</h1></div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
@@ -25,29 +23,68 @@
                     @csrf
                     <div class="card card-outline card-primary shadow-sm">
                         <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fa fa-plus mr-2"></i> Form Tambah Menu
-                            </h3>
+                            <h3 class="card-title"><i class="fa fa-plus mr-2"></i> Form Tambah Menu</h3>
                         </div>
                         <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
+
+                            <!-- TABS BAHASA -->
+                            <ul class="nav nav-tabs mb-4" id="langTabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="tab-id-tab" data-toggle="tab" href="#tab-id" role="tab">
+                                        🇮🇩 Bahasa Indonesia <span class="text-danger">*</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="tab-en-tab" data-toggle="tab" href="#tab-en" role="tab">
+                                        🇬🇧 English
+                                    </a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content" id="langTabsContent">
+                                <!-- TAB INDONESIA -->
+                                <div class="tab-pane fade show active" id="tab-id" role="tabpanel">
                                     <div class="form-group">
-                                        <label for="NamaMenu"><strong>Nama Menu</strong> <span
-                                                class="text-danger">*</span></label>
+                                        <label><strong>Nama Menu</strong> <span class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="fa fa-tag"></i></span>
                                             </div>
-                                            <input type="text" name="NamaMenu" id="NamaMenu"
-                                                class="form-control @error('NamaMenu') is-invalid @enderror"
-                                                placeholder="Contoh: About Us" value="{{ old('NamaMenu') }}" required>
+                                            <input type="text" name="translations[id][NamaMenu]"
+                                                class="form-control @error('translations.id.NamaMenu') is-invalid @enderror"
+                                                placeholder="Contoh: Tentang Kami"
+                                                value="{{ old('translations.id.NamaMenu') }}" required>
                                         </div>
-                                        @error('NamaMenu')
+                                        @error('translations.id.NamaMenu')
                                             <span class="invalid-feedback d-block">{{ $message }}</span>
                                         @enderror
                                     </div>
                                 </div>
+
+                                <!-- TAB ENGLISH -->
+                                <div class="tab-pane fade" id="tab-en" role="tabpanel">
+                                    <div class="form-group">
+                                        <label><strong>Menu Name</strong></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fa fa-tag"></i></span>
+                                            </div>
+                                            <input type="text" name="translations[en][NamaMenu]"
+                                                class="form-control @error('translations.en.NamaMenu') is-invalid @enderror"
+                                                placeholder="Example: About Us"
+                                                value="{{ old('translations.en.NamaMenu') }}">
+                                        </div>
+                                        @error('translations.en.NamaMenu')
+                                            <span class="invalid-feedback d-block">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+                            <h6><strong>Data Umum (Tidak Diterjemahkan)</strong></h6>
+
+                            <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="ParentId"><strong>Parent Menu</strong></label>
@@ -67,20 +104,29 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="Icon"><strong>Icon (Optional)</strong></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fa fa-icons"></i></span>
+                                            </div>
+                                            <input type="text" name="Icon" id="Icon" class="form-control"
+                                                placeholder="fa fa-home" value="{{ old('Icon') }}">
+                                        </div>
+                                        <small class="text-muted">Contoh: fa fa-home, fab fa-facebook</small>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="JenisLink"><strong>Jenis Link</strong> <span
-                                                class="text-danger">*</span></label>
+                                        <label for="JenisLink"><strong>Jenis Link</strong> <span class="text-danger">*</span></label>
                                         <select name="JenisLink" id="JenisLink" class="form-control" required>
-                                            <option value="custom" {{ old('JenisLink') == 'custom' ? 'selected' : '' }}>
-                                                Custom URL</option>
-                                            <option value="route" {{ old('JenisLink') == 'route' ? 'selected' : '' }}>Route
-                                                Laravel</option>
-                                            <option value="page" {{ old('JenisLink') == 'page' ? 'selected' : '' }}>
-                                                Halaman Internal</option>
+                                            <option value="custom" {{ old('JenisLink') == 'custom' ? 'selected' : '' }}>Custom URL</option>
+                                            <option value="route" {{ old('JenisLink') == 'route' ? 'selected' : '' }}>Route Laravel</option>
+                                            <option value="page" {{ old('JenisLink') == 'page' ? 'selected' : '' }}>Halaman Internal</option>
                                         </select>
                                     </div>
                                 </div>
@@ -107,29 +153,14 @@
                                     <div class="form-group">
                                         <label for="Target"><strong>Target</strong></label>
                                         <select name="Target" id="Target" class="form-control">
-                                            <option value="_self" {{ old('Target') == '_self' ? 'selected' : '' }}>Tab
-                                                Sama (_self)</option>
-                                            <option value="_blank" {{ old('Target') == '_blank' ? 'selected' : '' }}>Tab
-                                                Baru (_blank)</option>
+                                            <option value="_self" {{ old('Target') == '_self' ? 'selected' : '' }}>Tab Sama (_self)</option>
+                                            <option value="_blank" {{ old('Target') == '_blank' ? 'selected' : '' }}>Tab Baru (_blank)</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="Icon"><strong>Icon (Optional)</strong></label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text"><i class="fa fa-icons"></i></span>
-                                            </div>
-                                            <input type="text" name="Icon" id="Icon" class="form-control"
-                                                placeholder="fa fa-home" value="{{ old('Icon') }}">
-                                        </div>
-                                        <small class="text-muted">Contoh: fa fa-home, fab fa-facebook</small>
-                                    </div>
-                                </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="Urutan"><strong>Urutan</strong></label>
@@ -146,27 +177,22 @@
                                 <div class="col-md-4">
                                     <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input" id="StatusAktif"
-                                            name="StatusAktif" value="1"
-                                            {{ old('StatusAktif', true) ? 'checked' : '' }}>
+                                            name="StatusAktif" value="1" {{ old('StatusAktif', true) ? 'checked' : '' }}>
                                         <label class="custom-control-label" for="StatusAktif">Status Aktif</label>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input" id="TampilkanDiHeader"
-                                            name="TampilkanDiHeader" value="1"
-                                            {{ old('TampilkanDiHeader', true) ? 'checked' : '' }}>
-                                        <label class="custom-control-label" for="TampilkanDiHeader">Tampilkan di
-                                            Header</label>
+                                            name="TampilkanDiHeader" value="1" {{ old('TampilkanDiHeader', true) ? 'checked' : '' }}>
+                                        <label class="custom-control-label" for="TampilkanDiHeader">Tampilkan di Header</label>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input" id="TampilkanDiFooter"
-                                            name="TampilkanDiFooter" value="1"
-                                            {{ old('TampilkanDiFooter') ? 'checked' : '' }}>
-                                        <label class="custom-control-label" for="TampilkanDiFooter">Tampilkan di
-                                            Footer</label>
+                                            name="TampilkanDiFooter" value="1" {{ old('TampilkanDiFooter') ? 'checked' : '' }}>
+                                        <label class="custom-control-label" for="TampilkanDiFooter">Tampilkan di Footer</label>
                                     </div>
                                 </div>
                             </div>
@@ -189,16 +215,11 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            $('.select2').select2({
-                theme: 'bootstrap4',
-                width: '100%'
-            });
-            $('.select2-search').select2({
+            $('.select2, .select2-search').select2({
                 theme: 'bootstrap4',
                 width: '100%'
             });
 
-            // Toggle jenis link
             $('#JenisLink').change(function() {
                 var jenis = $(this).val();
                 if (jenis === 'route') {
@@ -209,6 +230,11 @@
                     $('#groupRoute').hide();
                 }
             }).trigger('change');
+
+            // Auto switch ke tab EN jika ada error di sana
+            @if($errors->has('translations.en.*'))
+                $('#tab-en-tab').tab('show');
+            @endif
         });
     </script>
 @endpush

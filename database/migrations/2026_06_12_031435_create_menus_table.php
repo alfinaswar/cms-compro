@@ -10,7 +10,7 @@ return new class extends Migration {
         Schema::create('Menu', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('ParentId')->nullable();
-            $table->string('NamaMenu');
+            $table->string('NamaMenu')->nullable();
             $table->string('SlugMenu')->unique();
             $table->string('JenisLink')->default('custom');  // custom, route, page
             $table->string('Url')->nullable();

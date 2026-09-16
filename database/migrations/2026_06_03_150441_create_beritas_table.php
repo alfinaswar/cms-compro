@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('beritas', function (Blueprint $table) {
             $table->id();
             // === KONTEN & KLASIFIKASI ===
-            $table->string('Judul');
+            $table->string('Judul')->nullable();
             $table->string('Slug')->unique();
             $table->string('Kategori')->nullable();  // Bisa diganti relasi jika ada tabel kategori
             $table->string('Tags')->nullable();  // Disimpan sebagai string (comma separated)

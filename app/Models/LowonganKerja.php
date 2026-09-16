@@ -74,4 +74,8 @@ class LowonganKerja extends Model
     {
         return $this->translations->firstWhere('Locale', $locale) ?: new LowonganKerjaTranslation();
     }
+    public function getKota()
+    {
+    return $this->belongsTo(MasterKota::class, 'Kota', 'code');
+    }
 }

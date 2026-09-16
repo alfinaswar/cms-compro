@@ -2,8 +2,10 @@
 
 @section('content')
     @push('styles')
+        <!-- summernote -->
         <link rel="stylesheet" href="{{ asset('') }}assets/plugins/summernote/summernote-bs4.css">
     @endpush
+
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
@@ -26,40 +28,108 @@
             @csrf
 
             <div class="row">
-                <!-- ==================== KOLOM KIRI: KONTEN UTAMA ==================== -->
+                <!-- ==================== KOLOM KIRI: KONTEN & TRANSLATION ==================== -->
                 <div class="col-lg-8">
-                    <div class="card card-outline card-primary">
+                    <div class="card card-outline card-primary shadow-sm">
                         <div class="card-header">
                             <h3 class="card-title"><i class="fa fa-newspaper mr-2"></i>Konten Berita</h3>
                         </div>
                         <div class="card-body">
-                            {{-- Judul --}}
-                            <div class="form-group">
-                                <label for="Judul"><strong>Judul Berita</strong> <span
-                                        class="text-danger">*</span></label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="fa fa-heading"></i></span>
+
+                            <!-- TABS BAHASA -->
+                             <!-- TABS BAHASA -->
+                            <ul class="nav nav-tabs mb-4" id="langTabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="tab-id-tab" data-toggle="tab" href="#tab-id" role="tab">
+                                        🇮🇩 Bahasa Indonesia <span class="text-danger">*</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="tab-en-tab" data-toggle="tab" href="#tab-en" role="tab">
+                                        🇬🇧 English
+                                    </a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content" id="langTabsContent">
+                                <!-- TAB INDONESIA -->
+                                <div class="tab-pane fade show active" id="tab-id" role="tabpanel">
+                                    <div class="form-group">
+                                        <label><strong>Judul Berita</strong> <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fa fa-heading"></i></span>
+                                            </div>
+                                            <input type="text" name="translations[id][Judul]" id="JudulId"
+                                                class="form-control form-control-lg @error('translations.id.Judul') is-invalid @enderror"
+                                                placeholder="Tulis judul berita yang menarik..." value="{{ old('translations.id.Judul') }}" required autofocus>
+                                        </div>
+                                        @error('translations.id.Judul')
+                                            <span class="invalid-feedback d-block mt-1">{{ $message }}</span>
+                                        @enderror
                                     </div>
-                                    <input type="text" name="Judul" id="Judul"
-                                        class="form-control form-control-lg @error('Judul') is-invalid @enderror"
-                                        placeholder="Tulis judul berita yang menarik..." value="{{ old('Judul') }}"
-                                        required autofocus>
+
+                                    <div class="form-group">
+                                        <label><strong>Ringkasan (Excerpt)</strong></label>
+                                        <textarea name="translations[id][Ringkasan]" class="form-control" rows="3"
+                                            placeholder="Tulis ringkasan singkat berita (1-2 kalimat)...">{{ old('translations.id.Ringkasan') }}</textarea>
+                                    </div>
+
+                                    <!-- ✅ SESUAI PERMINTAAN: name="Konten" dan id="summernote" -->
+                                    <div class="form-group">
+                                        <label><strong>Konten Lengkap</strong> <span class="text-danger">*</span></label>
+                                        <textarea name="Konten" id="summernote" class="form-control @error('Konten') is-invalid @enderror">{{ old('Konten') }}</textarea>
+                                        @error('Konten')
+                                            <span class="invalid-feedback d-block mt-1">{{ $message }}</span>
+                                        @enderror
+                                    </div>
                                 </div>
-                                @error('Judul')
-                                    <span class="invalid-feedback d-block mt-1">{{ $message }}</span>
-                                @enderror
+
+                                <!-- TAB ENGLISH -->
+                                <div class="tab-pane fade" id="tab-en" role="tabpanel">
+                                    <div class="form-group">
+                                        <label><strong>News Title</strong></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fa fa-heading"></i></span>
+                                            </div>
+                                            <input type="text" name="translations[en][Judul]" id="JudulEn"
+                                                class="form-control form-control-lg @error('translations.en.Judul') is-invalid @enderror"
+                                                placeholder="Write an engaging news title..." value="{{ old('translations.en.Judul') }}">
+                                        </div>
+                                        @error('translations.en.Judul')
+                                            <span class="invalid-feedback d-block mt-1">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label><strong>Summary (Excerpt)</strong></label>
+                                        <textarea name="translations[en][Ringkasan]" class="form-control" rows="3"
+                                            placeholder="Write a brief summary (1-2 sentences)...">{{ old('translations.en.Ringkasan') }}</textarea>
+                                    </div>
+
+                                    <!-- ✅ UNTUK INGGRIS: name="translations[en][Konten]" dan id="summernoteEN" -->
+                                    <div class="form-group">
+                                        <label><strong>Full Content</strong></label>
+                                        <textarea name="translations[en][Konten]" id="summernoteEN" class="form-control @error('translations.en.Konten') is-invalid @enderror">{{ old('translations.en.Konten') }}</textarea>
+                                        @error('translations.en.Konten')
+                                            <span class="invalid-feedback d-block mt-1">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
 
-                            {{-- Kategori & Tags --}}
+
+                            <hr class="my-4">
+                            <h6><strong><i class="fa fa-cog mr-2"></i>Data Umum (Tidak Diterjemahkan)</strong></h6>
+
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label><strong>Kategori</strong> <span class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <select name="Kategori" id="selectKategori"
-                                                class="form-control select2-kategori @error('Kategori') is-invalid @enderror"
-                                                required>
+                                                class="form-control select2-kategori @error('Kategori') is-invalid @enderror" required>
                                                 <option value="">-- Pilih Kategori --</option>
                                                 @foreach ($kategoris as $kat)
                                                     <option value="{{ $kat->NamaKategori }}"
@@ -82,44 +152,25 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label><strong>Tags</strong> <small class="text-muted">(Ketik bebas, pisahkan dengan
-                                                koma)</small></label>
+                                        <label><strong>Tags</strong> <small class="text-muted">(Pisahkan dengan koma)</small></label>
                                         <input type="text" name="Tags" id="inputTags" class="form-control"
                                             placeholder="Contoh: jasuindo, konstruksi, proyek" value="{{ old('Tags') }}">
-                                        <small class="text-muted"><i class="fa fa-info-circle"></i> Pisahkan dengan koma
-                                            (,)</small>
+                                        <small class="text-muted"><i class="fa fa-info-circle"></i> Pisahkan dengan koma (,)</small>
                                     </div>
                                 </div>
                             </div>
-
-                            {{-- Ringkasan --}}
-                            <div class="form-group">
-                                <label><strong>Ringkasan (Excerpt)</strong></label>
-                                <textarea name="Ringkasan" class="form-control" rows="3"
-                                    placeholder="Tulis ringkasan singkat berita (1-2 kalimat)...">{{ old('Ringkasan') }}</textarea>
-                                <small class="text-muted"><i class="fa fa-info-circle"></i> Tampilan singkat di halaman list
-                                    berita.</small>
-                            </div>
-
-                            {{-- Konten --}}
-                            <div class="form-group">
-                                <label><strong>Konten Lengkap</strong> <span class="text-danger">*</span></label>
-                                <textarea name="Konten" id="summernote" class="form-control">{{ old('Konten') }}</textarea>
-                                @error('Konten')
-                                    <span class="invalid-feedback d-block mt-1">{{ $message }}</span>
-                                @enderror
-                            </div>
                         </div>
-
                     </div>
+
+                    <!-- Footer Actions -->
                     <div class="row mb-5">
                         <div class="col-12">
-                            <div class="card">
+                            <div class="card shadow-sm">
                                 <div class="card-body d-flex justify-content-between align-items-center">
                                     <a href="{{ route('berita.index') }}" class="btn btn-secondary">
                                         <i class="fa fa-arrow-left mr-2"></i> Kembali
                                     </a>
-                                    <div class="ml-auto">
+                                    <div>
                                         <button type="submit" name="action" value="draft" class="btn btn-info mr-2">
                                             <i class="fa fa-save mr-1"></i> Simpan Draf
                                         </button>
@@ -127,7 +178,6 @@
                                             <i class="fa fa-paper-plane mr-1"></i> Publikasi
                                         </button>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -138,7 +188,7 @@
                 <div class="col-lg-4">
 
                     <!-- THUMBNAIL -->
-                    <div class="card card-outline card-info mb-3">
+                    <div class="card card-outline card-info mb-3 shadow-sm">
                         <div class="card-header">
                             <h3 class="card-title"><i class="fa fa-image mr-2"></i>Thumbnail Berita</h3>
                         </div>
@@ -157,7 +207,7 @@
                     </div>
 
                     <!-- PUBLIKASI -->
-                    <div class="card card-outline card-success mb-3">
+                    <div class="card card-outline card-success mb-3 shadow-sm">
                         <div class="card-header">
                             <h3 class="card-title"><i class="fa fa-calendar-check mr-2"></i>Publikasi</h3>
                         </div>
@@ -165,12 +215,9 @@
                             <div class="form-group">
                                 <label><strong>Status</strong></label>
                                 <select name="Status" class="form-control">
-                                    <option value="Draf" {{ old('Status') == 'Draf' ? 'selected' : '' }}>📝 Draf
-                                    </option>
-                                    <option value="Diterbitkan" {{ old('Status') == 'Diterbitkan' ? 'selected' : '' }}>✅
-                                        Diterbitkan</option>
-                                    <option value="Arsip" {{ old('Status') == 'Arsip' ? 'selected' : '' }}>📦 Arsip
-                                    </option>
+                                    <option value="Draf" {{ old('Status') == 'Draf' ? 'selected' : '' }}>📝 Draf</option>
+                                    <option value="Diterbitkan" {{ old('Status') == 'Diterbitkan' ? 'selected' : '' }}>✅ Diterbitkan</option>
+                                    <option value="Arsip" {{ old('Status') == 'Arsip' ? 'selected' : '' }}>📦 Arsip</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -187,48 +234,42 @@
                         </div>
                     </div>
 
-                    <!-- SEO SETTINGS -->
-                    <div class="card card-outline card-warning">
+                    <!-- SEO SETTINGS (KHUSUS INDONESIA) -->
+                    <div class="card card-outline card-warning shadow-sm">
                         <div class="card-header">
-                            <h3 class="card-title"><i class="fa fa-search mr-2"></i>Pengaturan SEO</h3>
+                            <h3 class="card-title"><i class="fa fa-search mr-2"></i>SEO (Indonesia)</h3>
                         </div>
                         <div class="card-body">
                             <!-- SEO Preview Box -->
                             <div class="alert alert-light border mb-3">
                                 <small class="text-muted d-block mb-1">Preview Google:</small>
                                 <div style="font-family: arial, sans-serif;">
-                                    <div id="seoPreviewTitle"
-                                        style="color: #1a0dab; font-size: 18px; line-height: 21px; margin-bottom: 2px;">
-                                        Judul Berita</div>
-                                    <div style="color: #006621; font-size: 14px; margin-bottom: 2px;">
-                                        jasuindo.com/berita/judul-berita</div>
-                                    <div id="seoPreviewDesc" style="color: #545454; font-size: 13px; line-height: 1.4;">
-                                        Deskripsi berita akan muncul di sini...</div>
+                                    <div id="seoPreviewTitle" style="color: #1a0dab; font-size: 18px; line-height: 21px; margin-bottom: 2px;">Judul Berita</div>
+                                    <div style="color: #006621; font-size: 14px; margin-bottom: 2px;">jasuindo.com/berita/judul-berita</div>
+                                    <div id="seoPreviewDesc" style="color: #545454; font-size: 13px; line-height: 1.4;">Deskripsi berita akan muncul di sini...</div>
                                 </div>
                             </div>
 
                             <!-- SEO Title -->
                             <div class="form-group">
-                                <label><strong>SEO Title</strong> <span class="float-right text-muted"
-                                        id="counterTitle">0/70</span></label>
-                                <input type="text" name="SEOTitle" id="inputSEOTitle" class="form-control"
-                                    maxlength="70" value="{{ old('SEOTitle') }}"
+                                <label><strong>SEO Title</strong> <span class="float-right text-muted" id="counterTitle">0/70</span></label>
+                                <input type="text" name="translations[id][SEOTitle]" id="inputSEOTitle" class="form-control"
+                                    maxlength="70" value="{{ old('translations.id.SEOTitle') }}"
                                     placeholder="Kosongkan untuk pakai Judul">
                             </div>
 
                             <!-- SEO Description -->
                             <div class="form-group">
-                                <label><strong>Meta Description</strong> <span class="float-right text-muted"
-                                        id="counterDesc">0/160</span></label>
-                                <textarea name="SEODescription" id="inputSEODesc" class="form-control" rows="3" maxlength="160"
-                                    placeholder="Deskripsi untuk hasil pencarian Google">{{ old('SEODescription') }}</textarea>
+                                <label><strong>Meta Description</strong> <span class="float-right text-muted" id="counterDesc">0/160</span></label>
+                                <textarea name="translations[id][SEODescription]" id="inputSEODesc" class="form-control" rows="3" maxlength="160"
+                                    placeholder="Deskripsi untuk hasil pencarian Google">{{ old('translations.id.SEODescription') }}</textarea>
                             </div>
 
                             <!-- SEO Keywords -->
                             <div class="form-group">
                                 <label><strong>SEO Keywords</strong></label>
-                                <input type="text" name="SEOKeywords" class="form-control"
-                                    value="{{ old('SEOKeywords') }}" placeholder="jasuindo, konstruksi, berita">
+                                <input type="text" name="translations[id][SEOKeywords]" class="form-control"
+                                    value="{{ old('translations.id.SEOKeywords') }}" placeholder="jasuindo, konstruksi, berita">
                                 <small class="text-muted">Pisahkan dengan koma.</small>
                             </div>
                         </div>
@@ -247,7 +288,6 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <!-- FIX: Pakai action kosong, biar native submit tidak ke mana-mana -->
                     <form id="formKategoriBaru" action="" method="POST" autocomplete="off">
                         @csrf
                         <div class="modal-body">
@@ -270,24 +310,16 @@
         </div>
     </section>
 @endsection
-
 @push('styles')
-    <!-- Summernote -->
     <link rel="stylesheet" href="{{ asset('assets/plugins/summernote/summernote-bs4.min.css') }}">
-    <!-- Select2 -->
     <link rel="stylesheet" href="{{ asset('assets/plugins/select2/css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
 @endpush
-
 @push('scripts')
-    <!-- Summernote -->
     <script src="{{ asset('assets/plugins/summernote/summernote-bs4.min.js') }}"></script>
-    <!-- Select2 -->
     <script src="{{ asset('assets/plugins/select2/js/select2.full.min.js') }}"></script>
-    <!-- SweetAlert2, wajib untuk notifikasi jika belum -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <script>
+<script>
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -295,7 +327,7 @@
         });
 
         $(document).ready(function() {
-            // ========== SUMMERNOTE ==========
+            // ========== 1. SUMMERNOTE INDONESIA ==========
             $('#summernote').summernote({
                 height: 400,
                 placeholder: 'Tulis konten berita lengkap di sini...',
@@ -311,67 +343,127 @@
                 ],
                 callbacks: {
                     onImageUpload: function(files) {
-                        var data = new FormData();
-                        data.append('image', files[0]);
-                        data.append('_token', '{{ csrf_token() }}');
-                        $.ajax({
-                            url: '{{ route('berita.upload-image') }}',
-                            method: 'POST',
-                            data: data,
-                            contentType: false,
-                            processData: false,
-                            success: function(response) {
-                                $('#summernote').summernote('insertImage', response.url);
-                            }
-                        });
+                        uploadSummernoteImage(files[0], '#summernote');
                     }
                 }
             });
 
-            // ========== SELECT2 KATEGORI ==========
+            // ========== 2. SUMMERNOTE ENGLISH ==========
+            $('#summernoteEN').summernote({
+                height: 400,
+                placeholder: 'Write full news content here...',
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'italic', 'underline', 'clear']],
+                    ['fontname', ['fontname']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture', 'video']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ],
+                callbacks: {
+                    onImageUpload: function(files) {
+                        uploadSummernoteImage(files[0], '#summernoteEN');
+                    }
+                }
+            });
+
+            // ========== 3. HELPER UPLOAD GAMBAR (Agar tidak duplikat kode) ==========
+            function uploadSummernoteImage(file, editorId) {
+                var data = new FormData();
+                data.append('image', file);
+                data.append('_token', '{{ csrf_token() }}');
+
+                $.ajax({
+                    url: '{{ route("berita.upload-image") }}',
+                    method: 'POST',
+                    data: data,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        $(editorId).summernote('insertImage', response.url);
+                    },
+                    error: function() {
+                        Swal.fire('Error', 'Gagal mengunggah gambar.', 'error');
+                    }
+                });
+            }
+
+            // ========== 4. FITUR LAINNYA ==========
             $('#selectKategori').select2({
                 theme: 'bootstrap4',
                 placeholder: '-- Pilih Kategori --',
                 allowClear: true
             });
 
-            // ========== SEO PREVIEW REAL-TIME ==========
+            // SEO Preview Real-time (Mengacu ke Judul Indonesia)
             function updateSEOPreview() {
-                var judul = $('#Judul').val() || 'Judul Berita';
+                var judul = $('#JudulId').val() || 'Judul Berita';
                 var seoTitle = $('#inputSEOTitle').val() || judul;
                 var seoDesc = $('#inputSEODesc').val() || 'Deskripsi berita akan muncul di sini...';
-
                 $('#seoPreviewTitle').text(seoTitle);
                 $('#seoPreviewDesc').text(seoDesc);
             }
+            $('#JudulId, #inputSEOTitle, #inputSEODesc').on('input', updateSEOPreview);
+            $('#inputSEOTitle').on('input', function() { $('#counterTitle').text($(this).val().length + '/70'); });
+            $('#inputSEODesc').on('input', function() { $('#counterDesc').text($(this).val().length + '/160'); });
 
-            $('#Judul, #inputSEOTitle, #inputSEODesc').on('input', updateSEOPreview);
-
-            // Character Counter
-            $('#inputSEOTitle').on('input', function() {
-                $('#counterTitle').text($(this).val().length + '/70');
-            });
-            $('#inputSEODesc').on('input', function() {
-                $('#counterDesc').text($(this).val().length + '/160');
-            });
-
-            // ========== BUTTON ACTION (DRAFT/PUBLISH) ==========
+            // Button Action (Draf/Publish)
             $('button[name="action"]').on('click', function() {
                 var action = $(this).val();
-                if (action === 'publish') {
-                    $('select[name="Status"]').val('Diterbitkan');
-                } else if (action === 'draft') {
-                    $('select[name="Status"]').val('Draf');
-                }
+                $('select[name="Status"]').val(action === 'publish' ? 'Diterbitkan' : 'Draf');
+            });
+
+            // Tambah Kategori On-The-Fly
+            $('#formKategoriBaru').on('submit', function(e) {
+                e.preventDefault();
+                var btn = $('#btnSimpanKategori');
+                var input = $('#inputNamaKategori');
+                var errorMsg = $('#kategoriError');
+
+                btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin mr-1"></i> Menyimpan...');
+                input.removeClass('is-invalid');
+                errorMsg.hide();
+
+                $.ajax({
+                    url: '{{ route("kategori-berita.store") }}',
+                    method: 'POST',
+                    data: $(this).serialize(),
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 200) {
+                            var newOption = new Option(response.data.NamaKategori, response.data.NamaKategori, false, true);
+                            $('#selectKategori').append(newOption).trigger('change');
+                            input.val('');
+                            $('#modalTambahKategori').modal('hide');
+                            Swal.fire({ icon: 'success', title: 'Berhasil!', text: response.message, timer: 1500, showConfirmButton: false });
+                        }
+                    },
+                    error: function(xhr) {
+                        var errors = xhr.responseJSON?.errors;
+                        if (errors && errors.NamaKategori) {
+                            input.addClass('is-invalid');
+                            errorMsg.text(errors.NamaKategori[0]).show();
+                        }
+                    },
+                    complete: function() {
+                        btn.prop('disabled', false).html('<i class="fa fa-save mr-1"></i> Simpan');
+                    }
+                });
+            });
+
+            $('#modalTambahKategori').on('hidden.bs.modal', function() {
+                $('#inputNamaKategori').val('').removeClass('is-invalid');
+                $('#kategoriError').hide();
             });
         });
-        // ========== PREVIEW IMAGE ==========
+
+        // Preview Image Thumbnail
         function previewImage(input, previewId) {
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
-                reader.onload = function(e) {
-                    $('#' + previewId).attr('src', e.target.result);
-                }
+                reader.onload = function(e) { $('#' + previewId).attr('src', e.target.result); }
                 reader.readAsDataURL(input.files[0]);
             }
         }

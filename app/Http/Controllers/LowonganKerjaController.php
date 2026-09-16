@@ -22,7 +22,7 @@ class LowonganKerjaController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = LowonganKerja::withCount('getLamaran')->latest();
+            $data = LowonganKerja::withCount('getLamaran','getKota')->latest();
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('StatusBadge', function ($row) {
@@ -60,6 +60,12 @@ class LowonganKerjaController extends Controller
                     </div>
                 ';
                 })
+                ->addColumn('Kota', function ($row) {
+
+                        return $row->getKota->name ?? $row->Kota;
+
+                })
+
                 ->rawColumns(['StatusBadge', 'JumlahPelamar', 'action'])
                 ->make(true);
         }

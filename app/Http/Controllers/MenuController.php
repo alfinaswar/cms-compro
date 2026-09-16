@@ -81,7 +81,8 @@ class MenuController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'NamaMenu' => 'required|string|max:255',
+            'translations.id.NamaMenu' => 'required|string|max:255',
+            'translations.en.NamaMenu' => 'nullable|string|max:255',
             'JenisLink' => 'required|in:custom,route,page',
             'Url' => 'nullable|string|max:255',
             'RouteName' => 'nullable|string|max:255',
@@ -89,11 +90,15 @@ class MenuController extends Controller
             'Icon' => 'nullable|string|max:100',
             'Urutan' => 'nullable|integer',
             'Target' => 'required|in:_self,_blank',
+        ], [
+            'translations.id.NamaMenu.required' => 'Nama Menu (Indonesia) wajib diisi.',
         ]);
+
+        $translationsData = $request->input('translations', []);
+        $namaMenuId = $translationsData['id']['NamaMenu'] ?? '';
 
         $data = $request->only([
             'ParentId',
-            'NamaMenu',
             'JenisLink',
             'Url',
             'RouteName',
@@ -102,10 +107,13 @@ class MenuController extends Controller
             'Target'
         ]);
 
-        $data['SlugMenu'] = Str::slug($request->NamaMenu);
+        // Simpan NamaMenu default (fallback) di tabel utama
+        $data['NamaMenu'] = $namaMenuId;
+        $data['SlugMenu'] = Str::slug($namaMenuId) . '-' . time();
         $data['StatusAktif'] = $request->has('StatusAktif');
         $data['TampilkanDiHeader'] = $request->has('TampilkanDiHeader');
         $data['TampilkanDiFooter'] = $request->has('TampilkanDiFooter');
+        $data['UserCreate'] = auth()->user()->id;
 
         // Auto urutan jika kosong
         if (empty($data['Urutan'])) {
@@ -115,25 +123,38 @@ class MenuController extends Controller
 
         $menu = Menu::create($data);
 
-        // Activity log untuk aksi simpan
+        // Simpan terjemahan
+        foreach ($translationsData as $locale => $trans) {
+            if (!empty($trans['NamaMenu'])) {
+                $menu->translations()->create([
+                    'Locale' => $locale,
+                    'NamaMenu' => $trans['NamaMenu'],
+                ]);
+            }
+        }
+
         activity()
             ->performedOn($menu)
             ->causedBy(auth()->user())
-            ->withProperties(['attributes' => $menu->toArray()])
-            ->log('Membuat menu: ' . $menu->NamaMenu);
+            ->withProperties(['attributes' => $menu->toArray(), 'translations' => $translationsData])
+            ->log('Membuat menu: ' . $namaMenuId);
 
-        return redirect()->route('menu.index')
-            ->with('success', 'Menu berhasil ditambahkan!');
+        return redirect()->route('menu.index')->with('success', 'Menu berhasil ditambahkan!');
     }
 
     public function edit($id)
     {
-        $menu = Menu::findOrFail($id);
+        $menu = Menu::with('translations')->findOrFail($id);
         $parentMenus = Menu::whereNull('ParentId')
             ->where('id', '!=', $id)
             ->orderBy('Urutan')
             ->get();
-        $availableRoutes = $this->getAvailableRoutes();
+
+        // Ambil list route Laravel
+        $availableRoutes = collect(\Illuminate\Support\Facades\Route::getRoutes()->getRoutes())
+            ->filter(fn($r) => $r->getName() && !str_starts_with($r->getName(), 'master.'))
+            ->map(fn($r) => ['name' => $r->getName(), 'uri' => $r->uri()])
+            ->values();
 
         return view('pages.admin.menu.edit', compact('menu', 'parentMenus', 'availableRoutes'));
     }
@@ -143,7 +164,8 @@ class MenuController extends Controller
         $menu = Menu::findOrFail($id);
 
         $request->validate([
-            'NamaMenu' => 'required|string|max:255',
+            'translations.id.NamaMenu' => 'required|string|max:255',
+            'translations.en.NamaMenu' => 'nullable|string|max:255',
             'JenisLink' => 'required|in:custom,route,page',
             'Url' => 'nullable|string|max:255',
             'RouteName' => 'nullable|string|max:255',
@@ -153,9 +175,11 @@ class MenuController extends Controller
             'Target' => 'required|in:_self,_blank',
         ]);
 
+        $translationsData = $request->input('translations', []);
+        $namaMenuId = $translationsData['id']['NamaMenu'] ?? $menu->NamaMenu;
+
         $data = $request->only([
             'ParentId',
-            'NamaMenu',
             'JenisLink',
             'Url',
             'RouteName',
@@ -164,27 +188,29 @@ class MenuController extends Controller
             'Target'
         ]);
 
-        $data['SlugMenu'] = Str::slug($request->NamaMenu);
+        $data['NamaMenu'] = $namaMenuId;
         $data['StatusAktif'] = $request->has('StatusAktif');
         $data['TampilkanDiHeader'] = $request->has('TampilkanDiHeader');
         $data['TampilkanDiFooter'] = $request->has('TampilkanDiFooter');
-
-        $old = $menu->getOriginal();
+        $data['UserUpdate'] = auth()->user()->id;
 
         $menu->update($data);
 
-        // Activity log untuk aksi update
+        // Update/Create translations
+        foreach ($translationsData as $locale => $trans) {
+            $menu->translations()->updateOrCreate(
+                ['Locale' => $locale],
+                ['NamaMenu' => $trans['NamaMenu'] ?? '']
+            );
+        }
+
         activity()
             ->performedOn($menu)
             ->causedBy(auth()->user())
-            ->withProperties([
-                'old' => $old,
-                'attributes' => $menu->toArray()
-            ])
-            ->log('Mengubah menu: ' . $menu->NamaMenu);
+            ->withProperties(['attributes' => $menu->toArray(), 'translations' => $translationsData])
+            ->log('Update menu: ' . $namaMenuId);
 
-        return redirect()->route('menu.index')
-            ->with('success', 'Menu berhasil diperbarui!');
+        return redirect()->route('menu.index')->with('success', 'Menu berhasil diperbarui!');
     }
 
     public function destroy($id)

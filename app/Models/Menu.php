@@ -14,8 +14,6 @@ class Menu extends Model
 
     /**
      * The attributes that aren't mass assignable.
-     *
-     * @var array
      */
     protected $guarded = ['id'];
 
@@ -26,6 +24,10 @@ class Menu extends Model
         'Urutan' => 'integer',
     ];
 
+    // ==========================================
+    // RELASI TREE (Existing)
+    // ==========================================
+
     // Relasi parent
     public function parent()
     {
@@ -35,7 +37,9 @@ class Menu extends Model
     // Relasi children (sub menu)
     public function children()
     {
-        return $this->hasMany(Menu::class, 'ParentId')->orderBy('Urutan', 'asc');
+        return $this->hasMany(Menu::class, 'ParentId')
+            ->with('translations') // ✅ Auto-load translations untuk submenu
+            ->orderBy('Urutan', 'asc');
     }
 
     // Scope untuk menu header aktif
@@ -44,10 +48,11 @@ class Menu extends Model
         return $query->whereNull('ParentId')
             ->where('StatusAktif', true)
             ->where('TampilkanDiHeader', true)
+            ->with('translations', 'children.translations') // ✅ Eager load translations
             ->orderBy('Urutan', 'asc');
     }
 
-    // Generate URL dinamis
+    // Generate URL dinamis (Existing)
     public function getLinkAttribute()
     {
         if ($this->JenisLink === 'route' && $this->RouteName) {
@@ -63,5 +68,42 @@ class Menu extends Model
         }
 
         return $this->Url ?? '#';
+    }
+
+    // ==========================================
+    // MULTI-LANGUAGE SUPPORT (BARU)
+    // ==========================================
+
+    /**
+     * Relasi ke tabel terjemahan menu
+     */
+    public function translations()
+    {
+        return $this->hasMany(MenuTranslation::class, 'MenuId');
+    }
+
+    /**
+     * Helper untuk mengambil terjemahan berdasarkan bahasa
+     *
+     * @param string $locale
+     * @return MenuTranslation
+     */
+    public function translate($locale = 'id')
+    {
+        // firstWhere akan return null jika tidak ada, fallback ke instance kosong
+        return $this->translations->firstWhere('Locale', $locale) ?: new MenuTranslation();
+    }
+
+    /**
+     * Accessor: nama menu sesuai bahasa aktif dengan fallback ke NamaMenu default
+     * Gunakan di frontend: {{ $menu->display_name }}
+     */
+    public function getDisplayNameAttribute()
+    {
+        $locale = app()->getLocale();
+        $trans = $this->translate($locale);
+
+        // Fallback: jika terjemahan kosong, pakai NamaMenu dari tabel utama
+        return $trans->NamaMenu ?: $this->NamaMenu;
     }
 }

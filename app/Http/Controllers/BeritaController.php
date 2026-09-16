@@ -16,38 +16,49 @@ class BeritaController extends Controller
      * Display a listing of the resource (DataTables Server-side).
      */
     public function index(Request $request)
-    {
-        if ($request->ajax()) {
-            $data = Berita::latest();
+{
+    if ($request->ajax()) {
+        // ✅ Eager load hanya translation Bahasa Indonesia ('id')
+        $data = Berita::with(['translations' => function ($query) {
+            $query->where('Locale', 'id');
+        }])->latest();
 
-            return DataTables::of($data)
-                ->addIndexColumn()
-                ->addColumn('Thumbnail', function ($row) {
-                    if ($row->PathThumbnail) {
-                        return '<img src="' . Storage::url($row->PathThumbnail) . '" style="width:80px;height:50px;object-fit:cover;border-radius:4px;">';
-                    }
-                    return '<span class="text-muted">No Image</span>';
-                })
-                ->addColumn('StatusBadge', function ($row) {
-                    $colors = ['Draf' => 'secondary', 'Diterbitkan' => 'success', 'Arsip' => 'danger'];
-                    $color = $colors[$row->Status] ?? 'secondary';
-                    return '<span class="badge badge-' . $color . '">' . $row->Status . '</span>';
-                })
-                ->addColumn('action', function ($row) {
-                    $btn = '<div class="btn-group btn-group-sm">';
-                    $btn .= '<a href="' . route('berita.edit', $row->Slug) . '" class="btn btn-warning" title="Edit"><i class="fa fa-edit"></i></a>';
-                    $btn .= '<a href="' . route('berita.show', $row->Slug) . '" target="_blank" class="btn btn-info" title="Lihat"><i class="fa fa-eye"></i></a>';
+        return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('Judul', function ($row) {
+                // Ambil translation ID, fallback ke model utama jika kosong
+                $trans = $row->translations->first();
+                $judul = $trans ? $trans->Judul : ($row->Judul ?? 'Tanpa Judul');
 
-                    $btn .= '<button class="btn btn-danger btn-delete" data-id="' . $row->id . '" title="Hapus"><i class="fa fa-trash"></i></button>';
-                    $btn .= '</div>';
-                    return $btn;
-                })
-                ->rawColumns(['Thumbnail', 'StatusBadge', 'action'])
-                ->make(true);
-        }
-
-        return view('pages.admin.berita.index');
+                return '<strong>' . $judul . '</strong><br>
+                        <small class="text-muted">Slug: ' . $row->Slug . '</small>';
+            })
+            ->addColumn('Thumbnail', function ($row) {
+                if ($row->PathThumbnail) {
+                    return '<img src="' . Storage::url($row->PathThumbnail) . '" style="width:80px;height:50px;object-fit:cover;border-radius:4px;">';
+                }
+                return '<span class="text-muted">No Image</span>';
+            })
+            ->addColumn('StatusBadge', function ($row) {
+                $colors = ['Draf' => 'secondary', 'Diterbitkan' => 'success', 'Arsip' => 'danger'];
+                $color = $colors[$row->Status] ?? 'secondary';
+                return '<span class="badge badge-' . $color . '">' . $row->Status . '</span>';
+            })
+            ->addColumn('action', function ($row) {
+                $btn = '<div class="btn-group btn-group-sm">';
+                // ✅ Gunakan $row->id untuk edit, lebih aman daripada Slug
+                $btn .= '<a href="' . route('berita.edit', $row->id) . '" class="btn btn-warning" title="Edit"><i class="fa fa-edit"></i></a>';
+                $btn .= '<a href="' . url('news/' . $row->Slug) . '" target="_blank" class="btn btn-info" title="Lihat"><i class="fa fa-eye"></i></a>';
+                $btn .= '<button class="btn btn-danger btn-delete" data-id="' . $row->id . '" title="Hapus"><i class="fa fa-trash"></i></button>';
+                $btn .= '</div>';
+                return $btn;
+            })
+            ->rawColumns(['Judul', 'Thumbnail', 'StatusBadge', 'action'])
+            ->make(true);
     }
+
+    return view('pages.admin.berita.index');
+}
 
     /**
      * Show the form for creating a new resource.
@@ -64,46 +75,60 @@ class BeritaController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'Judul' => 'required|string|max:255',
             'Kategori' => 'required|string|max:100',
-            'Tags' => 'nullable|string',  // String comma-separated
-            'Ringkasan' => 'nullable|string',
-            'Konten' => 'required|string',
+            'Tags' => 'nullable|string',
             'PathThumbnail' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
             'Status' => 'required|in:Draf,Diterbitkan,Arsip',
             'TanggalPublikasi' => 'nullable|date',
             'Penulis' => 'nullable|string|max:100',
-            // SEO
-            'SEOTitle' => 'nullable|string|max:70',
-            'SEODescription' => 'nullable|string|max:160',
-            'SEOKeywords' => 'nullable|string|max:255',
-        ]);
 
-        // Handle Thumbnail Upload
+            'translations.id.Judul' => 'required|string|max:255',
+            'translations.id.Ringkasan' => 'nullable|string',
+            'Konten' => 'required|string',
+            'translations.id.SEOTitle' => 'nullable|string|max:70',
+            'translations.id.SEODescription' => 'nullable|string|max:160',
+            'translations.id.SEOKeywords' => 'nullable|string|max:255',
+            'translations.en.Judul' => 'nullable|string|max:255',
+            'translations.en.Ringkasan' => 'nullable|string',
+            'translations.en.Konten' => 'nullable|string',
+        ]);
         if ($request->hasFile('PathThumbnail')) {
             $validated['PathThumbnail'] = $request->file('PathThumbnail')->store('berita/thumbnail', 'public');
         }
-
-        // Auto Slug
-        $validated['Slug'] = Str::slug($validated['Judul']) . '-' . time();
-
-        // Auto Author
-        $validated['Penulis'] = $validated['Penulis'] ?? auth()->user()->name;
-        $validated['UserCreate'] = auth()->user()->name;
-
-        // Format Tags: jika array (dari select2) jadi string, jika string biarkan
-        if (is_array($validated['Tags'])) {
-            $validated['Tags'] = implode(', ', $validated['Tags']);
+        $mainData = [
+            'Kategori' => $validated['Kategori'],
+            'Tags' => is_array($validated['Tags']) ? implode(', ', $validated['Tags']) : $validated['Tags'],
+            'PathThumbnail' => $validated['PathThumbnail'],
+            'Status' => $validated['Status'],
+            'TanggalPublikasi' => $validated['TanggalPublikasi'],
+            'Penulis' => $validated['Penulis'] ?? auth()->user()->name,
+            'UserCreate' => auth()->user()->name,
+            'Slug' => Str::slug($validated['translations']['id']['Judul']) . '-' . time(),
+        ];
+        $berita = Berita::create($mainData);
+        $translationsData = $request->input('translations', []);
+        $translationsData['id']['Konten'] = $validated['Konten'];
+        foreach ($translationsData as $locale => $trans) {
+            if (!empty($trans['Judul']) || !empty($trans['Konten'])) {
+                $berita->translations()->create([
+                    'Locale' => $locale,
+                    'Judul' => $trans['Judul'] ?? null,
+                    'Ringkasan' => $trans['Ringkasan'] ?? null,
+                    'Konten' => $trans['Konten'] ?? null,
+                    'SEOTitle' => $trans['SEOTitle'] ?? null,
+                    'SEODescription' => $trans['SEODescription'] ?? null,
+                    'SEOKeywords' => $trans['SEOKeywords'] ?? null,
+                ]);
+            }
         }
 
-        $berita = Berita::create($validated);
-
-        // Activity log di sini
+        // Activity Log
+        $judulLog = $translationsData['id']['Judul'] ?? 'Berita Baru';
         activity()
             ->causedBy(auth()->user())
             ->performedOn($berita)
-            ->withProperties(['attributes' => $berita->toArray()])
-            ->log('Menambahkan berita baru: ' . $berita->Judul);
+            ->withProperties(['attributes' => $mainData, 'translations' => $translationsData])
+            ->log('Menambahkan berita baru: ' . $judulLog);
 
         return redirect()->route('berita.index')->with('success', 'Berita berhasil ditambahkan.');
     }
@@ -123,21 +148,31 @@ class BeritaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $berita = Berita::where('Slug', $id)->first();
+        $berita = Berita::findOrFail($id);
 
         $validated = $request->validate([
-            'Judul' => 'required|string|max:255',
             'Kategori' => 'required|string|max:100',
             'Tags' => 'nullable|string',
-            'Ringkasan' => 'nullable|string',
-            'Konten' => 'required|string',
             'PathThumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'Status' => 'required|in:Draf,Diterbitkan,Arsip',
             'TanggalPublikasi' => 'nullable|date',
             'Penulis' => 'nullable|string|max:100',
+
+            // Indonesia (Flat names sesuai permintaan)
+            'Judul' => 'required|string|max:255',
+            'Ringkasan' => 'nullable|string',
+            'Konten' => 'required|string',
             'SEOTitle' => 'nullable|string|max:70',
             'SEODescription' => 'nullable|string|max:160',
             'SEOKeywords' => 'nullable|string|max:255',
+
+            // Inggris (Array names)
+            'translations.en.Judul' => 'nullable|string|max:255',
+            'translations.en.Ringkasan' => 'nullable|string',
+            'translations.en.Konten' => 'nullable|string',
+            'translations.en.SEOTitle' => 'nullable|string|max:70',
+            'translations.en.SEODescription' => 'nullable|string|max:160',
+            'translations.en.SEOKeywords' => 'nullable|string|max:255',
         ]);
 
         // Handle Thumbnail Update
@@ -148,27 +183,62 @@ class BeritaController extends Controller
             $validated['PathThumbnail'] = $request->file('PathThumbnail')->store('berita/thumbnail', 'public');
         }
 
-        $validated['Slug'] = Str::slug($validated['Judul']) . '-' . time();
-        $validated['UserUpdate'] = auth()->user()->name;
+        // Data Utama (Non-translatable)
+        $mainData = [
+            'Kategori' => $validated['Kategori'],
+            'Tags' => is_array($validated['Tags']) ? implode(', ', $validated['Tags']) : $validated['Tags'],
+            'Status' => $validated['Status'],
+            'TanggalPublikasi' => $validated['TanggalPublikasi'],
+            'Penulis' => $validated['Penulis'],
+            'UserUpdate' => auth()->user()->name,
+        ];
 
-        // Format Tags
-        if (is_array($validated['Tags'])) {
-            $validated['Tags'] = implode(', ', $validated['Tags']);
+        if (isset($validated['PathThumbnail'])) {
+            $mainData['PathThumbnail'] = $validated['PathThumbnail'];
         }
 
-        $oldBerita = $berita->replicate();
+        // Update Slug jika Judul berubah
+        if ($berita->Judul !== $validated['Judul']) {
+            $mainData['Slug'] = Str::slug($validated['Judul']) . '-' . time();
+        }
 
-        $berita->update($validated);
+        $berita->update($mainData);
 
-        // Activity log di sini
+        // Siapkan Data Translasi
+        $translationsData = $request->input('translations', []);
+
+        // ✅ PENTING: Masukkan field flat Indonesia ke dalam array translations[id]
+        $translationsData['id'] = [
+            'Judul' => $validated['Judul'],
+            'Ringkasan' => $validated['Ringkasan'] ?? null,
+            'Konten' => $validated['Konten'],
+            'SEOTitle' => $validated['SEOTitle'] ?? null,
+            'SEODescription' => $validated['SEODescription'] ?? null,
+            'SEOKeywords' => $validated['SEOKeywords'] ?? null,
+        ];
+
+        // Update/Create ke Tabel Translasi
+        foreach ($translationsData as $locale => $trans) {
+            if (!empty($trans['Judul']) || !empty($trans['Konten'])) {
+                $berita->translations()->updateOrCreate(
+                    ['Locale' => $locale],
+                    [
+                        'Judul' => $trans['Judul'] ?? null,
+                        'Ringkasan' => $trans['Ringkasan'] ?? null,
+                        'Konten' => $trans['Konten'] ?? null,
+                        'SEOTitle' => $trans['SEOTitle'] ?? null,
+                        'SEODescription' => $trans['SEODescription'] ?? null,
+                        'SEOKeywords' => $trans['SEOKeywords'] ?? null,
+                    ]
+                );
+            }
+        }
+
         activity()
             ->causedBy(auth()->user())
             ->performedOn($berita)
-            ->withProperties([
-                'attributes' => $berita->toArray(),
-                'old' => $oldBerita->toArray(),
-            ])
-            ->log('Memperbarui berita: ' . $berita->Judul);
+            ->withProperties(['attributes' => $mainData, 'translations' => $translationsData])
+            ->log('Mengupdate berita: ' . $validated['Judul']);
 
         return redirect()->route('berita.index')->with('success', 'Berita berhasil diperbarui.');
     }
@@ -237,46 +307,127 @@ class BeritaController extends Controller
 
     public function news(Request $request)
     {
-        $query = Berita::query();
+        // 1. Ambil bahasa yang sedang aktif ('id' atau 'en')
+        $locale = app()->getLocale();
 
-        // Fitur Pencarian
+        // 2. Query dasar: Hanya ambil berita yang diterbitkan
+        $query = Berita::where('Status', 'Diterbitkan');
+
+        // 3. Eager Load translations sesuai bahasa aktif (Mencegah N+1 Query Problem)
+        $query->with([
+            'translations' => function ($q) use ($locale) {
+                $q->where('Locale', $locale);
+            }
+        ]);
+
+        // 4. Fitur Pencarian (Cari di dalam tabel terjemahan, bukan tabel utama)
         if ($request->filled('search')) {
-            $query
-                ->where('Judul', 'like', '%' . $request->search . '%')
-                ->orWhere('Ringkasan', 'like', '%' . $request->search . '%');
+            $search = $request->search;
+            $query->whereHas('translations', function ($q) use ($search, $locale) {
+                $q->where('Locale', $locale)
+                    ->where(function ($subQ) use ($search) {
+                        $subQ->where('Judul', 'like', '%' . $search . '%')
+                            ->orWhere('Ringkasan', 'like', '%' . $search . '%');
+                    });
+            });
         }
+
+        // 5. Filter Kategori
         if ($request->filled('kategori')) {
             $query->where('Kategori', $request->kategori);
         }
+
+        // 6. Filter Tag
         if ($request->filled('tag')) {
             $query->where('Tags', 'like', '%' . $request->tag . '%');
         }
-        $news = $query->latest()->paginate(10);
-        $recentNews = Berita::latest()->take(3)->get();
 
-        $categories = Berita::select('Kategori')->distinct()->pluck('Kategori');
+        // Eksekusi Query untuk List Utama
+        $news = $query->latest('TanggalPublikasi')->paginate(10);
 
-        return view('frontend.news', compact('news', 'recentNews', 'categories'));
+        // 7. Recent News (Sidebar) - Juga perlu eager load translation
+        $recentNews = Berita::where('Status', 'Diterbitkan')
+            ->with([
+                'translations' => function ($q) use ($locale) {
+                    $q->where('Locale', $locale);
+                }
+            ])
+            ->latest('TanggalPublikasi')
+            ->take(3)
+            ->get();
+
+        // 8. Categories (Kategori tidak diterjemahkan di tabel ini, jadi ambil dari tabel utama)
+        $categories = Berita::where('Status', 'Diterbitkan')
+            ->select('Kategori')
+            ->distinct()
+            ->pluck('Kategori')
+            ->filter();
+
+        // Kirim $locale ke view agar bisa digunakan di Blade
+        return view('frontend.news', compact('news', 'recentNews', 'categories', 'locale'));
     }
 
     public function newsDetail($slug)
     {
-        $news = Berita::where('Slug', $slug)->firstOrFail();
+        $locale = app()->getLocale();
 
-        $recentNews = Berita::where('id', '!=', $news->id)
-            ->latest()
+        // 1. Main News: Eager load translation sesuai bahasa aktif
+        $news = Berita::with([
+            'translations' => function ($q) use ($locale) {
+                $q->where('Locale', $locale);
+            }
+        ])->where('Slug', $slug)->firstOrFail();
+
+        // 2. Recent News (Sidebar): Eager load translation
+        $recentNews = Berita::with([
+            'translations' => function ($q) use ($locale) {
+                $q->where('Locale', $locale);
+            }
+        ])
+            ->where('id', '!=', $news->id)
+            ->where('Status', 'Diterbitkan')
+            ->latest('TanggalPublikasi')
             ->take(3)
             ->get();
-        $categories = Berita::select('Kategori')->distinct()->pluck('Kategori');
-        $prevPost = Berita::where('TanggalPublikasi', '<', $news->TanggalPublikasi)
+
+        // 3. Categories (Data ini tidak diterjemahkan di tabel terpisah, ambil dari utama)
+        $categories = Berita::where('Status', 'Diterbitkan')
+            ->select('Kategori')
+            ->distinct()
+            ->pluck('Kategori')
+            ->filter();
+
+        // 4. Prev/Next Posts: Eager load translation
+        $prevPost = Berita::with([
+            'translations' => function ($q) use ($locale) {
+                $q->where('Locale', $locale);
+            }
+        ])
+            ->where('TanggalPublikasi', '<', $news->TanggalPublikasi)
+            ->where('Status', 'Diterbitkan')
             ->latest('TanggalPublikasi')
             ->first();
-        $nextPost = Berita::where('TanggalPublikasi', '>', $news->TanggalPublikasi)
+
+        $nextPost = Berita::with([
+            'translations' => function ($q) use ($locale) {
+                $q->where('Locale', $locale);
+            }
+        ])
+            ->where('TanggalPublikasi', '>', $news->TanggalPublikasi)
+            ->where('Status', 'Diterbitkan')
             ->oldest('TanggalPublikasi')
             ->first();
-        $relatedPosts = Berita::where('Kategori', $news->Kategori)
+
+        // 5. Related Posts: Eager load translation
+        $relatedPosts = Berita::with([
+            'translations' => function ($q) use ($locale) {
+                $q->where('Locale', $locale);
+            }
+        ])
+            ->where('Kategori', $news->Kategori)
             ->where('id', '!=', $news->id)
-            ->latest()
+            ->where('Status', 'Diterbitkan')
+            ->latest('TanggalPublikasi')
             ->take(3)
             ->get();
 
@@ -286,7 +437,8 @@ class BeritaController extends Controller
             'categories',
             'prevPost',
             'nextPost',
-            'relatedPosts'
+            'relatedPosts',
+            'locale' // Kirim locale ke view
         ));
     }
 }

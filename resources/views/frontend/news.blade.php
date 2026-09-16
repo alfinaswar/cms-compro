@@ -8,22 +8,16 @@
             <img src="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?q=80&w=2070&auto=format&fit=crop"
                 alt="{{ __('News Background') }}" class="w-full h-full object-cover">
         </div>
-        <div
-            class="absolute top-0 right-0 w-96 h-96 bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10">
-        </div>
-        <div
-            class="absolute bottom-0 left-0 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10">
-        </div>
+        <div class="absolute top-0 right-0 w-96 h-96 bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
 
         <div class="container mx-auto px-6 relative z-10">
             <div class="max-w-4xl mx-auto text-center">
-                <span
-                    class="inline-block py-1.5 px-4 rounded-full bg-brand-500/20 text-brand-100 text-sm font-semibold tracking-wide mb-6 border border-brand-500/30 backdrop-blur-sm">
+                <span class="inline-block py-1.5 px-4 rounded-full bg-brand-500/20 text-brand-100 text-sm font-semibold tracking-wide mb-6 border border-brand-500/30 backdrop-blur-sm">
                     <i class="fa-solid fa-newspaper mr-2"></i> {{ __('FOR THIS NEWS') }}
                 </span>
                 <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight">
-                    {{ __('Latest News') }} <span
-                        class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-cyan-300"></span>
+                    {{ __('Latest News') }}
                 </h1>
                 <p class="text-xl text-slate-300 max-w-2xl mx-auto">
                     {{ __('Get the latest information, updates and company insights here.') }}
@@ -48,13 +42,19 @@
 
                 <!-- Main Content: News List -->
                 <div class="lg:col-span-2">
-
                     @forelse($news as $item)
-                        <article
-                            class="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 mb-6 hover:shadow-md transition-shadow">
+                        @php
+                            // Ambil terjemahan sesuai bahasa aktif, fallback ke data utama jika kosong
+                            $trans = $item->translate($locale);
+                            $displayJudul = $trans->Judul ?: $item->Judul;
+                            $displayRingkasan = $trans->Ringkasan ?: $item->Ringkasan;
+                            $thumbnailUrl = $item->PathThumbnail ? asset('storage/' . $item->PathThumbnail) : asset('img/no-image.png');
+                        @endphp
+
+                        <article class="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 mb-6 hover:shadow-md transition-shadow">
                             <!-- Image -->
                             <a href="{{ url('news/' . $item->Slug) }}" class="block overflow-hidden">
-                                <img src="{{ asset('storage/' . $item->PathThumbnail) }}" alt="{{ $item->Judul }}"
+                                <img src="{{ $thumbnailUrl }}" alt="{{ $displayJudul }}"
                                     class="w-full h-64 object-cover hover:scale-105 transition-transform duration-300">
                             </a>
 
@@ -64,11 +64,11 @@
                                 <div class="flex flex-wrap items-center gap-4 text-sm text-slate-500 mb-3">
                                     <span>
                                         <i class="fa-regular fa-user mr-1"></i>
-                                        {{ $item->Penulis }}
+                                        {{ $item->Penulis ?? 'Admin' }}
                                     </span>
                                     <span>
                                         <i class="fa-regular fa-calendar mr-1"></i>
-                                        {{ \Carbon\Carbon::parse($item->TanggalPublikasi)->isoFormat('D MMM, Y') }}
+                                        {{ $item->TanggalPublikasi ? \Carbon\Carbon::parse($item->TanggalPublikasi)->isoFormat('D MMM, Y') : '-' }}
                                     </span>
                                     <span class="px-2 py-1 bg-brand-50 text-brand-700 text-xs font-semibold rounded">
                                         {{ $item->Kategori }}
@@ -78,13 +78,13 @@
                                 <!-- Title -->
                                 <h2 class="text-2xl font-bold text-slate-900 mb-3 hover:text-brand-600 transition-colors">
                                     <a href="{{ url('news/' . $item->Slug) }}">
-                                        {{ $item->Judul }}
+                                        {{ $displayJudul }}
                                     </a>
                                 </h2>
 
                                 <!-- Excerpt -->
                                 <p class="text-slate-600 mb-4 leading-relaxed">
-                                    {{ $item->Ringkasan }}
+                                    {{ Str::limit($displayRingkasan, 150) }}
                                 </p>
 
                                 <!-- Read More -->
@@ -108,42 +108,30 @@
                     @if ($news->hasPages())
                         <div class="mt-8 flex justify-center">
                             <nav class="inline-flex items-center space-x-1">
-                                {{-- Previous --}}
                                 @if ($news->onFirstPage())
-                                    <span
-                                        class="px-3 py-2 border border-slate-300 rounded-lg text-slate-400 cursor-not-allowed">
+                                    <span class="px-3 py-2 border border-slate-300 rounded-lg text-slate-400 cursor-not-allowed">
                                         <i class="fa-solid fa-chevron-left"></i>
                                     </span>
                                 @else
-                                    <a href="{{ $news->previousPageUrl() }}"
-                                        class="px-3 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50">
+                                    <a href="{{ $news->previousPageUrl() }}" class="px-3 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50">
                                         <i class="fa-solid fa-chevron-left"></i>
                                     </a>
                                 @endif
 
-                                {{-- Page Numbers --}}
                                 @foreach ($news->getUrlRange(1, $news->lastPage()) as $page => $url)
                                     @if ($page == $news->currentPage())
-                                        <span class="px-4 py-2 bg-brand-600 text-white font-semibold rounded-lg">
-                                            {{ $page }}
-                                        </span>
+                                        <span class="px-4 py-2 bg-brand-600 text-white font-semibold rounded-lg">{{ $page }}</span>
                                     @else
-                                        <a href="{{ $url }}"
-                                            class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50">
-                                            {{ $page }}
-                                        </a>
+                                        <a href="{{ $url }}" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50">{{ $page }}</a>
                                     @endif
                                 @endforeach
 
-                                {{-- Next --}}
                                 @if ($news->hasMorePages())
-                                    <a href="{{ $news->nextPageUrl() }}"
-                                        class="px-3 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50">
+                                    <a href="{{ $news->nextPageUrl() }}" class="px-3 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50">
                                         <i class="fa-solid fa-chevron-right"></i>
                                     </a>
                                 @else
-                                    <span
-                                        class="px-3 py-2 border border-slate-300 rounded-lg text-slate-400 cursor-not-allowed">
+                                    <span class="px-3 py-2 border border-slate-300 rounded-lg text-slate-400 cursor-not-allowed">
                                         <i class="fa-solid fa-chevron-right"></i>
                                     </span>
                                 @endif
@@ -163,8 +151,7 @@
                                 <input type="text" name="search" value="{{ request('search') }}"
                                     placeholder="{{ __('Search news...') }}"
                                     class="w-full px-4 py-2.5 pr-10 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
-                                <button type="submit"
-                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand-600">
+                                <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand-600">
                                     <i class="fa-solid fa-magnifying-glass"></i>
                                 </button>
                             </form>
@@ -176,12 +163,10 @@
                             <ul class="space-y-2">
                                 @foreach ($categories as $category)
                                     <li>
-                                        <a href="{{ url('news?kategori=' . $category) }}"
+                                        <a href="{{ url('news?kategori=' . urlencode($category)) }}"
                                             class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-slate-50 transition-colors group">
-                                            <span
-                                                class="text-slate-700 group-hover:text-brand-600">{{ $category }}</span>
-                                            <i
-                                                class="fa-solid fa-chevron-right text-xs text-slate-400 group-hover:text-brand-600"></i>
+                                            <span class="text-slate-700 group-hover:text-brand-600">{{ $category }}</span>
+                                            <i class="fa-solid fa-chevron-right text-xs text-slate-400 group-hover:text-brand-600"></i>
                                         </a>
                                     </li>
                                 @endforeach
@@ -193,20 +178,23 @@
                             <h3 class="text-lg font-bold text-slate-900 mb-4">{{ __('Recent Posts') }}</h3>
                             <div class="space-y-4">
                                 @foreach ($recentNews as $recent)
+                                    @php
+                                        $recentTrans = $recent->translate($locale);
+                                        $recentJudul = $recentTrans->Judul ?: $recent->Judul;
+                                        $recentThumb = $recent->PathThumbnail ? asset('storage/' . $recent->PathThumbnail) : asset('img/no-image.png');
+                                    @endphp
                                     <div class="flex gap-3">
                                         <a href="{{ url('news/' . $recent->Slug) }}" class="flex-shrink-0">
-                                            <img src="{{ asset('storage/' . $recent->PathThumbnail) }}"
-                                                alt="{{ $recent->Judul }}" class="w-20 h-20 object-cover rounded-lg">
+                                            <img src="{{ $recentThumb }}" alt="{{ $recentJudul }}" class="w-20 h-20 object-cover rounded-lg">
                                         </a>
                                         <div class="flex-1 min-w-0">
                                             <p class="text-xs text-slate-500 mb-1">
                                                 <i class="fa-regular fa-calendar mr-1"></i>
-                                                {{ \Carbon\Carbon::parse($recent->TanggalPublikasi)->isoFormat('D MMM, Y') }}
+                                                {{ $recent->TanggalPublikasi ? \Carbon\Carbon::parse($recent->TanggalPublikasi)->isoFormat('D MMM, Y') : '-' }}
                                             </p>
-                                            <h4
-                                                class="text-sm font-semibold text-slate-900 hover:text-brand-600 line-clamp-2">
+                                            <h4 class="text-sm font-semibold text-slate-900 hover:text-brand-600 line-clamp-2">
                                                 <a href="{{ url('news/' . $recent->Slug) }}">
-                                                    {{ $recent->Judul }}
+                                                    {{ $recentJudul }}
                                                 </a>
                                             </h4>
                                         </div>
@@ -233,7 +221,7 @@
                                 @endphp
 
                                 @forelse($allTags as $tag)
-                                    <a href="{{ url('news?tag=' . $tag) }}"
+                                    <a href="{{ url('news?tag=' . urlencode($tag)) }}"
                                         class="px-3 py-1.5 bg-slate-100 hover:bg-brand-600 text-slate-700 hover:text-white text-sm rounded-lg transition-colors">
                                         {{ $tag }}
                                     </a>
