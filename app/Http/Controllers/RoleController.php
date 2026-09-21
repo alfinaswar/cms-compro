@@ -10,30 +10,9 @@ use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Yajra\DataTables\DataTables;
 use DB;
-use Illuminate\Support\Facades\Log;
 
 class RoleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    // function __construct()
-    // {
-    //      $this->middleware('permission:role-list|role-create|role-edit|role-delete', ['only' => ['index','store']]);
-    //      $this->middleware('permission:role-create', ['only' => ['create','store']]);
-    //      $this->middleware('permission:role-edit', ['only' => ['edit','update']]);
-    //      $this->middleware('permission:role-delete', ['only' => ['destroy']]);
-    // }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    // RoleController.php
-    // RoleController.php
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -42,20 +21,12 @@ class RoleController extends Controller
             return Datatables::of($roles)
                 ->addIndexColumn()
                 ->addColumn('action', function ($role) {
-                    $btn = '';
-
-
-                    // Tombol Edit - tanpa cek izin
-                    $btn .= '<a href="' . route('roles.edit', $role->id) . '" class="btn btn-primary btn-sm me-1">';
+                    $btn = '<a href="' . route('roles.edit', $role->id) . '" class="btn btn-primary btn-sm me-1">';
                     $btn .= '<i class="fa fa-edit"></i> Ubah</a> ';
-
-                    // Tombol Hapus - tanpa cek izin
                     $btn .= '<button class="btn btn-danger btn-sm btn-delete" data-id="' . $role->id . '" data-name="' . $role->name . '">';
                     $btn .= '<i class="fa fa-trash"></i> Hapus</button>';
-
                     return $btn;
                 })
-
                 ->rawColumns(['action'])
                 ->make(true);
         }
@@ -63,34 +34,23 @@ class RoleController extends Controller
         return view('roles.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create(): View
     {
-        $permission = Permission::get();
-        return view('roles.create', compact('permission'));
+        // Ambil permission yang sudah dikelompokkan
+        $groupedPermissions = $this->getGroupedPermissions();
+        return view('roles.create', compact('groupedPermissions'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request): RedirectResponse
     {
         $this->validate($request, [
             'name' => 'required|unique:roles,name',
-            'permission' => 'required',
+            'permission' => 'required|array|min:1',
         ]);
 
         $role = Role::create(['name' => $request->input('name')]);
         $role->syncPermissions($request->input('permission'));
 
-        // Activity Log for Create
         activity()
             ->performedOn($role)
             ->causedBy(auth()->user())
@@ -100,17 +60,9 @@ class RoleController extends Controller
             ])
             ->log('Membuat Role baru: ' . $role->name);
 
-        return redirect()
-            ->route('roles.index')
-            ->with('success', 'Role created successfully');
+        return redirect()->route('roles.index')->with('success', 'Role berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id): View
     {
         $role = Role::find($id);
@@ -121,46 +73,32 @@ class RoleController extends Controller
         return view('roles.show', compact('role', 'rolePermissions'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id): View
     {
-        $role = Role::find($id);
-        $permission = Permission::get();
-        $rolePermissions = DB::table('role_has_permissions')
-            ->where('role_has_permissions.role_id', $id)
-            ->pluck('role_has_permissions.permission_id', 'role_has_permissions.permission_id')
-            ->all();
+        $role = Role::findOrFail($id);
+        $groupedPermissions = $this->getGroupedPermissions();
 
-        return view('roles.edit', compact('role', 'permission', 'rolePermissions'));
+        // Ambil ID permission yang sudah dimiliki role ini
+        $rolePermissions = $role->permissions->pluck('id')->toArray();
+
+        return view('roles.edit', compact('role', 'groupedPermissions', 'rolePermissions'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id): RedirectResponse
     {
         $this->validate($request, [
-            'name' => 'required',
-            'permission' => 'required',
+            'name' => 'required|unique:roles,name,' . $id,
+            'permission' => 'required|array|min:1',
         ]);
 
-        $role = Role::find($id);
+        $role = Role::findOrFail($id);
         $oldData = $role->toArray();
+
         $role->name = $request->input('name');
         $role->save();
 
         $role->syncPermissions($request->input('permission'));
 
-        // Activity Log for Update
         activity()
             ->performedOn($role)
             ->causedBy(auth()->user())
@@ -171,22 +109,52 @@ class RoleController extends Controller
             ])
             ->log('Mengupdate Role: ' . $role->name);
 
-        return redirect()
-            ->route('roles.index')
-            ->with('success', 'Role updated successfully');
+        return redirect()->route('roles.index')->with('success', 'Role berhasil diperbarui.');
+    }
+
+    public function destroy($id): RedirectResponse
+    {
+        $role = Role::findOrFail($id);
+        $role->delete(); // Lebih aman daripada DB::table()->delete() karena menangani relasi spatie
+
+        return redirect()->route('roles.index')->with('success', 'Role berhasil dihapus.');
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Helper: Mengelompokkan permission berdasarkan modul (prefix)
      */
-    public function destroy($id): RedirectResponse
+    private function getGroupedPermissions()
     {
-        DB::table('roles')->where('id', $id)->delete();
-        return redirect()
-            ->route('roles.index')
-            ->with('success', 'Role deleted successfully');
+        $permissions = Permission::orderBy('name')->get();
+        $grouped = [];
+
+        // Label human-readable untuk aksi
+        $actionLabels = [
+            'view' => 'Melihat',
+            'create' => 'Menambah',
+            'edit' => 'Mengubah',
+            'update' => 'Mengubah',
+            'delete' => 'Menghapus',
+            'manage' => 'Mengelola',
+            'publish' => 'Menerbitkan',
+            'export' => 'Mengekspor',
+        ];
+
+        foreach ($permissions as $permission) {
+            // Pisahkan berdasarkan titik (contoh: 'berita.view' -> module: 'berita', action: 'view')
+            $parts = explode('.', $permission->name);
+            $module = count($parts) > 1 ? ucfirst($parts[0]) : 'General';
+            $action = count($parts) > 1 ? $parts[1] : $permission->name;
+
+            $label = $actionLabels[$action] ?? ucfirst($action);
+
+            $grouped[$module][] = [
+                'id' => $permission->id,
+                'name' => $permission->name,
+                'label' => $label
+            ];
+        }
+
+        return $grouped;
     }
 }

@@ -19,6 +19,7 @@ use App\Http\Controllers\MasterKantorController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PengaturanWebsiteController;
 use App\Http\Controllers\PenghargaanPerusahaanController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StrukturOrganisasiController;
 use App\Http\Controllers\StrukturOrganisasiDetailController;
@@ -51,6 +52,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     // === GROUP DASHBOARD ===
     Route::resource('manajemen-akun/roles', RoleController::class)->names('roles');
     Route::resource('manajemen-akun/users', UserController::class)->names('users');
+    Route::resource('permissions', PermissionController::class);
 
     // Karir & Rekrutmen Section
     Route::prefix('karir-dan-rekrutmen')->group(function () {

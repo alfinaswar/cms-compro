@@ -181,7 +181,13 @@
                                         <p>Roles</p>
                                     </a>
                                 </li>
-
+<li class="nav-item">
+    <a href="{{ route('permissions.index') }}"
+       class="nav-link {{ request()->segment(1) == 'permissions' ? 'active' : '' }}">
+        <i class="nav-icon fas fa-key"></i>
+        <p>Permission</p>
+    </a>
+</li>
                             </ul>
                         </li>
                         <li class="nav-header">Data Master</li>
