@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Str;
 
 class HalamanSolusi extends Model
 {
@@ -20,10 +19,26 @@ class HalamanSolusi extends Model
     protected $guarded = ['id'];
 
     /**
-     * Get the details for the HalamanSolusi.
+     * Relasi ke tabel terjemahan utama
      */
-    public function getSolusiDetail()
+    public function translations()
     {
-        return $this->hasMany(HalamanSolusiDetail::class, 'HalamanSolusiId');
+        return $this->hasMany(HalamanSolusiTranslation::class, 'halaman_solusi_id');
+    }
+
+    /**
+     * Helper untuk mengambil terjemahan berdasarkan bahasa
+     */
+    public function translate($locale = 'id')
+    {
+        return $this->translations->firstWhere('Locale', $locale) ?: new HalamanSolusiTranslation();
+    }
+
+    /**
+     * Relasi ke detail solusi
+     */
+    public function details()
+    {
+        return $this->hasMany(HalamanSolusidetail::class, 'HalamanSolusiId');
     }
 }

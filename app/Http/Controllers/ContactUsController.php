@@ -95,7 +95,14 @@ class ContactUsController extends Controller
         ]);
 
         // Simpan ke database
-        ContactUs::create($validatedData);
+        $contact = ContactUs::create($validatedData);
+
+        // Activity log - Menambahkan kontak baru
+        activity()
+            // ->causedBy(auth()->user()) // Tidak ada user untuk entry dari frontend, bisa diaktifkan jika butuh
+            ->performedOn($contact)
+            ->withProperties(['attributes' => $validatedData])
+            ->log('Menambahkan kontak baru: ' . $validatedData['NamaLengkap']);
 
         // Ambil email tujuan dari pengaturan website
         $websiteSettings = PengaturanWebsite::first();

@@ -249,58 +249,55 @@
     </section>
 
     <!-- 3. SOLUTIONS SECTION -->
-    <section id="solusi" class="py-24 bg-slate-50">
-        <div class="container mx-auto px-6">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <span
-                    class="text-brand-600 font-bold tracking-wider uppercase text-sm">{{ __("What We're Offering") }}</span>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-2 mb-4">{{ __('Jasuindo Solutions') }}
-                </h2>
-                <p class="text-slate-600 text-lg">
-                    {{ __('Solusi teknologi end-to-end yang dirancang untuk memenuhi kebutuhan spesifik bisnis Anda, merampingkan operasional, dan mendorong pertumbuhan.') }}
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                @foreach ($Solution as $solusi)
-                    @php
-                        $sJudul = $locale === 'en' && !empty($solusi->JudulEn) ? $solusi->JudulEn : $solusi->Judul;
-                        $sDeskripsi =
-                            $locale === 'en' && !empty($solusi->DeskripsiSingkatEn)
-                                ? $solusi->DeskripsiSingkatEn
-                                : $solusi->DeskripsiSingkat;
-                    @endphp
-                    <div class="solution-card group bg-white rounded-2xl overflow-hidden border border-slate-100">
-                        <div class="relative h-48 overflow-hidden">
-                            @if (!empty($solusi->Thumbnail))
-                                <img src="{{ asset('storage/' . $solusi->Thumbnail) }}" alt="{{ $sJudul }}"
-                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                            @else
-                                <div class="flex items-center justify-center w-full h-full bg-slate-100">
-                                    <i class="fa-solid fa-image text-4xl text-slate-400"></i>
-                                </div>
-                            @endif
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                        </div>
-                        <div class="p-6">
-                            <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-brand-600 transition-colors">
-                                {{ $sJudul ?? '-' }}
-                            </h3>
-                            <p class="text-slate-600 text-sm leading-relaxed mb-4">
-                                {{ $sDeskripsi ?? '-' }}
-                            </p>
-                            <a href="{{ url('solusi/' . $solusi->Slug) }}"
-                                class="inline-flex items-center text-sm font-bold text-brand-600 hover:text-brand-800 transition-colors">
-                                {{ __('Read More') }}
-                                <i
-                                    class="fa-solid fa-arrow-right-long ml-2 group-hover:translate-x-1 transition-transform"></i>
-                            </a>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
+<section id="solusi" class="py-24 bg-slate-50">
+    <div class="container mx-auto px-6">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+            <span class="text-brand-600 font-bold tracking-wider uppercase text-sm">{{ __("What We're Offering") }}</span>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-2 mb-4">{{ __('Jasuindo Solutions') }}</h2>
+            <p class="text-slate-600 text-lg">
+                {{ __('Solusi teknologi end-to-end yang dirancang untuk memenuhi kebutuhan spesifik bisnis Anda, merampingkan operasional, dan mendorong pertumbuhan.') }}
+            </p>
         </div>
-    </section>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            @foreach ($Solution as $solusi)
+                @php
+                    // ✅ MULTI-LANGUAGE: Ambil terjemahan sesuai bahasa aktif, fallback ke data utama jika kosong
+                    $trans = $solusi->translate($locale);
+                    $sJudul = $trans->Judul ?: $solusi->Judul;
+                    $sDeskripsi = $trans->DeskripsiSingkat ?: $solusi->DeskripsiSingkat;
+                @endphp
+
+                <div class="solution-card group bg-white rounded-2xl overflow-hidden border border-slate-100 hover:shadow-xl transition-all duration-300">
+                    <div class="relative h-48 overflow-hidden">
+                        @if (!empty($solusi->Thumbnail))
+                            <img src="{{ asset('storage/' . $solusi->Thumbnail) }}" alt="{{ $sJudul }}"
+                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        @else
+                            <div class="flex items-center justify-center w-full h-full bg-slate-100">
+                                <i class="fa-solid fa-image text-4xl text-slate-400"></i>
+                            </div>
+                        @endif
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-brand-600 transition-colors">
+                            {{ $sJudul ?? 'Untitled Solution' }}
+                        </h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                            {{ Str::limit($sDeskripsi, 100) ?? 'No description available.' }}
+                        </p>
+                        <a href="{{ url('solusi/' . $solusi->Slug) }}"
+                            class="inline-flex items-center text-sm font-bold text-brand-600 hover:text-brand-800 transition-colors">
+                            {{ __('Read More') }}
+                            <i class="fa-solid fa-arrow-right-long ml-2 group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
 
     <!-- 4. CERTIFICATION SECTION -->
     <section id="sertifikasi" class="py-24 bg-white">
@@ -447,67 +444,70 @@
     </section>
 
     <!-- 5. WHY CHOOSE US SECTION -->
-    <section id="why-us" class="py-20 bg-gray-50">
-        <div class="container mx-auto px-6">
-            <div class="max-w-3xl mx-auto text-center mb-12">
-                <span
-                    class="inline-block py-1.5 px-4 rounded-full bg-brand-100/70 text-brand-900 text-sm font-semibold tracking-wide mb-4 border border-brand-600/20">
-                    <i class="fa-solid fa-star mr-2"></i>{{ __('Why Choose Us?') }}
-                </span>
-                <h2 class="text-3xl md:text-5xl font-extrabold text-slate-900 mb-6 leading-tight">
-                    {{ __('Why Choose Us?') }}</h2>
-                <p class="text-lg text-slate-600 mb-0">
-                    {{ __('Our advantages as your digital transformation partner.') }}
-                </p>
-            </div>
-            @php
-                $count = count($Why);
-                $gridCols = 'grid-cols-1';
-                $mdGridCols = '';
-                $lgGridCols = '';
-                if ($count == 2) {
-                    $mdGridCols = 'md:grid-cols-2';
-                } elseif ($count == 3) {
-                    $mdGridCols = 'md:grid-cols-2';
-                    $lgGridCols = 'lg:grid-cols-3';
-                } elseif ($count == 4) {
-                    $mdGridCols = 'md:grid-cols-2';
-                    $lgGridCols = 'lg:grid-cols-4';
-                } elseif ($count == 5) {
-                    $mdGridCols = 'md:grid-cols-2';
-                    $lgGridCols = 'lg:grid-cols-5';
-                } elseif ($count == 6) {
-                    $mdGridCols = 'md:grid-cols-3';
-                    $lgGridCols = 'lg:grid-cols-6';
-                } elseif ($count > 6) {
-                    $mdGridCols = 'md:grid-cols-3';
-                    $lgGridCols = 'lg:grid-cols-4';
-                }
-                $gridClass = trim("grid $gridCols $mdGridCols $lgGridCols gap-8");
-            @endphp
-            <div class="{{ $gridClass }}">
-                @foreach ($Why as $item)
-                    @php
-                        $wJudul = $locale === 'en' && !empty($item->JudulEn) ? $item->JudulEn : $item->Judul;
-                        $wDeskripsi =
-                            $locale === 'en' && !empty($item->DeskripsiEn) ? $item->DeskripsiEn : $item->Deskripsi;
-                    @endphp
-                    <div
-                        class="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center text-center hover:shadow-xl transition-all duration-300">
-                        @if (!empty($item->Icon))
+<section id="why-us" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6">
+        <div class="max-w-3xl mx-auto text-center mb-12">
+            <span class="inline-block py-1.5 px-4 rounded-full bg-brand-100/70 text-brand-900 text-sm font-semibold tracking-wide mb-4 border border-brand-600/20">
+                <i class="fa-solid fa-star mr-2"></i>{{ __('Why Choose Us?') }}
+            </span>
+            <h2 class="text-3xl md:text-5xl font-extrabold text-slate-900 mb-6 leading-tight">
+                {{ __('Why Choose Us?') }}
+            </h2>
+            <p class="text-lg text-slate-600 mb-0">
+                {{ __('Our advantages as your digital transformation partner.') }}
+            </p>
+        </div>
+
+        @php
+            $count = count($Why);
+            $gridCols = 'grid-cols-1';
+            $mdGridCols = '';
+            $lgGridCols = '';
+
+            if ($count == 2) { $mdGridCols = 'md:grid-cols-2'; }
+            elseif ($count == 3) { $mdGridCols = 'md:grid-cols-2'; $lgGridCols = 'lg:grid-cols-3'; }
+            elseif ($count == 4) { $mdGridCols = 'md:grid-cols-2'; $lgGridCols = 'lg:grid-cols-4'; }
+            elseif ($count == 5) { $mdGridCols = 'md:grid-cols-2'; $lgGridCols = 'lg:grid-cols-5'; }
+            elseif ($count == 6) { $mdGridCols = 'md:grid-cols-3'; $lgGridCols = 'lg:grid-cols-6'; }
+            elseif ($count > 6) { $mdGridCols = 'md:grid-cols-3'; $lgGridCols = 'lg:grid-cols-4'; }
+
+            $gridClass = trim("grid $gridCols $mdGridCols $lgGridCols gap-8");
+            $locale = app()->getLocale();
+        @endphp
+
+        <div class="{{ $gridClass }}">
+            @foreach ($Why as $item)
+                @php
+                    // Ambil terjemahan sesuai bahasa aktif, fallback ke data utama jika kosong
+                    $trans = $item->translate($locale);
+                    $wJudul = $trans->Judul ?: $item->Judul;
+                    $wDeskripsi = $trans->Deskripsi ?: $item->Deskripsi;
+                @endphp
+
+                <div class="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center text-center hover:shadow-xl transition-all duration-300">
+
+                    {{-- LOGIKA ICON: Cek apakah berupa class FA atau path gambar --}}
+                    @if (!empty($item->Icon))
+                        @if(\Illuminate\Support\Str::startsWith($item->Icon, 'fa-'))
+                            <!-- Render sebagai Font Awesome Icon -->
                             <div class="text-brand-600 mb-4 text-4xl">
                                 <i class="{{ $item->Icon }}"></i>
                             </div>
+                        @else
+                            <!-- Render sebagai Gambar -->
+                            <img src="{{ asset('storage/' . $item->Icon) }}" alt="{{ $wJudul }}" class="w-16 h-16 object-contain mb-4">
                         @endif
-                        <h3 class="font-bold text-lg mb-2">{{ $wJudul }}</h3>
-                        <p class="text-slate-600 mb-0">
-                            {{ $wDeskripsi }}
-                        </p>
-                    </div>
-                @endforeach
-            </div>
+                    @endif
+
+                    <h3 class="font-bold text-lg mb-2">{{ $wJudul }}</h3>
+                    <p class="text-slate-600 mb-0">
+                        {{ $wDeskripsi }}
+                    </p>
+                </div>
+            @endforeach
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- 6. CTA / CONTACT SECTION -->
     <section id="kontak"

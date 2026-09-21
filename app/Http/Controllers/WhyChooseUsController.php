@@ -53,30 +53,40 @@ class WhyChooseUsController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'Icon' => 'required|image|mimes:png,jpg,jpeg,svg,webp|max:2048', // Maksimal 2MB
-            'Judul' => 'required|string|max:255',
-            'Deskripsi' => 'required|string',
-            'Urutan' => 'required|integer|min:0',
-            'Status' => 'required|boolean',
-        ]);
+{
+    $validated = $request->validate([
+        'Icon' => 'required|image|mimes:png,jpg,jpeg,svg,webp|max:2048',
+        'Urutan' => 'required|integer|min:0',
+        'Status' => 'required|boolean',
 
-        $iconPath = null;
-        if ($request->hasFile('Icon')) {
-            $iconPath = $request->file('Icon')->store('why-choose-us/icons', 'public');
+        // Translations
+        'translations.id.Judul' => 'required|string|max:255',
+        'translations.id.Deskripsi' => 'required|string',
+        'translations.en.Judul' => 'nullable|string|max:255',
+        'translations.en.Deskripsi' => 'nullable|string',
+    ]);
+
+    $iconPath = $request->file('Icon')->store('why-choose-us/icons', 'public');
+
+    $item = WhyChooseUs::create([
+        'Icon' => $iconPath,
+        'Urutan' => $request->Urutan,
+        'Status' => $request->Status,
+    ]);
+
+    // Simpan terjemahan
+    foreach (['id', 'en'] as $locale) {
+        if (!empty($validated['translations'][$locale]['Judul'])) {
+            $item->translations()->create([
+                'Locale' => $locale,
+                'Judul' => $validated['translations'][$locale]['Judul'] ?? null,
+                'Deskripsi' => $validated['translations'][$locale]['Deskripsi'] ?? null,
+            ]);
         }
-
-        WhyChooseUs::create([
-            'Icon' => $iconPath,
-            'Judul' => $request->Judul,
-            'Deskripsi' => $request->Deskripsi,
-            'Urutan' => $request->Urutan,
-            'Status' => $request->Status,
-        ]);
-
-        return redirect()->route('why-choose-us.index')->with('success', 'Data keunggulan berhasil ditambahkan.');
     }
+
+    return redirect()->route('why-choose-us.index')->with('success', 'Data keunggulan berhasil ditambahkan.');
+}
 
     public function edit($id)
     {
@@ -85,36 +95,47 @@ class WhyChooseUsController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        $request->validate([
-            'Icon' => 'nullable|image|mimes:png,jpg,jpeg,svg,webp|max:2048',
-            'Judul' => 'required|string|max:255',
-            'Deskripsi' => 'required|string',
-            'Urutan' => 'required|integer|min:0',
-            'Status' => 'required|boolean',
-        ]);
+{
+    $validated = $request->validate([
+        'Icon' => 'nullable|image|mimes:png,jpg,jpeg,svg,webp|max:2048',
+        'Urutan' => 'required|integer|min:0',
+        'Status' => 'required|boolean',
 
-        $item = WhyChooseUs::findOrFail($id);
-        $iconPath = $item->Icon;
+        // Translations
+        'translations.id.Judul' => 'required|string|max:255',
+        'translations.id.Deskripsi' => 'required|string',
+        'translations.en.Judul' => 'nullable|string|max:255',
+        'translations.en.Deskripsi' => 'nullable|string',
+    ]);
 
-        // Hapus file lama jika ada file baru yang diupload
-        if ($request->hasFile('Icon')) {
-            if ($iconPath && Storage::disk('public')->exists($iconPath)) {
-                Storage::disk('public')->delete($iconPath);
-            }
-            $iconPath = $request->file('Icon')->store('why-choose-us/icons', 'public');
+    $item = WhyChooseUs::findOrFail($id);
+
+    // Handle Icon Update
+    if ($request->hasFile('Icon')) {
+        if ($item->Icon && \Storage::disk('public')->exists($item->Icon)) {
+            \Storage::disk('public')->delete($item->Icon);
         }
-
-        $item->update([
-            'Icon' => $iconPath,
-            'Judul' => $request->Judul,
-            'Deskripsi' => $request->Deskripsi,
-            'Urutan' => $request->Urutan,
-            'Status' => $request->Status,
-        ]);
-
-        return redirect()->route('why-choose-us.index')->with('success', 'Data keunggulan berhasil diperbarui.');
+        $item->Icon = $request->file('Icon')->store('why-choose-us/icons', 'public');
     }
+
+    $item->update([
+        'Urutan' => $request->Urutan,
+        'Status' => $request->Status,
+    ]);
+
+    // Update/Create Translations
+    foreach (['id', 'en'] as $locale) {
+        $item->translations()->updateOrCreate(
+            ['Locale' => $locale],
+            [
+                'Judul' => $validated['translations'][$locale]['Judul'] ?? null,
+                'Deskripsi' => $validated['translations'][$locale]['Deskripsi'] ?? null,
+            ]
+        );
+    }
+
+    return redirect()->route('why-choose-us.index')->with('success', 'Data keunggulan berhasil diperbarui.');
+}
 
     public function destroy($id)
     {

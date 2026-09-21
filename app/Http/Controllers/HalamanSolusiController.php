@@ -53,60 +53,97 @@ class HalamanSolusiController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'Judul' => 'required|string|max:255',
-            'Konten' => 'required|string',
-            'Slug' => 'nullable|string|max:255',
-            'DeskripsiSingkat' => 'nullable|string|max:255',
-            'SEOTitle' => 'nullable|string|max:255',
-            'SEODescription' => 'nullable|string|max:255',
-            'SEOKeywords' => 'nullable|string|max:255',
-            'IsPublished' => 'required|in:0,1',
-            'Thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'detail' => 'required|array|min:1',
-            'detail.*.judul' => 'required|string|max:255',
-            'detail.*.keterangan' => 'nullable|string',
-            'detail.*.gambar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-        ]);
-        $thumbnailPath = null;
-        if ($request->hasFile('Thumbnail')) {
-            $thumbnailPath = $request->file('Thumbnail')->storeAs(
-                'halaman-solusi/thumbnail',
-                $request->file('Thumbnail')->hashName(),
-                'public'
-            );
+{
+    $validated = $request->validate([
+        // Translations Utama
+        'translations.id.Judul' => 'required|string|max:255',
+        'translations.id.DeskripsiSingkat' => 'nullable|string',
+        'translations.id.Konten' => 'required|string',
+        'translations.id.SEOTitle' => 'nullable|string|max:70',
+        'translations.id.SEODescription' => 'nullable|string|max:255',
+        'translations.id.SEOKeywords' => 'nullable|string|max:255',
+
+        'translations.en.Judul' => 'nullable|string|max:255',
+        'translations.en.DeskripsiSingkat' => 'nullable|string',
+        'translations.en.Konten' => 'nullable|string',
+        'translations.en.SEOTitle' => 'nullable|string|max:70',
+        'translations.en.SEODescription' => 'nullable|string|max:255',
+        'translations.en.SEOKeywords' => 'nullable|string|max:255',
+
+        // Data Umum
+        'Slug' => 'nullable|string|max:255',
+        'IsPublished' => 'required|in:0,1',
+        'Thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+
+        // Translations Detail
+        'details' => 'required|array|min:1',
+        'details.*.gambar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+        'details.*.translations.id.Judul' => 'required|string|max:255',
+        'details.*.translations.id.Keterangan' => 'nullable|string',
+        'details.*.translations.en.Judul' => 'nullable|string|max:255',
+        'details.*.translations.en.Keterangan' => 'nullable|string',
+    ]);
+
+    // 1. Simpan Data Utama (fallback ke Bahasa Indonesia)
+    $solusi = new HalamanSolusi();
+    $solusi->Judul = $validated['translations']['id']['Judul'];
+    $solusi->DeskripsiSingkat = $validated['translations']['id']['DeskripsiSingkat'] ?? null;
+    $solusi->Konten = $validated['translations']['id']['Konten'];
+    $solusi->SEOTitle = $validated['translations']['id']['SEOTitle'] ?? null;
+    $solusi->SEODescription = $validated['translations']['id']['SEODescription'] ?? null;
+    $solusi->SEOKeywords = $validated['translations']['id']['SEOKeywords'] ?? null;
+    $solusi->Slug = $request->Slug ?: Str::slug($solusi->Judul);
+    $solusi->IsPublished = $request->IsPublished;
+    $solusi->UserCreate = auth()->user()->name;
+
+    if ($request->hasFile('Thumbnail')) {
+        $solusi->Thumbnail = $request->file('Thumbnail')->storeAs('halaman-solusi/thumbnail', $request->file('Thumbnail')->hashName(), 'public');
+    }
+    $solusi->save();
+
+    // 2. Simpan Terjemahan Utama
+    foreach (['id', 'en'] as $locale) {
+        if (!empty($validated['translations'][$locale]['Judul'])) {
+            $solusi->translations()->create([
+                'Locale' => $locale,
+                'Judul' => $validated['translations'][$locale]['Judul'] ?? null,
+                'DeskripsiSingkat' => $validated['translations'][$locale]['DeskripsiSingkat'] ?? null,
+                'Konten' => $validated['translations'][$locale]['Konten'] ?? null,
+                'SEOTitle' => $validated['translations'][$locale]['SEOTitle'] ?? null,
+                'SEODescription' => $validated['translations'][$locale]['SEODescription'] ?? null,
+                'SEOKeywords' => $validated['translations'][$locale]['SEOKeywords'] ?? null,
+            ]);
         }
+    }
 
-        $solusi = new HalamanSolusi();
-        $solusi->Judul = $request->Judul;
-        $solusi->Slug = $request->Slug ? $request->Slug : Str::slug($request->Judul);
-        $solusi->Konten = $request->Konten;
-        $solusi->SEOTitle = $request->SEOTitle;
-        $solusi->SEODescription = $request->SEODescription;
-        $solusi->SEOKeywords = $request->SEOKeywords;
-        $solusi->IsPublished = $request->IsPublished;
-        $solusi->UserCreate = auth()->user()->name;
-        $solusi->Thumbnail = $thumbnailPath;
-        $solusi->DeskripsiSingkat = $request->DeskripsiSingkat;
+    // 3. Simpan Detail & Terjemahan Detail
+    if (is_array($request->details)) {
+        foreach ($request->details as $i => $det) {
+            $detail = new HalamanSolusidetail();
+            $detail->HalamanSolusiId = $solusi->id;
 
-        $solusi->save();
-        if (is_array($request->detail)) {
-            foreach ($request->detail as $i => $det) {
-                $detail = new HalamanSolusidetail();
-                $detail->HalamanSolusiId = $solusi->id;
-                $detail->Judul = $det['judul'] ?? '';
-                $detail->Keterangan = $det['keterangan'] ?? null;
-                if (isset($det['gambar']) && $request->hasFile("detail.$i.gambar")) {
-                    $file = $request->file("detail.$i.gambar");
-                    $detail->Gambar = $file->storeAs('halaman-solusi/detail', $file->hashName(), 'public');
+            if ($request->hasFile("details.$i.gambar")) {
+                $file = $request->file("details.$i.gambar");
+                $detail->Gambar = $file->storeAs('halaman-solusi/detail', $file->hashName(), 'public');
+            }
+            $detail->save();
+
+            // Simpan terjemahan untuk detail ini
+            foreach (['id', 'en'] as $locale) {
+                if (!empty($det['translations'][$locale]['Judul'])) {
+                    $detail->translations()->create([
+                        'Locale' => $locale,
+                        'Judul' => $det['translations'][$locale]['Judul'] ?? null,
+                        'Keterangan' => $det['translations'][$locale]['Keterangan'] ?? null,
+                    ]);
                 }
-                $detail->save();
             }
         }
-
-        return redirect()->route('halaman-solusi.index')->with('success', 'Solusi berhasil disimpan.');
     }
+
+    return redirect()->route('halaman-solusi.index')->with('success', 'Solusi berhasil disimpan.');
+}
+
 
     /**
      * Display the specified resource.
@@ -123,7 +160,7 @@ class HalamanSolusiController extends Controller
     public function edit($id)
     {
         $id = decrypt($id);
-        $data = HalamanSolusi::with('getSolusiDetail')->find($id);
+        $data = HalamanSolusi::with('details')->find($id);
         // dd($data);
         return view('pages.admin.halaman-solusi.edit', compact('data'));
     }
@@ -133,58 +170,96 @@ class HalamanSolusiController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $id = decrypt($id);
         $validated = $request->validate([
-            'Judul' => 'required|string|max:255',
-            'DeskripsiSingkat' => 'nullable|string|max:255',
-            'Thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'Konten' => 'required|string',
+            'translations.id.Judul' => 'required|string|max:255',
+            'translations.id.DeskripsiSingkat' => 'nullable|string',
+            'translations.id.Konten' => 'required|string',
+            'translations.id.SEOTitle' => 'nullable|string|max:70',
+            'translations.id.SEODescription' => 'nullable|string|max:255',
+            'translations.id.SEOKeywords' => 'nullable|string|max:255',
+            'translations.en.Judul' => 'nullable|string|max:255',
+            'translations.en.DeskripsiSingkat' => 'nullable|string',
+            'translations.en.Konten' => 'nullable|string',
+            'translations.en.SEOTitle' => 'nullable|string|max:70',
+            'translations.en.SEODescription' => 'nullable|string|max:255',
+            'translations.en.SEOKeywords' => 'nullable|string|max:255',
             'Slug' => 'nullable|string|max:255',
-            'SEOTitle' => 'nullable|string|max:255',
-            'SEODescription' => 'nullable|string|max:255',
-            'SEOKeywords' => 'nullable|string|max:255',
             'IsPublished' => 'required|in:0,1',
-            'detail' => 'required|array|min:1',
-            'detail.*.judul' => 'required|string|max:255',
-            'detail.*.keterangan' => 'nullable|string',
-            'detail.*.gambar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'Thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'details' => 'required|array|min:1',
+            'details.*.gambar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'details.*.translations.id.Judul' => 'required|string|max:255',
+            'details.*.translations.id.Keterangan' => 'nullable|string',
+            'details.*.translations.en.Judul' => 'nullable|string|max:255',
+            'details.*.translations.en.Keterangan' => 'nullable|string',
         ]);
 
         $solusi = HalamanSolusi::findOrFail($id);
 
-        $solusi->Judul = $request->Judul;
-        $solusi->DeskripsiSingkat = $request->DeskripsiSingkat;
-
-        // Handle Thumbnail upload (optional)
-        if ($request->hasFile('Thumbnail')) {
-            $file = $request->file('Thumbnail');
-            $thumbnailPath = $file->storeAs('halaman-solusi', $file->hashName(), 'public');
-            $solusi->Thumbnail = $thumbnailPath;
-        }
-
-        $solusi->Slug = $request->Slug ? $request->Slug : \Str::slug($request->Judul);
-        $solusi->Konten = $request->Konten;
-        $solusi->SEOTitle = $request->SEOTitle;
-        $solusi->SEODescription = $request->SEODescription;
-        $solusi->SEOKeywords = $request->SEOKeywords;
+        // Update Data Utama
+        $solusi->Judul = $validated['translations']['id']['Judul'];
+        $solusi->DeskripsiSingkat = $validated['translations']['id']['DeskripsiSingkat'] ?? null;
+        $solusi->Konten = $validated['translations']['id']['Konten'];
+        $solusi->SEOTitle = $validated['translations']['id']['SEOTitle'] ?? null;
+        $solusi->SEODescription = $validated['translations']['id']['SEODescription'] ?? null;
+        $solusi->SEOKeywords = $validated['translations']['id']['SEOKeywords'] ?? null;
+        $solusi->Slug = $request->Slug ?: Str::slug($solusi->Judul);
         $solusi->IsPublished = $request->IsPublished;
         $solusi->UserUpdate = auth()->user()->name;
+
+        if ($request->hasFile('Thumbnail')) {
+            if ($solusi->Thumbnail && Storage::disk('public')->exists($solusi->Thumbnail)) {
+                Storage::disk('public')->delete($solusi->Thumbnail);
+            }
+            $solusi->Thumbnail = $request->file('Thumbnail')->storeAs('halaman-solusi/thumbnail', $request->file('Thumbnail')->hashName(), 'public');
+        }
         $solusi->save();
 
-        HalamanSolusiDetail::where('HalamanSolusiId', $solusi->id)->delete();
+        // Update Terjemahan Utama
+        foreach (['id', 'en'] as $locale) {
+            $solusi->translations()->updateOrCreate(
+                ['Locale' => $locale],
+                [
+                    'Judul' => $validated['translations'][$locale]['Judul'] ?? null,
+                    'DeskripsiSingkat' => $validated['translations'][$locale]['DeskripsiSingkat'] ?? null,
+                    'Konten' => $validated['translations'][$locale]['Konten'] ?? null,
+                    'SEOTitle' => $validated['translations'][$locale]['SEOTitle'] ?? null,
+                    'SEODescription' => $validated['translations'][$locale]['SEODescription'] ?? null,
+                    'SEOKeywords' => $validated['translations'][$locale]['SEOKeywords'] ?? null,
+                ]
+            );
+        }
 
-        // Simpan detail baru
-        if (is_array($request->detail)) {
-            foreach ($request->detail as $i => $det) {
-                $detail = new HalamanSolusiDetail();
+        // Hapus detail lama & file-nya (untuk menghindari data sampah/orphaned files)
+        $oldDetails = $solusi->details;
+        foreach ($oldDetails as $oldDetail) {
+            if ($oldDetail->Gambar && \Storage::disk('public')->exists($oldDetail->Gambar)) {
+                \Storage::disk('public')->delete($oldDetail->Gambar);
+            }
+            $oldDetail->delete(); // Cascade delete akan otomatis menghapus translations-nya
+        }
+
+        // Buat ulang detail baru
+        if (is_array($request->details)) {
+            foreach ($request->details as $i => $det) {
+                $detail = new HalamanSolusidetail();
                 $detail->HalamanSolusiId = $solusi->id;
-                $detail->Judul = $det['judul'] ?? '';
-                $detail->Keterangan = $det['keterangan'] ?? null;
-                if ($request->hasFile("detail.$i.gambar")) {
-                    $file = $request->file("detail.$i.gambar");
+
+                if ($request->hasFile("details.$i.gambar")) {
+                    $file = $request->file("details.$i.gambar");
                     $detail->Gambar = $file->storeAs('halaman-solusi/detail', $file->hashName(), 'public');
                 }
                 $detail->save();
+
+                foreach (['id', 'en'] as $locale) {
+                    if (!empty($det['translations'][$locale]['Judul'])) {
+                        $detail->translations()->create([
+                            'Locale' => $locale,
+                            'Judul' => $det['translations'][$locale]['Judul'] ?? null,
+                            'Keterangan' => $det['translations'][$locale]['Keterangan'] ?? null,
+                        ]);
+                    }
+                }
             }
         }
 

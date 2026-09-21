@@ -93,7 +93,14 @@ class ClientLogoController extends Controller
         $validated['IdClientLogo'] = $id;
         $validated['UserCreate'] = auth()->user()->name;
 
-        ClientLogoDetail::create($validated);
+        $detail = ClientLogoDetail::create($validated);
+
+        // Logging activity untuk detail client logo baru
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($detail)
+            ->withProperties(['attributes' => $validated])
+            ->log('Menambahkan detail client logo baru: ' . ($validated['Judul'] ?? ''));
 
         return redirect()->back()->with('success', 'Detail berhasil ditambahkan.');
     }
@@ -115,7 +122,14 @@ class ClientLogoController extends Controller
 
         $validated['UserCreate'] = auth()->user()->name;
 
-        ClientLogo::create($validated);
+        $logo = ClientLogo::create($validated);
+
+        // Logging activity untuk client logo baru
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($logo)
+            ->withProperties(['attributes' => $validated])
+            ->log('Menambahkan client logo baru: ' . ($validated['NamaPartner'] ?? ''));
 
         return redirect()->route('client-logo.index')->with('success', 'Logo berhasil ditambahkan.');
     }
@@ -151,6 +165,13 @@ class ClientLogoController extends Controller
 
         $logo->update($validated);
 
+        // Logging activity untuk update client logo
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($logo)
+            ->withProperties(['attributes' => $validated])
+            ->log('Memperbarui client logo: ' . ($validated['NamaPartner'] ?? ''));
+
         return redirect()->route('client-logo.index')->with('success', 'Logo berhasil diperbarui.');
     }
     public function updateDetail(Request $request, $id)
@@ -177,6 +198,13 @@ class ClientLogoController extends Controller
         $validated['UserUpdate'] = auth()->user()->name;
         $detail->update($validated);
 
+        // Logging activity untuk update detail client logo
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($detail)
+            ->withProperties(['attributes' => $validated])
+            ->log('Memperbarui detail client logo: ' . ($validated['Judul'] ?? ''));
+
         return response()->json([
             'status' => 200,
             'message' => 'Detail berhasil diperbarui'
@@ -196,6 +224,13 @@ class ClientLogoController extends Controller
 
         $logo->update(['UserDelete' => auth()->user()->name]);
         $logo->delete(); // Soft delete
+
+        // Logging activity untuk hapus client logo
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($logo)
+            ->withProperties([])
+            ->log('Menghapus client logo: ' . ($logo->NamaPartner ?? ''));
 
         return response()->json(['status' => 200, 'message' => 'Logo berhasil dihapus']);
     }

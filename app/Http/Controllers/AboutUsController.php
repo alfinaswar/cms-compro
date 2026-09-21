@@ -17,9 +17,6 @@ class AboutUsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -128,6 +125,23 @@ class AboutUsController extends Controller
             }
         }
 
+        // Tambahkan activity log seperti pada BeritaController (lihat file_context_1)
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($aboutUs)
+            ->withProperties([
+                'attributes' => [
+                    'SubJudul' => $request->SubJudul,
+                    'Judul' => $request->Judul,
+                    'Deskripsi' => $request->Deskripsi,
+                    'Gambar' => $gambarPath,
+                    'Status' => $request->Status,
+                    'UserCreate' => auth()->check() ? auth()->user()->name : null,
+                ],
+                'details' => $request->details
+            ])
+            ->log('Menambahkan About Us baru: ' . $request->Judul);
+
         return redirect()->route('about-us.index')->with('success', 'About Us berhasil disimpan.');
     }
 
@@ -185,6 +199,21 @@ class AboutUsController extends Controller
             'UserUpdate' => auth()->check() ? auth()->user()->name : null,
         ]);
 
+        // Tambahkan activity log untuk update
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($aboutUs)
+            ->withProperties([
+                'attributes' => [
+                    'SubJudul' => $request->SubJudul,
+                    'Judul' => $request->Judul,
+                    'Deskripsi' => $request->Deskripsi,
+                    'Gambar' => $gambarPath,
+                    'UserUpdate' => auth()->check() ? auth()->user()->name : null,
+                ],
+            ])
+            ->log('Mengubah About Us: ' . $request->Judul);
+
         return redirect()->route('about-us.index')->with('success', 'About Us berhasil diupdate.');
     }
 
@@ -198,6 +227,17 @@ class AboutUsController extends Controller
         $aboutUs->UserDelete = auth()->check() ? auth()->user()->name : null;
         $aboutUs->save();
         $aboutUs->delete();
+
+        // Tambahkan activity log untuk penghapusan
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($aboutUs)
+            ->withProperties([
+                'attributes' => [
+                    'UserDelete' => $aboutUs->UserDelete,
+                ],
+            ])
+            ->log('Menghapus About Us: ' . $aboutUs->Judul);
 
         return response()->json(['success' => 'About Us berhasil dihapus!']);
     }

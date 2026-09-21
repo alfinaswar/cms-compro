@@ -37,7 +37,7 @@
                         </div>
                         <div class="card-body">
 
-                            {{-- UPLOAD ICON --}}
+                            {{-- UPLOAD ICON / GAMBAR --}}
                             <div class="form-group">
                                 <label><strong>Upload Icon / Gambar</strong></label>
                                 <div class="custom-file">
@@ -58,21 +58,75 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label><strong>Judul</strong> <span class="text-danger">*</span></label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-heading"></i></span></div>
-                                    <input type="text" name="Judul" class="form-control @error('Judul') is-invalid @enderror" value="{{ old('Judul', $item->Judul) }}" required>
-                                    @error('Judul') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
+                            <hr class="my-4">
+
+                            {{-- TABS BAHASA UNTUK JUDUL & DESKRIPSI --}}
+                            <ul class="nav nav-tabs mb-4" id="langTabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="tab-id-tab" data-toggle="tab" href="#tab-id" role="tab">
+                                        🇮🇩 Bahasa Indonesia <span class="text-danger">*</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="tab-en-tab" data-toggle="tab" href="#tab-en" role="tab">
+                                        🇬🇧 English
+                                    </a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content" id="langTabsContent">
+                                <!-- TAB INDONESIA -->
+                                <div class="tab-pane fade show active" id="tab-id" role="tabpanel">
+                                    <div class="form-group">
+                                        <label><strong>Judul</strong> <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fa fa-heading"></i></span>
+                                            </div>
+                                            <input type="text" name="translations[id][Judul]"
+                                                class="form-control @error('translations.id.Judul') is-invalid @enderror"
+                                                value="{{ old('translations.id.Judul', $item->translate('id')->Judul) }}"
+                                                required placeholder="Masukkan judul keunggulan">
+                                        </div>
+                                        @error('translations.id.Judul') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label><strong>Deskripsi</strong> <span class="text-danger">*</span></label>
+                                        <textarea name="translations[id][Deskripsi]" rows="4"
+                                            class="form-control @error('translations.id.Deskripsi') is-invalid @enderror"
+                                            required placeholder="Masukkan deskripsi keunggulan">{{ old('translations.id.Deskripsi', $item->translate('id')->Deskripsi) }}</textarea>
+                                        @error('translations.id.Deskripsi') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
+                                    </div>
+                                </div>
+
+                                <!-- TAB ENGLISH -->
+                                <div class="tab-pane fade" id="tab-en" role="tabpanel">
+                                    <div class="form-group">
+                                        <label><strong>Title</strong></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fa fa-heading"></i></span>
+                                            </div>
+                                            <input type="text" name="translations[en][Judul]"
+                                                class="form-control @error('translations.en.Judul') is-invalid @enderror"
+                                                value="{{ old('translations.en.Judul', $item->translate('en')->Judul) }}"
+                                                placeholder="Enter advantage title">
+                                        </div>
+                                        @error('translations.en.Judul') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label><strong>Description</strong></label>
+                                        <textarea name="translations[en][Deskripsi]" rows="4"
+                                            class="form-control @error('translations.en.Deskripsi') is-invalid @enderror"
+                                            placeholder="Enter advantage description">{{ old('translations.en.Deskripsi', $item->translate('en')->Deskripsi) }}</textarea>
+                                        @error('translations.en.Deskripsi') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label><strong>Deskripsi</strong> <span class="text-danger">*</span></label>
-                                <textarea name="Deskripsi" rows="4" class="form-control @error('Deskripsi') is-invalid @enderror" required>{{ old('Deskripsi', $item->Deskripsi) }}</textarea>
-                                @error('Deskripsi') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
-                            </div>
+                            <hr class="my-4">
 
+                            {{-- DATA UMUM (TIDAK DITERJEMAHKAN) --}}
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -94,10 +148,13 @@
                             </div>
                         </div>
                         <div class="card-footer bg-white border-top d-flex justify-content-end">
-                            <a href="{{ route('why-choose-us.index') }}" class="btn btn-light border px-4 mr-2"><i class="fa fa-arrow-left mr-1"></i> Kembali</a>
-                            <button type="submit" class="btn btn-primary px-4"><i class="fa fa-save mr-1"></i> Update</button>
+                            <a href="{{ route('why-choose-us.index') }}" class="btn btn-light border px-4 mr-2">
+                                <i class="fa fa-arrow-left mr-1"></i> Kembali
+                            </a>
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="fa fa-save mr-1"></i> Update
+                            </button>
                         </div>
-
                     </div>
                 </form>
             </div>
@@ -108,20 +165,28 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
+        // Custom file label & preview logic
         $('#Icon').on('change', function() {
             let fileName = $(this).val().split('\\').pop();
-            $(this).siblings('.custom-file-label').addClass('selected').html(fileName);
+            $(this).siblings('.custom-file-label').addClass('selected').html(fileName || 'Pilih file gambar baru (kosongkan jika tidak ingin mengubah)');
 
             if (this.files && this.files[0]) {
                 let reader = new FileReader();
                 reader.onload = function(e) {
-                    // Jika belum ada tag img, buat dulu
+                    // Jika belum ada tag img, buat dulu (untuk kasus icon lama berupa class font-awesome)
                     if ($('#previewIcon img').length === 0) {
                         $('#previewIcon').html('<p class="text-muted mb-1" style="font-size: 12px;">Preview gambar baru:</p><img src="" class="preview-img">');
                     }
                     $('#previewIcon img').attr('src', e.target.result).show();
                 }
                 reader.readAsDataURL(this.files[0]);
+            } else {
+                // Jika user membatalkan pilihan file, kembalikan ke preview lama (jika ada)
+                @if($item->Icon && !\Illuminate\Support\Str::startsWith($item->Icon, 'fa-'))
+                    $('#previewIcon').html('<p class="text-muted mb-1" style="font-size: 12px;">Icon saat ini:</p><img src="{{ asset('storage/' . $item->Icon) }}" class="preview-img" alt="Icon Lama">');
+                @else
+                    $('#previewIcon').html('<img src="" class="preview-img" alt="Preview" style="display:none;">');
+                @endif
             }
         });
     });
