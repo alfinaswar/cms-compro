@@ -9,6 +9,7 @@ use App\Http\Controllers\ContactUsController;
 use App\Http\Controllers\HalamanSolusiController;
 use App\Http\Controllers\HeroSliderController;
 use App\Http\Controllers\HistoryPerusahaanController;
+use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\JenisLaporanKeuanganController;
 use App\Http\Controllers\KategoriBeritaController;
 use App\Http\Controllers\KeyFiguresController;
@@ -54,6 +55,9 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     Route::resource('manajemen-akun/users', UserController::class)->names('users');
     Route::resource('permissions', PermissionController::class);
 
+    Route::prefix('homepage')->group(function () {
+        Route::get('/', [HomepageController::class, 'index'])->name('homepage.index');
+    });
     // Karir & Rekrutmen Section
     Route::prefix('karir-dan-rekrutmen')->group(function () {
         Route::get('/', [LowonganKerjaController::class, 'index'])->name('karir.index');
@@ -140,8 +144,6 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         // untuk detail client logo
         Route::put('/landing-page/client-logo/update-detail/{id}', [ClientLogoController::class, 'updateDetail'])->name('client-logo.update-detail');
         Route::delete('/landing-page/client-logo/delete/{id}', [ClientLogoController::class, 'destroyDetail'])->name('client-logo.destroy-detail');
-
-
     });
     // === ROUTE UNTUK BERITA ===
     Route::prefix('post')->group(function () {
@@ -168,7 +170,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         Route::post('/update-order', [MenuController::class, 'updateOrder'])->name('menu.update-order');
     });
     Route::prefix('data-master')->group(function () {
-        //Investor Relation Section
+        // Investor Relation Section
         Route::resource('kantor', MasterKantorController::class)->names('master-kantor');
         Route::resource('kategori-berita', KategoriBeritaController::class)->names('kategori-berita');
         Route::get('/api/kategori-berita', [KategoriBeritaController::class, 'apiKategori'])->name('api.kategori-berita');

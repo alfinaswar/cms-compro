@@ -30,6 +30,140 @@
         title="{{ $websiteSettings->NamaPerusahaan ?? 'Admin' }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @stack('styles')
+    <style>
+        /* Modern Sidebar Styling */
+        .main-sidebar {
+            background: linear-gradient(180deg, #1a202c 0%, #2d3748 100%);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-sidebar .nav-header {
+            padding: 0.75rem 1rem 0.5rem;
+            font-weight: 700;
+            color: #a0aec0 !important;
+            border-left: 3px solid transparent;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-sidebar .nav-link {
+            border-radius: 8px;
+            margin: 2px 8px;
+            padding: 10px 12px;
+            transition: all 0.25s ease;
+            border-left: 3px solid transparent;
+            color: #cbd5e0;
+        }
+
+        .nav-sidebar .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+            border-left: 3px solid #4299e1;
+            transform: translateX(3px);
+            color: #fff;
+        }
+
+        .nav-sidebar .nav-link.active {
+            background: linear-gradient(90deg, #4299e1 0%, #3182ce 100%);
+            color: #fff !important;
+            box-shadow: 0 4px 12px rgba(66, 153, 225, 0.3);
+            border-left: 3px solid #fff;
+        }
+
+        .nav-sidebar .nav-link.active i.nav-icon {
+            color: #fff !important;
+        }
+
+        .nav-sidebar .nav-treeview .nav-link {
+            margin: 2px 8px 2px 20px;
+            font-size: 14px;
+            border-left: 3px solid transparent;
+            color: #a0aec0;
+        }
+
+        .nav-sidebar .nav-treeview .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-left: 3px solid #4299e1;
+            color: #fff;
+        }
+
+        .nav-sidebar .nav-treeview .nav-link.active {
+            background: rgba(66, 153, 225, 0.15);
+            color: #4299e1 !important;
+            border-left: 3px solid #4299e1;
+            box-shadow: none;
+        }
+
+        .nav-sidebar .nav-treeview .nav-link.active i.nav-icon {
+            color: #4299e1 !important;
+        }
+
+        .nav-sidebar .nav-icon {
+            width: 24px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .nav-sidebar .nav-treeview .nav-icon {
+            font-size: 10px;
+        }
+
+        .nav-sidebar .badge {
+            font-size: 10px;
+            padding: 3px 6px;
+        }
+
+        /* Brand Logo */
+        .brand-link {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 16px;
+        }
+
+        /* User Panel */
+        .user-panel {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-panel .info a {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* Scrollbar Custom */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Treeview Animation */
+        .nav-treeview {
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -67,291 +201,8 @@
         <!-- /.navbar -->
 
         <!-- Main Sidebar Container -->
-        <aside class="main-sidebar sidebar-dark-primary elevation-4">
-            <!-- Brand Logo -->
-            <a href="{{ url('/') }}" class="brand-link bg-white">
-                <img src="{{ asset('storage/' . $websiteSettings->PathLogo) }}"
-                    alt="{{ $websiteSettings->NamaPerusahaan ?? 'Logo' }}" width="230px">
-                {{-- <span class="brand-text font-weight-light">{{ $websiteSettings->NamaPerusahaan ?? 'Jasuindo' }}</span> --}}
-            </a>
 
-
-
-            <!-- Sidebar -->
-            <div class="sidebar">
-                <!-- Sidebar user (optional) -->
-                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-                    <div class="image">
-                        <img src="{{ asset('') }}assets/dist/img/user2-160x160.jpg" class="img-circle elevation-2"
-                            alt="User Image">
-                    </div>
-                    <div class="info">
-                        <a href="#" class="d-block">{{ $websiteSettings->NamaPerusahaan ?? '-' }}</a>
-                    </div>
-                </div>
-
-                <!-- Sidebar Menu -->
-                <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                        data-accordion="false">
-
-
-                        <li class="nav-header">Blog / Berita</li>
-                        <li
-                            class="nav-item has-treeview {{ request()->segment(1) == 'berita' || request()->segment(1) == 'halaman-solusi' ? 'menu-open' : '' }}">
-                            <a href="#"
-                                class="nav-link {{ request()->segment(1) == 'berita' || request()->segment(1) == 'halaman-solusi' ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-newspaper"></i>
-                                <p>
-                                    Blog / Berita & Solusi
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('berita.index') }}"
-                                        class="nav-link {{ request()->segment(1) == 'berita' ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Blog / Berita</p>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </li>
-
-
-                        <li class="nav-header">Karir dan Rekrutmen</li>
-                        <li class="nav-item">
-                            <a href="{{ route('karir.index') }}"
-                                class="nav-link {{ request()->segment(1) == 'karir-dan-rekrutmen' ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-briefcase"></i>
-                                <p>
-                                    Karir dan Rekrutmen
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-header">Invenstor / Jenis Laporan</li>
-                        <li class="nav-item">
-                            <a href="{{ route('jenis-laporan.index') }}"
-                                class="nav-link {{ request()->segment(1) == 'jenis-laporan' ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-file-alt"></i>
-                                <p>
-                                    Jenis Laporan Keuangan
-                                </p>
-                            </a>
-                        </li>
-
-                        <li class="nav-header">Contact</li>
-                        <li class="nav-item">
-                            <a href="{{ route('contact.list') }}"
-                                class="nav-link {{ request()->segment(1) == 'contact' ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-envelope"></i>
-                                <p>
-                                    Contact Masuk
-                                </p>
-                            </a>
-                        </li>
-
-                        <li class="nav-header">Manajemen Akun</li>
-                        <li
-                            class="nav-item has-treeview {{ request()->segment(1) == 'manajemen-akun' ? 'menu-open' : '' }}">
-
-                            <a href="#"
-                                class="nav-link {{ request()->segment(1) == 'manajemen-akun' ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-users-cog"></i>
-                                <p>
-                                    Manajemen Akun
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('users.index') }}"
-                                        class="nav-link {{ request()->segment(2) == 'users' ? 'active' : '' }}">
-                                        <i class="fas fa-user nav-icon"></i>
-                                        <p>Users</p>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="{{ route('roles.index') }}"
-                                        class="nav-link {{ request()->segment(2) == 'roles' ? 'active' : '' }}">
-                                        <i class="fas fa-user-shield nav-icon"></i>
-                                        <p>Roles</p>
-                                    </a>
-                                </li>
-<li class="nav-item">
-    <a href="{{ route('permissions.index') }}"
-       class="nav-link {{ request()->segment(1) == 'permissions' ? 'active' : '' }}">
-        <i class="nav-icon fas fa-key"></i>
-        <p>Permission</p>
-    </a>
-</li>
-                            </ul>
-                        </li>
-                        <li class="nav-header">Data Master</li>
-                        <li class="nav-item has-treeview menu-open">
-                            <a href="#"
-                                class="nav-link {{ request()->segment(1) == 'data-master' ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-database"></i>
-                                <p>
-                                    Data Master
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('kategori-berita.index') }}"
-                                        class="nav-link {{ request()->segment(2) == 'kategori-berita' ? 'active' : '' }}">
-                                        <i class="fas fa-tags nav-icon"></i>
-                                        <p>Kategori Berita</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('master-kantor.index') }}"
-                                        class="nav-link {{ request()->segment(2) == 'master-kantor' ? 'active' : '' }}">
-                                        <i class="fas fa-building nav-icon"></i>
-                                        <p>Master Kantor</p>
-                                    </a>
-                                </li>
-
-                                <!-- Tambahkan data master lain di sini jika ada -->
-                            </ul>
-                        </li>
-
-                        <li class="nav-header">Pengaturan Website</li>
-                        <li
-                            class="nav-item has-treeview {{ request()->segment(2) == 'pengaturan-website' || request()->segment(2) == 'pages' ? 'menu-open' : '' }}">
-                            <a href="#"
-                                class="nav-link {{ request()->segment(2) == 'pengaturan-website' || request()->segment(2) == 'pages' ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-cogs"></i>
-                                <p>
-                                    Pengaturan Website
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('pengaturan-website.edit') }}"
-                                        class="nav-link {{ request()->segment(2) == 'pengaturan-website' ? 'active' : '' }}">
-                                        <i class="fas fa-cog nav-icon"></i>
-                                        <p>Pengaturan Website</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li
-                            class="nav-item has-treeview {{ request()->segment(1) == 'landing-page' ? 'menu-open' : '' }}">
-                            <a href="#"
-                                class="nav-link {{ request()->segment(1) == 'landing-page' ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-home"></i>
-                                <p>
-                                    Landing Page
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('hero-slider.index') }}"
-                                        class="nav-link {{ request()->segment(2) == 'hero' ? 'active' : '' }}">
-                                        <i class="fas fa-image nav-icon"></i>
-                                        <p>Hero</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('pengaturan-key-figure.index') }}"
-                                        class="nav-link {{ request()->segment(2) == 'key-figures' ? 'active' : '' }}">
-                                        <i class="fas fa-chart-bar nav-icon"></i>
-                                        <p>Key Figures</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('why-choose-us.index') }}"
-                                        class="nav-link {{ request()->segment(2) == 'why-choose-us' ? 'active' : '' }}">
-                                        <i class="fas fa-star nav-icon"></i>
-                                        <p>Why Choose Us</p>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="#"
-                                        class="nav-link {{ request()->segment(2) == 'logo-sertifikasi' ? 'active' : '' }}">
-                                        <i class="fas fa-certificate nav-icon"></i>
-                                        <p>Logo Sertifikasi</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('halaman-solusi.index') }}"
-                                        class="nav-link {{ request()->segment(1) == 'halaman-solusi' ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Halaman Solusi</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('client-logo.index') }}"
-                                        class="nav-link {{ request()->segment(4) == 'halaman-solusi' ? 'active' : '' }}">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Logo Klien</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('about-us.index') }}"
-                                        class="nav-link {{ request()->segment(2) == 'about-us' ? 'active' : '' }}">
-                                        <i class="fas fa-info-circle nav-icon"></i>
-                                        <p>About Us</p>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="{{ route('struktur-organisasi.index') }}"
-                                        class="nav-link {{ request()->segment(1) == 'struktur-organisasi' ? 'active' : '' }}">
-                                        <i class="fas fa-sitemap nav-icon"></i>
-                                        <p>Struktur Organisasi</p>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </li>
-
-
-                        <li class="nav-item has-treeview {{ request()->segment(1) == 'menu' ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link {{ request()->segment(1) == 'menu' ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-bars"></i>
-                                <p>
-                                    Menu
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('menu.index') }}"
-                                        class="nav-link {{ request()->segment(1) == 'menu' && request()->segment(2) == null ? 'active' : '' }}">
-                                        <i class="fas fa-list nav-icon"></i>
-                                        <p>Menu List</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="{{ route('log.index') }}"
-                                class="nav-link {{ request()->segment(2) == 'activity-log' ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-clipboard-list"></i>
-                                <p>
-                                    Log Aktifitas
-                                </p>
-                            </a>
-                        </li>
-
-                    </ul>
-                </nav>
-                <!-- /.sidebar-menu -->
-            </div>
-            <!-- /.sidebar -->
-        </aside>
-
+        @include('layouts.sidebar-main')
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             @yield('content')
