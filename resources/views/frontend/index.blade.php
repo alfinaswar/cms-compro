@@ -32,6 +32,13 @@
             box-shadow: none;
         }
 
+        /* Default colors */
+        .nav-link { color: #0f172a; transition: color 0.2s; }
+        .nav-icon { color: #0f172a; transition: color 0.2s; }
+        .mobile-btn { color: #0f172a; transition: color 0.2s; }
+        .logo-text { color: #0f172a; transition: color 0.2s; }
+
+        /* When navbar is transparent (on hero): make white */
         .navbar-transparent .nav-link { color: white; }
         .navbar-transparent .logo-text { color: white; }
         .navbar-transparent .nav-icon { color: white; }
@@ -97,7 +104,7 @@
                         <div class="relative group">
                             <a href="{{ $menu->Link !== '#' ? $menu->Link : 'javascript:void(0)' }}"
                                 target="{{ $menu->Target ?? '_self' }}"
-                                class="nav-link flex items-center space-x-1 {{ $isActive ? 'text-brand-400' : 'text-white hover:text-brand-500' }} font-medium transition-colors duration-200 py-2">
+                                class="nav-link flex items-center space-x-1 {{ $isActive ? 'text-brand-400' : '' }} font-medium transition-colors duration-200 py-2">
                                 @if ($menu->Icon) <i class="{{ $menu->Icon }}"></i> @endif
                                 {{-- ✅ MULTI-LANGUAGE: Nama menu parent (dropdown) --}}
                                 <span>{{ $menu->display_name }}</span>
@@ -127,7 +134,7 @@
                         </div>
                     @else
                         <a href="{{ $menu->Link }}" target="{{ $menu->Target ?? '_self' }}"
-                            class="nav-link {{ $isActive ? 'text-brand-400' : 'text-white hover:text-brand-500' }} font-medium transition-colors duration-200 py-2">
+                            class="nav-link {{ $isActive ? 'text-brand-400' : '' }} font-medium transition-colors duration-200 py-2">
                             @if ($menu->Icon) <i class="{{ $menu->Icon }} mr-1"></i> @endif
                             {{-- ✅ MULTI-LANGUAGE: Nama menu tanpa dropdown --}}
                             {{ $menu->display_name }}
@@ -138,12 +145,12 @@
 
             <!-- Right Side Actions -->
             <div class="hidden lg:flex items-center space-x-4">
-                <button class="nav-icon text-white hover:text-brand-500 transition-colors duration-200 p-2">
+                <button class="nav-icon hover:text-brand-500 transition-colors duration-200 p-2">
                     <i class="fa-solid fa-magnifying-glass text-lg"></i>
                 </button>
 
                 <div class="relative group">
-                    <button class="nav-icon flex items-center space-x-1 hover:text-brand-500 transition-colors duration-200 py-2 text-white">
+                    <button class="nav-icon flex items-center space-x-1 hover:text-brand-500 transition-colors duration-200 py-2">
                         @if ($locale == 'id')
                             <img src="https://flagcdn.com/w20/id.png" alt="Indonesia" class="w-5 h-auto rounded-sm">
                             <span class="font-medium text-sm">ID</span>
@@ -175,10 +182,10 @@
 
             <!-- Mobile Menu Button -->
             <div class="lg:hidden flex items-center space-x-2">
-                <button class="mobile-btn text-white hover:text-brand-500 transition-colors duration-200 p-2">
+                <button class="mobile-btn hover:text-brand-500 transition-colors duration-200 p-2">
                     <i class="fa-solid fa-magnifying-glass text-lg"></i>
                 </button>
-                <button id="mobile-menu-btn" class="mobile-btn text-white hover:text-brand-500 focus:outline-none p-2">
+                <button id="mobile-menu-btn" class="mobile-btn hover:text-brand-500 focus:outline-none p-2">
                     <i class="fa-solid fa-bars text-2xl"></i>
                 </button>
             </div>
@@ -407,17 +414,9 @@
             if (scrollY > threshold) {
                 navbar.classList.remove('navbar-transparent');
                 navbar.classList.add('navbar-scrolled');
-                document.querySelectorAll('.mobile-btn').forEach(btn => {
-                    btn.classList.remove('text-white');
-                    btn.classList.add('text-slate-700');
-                });
             } else {
                 navbar.classList.add('navbar-transparent');
                 navbar.classList.remove('navbar-scrolled');
-                document.querySelectorAll('.mobile-btn').forEach(btn => {
-                    btn.classList.add('text-white');
-                    btn.classList.remove('text-slate-700');
-                });
             }
         }
 
