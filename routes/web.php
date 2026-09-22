@@ -146,8 +146,8 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         Route::delete('/landing-page/client-logo/delete/{id}', [ClientLogoController::class, 'destroyDetail'])->name('client-logo.destroy-detail');
     });
     // === ROUTE UNTUK BERITA ===
-    Route::prefix('post')->group(function () {
-        Route::get('/berita', [BeritaController::class, 'index'])->name('berita.index');
+    Route::prefix('publikasi-dan-berita')->group(function () {
+        Route::get('/', [BeritaController::class, 'index'])->name('berita.index');
         Route::get('/berita/create', [BeritaController::class, 'create'])->name('berita.create');
         Route::post('/berita/store', [BeritaController::class, 'store'])->name('berita.store');
         Route::get('/berita/edit/{id}', [BeritaController::class, 'edit'])->name('berita.edit');
@@ -175,8 +175,8 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         Route::resource('kategori-berita', KategoriBeritaController::class)->names('kategori-berita');
         Route::get('/api/kategori-berita', [KategoriBeritaController::class, 'apiKategori'])->name('api.kategori-berita');
     });
-    Route::prefix('contact')->group(function () {
-        Route::get('/', [ContactUsController::class, 'list'])->name('contact.list');
+    Route::prefix('komunikasi-dan-transaksi')->group(function () {
+        Route::get('/kotak-masuk', [ContactUsController::class, 'list'])->name('contact.list');
         Route::get('/export', [ContactUsController::class, 'encuxport'])->name('contact.export');
         Route::delete('/contact/{id}', [ContactUsController::class, 'destroy']);
     });
