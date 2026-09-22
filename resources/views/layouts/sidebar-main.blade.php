@@ -124,10 +124,12 @@
                 </li>
 
                 {{-- Manajemen Konten --}}
-                <li
-                    class="nav-item has-treeview {{ in_array(request()->segment(1), ['about-us', 'halaman-solusi', 'jenis-laporan']) ? 'menu-open' : '' }}">
-                    <a href="#"
-                        class="nav-link {{ in_array(request()->segment(1), ['about-us', 'halaman-solusi', 'jenis-laporan']) ? 'active' : '' }}">
+                @php
+                    // Cek apakah salah satu submenu Manajemen Konten sedang active (biar parent juga open)
+                    $menuKontenActive = in_array(request()->segment(1), ['about-us', 'halaman-solusi', 'jenis-laporan']) || request()->segment(2) == 'homepage';
+                @endphp
+                <li class="nav-item has-treeview {{ $menuKontenActive ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ $menuKontenActive ? 'active' : '' }}">
                         <i class="nav-icon fas fa-file-alt"></i>
                         <p>
                             Manajemen Konten
@@ -136,11 +138,13 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ route('homepage.index') }}" class="nav-link">
+                            <a href="{{ route('homepage.index') }}"
+                                class="nav-link {{ request()->segment(2) == 'homepage' ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Homepage</p>
                             </a>
                         </li>
+
                         <li class="nav-item">
                             <a href="{{ route('about-us.index') }}"
                                 class="nav-link {{ request()->segment(1) == 'about-us' ? 'active' : '' }}">
@@ -178,8 +182,12 @@
                 </li>
 
                 {{-- Kelola Halaman --}}
-                <li class="nav-item has-treeview">
-                    <a href="#" class="nav-link">
+                @php
+                    // Jika nanti ada submenu yang bisa active di "Kelola Halaman", cek di sini
+                    $menuHalamanActive = false;
+                @endphp
+                <li class="nav-item has-treeview {{ $menuHalamanActive ? 'menu-open' : '' }}">
+                    <a href="#" class="nav-link {{ $menuHalamanActive ? 'active' : '' }}">
                         <i class="nav-icon fas fa-copy"></i>
                         <p>
                             Kelola Halaman
@@ -201,6 +209,7 @@
                         </li>
                     </ul>
                 </li>
+
 
                 {{-- Menu & Navigasi --}}
                 <li class="nav-item has-treeview {{ request()->segment(1) == 'menu' ? 'menu-open' : '' }}">
@@ -330,7 +339,7 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <a href="{{ route('hero-slider.index') }}"
                                 class="nav-link {{ request()->segment(2) == 'hero' ? 'active' : '' }}">
                                 <i class="fas fa-image nav-icon"></i>
@@ -350,21 +359,21 @@
                                 <i class="fas fa-star nav-icon"></i>
                                 <p>Why Choose Us</p>
                             </a>
-                        </li>
-                        <li class="nav-item">
+                        </li> --}}
+                        {{-- <li class="nav-item">
                             <a href="#"
                                 class="nav-link {{ request()->segment(2) == 'logo-sertifikasi' ? 'active' : '' }}">
                                 <i class="fas fa-certificate nav-icon"></i>
                                 <p>Logo Sertifikasi</p>
                             </a>
-                        </li>
-                        <li class="nav-item">
+                        </li> --}}
+                        {{-- <li class="nav-item">
                             <a href="{{ route('client-logo.index') }}"
                                 class="nav-link {{ request()->segment(2) == 'client-logo' ? 'active' : '' }}">
                                 <i class="fas fa-handshake nav-icon"></i>
                                 <p>Logo Klien</p>
                             </a>
-                        </li>
+                        </li> --}}
                         <li class="nav-item">
                             <a href="{{ route('struktur-organisasi.index') }}"
                                 class="nav-link {{ request()->segment(1) == 'struktur-organisasi' ? 'active' : '' }}">
