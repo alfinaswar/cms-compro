@@ -39,6 +39,6 @@ class HalamanSolusi extends Model
      */
     public function details()
     {
-        return $this->hasMany(HalamanSolusidetail::class, 'HalamanSolusiId');
+        return $this->hasMany(HalamanSolusiDetail::class, 'HalamanSolusiId');
     }
 }
