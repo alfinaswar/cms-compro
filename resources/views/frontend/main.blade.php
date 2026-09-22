@@ -459,6 +459,7 @@
         </div>
 
         @php
+            use Illuminate\Support\Facades\Storage;
             $count = count($Why);
             $gridCols = 'grid-cols-1';
             $mdGridCols = '';
@@ -482,6 +483,11 @@
                     $trans = $item->translate($locale);
                     $wJudul = $trans->Judul ?: $item->Judul;
                     $wDeskripsi = $trans->Deskripsi ?: $item->Deskripsi;
+                    // Cek jika icon berupa gambar, apakah file nya ada
+                    $showImg = false;
+                    if (!empty($item->Icon) && !\Illuminate\Support\Str::startsWith($item->Icon, 'fa-')) {
+                        $showImg = Storage::disk('public')->exists($item->Icon);
+                    }
                 @endphp
 
                 <div class="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center text-center hover:shadow-xl transition-all duration-300">
@@ -493,8 +499,8 @@
                             <div class="text-brand-600 mb-4 text-4xl">
                                 <i class="{{ $item->Icon }}"></i>
                             </div>
-                        @else
-                            <!-- Render sebagai Gambar -->
+                        @elseif($showImg)
+                            <!-- Render sebagai Gambar jika file ada -->
                             <img src="{{ asset('storage/' . $item->Icon) }}" alt="{{ $wJudul }}" class="w-16 h-16 object-contain mb-4">
                         @endif
                     @endif
