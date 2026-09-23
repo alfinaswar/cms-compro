@@ -32,22 +32,34 @@ use App\Models\JenisLaporanKeuangan;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingPageController::class, 'index'])->name('frontend.main');  // Hanya Tampil Footer saja
-// Route::get('/', function () {
-//     return view('frontend.main');
-// }); Tampil Semua
-Auth::routes();
 
+Auth::routes();
+Route::get('/', function () {
+    $locale = session('locale', 'id');
+    return redirect('/' . $locale);
+});
+// 2. Auth Routes (di luar group locale)
+Auth::routes();
 Route::get('/admin/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::prefix('/')->group(function () {
+
+// 3. GROUP ROUTE: Semua route di dalam sini otomatis mendapat prefix /id/ atau /en/
+Route::group(['prefix' => '{locale}', 'where' => ['locale' => 'id|en']], function () {
+
+    Route::get('/', [LandingPageController::class, 'index'])->name('frontend.main');
+
     Route::get('/news', [BeritaController::class, 'news'])->name('frontend.news');
-    Route::get('/laporan-keuangan', [JenisLaporanKeuanganController::class, 'laporanKeuanganFe'])->name('frontend.laporan-keuangan');
-    Route::get('/about-us', [AboutUsController::class, 'show'])->name('frontend.about-us');
     Route::get('/news/{slug}', [BeritaController::class, 'newsDetail'])->name('frontend.detail');
+
+    Route::get('/laporan-keuangan', [JenisLaporanKeuanganController::class, 'laporanKeuanganFe'])->name('frontend.laporan-keuangan');
+
+    Route::get('/about-us', [AboutUsController::class, 'show'])->name('frontend.about-us');
+
     Route::get('/career', [LowonganKerjaController::class, 'career'])->name('frontend.career');
     Route::get('/career/{id}-{slug}', [LowonganKerjaController::class, 'careerDetail'])->name('frontend.career.detail');
     Route::post('/career/{id}/apply', [LowonganKerjaController::class, 'apply'])->name('frontend.career.apply');
+
     Route::get('/contact-us', [ContactUsController::class, 'index'])->name('frontend.contact.index');
-    Route::POST('/store-contact-us', [ContactUsController::class, 'store'])->name('frontend.contact.store');
+    Route::post('/store-contact-us', [ContactUsController::class, 'store'])->name('frontend.contact.store');
 });
 Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     // === GROUP DASHBOARD ===

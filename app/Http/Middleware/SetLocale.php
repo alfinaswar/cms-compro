@@ -2,24 +2,28 @@
 
 namespace App\Http\Middleware;
 
+use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\Response;
-use Closure;
 
 class SetLocale
 {
     public function handle(Request $request, Closure $next): Response
     {
-        // Cek parameter URL (?lang=id atau ?lang=en)
-        if ($request->has('lang') && in_array($request->get('lang'), ['id', 'en'])) {
-            Session::put('locale', $request->get('lang'));
-        }
+        // Ambil segmen pertama dari URL (misal: 'id' atau 'en')
+        $locale = $request->segment(1);
 
-        // Set locale dari session, default ke 'id'
-        $locale = Session::get('locale', 'id');
-        App::setLocale($locale);
+        // Cek apakah segmen pertama adalah bahasa yang valid
+        if (in_array($locale, ['id', 'en'])) {
+            App::setLocale($locale);
+            Session::put('locale', $locale);
+        } else {
+            // Jika tidak ada di URL, gunakan dari session atau default ke 'id'
+            $defaultLocale = Session::get('locale', 'id');
+            App::setLocale($defaultLocale);
+        }
 
         return $next($request);
     }

@@ -2,41 +2,36 @@
 
 namespace App\Providers;
 
-use App\Models\HalamanSolusi;
-use App\Models\HeroSlider;
-use App\Models\KeyFigures;
-use App\Models\PengaturanWebsite;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
-    public function register(): void
-    {
-        //
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
+        // Share data ke semua view
         View::share('websiteSettings', Cache::remember('website_settings', 3600, function () {
-            return PengaturanWebsite::first();
+            return \App\Models\PengaturanWebsite::first();
         }));
 
         View::share('keyFigures', Cache::remember('key_figures', 3600, function () {
-            return KeyFigures::get();
+            return \App\Models\KeyFigures::get();
         }));
+
         View::share('halamanSolusi', Cache::remember('halaman_solusi', 3600, function () {
-            return HalamanSolusi::get();
+            return \App\Models\HalamanSolusi::get();
         }));
+
         View::share('heroSliders', Cache::remember('hero_sliders', 3600, function () {
-            return HeroSlider::get();
+            return \App\Models\HeroSlider::get();
         }));
+        URL::defaults(['locale' => app()->getLocale()]);
+    }
+
+    public function register(): void
+    {
+        
     }
 }

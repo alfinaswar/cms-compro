@@ -367,7 +367,7 @@ class BeritaController extends Controller
         return view('frontend.news', compact('news', 'recentNews', 'categories', 'locale'));
     }
 
-    public function newsDetail($slug)
+    public function newsDetail($locale,$slug)
     {
         $locale = app()->getLocale();
 

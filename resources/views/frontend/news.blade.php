@@ -25,7 +25,8 @@
 
                 <!-- Breadcrumb -->
                 <nav class="mt-8 flex items-center justify-center space-x-2 text-sm text-slate-300">
-                    <a href="{{ url('/') }}" class="hover:text-white transition-colors">
+                    <!-- ✅ PERBAIKAN 1: Gunakan route() -->
+                    <a href="{{ route('frontend.main') }}" class="hover:text-white transition-colors">
                         <i class="fa-solid fa-house mr-1"></i> {{ __('Home') }}
                     </a>
                     <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
@@ -53,7 +54,8 @@
 
                         <article class="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 mb-6 hover:shadow-md transition-shadow">
                             <!-- Image -->
-                            <a href="{{ url('news/' . $item->Slug) }}" class="block overflow-hidden">
+                            <!-- ✅ PERBAIKAN 2: Gunakan route('frontend.detail') -->
+                            <a href="{{ route('frontend.detail', ['slug' => $item->Slug]) }}" class="block overflow-hidden">
                                 <img src="{{ $thumbnailUrl }}" alt="{{ $displayJudul }}"
                                     class="w-full h-64 object-cover hover:scale-105 transition-transform duration-300">
                             </a>
@@ -77,7 +79,8 @@
 
                                 <!-- Title -->
                                 <h2 class="text-2xl font-bold text-slate-900 mb-3 hover:text-brand-600 transition-colors">
-                                    <a href="{{ url('news/' . $item->Slug) }}">
+                                    <!-- ✅ PERBAIKAN 3: Gunakan route('frontend.detail') -->
+                                    <a href="{{ route('frontend.detail', $item->Slug) }}">
                                         {{ $displayJudul }}
                                     </a>
                                 </h2>
@@ -88,7 +91,8 @@
                                 </p>
 
                                 <!-- Read More -->
-                                <a href="{{ url('news/' . $item->Slug) }}"
+                                <!-- ✅ PERBAIKAN 4: Gunakan route('frontend.detail') -->
+                                <a href="{{ route('frontend.detail', ['slug' => $item->Slug]) }}"
                                     class="inline-flex items-center text-brand-600 hover:text-brand-700 font-semibold">
                                     {{ __('Read More') }}
                                     <i class="fa-solid fa-arrow-right ml-2"></i>
@@ -104,38 +108,10 @@
                         </div>
                     @endforelse
 
-                    <!-- Pagination -->
+                    <!-- Pagination (Laravel otomatis menangani locale di sini) -->
                     @if ($news->hasPages())
                         <div class="mt-8 flex justify-center">
-                            <nav class="inline-flex items-center space-x-1">
-                                @if ($news->onFirstPage())
-                                    <span class="px-3 py-2 border border-slate-300 rounded-lg text-slate-400 cursor-not-allowed">
-                                        <i class="fa-solid fa-chevron-left"></i>
-                                    </span>
-                                @else
-                                    <a href="{{ $news->previousPageUrl() }}" class="px-3 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50">
-                                        <i class="fa-solid fa-chevron-left"></i>
-                                    </a>
-                                @endif
-
-                                @foreach ($news->getUrlRange(1, $news->lastPage()) as $page => $url)
-                                    @if ($page == $news->currentPage())
-                                        <span class="px-4 py-2 bg-brand-600 text-white font-semibold rounded-lg">{{ $page }}</span>
-                                    @else
-                                        <a href="{{ $url }}" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50">{{ $page }}</a>
-                                    @endif
-                                @endforeach
-
-                                @if ($news->hasMorePages())
-                                    <a href="{{ $news->nextPageUrl() }}" class="px-3 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50">
-                                        <i class="fa-solid fa-chevron-right"></i>
-                                    </a>
-                                @else
-                                    <span class="px-3 py-2 border border-slate-300 rounded-lg text-slate-400 cursor-not-allowed">
-                                        <i class="fa-solid fa-chevron-right"></i>
-                                    </span>
-                                @endif
-                            </nav>
+                            {{ $news->links() }} <!-- Atau gunakan custom pagination Anda, Laravel otomatis append locale -->
                         </div>
                     @endif
                 </div>
@@ -147,7 +123,8 @@
                         <!-- Search Widget -->
                         <div class="bg-white rounded-xl p-6 border border-slate-200">
                             <h3 class="text-lg font-bold text-slate-900 mb-4">{{ __('Search') }}</h3>
-                            <form action="{{ url('news') }}" method="GET" class="relative">
+                            <!-- ✅ PERBAIKAN 5: Gunakan route() untuk query string -->
+                            <form action="{{ route('frontend.news') }}" method="GET" class="relative">
                                 <input type="text" name="search" value="{{ request('search') }}"
                                     placeholder="{{ __('Search news...') }}"
                                     class="w-full px-4 py-2.5 pr-10 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
@@ -163,7 +140,8 @@
                             <ul class="space-y-2">
                                 @foreach ($categories as $category)
                                     <li>
-                                        <a href="{{ url('news?kategori=' . urlencode($category)) }}"
+                                        <!-- ✅ PERBAIKAN 6: Gunakan route() dengan parameter query -->
+                                        <a href="{{ route('frontend.news', ['kategori' => $category]) }}"
                                             class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-slate-50 transition-colors group">
                                             <span class="text-slate-700 group-hover:text-brand-600">{{ $category }}</span>
                                             <i class="fa-solid fa-chevron-right text-xs text-slate-400 group-hover:text-brand-600"></i>
@@ -184,7 +162,8 @@
                                         $recentThumb = $recent->PathThumbnail ? asset('storage/' . $recent->PathThumbnail) : asset('img/no-image.png');
                                     @endphp
                                     <div class="flex gap-3">
-                                        <a href="{{ url('news/' . $recent->Slug) }}" class="flex-shrink-0">
+                                        <!-- ✅ PERBAIKAN 7: Gunakan route('frontend.detail') -->
+                                        <a href="{{ route('frontend.detail', ['slug' => $recent->Slug]) }}" class="flex-shrink-0">
                                             <img src="{{ $recentThumb }}" alt="{{ $recentJudul }}" class="w-20 h-20 object-cover rounded-lg">
                                         </a>
                                         <div class="flex-1 min-w-0">
@@ -193,7 +172,7 @@
                                                 {{ $recent->TanggalPublikasi ? \Carbon\Carbon::parse($recent->TanggalPublikasi)->isoFormat('D MMM, Y') : '-' }}
                                             </p>
                                             <h4 class="text-sm font-semibold text-slate-900 hover:text-brand-600 line-clamp-2">
-                                                <a href="{{ url('news/' . $recent->Slug) }}">
+                                                <a href="{{ route('frontend.detail', ['slug' => $recent->Slug]) }}">
                                                     {{ $recentJudul }}
                                                 </a>
                                             </h4>
@@ -221,7 +200,8 @@
                                 @endphp
 
                                 @forelse($allTags as $tag)
-                                    <a href="{{ url('news?tag=' . urlencode($tag)) }}"
+                                    <!-- ✅ PERBAIKAN 8: Gunakan route() dengan parameter query -->
+                                    <a href="{{ route('frontend.news', ['tag' => $tag]) }}"
                                         class="px-3 py-1.5 bg-slate-100 hover:bg-brand-600 text-slate-700 hover:text-white text-sm rounded-lg transition-colors">
                                         {{ $tag }}
                                     </a>
@@ -241,7 +221,8 @@
                             <a href="tel:+62318910919" class="block text-xl font-bold mb-4 hover:text-brand-200">
                                 +62 31 8910919
                             </a>
-                            <a href="{{ url('contact') }}"
+                            <!-- ✅ PERBAIKAN 9: Gunakan route('frontend.contact.index') -->
+                            <a href="{{ route('frontend.contact.index') }}"
                                 class="inline-flex items-center px-6 py-2.5 bg-white text-brand-700 font-semibold rounded-lg hover:bg-brand-50 transition-colors">
                                 {{ __('Contact Us') }}
                                 <i class="fa-solid fa-arrow-right ml-2"></i>
