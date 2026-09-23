@@ -303,7 +303,7 @@ class LowonganKerjaController extends Controller
         return view('frontend.career', compact('lowongans', 'totalJobs', 'kotas', 'locale'));
     }
 
-    public function careerDetail($id, $slug)
+    public function careerDetail($locale, $id)
     {
         $locale = app()->getLocale();
         Carbon::setLocale($locale);
