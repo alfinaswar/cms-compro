@@ -4,8 +4,8 @@
     @push('styles')
         <style>
             /* ============================================
-                                       MODERN CARD REDESIGN (Tanpa mengganggu DataTables)
-                                       ============================================ */
+                                               MODERN CARD REDESIGN (Tanpa mengganggu DataTables)
+                                               ============================================ */
 
             :root {
                 --accent-blue: #3b82f6;

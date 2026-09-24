@@ -18,6 +18,8 @@ use App\Http\Controllers\LaporanKeuanganDetailController;
 use App\Http\Controllers\LowonganKerjaController;
 use App\Http\Controllers\MasterKantorController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\NotificationEmailController;
+use App\Http\Controllers\NotificationEmailRecipientController;
 use App\Http\Controllers\PengaturanWebsiteController;
 use App\Http\Controllers\PenghargaanPerusahaanController;
 use App\Http\Controllers\PermissionController;
@@ -85,6 +87,13 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
 
     // Pengaturan Website Section
     Route::prefix('pengaturan')->group(function () {
+        // Notification Email Routes
+        Route::get('/penerima-notif-email', [NotificationEmailRecipientController::class, 'index'])->name('notification-email.index');
+        Route::get('/penerima-notif-email/edit', [NotificationEmailRecipientController::class, 'edit'])->name('notification-email.edit');
+        Route::post('/penerima-notif-email/store', [NotificationEmailRecipientController::class, 'store'])->name('notification-email.store');
+        Route::post('/penerima-notif-email/update', [NotificationEmailRecipientController::class, 'update'])->name('notification-email.update');
+        Route::delete('/penerima-notif-email/{id}', [NotificationEmailRecipientController::class, 'destroy'])->name('notification-email.destroy');
+
         Route::get('/', [PengaturanWebsiteController::class, 'index'])->name('pengaturan-website.index');
         Route::get('/create', [PengaturanWebsiteController::class, 'create'])->name('pengaturan-website.create');
         Route::post('/store', [PengaturanWebsiteController::class, 'store'])->name('pengaturan-website.store');

@@ -15,60 +15,73 @@ class MenuController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Menu::with('parent', 'children')->orderBy('Urutan', 'asc');
+            // Ambil menu dengan hierarki
+            $data = Menu::with('translations', 'parent', 'children')
+                ->orderBy('ParentId')
+                ->orderBy('Urutan', 'asc');
 
             return DataTables::of($data)
                 ->addIndexColumn()
-                ->addColumn('NamaMenuDisplay', function ($row) {
-                    $icon = $row->Icon ? '<i class="' . $row->Icon . ' mr-2"></i>' : '';
-                    $indent = $row->ParentId ? '&nbsp;&nbsp;&nbsp;&nbsp;└─ ' : '';
-                    return $indent . $icon . '<strong>' . $row->NamaMenu . '</strong>';
+                ->addColumn('MenuNameDisplay', function ($row) {
+                    $idTrans = $row->translations->firstWhere('Locale', 'id');
+                    $enTrans = $row->translations->firstWhere('Locale', 'en');
+
+                    $namaId = $idTrans ? $idTrans->NamaMenu : $row->NamaMenu;
+                    $namaEn = $enTrans ? $enTrans->NamaMenu : '';
+
+                    $icon = $row->Icon
+                        ? '<i class="' . $row->Icon . ' mr-2 text-primary"></i>'
+                        : '<i class="fa fa-circle mr-2 text-muted" style="font-size:8px;"></i>';
+
+                    $indent = $row->ParentId ? '&nbsp;&nbsp;&nbsp;&nbsp;' : '';
+
+                    // ✅ PERBAIKAN: Tambahkan tanda titik dua (:) sebelum string kosong
+                    $badge = $row->children->count() > 0
+                        ? '<span class="badge badge-info badge-sm ml-2">Parent (' . $row->children->count() . ' Sub)</span>'
+                        : '';
+
+                    return $indent . $icon . '<strong>' . $namaId . '</strong>' .
+                        ($namaEn ? '<br><small class="text-muted">' . $namaEn . '</small>' : '') .
+                        $badge;
                 })
-                ->addColumn('LinkDisplay', function ($row) {
+                ->addColumn('LinkInfo', function ($row) {
                     if ($row->JenisLink === 'route') {
-                        return '<span class="badge badge-info">Route</span> <code>' . $row->RouteName . '</code>';
+                        return '<span class="badge badge-info">Route</span><br><small class="text-muted">' . $row->RouteName . '</small>';
                     } elseif ($row->JenisLink === 'page') {
-                        return '<span class="badge badge-success">Page</span> <code>' . $row->Url . '</code>';
+                        return '<span class="badge badge-success">Page</span><br><small class="text-muted">' . $row->Url . '</small>';
                     }
-                    return '<span class="badge badge-secondary">Custom</span> <code>' . $row->Url . '</code>';
+                    return '<span class="badge badge-secondary">URL</span><br><small class="text-muted">' . substr($row->Url, 0, 30) . '...</small>';
                 })
-                ->addColumn('StatusBadge', function ($row) {
-                    if ($row->StatusAktif) {
-                        return '<span class="badge badge-success">Aktif</span>';
-                    }
-                    return '<span class="badge badge-danger">Nonaktif</span>';
-                })
-                ->addColumn('PosisiBadge', function ($row) {
+                ->addColumn('PosisiInfo', function ($row) {
                     $badges = [];
-                    if ($row->TampilkanDiHeader)
-                        $badges[] = '<span class="badge badge-primary">Header</span>';
-                    if ($row->TampilkanDiFooter)
-                        $badges[] = '<span class="badge badge-warning">Footer</span>';
+                    if ($row->TampilkanDiHeader) {
+                        $badges[] = '<span class="badge badge-primary badge-sm">Header</span>';
+                    }
+                    if ($row->TampilkanDiFooter) {
+                        $badges[] = '<span class="badge badge-warning badge-sm">Footer</span>';
+                    }
+                    if (!$row->TampilkanDiHeader && !$row->TampilkanDiFooter) {
+                        return '<span class="text-muted text-small">-</span>';
+                    }
                     return implode(' ', $badges);
                 })
                 ->addColumn('action', function ($row) {
-                    return '
-                        <div class="btn-group btn-group-sm">
-                            <button class="btn btn-sm btn-info btn-up" data-id="' . $row->id . '" title="Naik">
-                                <i class="fa fa-arrow-up"></i>
-                            </button>
-                            <button class="btn btn-sm btn-info btn-down" data-id="' . $row->id . '" title="Turun">
-                                <i class="fa fa-arrow-down"></i>
-                            </button>
-                            <a href="' . route('menu.edit', $row->id) . '" class="btn btn-sm btn-warning" title="Edit">
-                                <i class="fa fa-edit"></i>
-                            </a>
-                            <button class="btn btn-sm btn-danger btn-delete" data-id="' . $row->id . '" title="Hapus">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </div>
-                    ';
+                    $btn = '<div class="btn-group btn-group-sm">';
+                    $btn .= '<button type="button" class="btn btn-info btn-edit" data-id="' . $row->id . '" title="Edit">';
+                    $btn .= '<i class="fa fa-edit"></i></button>';
+                    $btn .= '<button type="button" class="btn btn-danger btn-delete" data-id="' . $row->id . '" data-nama="' . $row->NamaMenu . '" title="Hapus">';
+                    $btn .= '<i class="fa fa-trash"></i></button>';
+                    $btn .= '</div>';
+                    return $btn;
                 })
-                ->rawColumns(['NamaMenuDisplay', 'LinkDisplay', 'StatusBadge', 'PosisiBadge', 'action'])
+                ->rawColumns(['MenuNameDisplay', 'LinkInfo', 'PosisiInfo', 'action'])
                 ->make(true);
         }
 
-        return view('pages.admin.menu.index');
+        $allMenus = Menu::with('translations')->orderBy('Urutan')->get();
+        $parentMenus = Menu::whereNull('ParentId')->orderBy('Urutan')->get();
+
+        return view('pages.admin.menu.index', compact('allMenus', 'parentMenus'));
     }
 
     public function create()

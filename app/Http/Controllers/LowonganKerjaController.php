@@ -148,18 +148,14 @@ class LowonganKerjaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // 1. Validasi Data Utama & Terjemahan
         $request->validate([
             'Kota' => 'required|string|max:255',
             'BatasWaktu' => 'nullable|date',
             'Status' => 'required|in:Buka,Tutup',
 
-            // Validasi Bahasa Indonesia (Wajib)
             'translations.id.Posisi' => 'required|string|max:255',
             'translations.id.Deskripsi' => 'nullable|string',
             'translations.id.Kualifikasi' => 'nullable|string',
-
-            // Validasi Bahasa Inggris (Opsional)
             'translations.en.Posisi' => 'nullable|string|max:255',
             'translations.en.Deskripsi' => 'nullable|string',
             'translations.en.Kualifikasi' => 'nullable|string',
@@ -171,11 +167,8 @@ class LowonganKerjaController extends Controller
 
         $lowongan = LowonganKerja::findOrFail($id);
 
-        // Simpan data lama untuk Activity Log
         $oldMain = $lowongan->getOriginal();
         $oldTranslations = $lowongan->translations->pluck('Posisi', 'Locale')->toArray();
-
-        // 2. Update Data Utama (Hanya field non-translatable)
         $lowongan->update([
             'Kota' => $request->Kota,
             'BatasWaktu' => $request->BatasWaktu,
@@ -183,13 +176,11 @@ class LowonganKerjaController extends Controller
             'UserUpdate' => auth()->user()->name,
         ]);
 
-        // 3. Update / Create Data Terjemahan
         $translationsData = $request->input('translations', []);
         foreach ($translationsData as $locale => $data) {
-            // Hanya proses jika ada input Posisi (menghindari save data kosong)
             if (!empty($data['Posisi'])) {
                 $lowongan->translations()->updateOrCreate(
-                    ['Locale' => $locale], // Kondisi pencarian (berdasarkan bahasa)
+                    ['Locale' => $locale],
                     [
                         'Posisi' => $data['Posisi'] ?? null,
                         'Deskripsi' => $data['Deskripsi'] ?? null,
@@ -198,12 +189,8 @@ class LowonganKerjaController extends Controller
                 );
             }
         }
-
-        // Refresh model agar data terjemahan terbaru ter-load
         $lowongan->load('translations');
-
-        // 4. Activity Log
-        $posisiBaru = $lowongan->translate('id')->Posisi; // Ambil posisi bahasa ID untuk log
+        $posisiBaru = $lowongan->translate('id')->Posisi;
 
         activity()
             ->causedBy(auth()->user())
@@ -230,10 +217,8 @@ class LowonganKerjaController extends Controller
                 'message' => 'Data tidak ditemukan'
             ]);
         }
-
-        // Catat siapa yang menghapus sebelum soft delete
         $lowongan->update(['UserDelete' => auth()->user()->name]);
-        $lowongan->delete();  // Soft delete
+        $lowongan->delete();
 
         return response()->json([
             'status' => 200,
@@ -243,25 +228,17 @@ class LowonganKerjaController extends Controller
 
     public function career(Request $request)
     {
-        // Ambil bahasa yang sedang aktif (default 'id' jika belum ada fitur switch language)
         $locale = app()->getLocale();
 
         $query = LowonganKerja::query()->with([
             'translations' => function ($q) use ($locale) {
-                // Hanya load translasi sesuai bahasa yang aktif untuk menghemat memori
                 $q->where('Locale', $locale);
             }
         ]);
-
-        // Scope active (Status = 'Buka')
         $query->active();
-
-        // Filter Kota
         if ($request->filled('kota')) {
             $query->where('Kota', $request->kota);
         }
-
-        // Filter Search (Mencari di tabel terjemahan sesuai bahasa aktif)
         if ($request->filled('search')) {
             $search = $request->search;
             $query->whereHas('translations', function ($q) use ($search, $locale) {
@@ -273,8 +250,6 @@ class LowonganKerjaController extends Controller
                     });
             });
         }
-
-        // Sorting
         $sortBy = $request->get('sort', 'latest');
         switch ($sortBy) {
             case 'deadline':
@@ -288,11 +263,7 @@ class LowonganKerjaController extends Controller
                 $query->latest();
                 break;
         }
-
-        // Pagination
         $lowongans = $query->paginate(9)->withQueryString();
-
-        // Stats (Tetap sama, karena tidak butuh translasi)
         $totalJobs = LowonganKerja::active()->count();
         $kotas = LowonganKerja::active()
             ->select('Kota')

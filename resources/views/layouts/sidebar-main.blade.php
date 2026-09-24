@@ -62,7 +62,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="{{ route('notification-email.index') }}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Pengaturan Form Kontak</p>
                             </a>
@@ -126,7 +126,9 @@
                 {{-- Manajemen Konten --}}
                 @php
                     // Cek apakah salah satu submenu Manajemen Konten sedang active (biar parent juga open)
-                    $menuKontenActive = in_array(request()->segment(1), ['about-us', 'halaman-solusi', 'jenis-laporan']) || request()->segment(2) == 'homepage';
+                    $menuKontenActive =
+                        in_array(request()->segment(1), ['about-us', 'halaman-solusi', 'jenis-laporan']) ||
+                        request()->segment(2) == 'homepage';
                 @endphp
                 <li class="nav-item has-treeview {{ $menuKontenActive ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ $menuKontenActive ? 'active' : '' }}">

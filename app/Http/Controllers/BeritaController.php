@@ -16,49 +16,70 @@ class BeritaController extends Controller
      * Display a listing of the resource (DataTables Server-side).
      */
     public function index(Request $request)
-{
-    if ($request->ajax()) {
-        // ✅ Eager load hanya translation Bahasa Indonesia ('id')
-        $data = Berita::with(['translations' => function ($query) {
-            $query->where('Locale', 'id');
-        }])->latest();
-
-        return DataTables::of($data)
-            ->addIndexColumn()
-            ->addColumn('Judul', function ($row) {
-                // Ambil translation ID, fallback ke model utama jika kosong
-                $trans = $row->translations->first();
-                $judul = $trans ? $trans->Judul : ($row->Judul ?? 'Tanpa Judul');
-
-                return '<strong>' . $judul . '</strong><br>
-                        <small class="text-muted">Slug: ' . $row->Slug . '</small>';
-            })
-            ->addColumn('Thumbnail', function ($row) {
-                if ($row->PathThumbnail) {
-                    return '<img src="' . Storage::url($row->PathThumbnail) . '" style="width:80px;height:50px;object-fit:cover;border-radius:4px;">';
+    {
+        if ($request->ajax()) {
+            $query = Berita::with([
+                'translations' => function ($q) {
+                    $q->where('Locale', 'id');
                 }
-                return '<span class="text-muted">No Image</span>';
-            })
-            ->addColumn('StatusBadge', function ($row) {
-                $colors = ['Draf' => 'secondary', 'Diterbitkan' => 'success', 'Arsip' => 'danger'];
-                $color = $colors[$row->Status] ?? 'secondary';
-                return '<span class="badge badge-' . $color . '">' . $row->Status . '</span>';
-            })
-            ->addColumn('action', function ($row) {
-                $btn = '<div class="btn-group btn-group-sm">';
-                // ✅ Gunakan $row->id untuk edit, lebih aman daripada Slug
-                $btn .= '<a href="' . route('berita.edit', $row->id) . '" class="btn btn-warning" title="Edit"><i class="fa fa-edit"></i></a>';
-                $btn .= '<a href="' . url('news/' . $row->Slug) . '" target="_blank" class="btn btn-info" title="Lihat"><i class="fa fa-eye"></i></a>';
-                $btn .= '<button class="btn btn-danger btn-delete" data-id="' . $row->id . '" title="Hapus"><i class="fa fa-trash"></i></button>';
-                $btn .= '</div>';
-                return $btn;
-            })
-            ->rawColumns(['Judul', 'Thumbnail', 'StatusBadge', 'action'])
-            ->make(true);
-    }
+            ])->latest();
 
-    return view('pages.admin.berita.index');
-}
+            // Filter Kategori (opsional)
+            if ($request->has('kategori') && !empty($request->kategori)) {
+                $query->where('Kategori', $request->kategori);
+            }
+
+            // Filter Status
+            if ($request->has('status') && !empty($request->status)) {
+                $query->where('Status', $request->status);
+            }
+
+            return DataTables::of($query)
+                ->addIndexColumn()
+                ->addColumn('Thumbnail', function ($row) {
+                    if ($row->PathThumbnail) {
+                        return '<img src="' . Storage::url($row->PathThumbnail) . '" class="rounded shadow-sm" style="width:70px; height:50px; object-fit:cover;">';
+                    }
+                    return '<div class="bg-light text-muted d-flex align-items-center justify-content-center rounded" style="width:70px; height:50px; font-size: 11px;">No Image</div>';
+                })
+                ->addColumn('Judul', function ($row) {
+                    $trans = $row->translations->first();
+                    $judul = $trans ? $trans->Judul : ($row->Judul ?? 'Tanpa Judul');
+                    $penulis = $row->Penulis ?? 'Redaksi Humas Jasuindo';
+
+                    return '<div class="font-weight-bold text-dark mb-1" style="font-size:14px; line-height: 1.3;">' . e($judul) . '</div>' .
+                        '<small class="text-muted" style="font-size:12px;">Oleh: ' . e($penulis) . '</small>';
+                })
+                ->addColumn('TanggalPublikasi', function ($row) {
+                    if (!$row->created_at)
+                        return '-';
+                    return '<div class="font-weight-bold text-dark" style="font-size:13px;">' . $row->created_at->translatedFormat('d M Y') . '</div>' .
+                        '<small class="text-muted" style="font-size:11px;">' . $row->created_at->format('H:i') . ' WIB</small>';
+                })
+                ->addColumn('StatusBadge', function ($row) {
+                    // Konfigurasi Badge Pills ala contoh tampilan
+                    if ($row->Status === 'Draf') {
+                        return '<span class="badge badge-pill badge-warning text-dark px-3 py-1" style="background-color: #FFF3CD; border: 1px solid #FFEEBA;"><i class="fa fa-circle mr-1 text-warning" style="font-size:8px;"></i> Draf</span>';
+                    } elseif ($row->Status === 'Diterbitkan' || $row->Status === 'Terbit') {
+                        return '<span class="badge badge-pill badge-success px-3 py-1" style="background-color: #D4EDDA; color: #155724; border: 1px solid #C3E6CB;"><i class="fa fa-circle mr-1 text-success" style="font-size:8px;"></i> Terbit</span>';
+                    }
+                    return '<span class="badge badge-pill badge-secondary px-3 py-1">' . e($row->Status) . '</span>';
+                })
+                ->addColumn('action', function ($row) {
+                    // Tombol aksi clean tanpa background tebal (flat icon look)
+                    $btn = '<div class="d-flex align-items-center justify-content-start" style="gap: 12px;">';
+                    $btn .= '<a href="' . url('news/' . $row->Slug) . '" target="_blank" class="text-secondary" title="Lihat"><i class="far fa-eye" style="font-size:16px;"></i></a>';
+                    $btn .= '<a href="' . route('berita.edit', $row->Slug) . '" class="text-secondary" title="Edit"><i class="far fa-edit" style="font-size:16px;"></i></a>';
+                    $btn .= '<a href="javascript:void(0)" class="text-secondary btn-delete" data-id="' . $row->id . '" title="Hapus"><i class="far fa-trash-alt" style="font-size:16px;"></i></a>';
+                    $btn .= '</div>';
+                    return $btn;
+                })
+                ->rawColumns(['Thumbnail', 'Judul', 'TanggalPublikasi', 'StatusBadge', 'action'])
+                ->make(true);
+        }
+
+        return view('pages.admin.berita.index');
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -138,7 +159,9 @@ class BeritaController extends Controller
      */
     public function edit($id)
     {
+        // dd($id);
         $berita = Berita::where('Slug', $id)->first();
+        // dd($berita);
         $kategoris = KategoriBerita::orderBy('NamaKategori')->get();
         return view('pages.admin.berita.edit', compact('berita', 'kategoris'));
     }
@@ -367,7 +390,7 @@ class BeritaController extends Controller
         return view('frontend.news', compact('news', 'recentNews', 'categories', 'locale'));
     }
 
-    public function newsDetail($locale,$slug)
+    public function newsDetail($locale, $slug)
     {
         $locale = app()->getLocale();
 

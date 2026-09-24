@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\Berita;
 use App\Models\ContactUs;
 use App\Models\LowonganKerja;
@@ -47,6 +48,7 @@ class HomeController extends Controller
             $date = now()->subDays($i)->format('Y-m-d');
             $chartPesan[] = ContactUs::whereDate('created_at', $date)->count();
         }
+        $recentActivity = ActivityLog::latest()->take(10)->get();
 
         return view('home', compact(
             'countArtikel',
@@ -55,7 +57,8 @@ class HomeController extends Controller
             'countAnggota',
             'artikelTerbaru',
             'pesanTerbaru',
-            'chartPesan'
+            'chartPesan',
+            'recentActivity'
         ));
     }
 }
