@@ -45,9 +45,10 @@
 
     <div class="menu-actions">
         <div class="btn-group btn-group-sm">
-            <button type="button" class="btn btn-info btn-edit" data-id="{{ $menu->id }}" title="Edit">
+            <!-- Gunakan tag <a> agar langsung pindah ke halaman edit tanpa AJAX yang error -->
+            <a href="{{ route('menu.edit', $menu->id) }}" class="btn btn-info" title="Edit">
                 <i class="fa fa-edit"></i>
-            </button>
+            </a>
             <button type="button" class="btn btn-danger btn-delete" data-id="{{ $menu->id }}"
                 data-nama="{{ $namaId }}" title="Hapus">
                 <i class="fa fa-trash"></i>
@@ -56,7 +57,6 @@
     </div>
 </div>
 
-<!-- Render children recursively (HAPUS style="display:none;" AGAR BISA DI-DROP) -->
 @if ($hasChildren)
     <div class="submenu">
         @foreach ($menu->children as $child)

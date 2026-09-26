@@ -179,7 +179,7 @@
 
                             <!-- Jenis Tautan -->
                             <div class="form-group">
-                                <label>Jenis Tautan:</label>
+                                <label><strong>Jenis Tautan:</strong></label>
                                 <div class="custom-control custom-radio custom-control-inline">
                                     <input type="radio" id="jenisHalamanCMS" name="JenisLink" class="custom-control-input"
                                         value="page" checked onchange="toggleLinkType()">
@@ -190,36 +190,70 @@
                                         value="custom" onchange="toggleLinkType()">
                                     <label class="custom-control-label" for="jenisURLKustom">URL Kustom</label>
                                 </div>
+                                <!-- ✅ TAMBAHKAN INI: Opsi Route Laravel -->
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" id="jenisRoute" name="JenisLink" class="custom-control-input"
+                                        value="route" onchange="toggleLinkType()">
+                                    <label class="custom-control-label" for="jenisRoute">Route Laravel</label>
+                                </div>
                             </div>
 
                             <!-- Pilih Halaman CMS -->
                             <div class="form-group" id="groupPilihHalaman">
-                                <label for="Url">Pilih Halaman CMS:</label>
-                                <select class="form-control" id="Url" name="Url">
+                                <label for="Url"><strong>Pilih Halaman CMS:</strong></label>
+                                <select class="form-control select2" id="Url" name="Url">
                                     <option value="">-- Pilih Halaman --</option>
                                     <option value="/tentang-kami">Tentang Kami</option>
                                     <option value="/solusi">Solusi & Layanan</option>
                                     <option value="/karir">Karir</option>
                                     <option value="/kontak">Kontak</option>
+                                    <option value="/berita">Berita</option>
                                 </select>
                             </div>
 
                             <!-- URL Kustom -->
                             <div class="form-group" id="groupUrlKustom" style="display:none;">
-                                <label for="UrlKustom">URL Kustom:</label>
+                                <label for="UrlKustom"><strong>URL Kustom:</strong></label>
                                 <input type="text" class="form-control" id="UrlKustom" name="Url"
-                                    placeholder="https://example.com atau /custom-page">
+                                    placeholder="https://example.com atau /custom-page" value="{{ old('Url') }}">
+                            </div>
+
+                            <!-- ✅ TAMBAHKAN INI: Dropdown Pilih Route Laravel -->
+                            <div class="form-group" id="groupRoute" style="display:none;">
+                                <label for="RouteName"><strong>Pilih Route Laravel:</strong></label>
+                                <select class="form-control select2" id="RouteName" name="RouteName">
+                                    <option value="">-- Pilih Route --</option>
+                                    @foreach ($availableRoutes as $route)
+                                        <option value="{{ $route['name'] }}"
+                                            {{ old('RouteName') == $route['name'] ? 'selected' : '' }}>
+                                            {{ $route['name'] }} <small class="text-muted">({{ $route['uri'] }})</small>
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <small class="text-muted">Hanya menampilkan route yang memiliki nama (named route).</small>
                             </div>
 
                             <!-- Parent Menu -->
                             <div class="form-group">
                                 <label for="ParentId">Parent Menu (Hierarki):</label>
-                                <select class="form-control" id="ParentId" name="ParentId">
+                                <select class="form-control select2" id="ParentId" name="ParentId">
                                     <option value="">-- Tingkat Utama (Root) --</option>
                                     @foreach ($parentMenus as $parent)
                                         <option value="{{ $parent->id }}">
-                                            {{ $parent->translate('id')->NamaMenu ?? $parent->NamaMenu }}</option>
+                                            {{ $parent->translate('id')->NamaMenu ?? $parent->NamaMenu }}
+                                        </option>
                                     @endforeach
+                                </select>
+                            </div>
+
+                            <!-- Target Link (BARU) -->
+                            <div class="form-group">
+                                <label for="Target">Target Link:</label>
+                                <select class="form-control" id="Target" name="Target">
+                                    <option value="_self" {{ old('Target', '_self') == '_self' ? 'selected' : '' }}>Tab
+                                        Sama (_self)</option>
+                                    <option value="_blank" {{ old('Target') == '_blank' ? 'selected' : '' }}>Tab Baru
+                                        (_blank)</option>
                                 </select>
                             </div>
 
@@ -235,7 +269,7 @@
                             <div class="form-group">
                                 <label for="Urutan">Urutan:</label>
                                 <input type="number" class="form-control" id="Urutan" name="Urutan"
-                                    placeholder="Auto" value="{{ old('Urutan') }}">
+                                    placeholder="Auto" value="{{ old('Urutan', 0) }}">
                             </div>
 
                             <!-- Status Aktif -->
@@ -301,100 +335,44 @@
     </div>
 @endsection
 @push('scripts')
-    <!-- 1. Load Library SortableJS untuk Drag & Drop -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
     <script>
         $(document).ready(function() {
 
             // ==========================================
-            // 1. FUNGSI UTILITAS FORM
+            // 1. FUNGSI UTILITAS FORM (Untuk Panel Kanan jika ada)
             // ==========================================
             window.toggleLinkType = function() {
                 if ($('#jenisHalamanCMS').is(':checked')) {
                     $('#groupPilihHalaman').show();
                     $('#groupUrlKustom').hide();
-                } else {
+                    $('#groupRoute').hide();
+                } else if ($('#jenisURLKustom').is(':checked')) {
                     $('#groupPilihHalaman').hide();
                     $('#groupUrlKustom').show();
+                    $('#groupRoute').hide();
+                } else if ($('#jenisRoute').is(':checked')) {
+                    $('#groupPilihHalaman').hide();
+                    $('#groupUrlKustom').hide();
+                    $('#groupRoute').show();
                 }
-            }
-
-            window.resetForm = function() {
-                $('#formMenu')[0].reset();
-                $('#menuId').val('');
-                $('#formMethod').val('POST');
-                $('#editModeBadge').text('Baru');
-                $('#formMenu').attr('action', '{{ route('menu.store') }}');
-                toggleLinkType(); // Reset tampilan radio button
             }
 
             window.expandAll = function() {
                 $('.submenu').slideDown(200);
             }
-
             window.collapseAll = function() {
                 $('.submenu').slideUp(200);
             }
-
             // ==========================================
-            // 2. EDIT MENU VIA AJAX
-            // ==========================================
-            window.editMenu = function(id) {
-                // Tampilkan loading pada badge
-                $('#editModeBadge').text('Memuat...');
-
-                $.get('/admin/menu/' + id + '/edit', function(data) {
-                    // Isi form dengan data yang diterima
-                    $('#menuId').val(data.id);
-                    $('#NamaMenuId').val(data.translations.id?.NamaMenu || '');
-                    $('#NamaMenuEn').val(data.translations.en?.NamaMenu || '');
-                    $('#ParentId').val(data.ParentId || '');
-                    $('#Icon').val(data.Icon || '');
-                    $('#Urutan').val(data.Urutan || '');
-
-                    // Handle radio button JenisLink
-                    if (data.JenisLink === 'page') {
-                        $('#jenisHalamanCMS').prop('checked', true);
-                        $('#Url').val(data.Url || '');
-                    } else {
-                        $('#jenisURLKustom').prop('checked', true);
-                        $('#UrlKustom').val(data.Url || '');
-                    }
-                    toggleLinkType();
-
-                    // Handle checkboxes
-                    $('#StatusAktif').prop('checked', data.StatusAktif == 1);
-                    $('#TampilkanDiHeader').prop('checked', data.TampilkanDiHeader == 1);
-                    $('#TampilkanDiFooter').prop('checked', data.TampilkanDiFooter == 1);
-
-                    // Ubah mode form menjadi Edit
-                    $('#formMethod').val('PUT');
-                    $('#editModeBadge').text('Edit');
-                    $('#formMenu').attr('action', '/admin/menu/' + id);
-
-                    // Scroll halus ke panel form
-                    $('html, body').animate({
-                        scrollTop: $('.edit-panel').offset().top - 20
-                    }, 300);
-                }).fail(function() {
-                    Swal.fire('Gagal!', 'Tidak dapat memuat data menu.', 'error');
-                    $('#editModeBadge').text('Baru');
-                });
-            }
-
-            // Delegasi event untuk tombol Edit
-            $('body').on('click', '.btn-edit', function() {
-                var id = $(this).data('id');
-                editMenu(id);
-            });
-
-            // ==========================================
-            // 3. HAPUS MENU VIA AJAX
+            // HAPUS MENU VIA AJAX
             // ==========================================
             $('body').on('click', '.btn-delete', function() {
                 var id = $(this).data('id');
                 var nama = $(this).data('nama');
+                var deleteUrl = "{{ route('menu.destroy', ':id') }}".replace(':id', id);
+
 
                 Swal.fire({
                     title: 'Hapus Menu?',
@@ -416,23 +394,31 @@
                         });
 
                         $.ajax({
-                            url: '{{ url('menu') }}/' + id,
+                            url: deleteUrl,
                             type: 'DELETE',
-                            data: {
-                                _token: '{{ csrf_token() }}'
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
                             },
                             success: function(response) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Berhasil!',
-                                    text: response.message ||
-                                        'Menu berhasil dihapus.',
-                                    timer: 1500,
-                                    showConfirmButton: false
-                                }).then(() => {
-                                    location
-                                        .reload(); // Reload halaman untuk refresh tree
-                                });
+                                if (response.success) {
+                                    Swal.fire({
+                                            icon: 'success',
+                                            title: 'Berhasil!',
+                                            text: response.message,
+                                            timer: 1500,
+                                            showConfirmButton: false
+                                        })
+                                        .then(() => {
+                                            location.reload();
+                                        });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Gagal!',
+                                        text: response.message ||
+                                            'Terjadi kesalahan.'
+                                    });
+                                }
                             },
                             error: function(xhr) {
                                 Swal.fire({
@@ -446,9 +432,8 @@
                     }
                 });
             });
-
             // ==========================================
-            // 4. DRAG & DROP (SORTABLE) LOGIC
+            // 3. DRAG & DROP (SORTABLE) LOGIC
             // ==========================================
             function initSortable() {
                 const containers = document.querySelectorAll('.menu-list-container, .submenu');
@@ -460,20 +445,17 @@
                         handle: '.menu-drag-handle',
                         ghostClass: 'bg-light',
                         onEnd: function(evt) {
-                            // Tampilkan indikator "Menyimpan..."
                             const statusEl = document.querySelector('.float-right small');
                             const originalHtml = statusEl.innerHTML;
                             statusEl.innerHTML =
                                 '<span class="text-warning"><i class="fa fa-spinner fa-spin"></i> Menyimpan urutan...</span>';
 
-                            // Baca struktur DOM baru
                             const newOrder = buildOrderData(document.getElementById(
                                 'menuListContainer'));
 
-                            // Gunakan $.ajax agar lebih stabil daripada fetch
                             $.ajax({
                                 url: '{{ route('menu.update-order') }}',
-                                type: 'POST', // Paksa method POST
+                                type: 'POST',
                                 contentType: 'application/json',
                                 headers: {
                                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -492,18 +474,12 @@
                                     } else {
                                         statusEl.innerHTML =
                                             '<span class="text-danger"><i class="fa fa-times"></i> Gagal menyimpan</span>';
-                                        setTimeout(() => {
-                                            location.reload();
-                                        }, 1500);
                                     }
                                 },
                                 error: function(xhr) {
                                     console.error('Error:', xhr);
                                     statusEl.innerHTML =
                                         '<span class="text-danger"><i class="fa fa-times"></i> Error</span>';
-                                    Swal.fire('Gagal!',
-                                        'Terjadi kesalahan saat menyimpan urutan.',
-                                        'error');
                                 }
                             });
                         }
@@ -511,32 +487,26 @@
                 });
             }
 
-            // Fungsi rekursif untuk membaca struktur HTML menjadi Array JSON
             function buildOrderData(element) {
                 let order = [];
                 let items = $(element).children('.menu-item-row');
-
                 items.each(function() {
                     let id = $(this).data('id');
                     let submenu = $(this).next('.submenu');
                     let children = [];
-
                     if (submenu.length > 0) {
                         children = buildOrderData(submenu);
                     }
-
                     order.push({
                         id: id,
                         children: children
                     });
                 });
-
                 return order;
             }
 
             // Jalankan inisialisasi Sortable
             initSortable();
-
         });
     </script>
 @endpush
