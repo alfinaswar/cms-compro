@@ -6,6 +6,7 @@ use App\Models\Menu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
+use DB;
 
 class MenuController extends Controller
 {
@@ -157,9 +158,12 @@ class MenuController extends Controller
 
     public function edit($id)
     {
+        // dd($id);
+        // Hapus dd($id) ini sebelum production
         $menu = Menu::with('translations')->findOrFail($id);
+
         $parentMenus = Menu::whereNull('ParentId')
-            ->where('id', '!=', $id)
+            ->where('id', '!=', $id) // Mencegah menu menjadi parent dari dirinya sendiri
             ->orderBy('Urutan')
             ->get();
 
@@ -186,6 +190,8 @@ class MenuController extends Controller
             'Icon' => 'nullable|string|max:100',
             'Urutan' => 'nullable|integer',
             'Target' => 'required|in:_self,_blank',
+            // Tambahkan validasi SlugMenu jika ada di form
+            'SlugMenu' => 'nullable|string|max:255|unique:Menu,SlugMenu,' . $menu->id,
         ]);
 
         $translationsData = $request->input('translations', []);
@@ -198,14 +204,23 @@ class MenuController extends Controller
             'RouteName',
             'Icon',
             'Urutan',
-            'Target'
+            'Target',
+            'SlugMenu' // Pastikan ini ada di form jika ingin bisa diedit manual
         ]);
 
         $data['NamaMenu'] = $namaMenuId;
+
+        // Auto-generate SlugMenu jika kosong, berdasarkan NamaMenu baru
+        if (empty($data['SlugMenu'])) {
+            $data['SlugMenu'] = \Illuminate\Support\Str::slug($namaMenuId);
+        }
+
         $data['StatusAktif'] = $request->has('StatusAktif');
         $data['TampilkanDiHeader'] = $request->has('TampilkanDiHeader');
         $data['TampilkanDiFooter'] = $request->has('TampilkanDiFooter');
-        $data['UserUpdate'] = auth()->user()->id;
+
+        // PERBAIKAN: Gunakan ->name karena kolom UserUpdate bertipe string
+        $data['UserUpdate'] = auth()->user()->name;
 
         $menu->update($data);
 
@@ -220,7 +235,11 @@ class MenuController extends Controller
         activity()
             ->performedOn($menu)
             ->causedBy(auth()->user())
-            ->withProperties(['attributes' => $menu->toArray(), 'translations' => $translationsData])
+            ->withProperties([
+                'old' => $menu->getOriginal(), // Opsional: untuk log perubahan
+                'attributes' => $menu->toArray(),
+                'translations' => $translationsData
+            ])
             ->log('Update menu: ' . $namaMenuId);
 
         return redirect()->route('menu.index')->with('success', 'Menu berhasil diperbarui!');
@@ -240,40 +259,40 @@ class MenuController extends Controller
     // Method untuk ubah urutan
     public function updateOrder(Request $request)
     {
-        $menu = Menu::findOrFail($request->id);
+        $request->validate([
+            'order' => 'required|array'
+        ]);
 
-        if ($request->direction === 'up') {
-            $prevMenu = Menu::where('ParentId', $menu->ParentId)
-                ->where('Urutan', '<', $menu->Urutan)
-                ->orderBy('Urutan', 'desc')
-                ->first();
+        $orderData = $request->input('order');
 
-            if ($prevMenu) {
-                $tempOrder = $menu->Urutan;
-                $menu->Urutan = $prevMenu->Urutan;
-                $prevMenu->Urutan = $tempOrder;
+        DB::beginTransaction();
+        try {
+            $orderIndex = 0;
+            $this->processOrder($orderData, null, $orderIndex);
+
+            DB::commit();
+            return response()->json(['success' => true, 'message' => 'Urutan berhasil diperbarui']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => 'Gagal: ' . $e->getMessage()], 500);
+        }
+    }
+
+    private function processOrder($items, $parentId, &$orderIndex)
+    {
+        foreach ($items as $item) {
+            $menu = Menu::find($item['id']);
+
+            if ($menu) {
+                $menu->ParentId = $parentId;
+                $menu->Urutan = $orderIndex++;
                 $menu->save();
-                $prevMenu->save();
-            }
-        } else {
-            $nextMenu = Menu::where('ParentId', $menu->ParentId)
-                ->where('Urutan', '>', $menu->Urutan)
-                ->orderBy('Urutan', 'asc')
-                ->first();
 
-            if ($nextMenu) {
-                $tempOrder = $menu->Urutan;
-                $menu->Urutan = $nextMenu->Urutan;
-                $nextMenu->Urutan = $tempOrder;
-                $menu->save();
-                $nextMenu->save();
+                if (!empty($item['children']) && is_array($item['children'])) {
+                    $this->processOrder($item['children'], $menu->id, $orderIndex);
+                }
             }
         }
-
-        return response()->json([
-            'status' => 200,
-            'message' => 'Urutan berhasil diubah!'
-        ]);
     }
 
     // Get all available routes

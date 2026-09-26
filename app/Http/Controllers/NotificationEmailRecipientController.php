@@ -12,27 +12,63 @@ class NotificationEmailRecipientController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = NotificationEmailRecipient::select('id', 'Email', 'Nama', 'StatusAktif', 'created_at');
+            $locale = app()->getLocale();
+
+            // Urutkan: Parent (NULL) dulu, lalu berdasarkan ParentId, lalu Urutan
+            $data = CustomPage::with([
+                'translations' => function ($q) use ($locale) {
+                    $q->where('Locale', $locale);
+                },
+                'parent'
+            ])
+                ->orderByRaw("CASE WHEN ParentId IS NULL THEN 0 ELSE 1 END")
+                ->orderBy('ParentId')
+                ->orderBy('Urutan', 'asc');
+
+            // Filter Status (jika ada)
+            if ($request->filled('status')) {
+                $data->where('IsPublished', $request->status === 'Diterbitkan' ? 1 : 0);
+            }
 
             return DataTables::of($data)
                 ->addIndexColumn()
-                ->addColumn('Status', function ($row) {
-                    return $row->StatusAktif
-                        ? '<span class="badge badge-success">Aktif</span>'
-                        : '<span class="badge badge-secondary">Nonaktif</span>';
+                ->addColumn('JudulDisplay', function ($row) {
+                    $trans = $row->translations->first();
+                    $nama = $trans ? $trans->Judul : $row->Judul;
+
+                    // Visual Indentation berdasarkan level
+                    $indent = '';
+                    if ($row->level > 0) {
+                        $indent = str_repeat('<span style="display:inline-block; width: 20px; border-left: 1px solid #cbd5e1; margin-right: 4px;"></span>', $row->level);
+                    }
+
+                    // Icon berbeda untuk Parent vs Child
+                    $icon = $row->ParentId
+                        ? '<i class="fa fa-file-alt text-muted mr-2"></i>'
+                        : '<i class="fa fa-folder text-warning mr-2"></i>';
+
+                    return $indent . $icon . '<strong class="text-dark">' . $nama . '</strong>';
+                })
+                ->addColumn('Thumbnail', function ($row) {
+                    return $row->Thumbnail
+                        ? '<img src="' . asset('storage/' . $row->Thumbnail) . '" style="width:60px; height:40px; object-fit:cover; border-radius:6px; border: 1px solid #edf2f7;">'
+                        : '<span class="text-muted" style="font-size:12px;">No Image</span>';
+                })
+                ->addColumn('StatusBadge', function ($row) {
+                    return $row->IsPublished
+                        ? '<span class="badge badge-success" style="font-size: 11px; padding: 4px 8px; border-radius: 4px;">Diterbitkan</span>'
+                        : '<span class="badge badge-secondary" style="font-size: 11px; padding: 4px 8px; border-radius: 4px;">Draf</span>';
                 })
                 ->addColumn('action', function ($row) {
-                    $btn = '<button type="button" class="btn btn-info btn-sm btn-edit" data-id="' . $row->id . '" data-email="' . $row->Email . '" data-nama="' . $row->Nama . '" data-toggle="modal" data-target="#modalEmail">';
-                    $btn .= '<i class="fas fa-edit"></i></button> ';
-                    $btn .= '<button type="button" class="btn btn-danger btn-sm btn-delete" data-id="' . $row->id . '" data-email="' . $row->Email . '">';
-                    $btn .= '<i class="fas fa-trash"></i></button>';
+                    $btn = '<a href="' . route('custom-pages.edit', $row->id) . '" class="btn btn-sm btn-light border" title="Edit" style="color: #2563eb;"><i class="fa fa-edit"></i></a> ';
+                    $btn .= '<button class="btn btn-sm btn-light border btn-delete" data-id="' . $row->id . '" data-nama="' . $row->translate('id')->Judul . '" title="Hapus" style="color: #ef4444;"><i class="fa fa-trash"></i></button>';
                     return $btn;
                 })
-                ->rawColumns(['Status', 'action'])
+                ->rawColumns(['JudulDisplay', 'Thumbnail', 'StatusBadge', 'action'])
                 ->make(true);
         }
 
-        return view('pages.admin.notification-email.index');
+        return view('pages.admin.custom-pages.index');
     }
 
     public function store(Request $request)

@@ -6,6 +6,8 @@ use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\BlogPostController;
 use App\Http\Controllers\ClientLogoController;
 use App\Http\Controllers\ContactUsController;
+use App\Http\Controllers\CustomPageController;
+use App\Http\Controllers\CustomPagesController;
 use App\Http\Controllers\HalamanSolusiController;
 use App\Http\Controllers\HeroSliderController;
 use App\Http\Controllers\HistoryPerusahaanController;
@@ -46,20 +48,15 @@ Route::get('/admin/home', [App\Http\Controllers\HomeController::class, 'index'])
 
 // 3. GROUP ROUTE: Semua route di dalam sini otomatis mendapat prefix /id/ atau /en/
 Route::group(['prefix' => '{locale}', 'where' => ['locale' => 'id|en']], function () {
-
     Route::get('/', [LandingPageController::class, 'index'])->name('frontend.main');
-
     Route::get('/news', [BeritaController::class, 'news'])->name('frontend.news');
     Route::get('/news/{slug}', [BeritaController::class, 'newsDetail'])->name('frontend.detail');
-
+    Route::get('/halaman/{slug}', [CustomPagesController::class, 'show'])->name('frontend.halaman-custom');
     Route::get('/laporan-keuangan', [JenisLaporanKeuanganController::class, 'laporanKeuanganFe'])->name('frontend.laporan-keuangan');
-
     Route::get('/about-us', [AboutUsController::class, 'show'])->name('frontend.about-us');
-
     Route::get('/career', [LowonganKerjaController::class, 'career'])->name('frontend.career');
     Route::get('/career/{id}-{slug}', [LowonganKerjaController::class, 'careerDetail'])->name('frontend.career.detail');
     Route::post('/career/{id}/apply', [LowonganKerjaController::class, 'apply'])->name('frontend.career.apply');
-
     Route::get('/contact-us', [ContactUsController::class, 'index'])->name('frontend.contact.index');
     Route::post('/store-contact-us', [ContactUsController::class, 'store'])->name('frontend.contact.store');
 });
@@ -179,7 +176,14 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         Route::post('/berita/kategori/store-ajax', [BeritaController::class, 'storeKategoriAjax'])
             ->name('berita.store-ajax');
     });
-
+    Route::prefix('buat-halaman')->group(function () {
+        Route::get('/custom-pages', [CustomPagesController::class, 'index'])->name('custom-pages.index');
+        Route::get('/custom-pages/create', [CustomPagesController::class, 'create'])->name('custom-pages.create');
+        Route::post('/custom-pages', [CustomPagesController::class, 'store'])->name('custom-pages.store');
+        Route::get('/custom-pages/{id}/edit', [CustomPagesController::class, 'edit'])->name('custom-pages.edit');
+        Route::put('/custom-pages/{id}', [CustomPagesController::class, 'update'])->name('custom-pages.update');
+        Route::delete('/custom-pages/{id}', [CustomPagesController::class, 'destroy'])->name('custom-pages.destroy');
+    });
     // Menu
     Route::prefix('menu')->group(function () {
         Route::get('/', [MenuController::class, 'index'])->name('menu.index');
@@ -188,7 +192,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         Route::get('/{id}/edit', [MenuController::class, 'edit'])->name('menu.edit');
         Route::put('/{id}', [MenuController::class, 'update'])->name('menu.update');
         Route::delete('/{id}', [MenuController::class, 'destroy'])->name('menu.destroy');
-        Route::post('/update-order', [MenuController::class, 'updateOrder'])->name('menu.update-order');
+        Route::POST('/update-order', [MenuController::class, 'updateOrder'])->name('menu.update-order');
     });
     Route::prefix('data-master')->group(function () {
         // Investor Relation Section

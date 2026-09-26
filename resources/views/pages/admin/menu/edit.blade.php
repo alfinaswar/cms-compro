@@ -1,347 +1,413 @@
 @extends('layouts.app')
 
 @section('content')
+    @push('styles')
+        <style>
+            /* Styling konsisten dengan halaman lain */
+            .card-modern {
+                background: #ffffff;
+                border-radius: 12px;
+                border: 1px solid #eef2f5;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+            }
+
+            .card-header-modern {
+                padding: 16px 20px;
+                border-bottom: 1px solid #edf2f7;
+                font-weight: 600;
+                font-size: 15px;
+                color: #1a202c;
+                background: #fcfcfd;
+                border-radius: 12px 12px 0 0;
+            }
+
+            .form-control-custom {
+                border-radius: 8px;
+                border: 1px solid #e2e8f0;
+                height: 42px;
+                font-size: 13px;
+                color: #4a5568;
+            }
+
+            .form-control-custom:focus {
+                border-color: #2563eb;
+                box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            }
+
+            .nav-tabs .nav-link {
+                border: none;
+                color: #718096;
+                font-weight: 600;
+                font-size: 13px;
+                padding: 12px 20px;
+                border-bottom: 2px solid transparent;
+            }
+
+            .nav-tabs .nav-link.active {
+                color: #2563eb;
+                border-bottom: 2px solid #2563eb;
+                background: transparent;
+            }
+
+            .btn-custom-primary {
+                background-color: #2563eb;
+                border-color: #2563eb;
+                color: white;
+                border-radius: 8px;
+                font-weight: 500;
+                font-size: 13px;
+                padding: 10px 20px;
+            }
+
+            .btn-custom-primary:hover {
+                background-color: #1d4ed8;
+                color: white;
+            }
+
+            .btn-custom-secondary {
+                background-color: #ffffff;
+                border: 1px solid #e2e8f0;
+                color: #4a5568;
+                border-radius: 8px;
+                font-weight: 500;
+                font-size: 13px;
+                padding: 10px 20px;
+            }
+
+            .btn-custom-secondary:hover {
+                background-color: #f7fafc;
+                color: #2d3748;
+            }
+
+            .info-box {
+                background: #f0f9ff;
+                border-left: 4px solid #2563eb;
+                padding: 12px 16px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+                font-size: 13px;
+                color: #1e40af;
+            }
+        </style>
+    @endpush
+
     <section class="content-header">
         <div class="container-fluid">
-            <div class="row mb-2">
+            <div class="row mb-2 align-items-center">
                 <div class="col-sm-6">
-                    <h1>Edit Menu</h1>
+                    <h1 class="m-0 font-weight-bold" style="font-size: 20px; color: #1a202c;">
+                        <i class="fa fa-edit mr-2 text-primary"></i>Edit Menu
+                    </h1>
                 </div>
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('menu.index') }}">Menu</a></li>
-                        <li class="breadcrumb-item active">Edit</li>
-                    </ol>
+                <div class="col-sm-6 text-right">
+                    <a class="btn btn-custom-secondary" href="{{ route('menu.index') }}">
+                        <i class="fa fa-arrow-left mr-2"></i> Kembali ke Daftar Menu
+                    </a>
                 </div>
             </div>
         </div>
     </section>
 
     <section class="content">
-        <div class="row justify-content-center">
-            <div class="col-lg-12">
-                <form action="{{ route('menu.update', $menu->id) }}" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <div class="card card-outline card-warning shadow-sm">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fa fa-edit mr-2"></i> Edit Menu: <strong>{{ $menu->NamaMenu }}</strong>
-                            </h3>
-                        </div>
-                        <div class="card-body">
+        <div class="container-fluid">
+            <form action="{{ route('menu.update', $menu->id) }}" method="POST">
+                @csrf
+                @method('PUT')
 
-                            <!-- ========================================== -->
-                            <!-- TABS BAHASA (ID & EN) -->
-                            <!-- ========================================== -->
-                            <ul class="nav nav-tabs mb-4" id="langTabs" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link active" id="tab-id-tab" data-toggle="tab" href="#tab-id" role="tab">
-                                        🇮🇩 Bahasa Indonesia <span class="text-danger">*</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" id="tab-en-tab" data-toggle="tab" href="#tab-en" role="tab">
-                                        🇬🇧 English
-                                    </a>
-                                </li>
-                            </ul>
+                <div class="row">
+                    <!-- KOLOM KIRI: TRANSLATION & LINK -->
+                    <div class="col-lg-8">
+                        <div class="card-modern mb-4">
+                            <div class="card-header-modern">
+                                <i class="fa fa-language text-primary mr-2"></i> Nama Menu (Multi-Bahasa)
+                            </div>
+                            <div class="card-body p-4">
+                                <ul class="nav nav-tabs mb-4" id="langTabs" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="tab-id-tab" data-toggle="tab" href="#tab-id"
+                                            role="tab">
+                                            🇮🇩 Bahasa Indonesia <span class="text-danger">*</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="tab-en-tab" data-toggle="tab" href="#tab-en" role="tab">
+                                            🇬🇧 English
+                                        </a>
+                                    </li>
+                                </ul>
 
-                            <div class="tab-content" id="langTabsContent">
-                                <!-- TAB INDONESIA -->
-                                <div class="tab-pane fade show active" id="tab-id" role="tabpanel">
-                                    <div class="form-group">
-                                        <label><strong>Nama Menu</strong> <span class="text-danger">*</span></label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text"><i class="fa fa-tag"></i></span>
-                                            </div>
+                                <div class="tab-content" id="langTabsContent">
+                                    <!-- TAB INDONESIA -->
+                                    <div class="tab-pane fade show active" id="tab-id" role="tabpanel">
+                                        <div class="form-group mb-3">
+                                            <label class="font-weight-bold text-dark mb-2">Nama Menu <span
+                                                    class="text-danger">*</span></label>
                                             <input type="text" name="translations[id][NamaMenu]"
-                                                class="form-control @error('translations.id.NamaMenu') is-invalid @enderror"
-                                                placeholder="Contoh: Tentang Kami"
-                                                value="{{ old('translations.id.NamaMenu', $menu->translate('id')->NamaMenu ?: $menu->NamaMenu) }}"
-                                                required>
+                                                class="form-control form-control-custom @error('translations.id.NamaMenu') is-invalid @enderror"
+                                                value="{{ old('translations.id.NamaMenu', $menu->translate('id')->NamaMenu) }}"
+                                                placeholder="Contoh: Hubungan Investor" required>
+                                            @error('translations.id.NamaMenu')
+                                                <span class="invalid-feedback d-block">{{ $message }}</span>
+                                            @enderror
                                         </div>
-                                        @error('translations.id.NamaMenu')
-                                            <span class="invalid-feedback d-block">{{ $message }}</span>
-                                        @enderror
                                     </div>
-                                </div>
 
-                                <!-- TAB ENGLISH -->
-                                <div class="tab-pane fade" id="tab-en" role="tabpanel">
-                                    <div class="form-group">
-                                        <label><strong>Menu Name</strong></label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text"><i class="fa fa-tag"></i></span>
-                                            </div>
+                                    <!-- TAB ENGLISH -->
+                                    <div class="tab-pane fade" id="tab-en" role="tabpanel">
+                                        <div class="form-group mb-3">
+                                            <label class="font-weight-bold text-dark mb-2">Menu Name</label>
                                             <input type="text" name="translations[en][NamaMenu]"
-                                                class="form-control @error('translations.en.NamaMenu') is-invalid @enderror"
-                                                placeholder="Example: About Us"
-                                                value="{{ old('translations.en.NamaMenu', $menu->translate('en')->NamaMenu) }}">
+                                                class="form-control form-control-custom @error('translations.en.NamaMenu') is-invalid @enderror"
+                                                value="{{ old('translations.en.NamaMenu', $menu->translate('en')->NamaMenu) }}"
+                                                placeholder="e.g. Investor Relations">
+                                            @error('translations.en.NamaMenu')
+                                                <span class="invalid-feedback d-block">{{ $message }}</span>
+                                            @enderror
                                         </div>
-                                        @error('translations.en.NamaMenu')
-                                            <span class="invalid-feedback d-block">{{ $message }}</span>
-                                        @enderror
-                                        <small class="text-muted">Kosongkan jika tidak perlu versi bahasa Inggris.</small>
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <hr class="my-4">
-                            <h6><strong><i class="fa fa-cog mr-2"></i>Data Umum (Tidak Diterjemahkan)</strong></h6>
-
-                            <!-- ========================================== -->
-                            <!-- PARENT & ICON -->
-                            <!-- ========================================== -->
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="ParentId"><strong>Parent Menu</strong></label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text"><i class="fa fa-sitemap"></i></span>
-                                            </div>
-                                            <select name="ParentId" id="ParentId"
-                                                class="form-control select2 @error('ParentId') is-invalid @enderror">
-                                                <option value="">-- Menu Utama (Tidak Ada Parent) --</option>
-                                                @foreach ($parentMenus as $parent)
-                                                    <option value="{{ $parent->id }}"
-                                                        {{ old('ParentId', $menu->ParentId) == $parent->id ? 'selected' : '' }}>
-                                                        {{ $parent->NamaMenu }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        @error('ParentId')
-                                            <span class="invalid-feedback d-block">{{ $message }}</span>
-                                        @enderror
+                        <!-- PENGATURAN TAUTAN -->
+                        <div class="card-modern mb-4">
+                            <div class="card-header-modern">
+                                <i class="fa fa-link text-success mr-2"></i> Pengaturan Tautan
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="form-group mb-3">
+                                    <label class="font-weight-bold text-dark mb-2">Jenis Tautan <span
+                                            class="text-danger">*</span></label>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="jenisHalamanCMS" name="JenisLink"
+                                            class="custom-control-input" value="page"
+                                            {{ old('JenisLink', $menu->JenisLink) == 'page' ? 'checked' : '' }}
+                                            onchange="toggleLinkType()">
+                                        <label class="custom-control-label" for="jenisHalamanCMS">Halaman CMS</label>
                                     </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="jenisURLKustom" name="JenisLink"
+                                            class="custom-control-input" value="custom"
+                                            {{ old('JenisLink', $menu->JenisLink) == 'custom' ? 'checked' : '' }}
+                                            onchange="toggleLinkType()">
+                                        <label class="custom-control-label" for="jenisURLKustom">URL Kustom</label>
+                                    </div>
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" id="jenisRoute" name="JenisLink" class="custom-control-input"
+                                            value="route"
+                                            {{ old('JenisLink', $menu->JenisLink) == 'route' ? 'checked' : '' }}
+                                            onchange="toggleLinkType()">
+                                        <label class="custom-control-label" for="jenisRoute">Route Laravel</label>
+                                    </div>
+                                    @error('JenisLink')
+                                        <span class="invalid-feedback d-block">{{ $message }}</span>
+                                    @enderror
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="Icon"><strong>Icon (Optional)</strong></label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text"><i class="fa fa-icons"></i></span>
-                                            </div>
-                                            <input type="text" name="Icon" id="Icon"
-                                                class="form-control @error('Icon') is-invalid @enderror"
-                                                placeholder="fa fa-home"
-                                                value="{{ old('Icon', $menu->Icon) }}">
-                                        </div>
+
+                                <!-- Pilih Halaman CMS -->
+                                <div class="form-group mb-3" id="groupPilihHalaman"
+                                    style="display: {{ old('JenisLink', $menu->JenisLink) == 'page' ? 'block' : 'none' }};">
+                                    <label class="font-weight-bold text-dark mb-2">Pilih Halaman CMS:</label>
+                                    <select class="form-control form-control-custom @error('Url') is-invalid @enderror"
+                                        id="Url" name="Url">
+                                        <option value="">-- Pilih Halaman --</option>
+                                        <option value="/tentang-kami"
+                                            {{ old('Url', $menu->Url) == '/tentang-kami' ? 'selected' : '' }}>Tentang Kami
+                                        </option>
+                                        <option value="/solusi"
+                                            {{ old('Url', $menu->Url) == '/solusi' ? 'selected' : '' }}>Solusi & Layanan
+                                        </option>
+                                        <option value="/karir" {{ old('Url', $menu->Url) == '/karir' ? 'selected' : '' }}>
+                                            Karir</option>
+                                        <option value="/kontak"
+                                            {{ old('Url', $menu->Url) == '/kontak' ? 'selected' : '' }}>Kontak</option>
+                                        <option value="/berita"
+                                            {{ old('Url', $menu->Url) == '/berita' ? 'selected' : '' }}>Berita & Artikel
+                                        </option>
+                                    </select>
+                                    @error('Url')
+                                        <span class="invalid-feedback d-block">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <!-- URL Kustom -->
+                                <div class="form-group mb-3" id="groupUrlKustom"
+                                    style="display: {{ old('JenisLink', $menu->JenisLink) == 'custom' ? 'block' : 'none' }};">
+                                    <label class="font-weight-bold text-dark mb-2">URL Kustom:</label>
+                                    <input type="text"
+                                        class="form-control form-control-custom @error('Url') is-invalid @enderror"
+                                        id="UrlKustom" name="Url" value="{{ old('Url', $menu->Url) }}"
+                                        placeholder="https://example.com atau /custom-page">
+                                    @error('Url')
+                                        <span class="invalid-feedback d-block">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <!-- Route Laravel -->
+                                <div class="form-group mb-0" id="groupRoute"
+                                    style="display: {{ old('JenisLink', $menu->JenisLink) == 'route' ? 'block' : 'none' }};">
+                                    <label class="font-weight-bold text-dark mb-2">Route Name:</label>
+                                    <select
+                                        class="form-control form-control-custom @error('RouteName') is-invalid @enderror"
+                                        id="RouteName" name="RouteName">
+                                        <option value="">-- Pilih Route --</option>
+                                        @foreach ($availableRoutes as $route)
+                                            <option value="{{ $route['name'] }}"
+                                                {{ old('RouteName', $menu->RouteName) == $route['name'] ? 'selected' : '' }}>
+                                                {{ $route['name'] }} ({{ $route['uri'] }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('RouteName')
+                                        <span class="invalid-feedback d-block">{{ $message }}</span>
+                                    @enderror
+                                    <small class="text-muted" style="font-size: 12px;">Pilih route Laravel yang sudah
+                                        terdaftar.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- KOLOM KANAN: PENGATURAN LAINNYA -->
+                    <div class="col-lg-4">
+                        <!-- HIRARKI & URUTAN -->
+                        <div class="card-modern mb-4">
+                            <div class="card-header-modern">
+                                <i class="fa fa-sitemap text-warning mr-2"></i> Hirarki & Urutan
+                            </div>
+                            <div class="card-body p-4">
+                                <div class="form-group mb-3">
+                                    <label class="font-weight-bold text-dark mb-2">Parent Menu</label>
+                                    <select
+                                        class="form-control form-control-custom @error('ParentId') is-invalid @enderror"
+                                        id="ParentId" name="ParentId">
+                                        <option value="">-- Tingkat Utama (Root) --</option>
+                                        @foreach ($parentMenus as $parent)
+                                            <option value="{{ $parent->id }}"
+                                                {{ old('ParentId', $menu->ParentId) == $parent->id ? 'selected' : '' }}>
+                                                {{ $parent->translate('id')->NamaMenu ?? $parent->NamaMenu }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('ParentId')
+                                        <span class="invalid-feedback d-block">{{ $message }}</span>
+                                    @enderror
+                                    <small class="text-muted" style="font-size: 12px;">Pilih parent jika ini adalah
+                                        sub-menu.</small>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label class="font-weight-bold text-dark mb-2">Urutan Tampil</label>
+                                    <input type="number"
+                                        class="form-control form-control-custom @error('Urutan') is-invalid @enderror"
+                                        id="Urutan" name="Urutan" value="{{ old('Urutan', $menu->Urutan) }}"
+                                        min="0" placeholder="0 = paling atas">
+                                    @error('Urutan')
+                                        <span class="invalid-feedback d-block">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group mb-0">
+                                    <label class="font-weight-bold text-dark mb-2">Icon (Optional)</label>
+                                    <div class="input-group">
+                                        <input type="text"
+                                            class="form-control form-control-custom @error('Icon') is-invalid @enderror"
+                                            id="Icon" name="Icon" value="{{ old('Icon', $menu->Icon) }}"
+                                            placeholder="fa fa-home">
                                         @error('Icon')
                                             <span class="invalid-feedback d-block">{{ $message }}</span>
                                         @enderror
-                                        <small class="text-muted">Contoh: fa fa-home, fab fa-facebook</small>
                                     </div>
+                                    <small class="text-muted" style="font-size: 12px;">Contoh: fa fa-home, fa
+                                        fa-users</small>
                                 </div>
                             </div>
+                        </div>
 
-                            <!-- ========================================== -->
-                            <!-- JENIS LINK, URL/ROUTE, TARGET -->
-                            <!-- ========================================== -->
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="JenisLink"><strong>Jenis Link</strong> <span class="text-danger">*</span></label>
-                                        <select name="JenisLink" id="JenisLink"
-                                            class="form-control @error('JenisLink') is-invalid @enderror" required>
-                                            <option value="custom" {{ old('JenisLink', $menu->JenisLink) == 'custom' ? 'selected' : '' }}>
-                                                Custom URL</option>
-                                            <option value="route" {{ old('JenisLink', $menu->JenisLink) == 'route' ? 'selected' : '' }}>
-                                                Route Laravel</option>
-                                            <option value="page" {{ old('JenisLink', $menu->JenisLink) == 'page' ? 'selected' : '' }}>
-                                                Halaman Internal</option>
-                                        </select>
-                                        @error('JenisLink')
-                                            <span class="invalid-feedback d-block">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group" id="groupUrl">
-                                        <label for="Url"><strong>URL</strong></label>
-                                        <input type="text" name="Url" id="Url"
-                                            class="form-control @error('Url') is-invalid @enderror"
-                                            placeholder="https://example.com atau /about"
-                                            value="{{ old('Url', $menu->Url) }}">
-                                        @error('Url')
-                                            <span class="invalid-feedback d-block">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                    <div class="form-group" id="groupRoute" style="display: none;">
-                                        <label for="RouteName"><strong>Route Name</strong></label>
-                                        <select name="RouteName" id="RouteName"
-                                            class="form-control select2-search @error('RouteName') is-invalid @enderror">
-                                            <option value="">-- Pilih Route --</option>
-                                            @foreach ($availableRoutes as $route)
-                                                <option value="{{ $route['name'] }}"
-                                                    {{ old('RouteName', $menu->RouteName) == $route['name'] ? 'selected' : '' }}>
-                                                    {{ $route['name'] }} ({{ $route['uri'] }})
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        @error('RouteName')
-                                            <span class="invalid-feedback d-block">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="Target"><strong>Target</strong></label>
-                                        <select name="Target" id="Target"
-                                            class="form-control @error('Target') is-invalid @enderror">
-                                            <option value="_self" {{ old('Target', $menu->Target) == '_self' ? 'selected' : '' }}>
-                                                Tab Sama (_self)</option>
-                                            <option value="_blank" {{ old('Target', $menu->Target) == '_blank' ? 'selected' : '' }}>
-                                                Tab Baru (_blank)</option>
-                                        </select>
-                                        @error('Target')
-                                            <span class="invalid-feedback d-block">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                </div>
+                        <!-- PENGATURAN TAMPILAN -->
+                        <div class="card-modern mb-4">
+                            <div class="card-header-modern">
+                                <i class="fa fa-eye text-info mr-2"></i> Pengaturan Tampilan
                             </div>
-
-                            <!-- ========================================== -->
-                            <!-- URUTAN -->
-                            <!-- ========================================== -->
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="Urutan"><strong>Urutan Tampil</strong></label>
-                                        <input type="number" name="Urutan" id="Urutan"
-                                            class="form-control @error('Urutan') is-invalid @enderror"
-                                            placeholder="Kosongkan untuk auto"
-                                            value="{{ old('Urutan', $menu->Urutan) }}" min="0">
-                                        @error('Urutan')
-                                            <span class="invalid-feedback d-block">{{ $message }}</span>
-                                        @enderror
-                                        <small class="text-muted">Angka lebih kecil tampil lebih dulu.</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label><strong>Slug URL</strong></label>
-                                        <input type="text" class="form-control" value="{{ $menu->SlugMenu }}" readonly>
-                                        <small class="text-muted">Slug otomatis dari nama menu saat pertama dibuat.</small>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <hr>
-                            <h6><strong><i class="fa fa-eye mr-2"></i>Pengaturan Tampilan</strong></h6>
-
-                            <!-- ========================================== -->
-                            <!-- SWITCH TOGGLE -->
-                            <!-- ========================================== -->
-                            <div class="row">
-                                <div class="col-md-4">
+                            <div class="card-body p-4">
+                                <div class="form-group mb-3">
                                     <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input" id="StatusAktif"
                                             name="StatusAktif" value="1"
                                             {{ old('StatusAktif', $menu->StatusAktif) ? 'checked' : '' }}>
                                         <label class="custom-control-label" for="StatusAktif">Status Aktif</label>
                                     </div>
-                                    <small class="text-muted d-block ml-4">Menu dapat diakses user.</small>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="form-group mb-3">
                                     <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input" id="TampilkanDiHeader"
                                             name="TampilkanDiHeader" value="1"
                                             {{ old('TampilkanDiHeader', $menu->TampilkanDiHeader) ? 'checked' : '' }}>
-                                        <label class="custom-control-label" for="TampilkanDiHeader">Tampilkan di Header</label>
+                                        <label class="custom-control-label" for="TampilkanDiHeader">Tampilkan di
+                                            Header</label>
                                     </div>
-                                    <small class="text-muted d-block ml-4">Muncul di navigasi utama website.</small>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="form-group mb-0">
                                     <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input" id="TampilkanDiFooter"
                                             name="TampilkanDiFooter" value="1"
                                             {{ old('TampilkanDiFooter', $menu->TampilkanDiFooter) ? 'checked' : '' }}>
-                                        <label class="custom-control-label" for="TampilkanDiFooter">Tampilkan di Footer</label>
+                                        <label class="custom-control-label" for="TampilkanDiFooter">Tampilkan di
+                                            Footer</label>
                                     </div>
-                                    <small class="text-muted d-block ml-4">Muncul di bagian bawah website.</small>
                                 </div>
                             </div>
-
-                            <!-- ========================================== -->
-                            <!-- AUDIT INFO -->
-                            <!-- ========================================== -->
-                            @if($menu->UserCreate || $menu->UserUpdate)
-                                <div class="alert alert-info mt-4 mb-0 d-flex justify-content-between">
-                                    <small><i class="fa fa-user mr-1"></i> Dibuat oleh: <strong>{{ $menu->UserCreate ?? '-' }}</strong></small>
-                                    @if($menu->UserUpdate)
-                                        <small><i class="fa fa-edit mr-1"></i> Update terakhir: <strong>{{ $menu->UserUpdate }}</strong></small>
-                                    @endif
-                                </div>
-                            @endif
-
                         </div>
-                        <div class="card-footer d-flex justify-content-end">
-                            <a href="{{ route('menu.index') }}" class="btn btn-secondary mr-2">
+
+                        <!-- INFO BOX -->
+                        <div class="info-box">
+                            <i class="fa fa-info-circle mr-1"></i>
+                            <strong>Slug:</strong> <code>{{ $menu->SlugMenu }}</code><br>
+                            <small>Slug dibuat otomatis dan tidak dapat diubah.</small>
+                        </div>
+
+                        <!-- ACTION BUTTONS -->
+                        <div class="d-flex">
+                            <a href="{{ route('menu.index') }}" class="btn btn-custom-secondary flex-fill mr-2">
                                 <i class="fa fa-times mr-1"></i> Batal
                             </a>
-                            <button type="submit" class="btn btn-warning">
+                            <button type="submit" class="btn btn-custom-primary flex-fill">
                                 <i class="fa fa-save mr-1"></i> Simpan Perubahan
                             </button>
                         </div>
-
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     </section>
 @endsection
 
 @push('scripts')
-    <!-- Select2 -->
-    <script src="{{ asset('assets/plugins/select2/js/select2.full.min.js') }}"></script>
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script>
         $(document).ready(function() {
-            // ========== SELECT2 ==========
-            $('.select2, .select2-search').select2({
-                theme: 'bootstrap4',
-                width: '100%',
-                placeholder: '-- Pilih --',
-                allowClear: true
-            });
+            // Toggle jenis tautan
+            function toggleLinkType() {
+                var jenis = $('input[name="JenisLink"]:checked').val();
 
-            // ========== TOGGLE JENIS LINK ==========
-            function toggleJenisLink() {
-                var jenis = $('#JenisLink').val();
-                if (jenis === 'route') {
-                    $('#groupUrl').hide();
+                $('#groupPilihHalaman').hide();
+                $('#groupUrlKustom').hide();
+                $('#groupRoute').hide();
+
+                if (jenis === 'page') {
+                    $('#groupPilihHalaman').show();
+                } else if (jenis === 'custom') {
+                    $('#groupUrlKustom').show();
+                } else if (jenis === 'route') {
                     $('#groupRoute').show();
-                } else {
-                    $('#groupUrl').show();
-                    $('#groupRoute').hide();
                 }
             }
 
-            $('#JenisLink').change(toggleJenisLink);
-            toggleJenisLink(); // Trigger saat load untuk set kondisi awal sesuai data existing
+            // Jalankan saat halaman dimuat
+            toggleLinkType();
 
-            // ========== AUTO SWITCH TAB JIKA ADA ERROR DI TAB EN ==========
-            @if($errors->has('translations.en.*'))
+            // Auto-switch ke tab EN jika ada error di sana
+            @if ($errors->has('translations.en.*'))
                 $('#tab-en-tab').tab('show');
-            @endif
-
-            // ========== NOTIFIKASI SUKSES ==========
-            @if(session('success'))
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: '{{ session('success') }}',
-                    timer: 1500,
-                    showConfirmButton: false
-                });
             @endif
         });
     </script>

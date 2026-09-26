@@ -301,90 +301,242 @@
     </div>
 @endsection
 @push('scripts')
+    <!-- 1. Load Library SortableJS untuk Drag & Drop -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
     <script>
-        function toggleLinkType() {
-            if ($('#jenisHalamanCMS').is(':checked')) {
-                $('#groupPilihHalaman').show();
-                $('#groupUrlKustom').hide();
-            } else {
-                $('#groupPilihHalaman').hide();
-                $('#groupUrlKustom').show();
+        $(document).ready(function() {
+
+            // ==========================================
+            // 1. FUNGSI UTILITAS FORM
+            // ==========================================
+            window.toggleLinkType = function() {
+                if ($('#jenisHalamanCMS').is(':checked')) {
+                    $('#groupPilihHalaman').show();
+                    $('#groupUrlKustom').hide();
+                } else {
+                    $('#groupPilihHalaman').hide();
+                    $('#groupUrlKustom').show();
+                }
             }
-        }
 
-        function resetForm() {
-            $('#formMenu')[0].reset();
-            $('#menuId').val('');
-            $('#formMethod').val('POST');
-            $('#editModeBadge').text('Baru');
-            $('#formMenu').attr('action', '{{ route('menu.store') }}');
-        }
+            window.resetForm = function() {
+                $('#formMenu')[0].reset();
+                $('#menuId').val('');
+                $('#formMethod').val('POST');
+                $('#editModeBadge').text('Baru');
+                $('#formMenu').attr('action', '{{ route('menu.store') }}');
+                toggleLinkType(); // Reset tampilan radio button
+            }
 
-        function editMenu(id) {
-            // Load data menu via AJAX dan isi form
-            $.get('/menu/' + id + '/edit', function(data) {
-                // Isi form dengan data
-                $('#menuId').val(data.id);
-                $('#NamaMenuId').val(data.translations.id?.NamaMenu || '');
-                $('#NamaMenuEn').val(data.translations.en?.NamaMenu || '');
-                $('#ParentId').val(data.ParentId || '');
-                $('#Icon').val(data.Icon || '');
-                $('#Urutan').val(data.Urutan || '');
-                $('#StatusAktif').prop('checked', data.StatusAktif);
-                $('#TampilkanDiHeader').prop('checked', data.TampilkanDiHeader);
-                $('#TampilkanDiFooter').prop('checked', data.TampilkanDiFooter);
+            window.expandAll = function() {
+                $('.submenu').slideDown(200);
+            }
 
-                $('#formMethod').val('PUT');
-                $('#editModeBadge').text('Edit');
-                $('#formMenu').attr('action', '/menu/' + id);
+            window.collapseAll = function() {
+                $('.submenu').slideUp(200);
+            }
 
-                // Scroll ke form
-                $('html, body').animate({
-                    scrollTop: $('.edit-panel').offset().top - 20
-                }, 300);
+            // ==========================================
+            // 2. EDIT MENU VIA AJAX
+            // ==========================================
+            window.editMenu = function(id) {
+                // Tampilkan loading pada badge
+                $('#editModeBadge').text('Memuat...');
+
+                $.get('/admin/menu/' + id + '/edit', function(data) {
+                    // Isi form dengan data yang diterima
+                    $('#menuId').val(data.id);
+                    $('#NamaMenuId').val(data.translations.id?.NamaMenu || '');
+                    $('#NamaMenuEn').val(data.translations.en?.NamaMenu || '');
+                    $('#ParentId').val(data.ParentId || '');
+                    $('#Icon').val(data.Icon || '');
+                    $('#Urutan').val(data.Urutan || '');
+
+                    // Handle radio button JenisLink
+                    if (data.JenisLink === 'page') {
+                        $('#jenisHalamanCMS').prop('checked', true);
+                        $('#Url').val(data.Url || '');
+                    } else {
+                        $('#jenisURLKustom').prop('checked', true);
+                        $('#UrlKustom').val(data.Url || '');
+                    }
+                    toggleLinkType();
+
+                    // Handle checkboxes
+                    $('#StatusAktif').prop('checked', data.StatusAktif == 1);
+                    $('#TampilkanDiHeader').prop('checked', data.TampilkanDiHeader == 1);
+                    $('#TampilkanDiFooter').prop('checked', data.TampilkanDiFooter == 1);
+
+                    // Ubah mode form menjadi Edit
+                    $('#formMethod').val('PUT');
+                    $('#editModeBadge').text('Edit');
+                    $('#formMenu').attr('action', '/admin/menu/' + id);
+
+                    // Scroll halus ke panel form
+                    $('html, body').animate({
+                        scrollTop: $('.edit-panel').offset().top - 20
+                    }, 300);
+                }).fail(function() {
+                    Swal.fire('Gagal!', 'Tidak dapat memuat data menu.', 'error');
+                    $('#editModeBadge').text('Baru');
+                });
+            }
+
+            // Delegasi event untuk tombol Edit
+            $('body').on('click', '.btn-edit', function() {
+                var id = $(this).data('id');
+                editMenu(id);
             });
-        }
 
-        function expandAll() {
-            $('.submenu').slideDown();
-        }
+            // ==========================================
+            // 3. HAPUS MENU VIA AJAX
+            // ==========================================
+            $('body').on('click', '.btn-delete', function() {
+                var id = $(this).data('id');
+                var nama = $(this).data('nama');
 
-        function collapseAll() {
-            $('.submenu').slideUp();
-        }
+                Swal.fire({
+                    title: 'Hapus Menu?',
+                    html: `Apakah Anda yakin ingin menghapus menu <strong>${nama}</strong>?<br><small class="text-muted">Semua sub-menu di bawahnya juga akan ikut terhapus.</small>`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true,
+                    confirmButtonColor: '#dc3545'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Menghapus...',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
 
-        // Delete handler
-        $('body').on('click', '.btn-delete', function() {
-            var id = $(this).data('id');
-            var nama = $(this).data('nama');
+                        $.ajax({
+                            url: '{{ url('menu') }}/' + id,
+                            type: 'DELETE',
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil!',
+                                    text: response.message ||
+                                        'Menu berhasil dihapus.',
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    location
+                                        .reload(); // Reload halaman untuk refresh tree
+                                });
+                            },
+                            error: function(xhr) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal!',
+                                    text: xhr.responseJSON?.message ||
+                                        'Terjadi kesalahan pada server.'
+                                });
+                            }
+                        });
+                    }
+                });
+            });
 
-            Swal.fire({
-                title: 'Hapus Menu?',
-                html: `Apakah Anda yakin ingin menghapus menu <strong>${nama}</strong>?<br><small>Semua sub-menu akan ikut terhapus.</small>`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Ya, Hapus!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: '{{ url('menu') }}/' + id,
-                        type: 'DELETE',
-                        data: {
-                            _token: '{{ csrf_token() }}'
-                        },
-                        success: function() {
-                            location.reload();
+            // ==========================================
+            // 4. DRAG & DROP (SORTABLE) LOGIC
+            // ==========================================
+            function initSortable() {
+                const containers = document.querySelectorAll('.menu-list-container, .submenu');
+
+                containers.forEach(container => {
+                    new Sortable(container, {
+                        group: 'nested-menus',
+                        animation: 150,
+                        handle: '.menu-drag-handle',
+                        ghostClass: 'bg-light',
+                        onEnd: function(evt) {
+                            // Tampilkan indikator "Menyimpan..."
+                            const statusEl = document.querySelector('.float-right small');
+                            const originalHtml = statusEl.innerHTML;
+                            statusEl.innerHTML =
+                                '<span class="text-warning"><i class="fa fa-spinner fa-spin"></i> Menyimpan urutan...</span>';
+
+                            // Baca struktur DOM baru
+                            const newOrder = buildOrderData(document.getElementById(
+                                'menuListContainer'));
+
+                            // Gunakan $.ajax agar lebih stabil daripada fetch
+                            $.ajax({
+                                url: '{{ route('menu.update-order') }}',
+                                type: 'POST', // Paksa method POST
+                                contentType: 'application/json',
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                },
+                                data: JSON.stringify({
+                                    order: newOrder
+                                }),
+                                success: function(data) {
+                                    if (data.success) {
+                                        statusEl.innerHTML =
+                                            '<span class="text-success"><i class="fa fa-check"></i> Urutan tersimpan</span>';
+                                        setTimeout(() => {
+                                            statusEl.innerHTML =
+                                                originalHtml;
+                                        }, 2000);
+                                    } else {
+                                        statusEl.innerHTML =
+                                            '<span class="text-danger"><i class="fa fa-times"></i> Gagal menyimpan</span>';
+                                        setTimeout(() => {
+                                            location.reload();
+                                        }, 1500);
+                                    }
+                                },
+                                error: function(xhr) {
+                                    console.error('Error:', xhr);
+                                    statusEl.innerHTML =
+                                        '<span class="text-danger"><i class="fa fa-times"></i> Error</span>';
+                                    Swal.fire('Gagal!',
+                                        'Terjadi kesalahan saat menyimpan urutan.',
+                                        'error');
+                                }
+                            });
                         }
                     });
-                }
-            });
-        });
+                });
+            }
 
-        // Edit button handler
-        $('body').on('click', '.btn-edit', function() {
-            var id = $(this).data('id');
-            editMenu(id);
+            // Fungsi rekursif untuk membaca struktur HTML menjadi Array JSON
+            function buildOrderData(element) {
+                let order = [];
+                let items = $(element).children('.menu-item-row');
+
+                items.each(function() {
+                    let id = $(this).data('id');
+                    let submenu = $(this).next('.submenu');
+                    let children = [];
+
+                    if (submenu.length > 0) {
+                        children = buildOrderData(submenu);
+                    }
+
+                    order.push({
+                        id: id,
+                        children: children
+                    });
+                });
+
+                return order;
+            }
+
+            // Jalankan inisialisasi Sortable
+            initSortable();
+
         });
     </script>
 @endpush

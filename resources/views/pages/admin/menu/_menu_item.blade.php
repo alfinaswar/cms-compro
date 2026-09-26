@@ -56,9 +56,9 @@
     </div>
 </div>
 
-<!-- Render children recursively -->
+<!-- Render children recursively (HAPUS style="display:none;" AGAR BISA DI-DROP) -->
 @if ($hasChildren)
-    <div class="submenu" style="display:none;">
+    <div class="submenu">
         @foreach ($menu->children as $child)
             @include('pages.admin.menu._menu_item', ['menu' => $child, 'level' => $level + 1])
         @endforeach
