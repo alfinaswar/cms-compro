@@ -250,7 +250,7 @@
                             <div class="metric-title">Artikel Diterbitkan</div>
                         </div>
                         <div class="metric-footer">
-                            <span class="text-muted">1 draf di editor</span>
+                            <span class="text-muted">{{ $countArtikelDraftBulanIni }} draf di editor</span>
                             <a href="{{ route('berita.index') }}">Kelola Berita <i class="fas fa-chevron-right ml-1"
                                     style="font-size: 10px;"></i></a>
                         </div>
@@ -269,7 +269,7 @@
                             <div class="metric-title">Lowongan Aktif</div>
                         </div>
                         <div class="metric-footer">
-                            <span class="text-muted">14 pelamar menanti</span>
+                            <span class="text-muted">{{ $countPelamar }} pelamar menanti</span>
                             <a href="{{ route('karir.index') }}">Kelola Karir <i class="fas fa-chevron-right ml-1"
                                     style="font-size: 10px;"></i></a>
                         </div>
@@ -292,12 +292,15 @@
                             <div class="metric-title">Pesan Contact Us</div>
                         </div>
                         <div class="metric-footer">
-                            <span class="text-muted">RFQ & kemitraan</span>
+                            <span class="text-muted">
+                                RFQ & kemitraan bulan {{ \Illuminate\Support\Carbon::now()->translatedFormat('F Y') }}
+                            </span>
                             <a href="{{ route('contact.list') }}">Lihat Pesan <i class="fas fa-chevron-right ml-1"
                                     style="font-size: 10px;"></i></a>
                         </div>
                     </div>
                 </div>
+
 
                 <div class="col-xl-3 col-md-6 mb-3 mb-xl-0">
                     <div class="metric-card">
@@ -312,8 +315,8 @@
                         </div>
                         <div class="metric-footer">
                             <span class="text-muted">1 wajib reset sandi</span>
-                            <a href="{{ route('struktur-organisasi.index') }}">Kelola Akun <i
-                                    class="fas fa-chevron-right ml-1" style="font-size: 10px;"></i></a>
+                            <a href="{{ route('users.index') }}">Kelola Akun <i class="fas fa-chevron-right ml-1"
+                                    style="font-size: 10px;"></i></a>
                         </div>
                     </div>
                 </div>
@@ -350,7 +353,7 @@
                                                         {{ $pesan->NamaLengkap }}</div>
                                                     <div class="text-muted text-truncate"
                                                         style="font-size: 12px; max-width: 380px;">
-                                                        {{ Str::limit($pesan->Pesan ?? 'Tidak ada pesan', 70) }}
+                                                        {{ Str::limit($pesan->Pesan ?? 'Tidak ada pesan', 100) }}
                                                     </div>
                                                 </td>
                                                 <td class="text-right text-muted pr-3"
@@ -414,14 +417,14 @@
                                                 <td class="align-middle">
                                                     <a href="{{ route('berita.edit', $item->id) }}"
                                                         class="text-dark font-weight-bold" style="font-size: 13px;">
-                                                        {{ Str::limit($item->Judul, 55) }}
+                                                        {{ Str::limit($item->translations->first()->Judul ?? $item->Judul, 100) }}
                                                     </a>
                                                 </td>
                                                 <td class="align-middle text-muted" style="font-size: 12px;">
-                                                    {{ $item->TanggalPublikasi ? $item->TanggalPublikasi->format('d M Y') : '-' }}
+                                                    {{ $item->TanggalPublikasi ? \Illuminate\Support\Carbon::parse($item->TanggalPublikasi)->format('d M Y') : '-' }}
                                                 </td>
                                                 <td class="align-middle text-right pr-3">
-                                                    <a href="{{ route('berita.edit', $item->id) }}"
+                                                    <a href="{{ route('berita.edit', $item->Slug) }}"
                                                         class="text-muted hover-primary">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
@@ -434,6 +437,7 @@
                                                 </td>
                                             </tr>
                                         @endforelse
+
                                     </tbody>
                                 </table>
                             </div>

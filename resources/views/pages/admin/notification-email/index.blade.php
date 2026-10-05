@@ -87,6 +87,36 @@
                 outline: none;
                 box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
             }
+
+            /* Custom Toggle Switch Styling */
+            .custom-switch .custom-control-label {
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 13px;
+            }
+
+            .custom-switch .custom-control-input:checked~.custom-control-label::before {
+                background-color: #10b981;
+                border-color: #10b981;
+            }
+
+            .custom-switch .custom-control-input:focus~.custom-control-label::before {
+                box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.25);
+            }
+
+            .custom-switch .custom-control-label::before {
+                border-color: #cbd5e1;
+            }
+
+            .toggle-status {
+                cursor: pointer;
+            }
+
+            /* Saat switch sedang loading */
+            .toggle-switch-loading {
+                opacity: 0.6;
+                pointer-events: none;
+            }
         </style>
     @endpush
 
@@ -393,6 +423,70 @@
                             error: function() {
                                 Swal.fire('Gagal!', 'Terjadi kesalahan saat menghapus.',
                                     'error');
+                            }
+                        });
+                    }
+                });
+            });
+            // 6. Handle Toggle Status (Aktif/Nonaktif)
+            $(document).on('change', '.toggle-status', function(e) {
+                var checkbox = $(this);
+                var id = checkbox.data('id');
+                var newStatus = checkbox.is(':checked');
+                var label = $('.status-label-' + id);
+                var statusText = newStatus ? 'Aktifkan' : 'Nonaktifkan';
+
+                // Kembalikan ke value sebelumnya sampai user konfirmasi
+                checkbox.prop('checked', !newStatus);
+
+                Swal.fire({
+                    title: `Konfirmasi Ubah Status`,
+                    html: `Anda yakin ingin <b>${statusText}</b> email notifikasi ini?`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: `Ya, ${statusText}`,
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Set ke value baru setelah konfirmasi, dan tampilkan loading visual
+                        checkbox.prop('checked', newStatus);
+                        checkbox.closest('.custom-control').addClass('toggle-switch-loading');
+
+                        $.ajax({
+                            url: "{{ route('notification-email.toggle-status', ':id') }}"
+                                .replace(':id', id),
+                            type: 'PUT',
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                // Update label teks
+                                label.text(newStatus ? 'Aktif' : 'Nonaktif');
+                                checkbox.closest('.custom-control').removeClass(
+                                    'toggle-switch-loading');
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Status diubah',
+                                    text: response.message,
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+                            },
+                            error: function(xhr) {
+                                // Kembalikan ke status semula jika gagal
+                                checkbox.prop('checked', !newStatus);
+                                label.text(!newStatus ? 'Aktif' : 'Nonaktif');
+                                checkbox.closest('.custom-control').removeClass(
+                                    'toggle-switch-loading');
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal!',
+                                    text: xhr.responseJSON?.message ||
+                                        'Gagal mengubah status',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
                             }
                         });
                     }

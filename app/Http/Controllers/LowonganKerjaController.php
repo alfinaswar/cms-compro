@@ -30,52 +30,84 @@ class LowonganKerjaController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = LowonganKerja::withCount('getLamaran', 'getKota')->latest();
+            // Eager load SEMUA translations (id dan en)
+            $data = LowonganKerja::with('translations')
+                ->withCount('getLamaran', 'getKota')
+                ->latest();
+
             return DataTables::of($data)
                 ->addIndexColumn()
-                ->addColumn('StatusBadge', function ($row) {
-                    if ($row->Status === 'Buka') {
-                        return '<span class="badge badge-success">Buka</span>';
+                ->addColumn('PosisiDisplay', function ($row) {
+                    $idTrans = $row->translations->firstWhere('Locale', 'id');
+                    $enTrans = $row->translations->firstWhere('Locale', 'en');
+
+                    $posisiId = $idTrans ? $idTrans->Posisi : $row->Posisi;
+                    $posisiEn = $enTrans ? $enTrans->Posisi : '';
+
+                    $html = '<strong class="text-dark">' . $posisiId . '</strong>';
+                    if ($posisiEn) {
+                        $html .= '<br><small class="text-muted"><span class="mr-1">🇬🇧</span>' . $posisiEn . '</small>';
                     }
-                    return '<span class="badge badge-danger">Tutup</span>';
+
+                    return $html;
                 })
+
+
+                ->addColumn('StatusBadge', function ($row) {
+                    $isClosed = false;
+                    if ($row->BatasWaktu && \Carbon\Carbon::parse($row->BatasWaktu)->endOfDay()->lt(now())) {
+                        $isClosed = true;
+                    }
+                    if ($isClosed || $row->Status === 'Tutup') {
+                        return '<span class="badge badge-danger">Tutup</span>';
+                    }
+                    return '<span class="badge badge-success">Buka</span>';
+                })
+
                 ->addColumn('BatasWaktuFormatted', function ($row) {
                     return $row->BatasWaktu
                         ? \Carbon\Carbon::parse($row->BatasWaktu)->format('d M Y')
                         : '-';
                 })
+
                 ->addColumn('DeskripsiSingkat', function ($row) {
-                    return Str::limit(strip_tags($row->Deskripsi ?? ''), 50, '...');
+                    $trans = $row->translations->firstWhere('Locale', 'id');
+                    $desc = $trans ? $trans->Deskripsi : '';
+                    return '<small>' . Str::limit(strip_tags($desc), 80, '...') . '</small>';
                 })
+
                 ->addColumn('JumlahPelamar', function ($row) {
                     $jumlah = $row->getLamaran()->count();
                     if (auth()->user()->can('karir.view')) {
                         $url = route('karir.pelamar', encrypt($row->id));
                         return '<a href="' . $url . '" class="btn btn-sm btn-info" title="Lihat Pelamar">
-                                <i class="fa fa-users mr-1"></i> ' . $jumlah . ' Pelamar
-                            </a>';
+                            <i class="fa fa-users mr-1"></i> ' . $jumlah . ' Pelamar
+                        </a>';
                     }
                     return '<span class="badge badge-info">' . $jumlah . ' Pelamar</span>';
                 })
+
                 ->addColumn('action', function ($row) {
                     $btn = '<div class="btn-group btn-group-sm">';
                     if (auth()->user()->can('karir.edit')) {
                         $btn .= '<a href="' . route('karir.edit', encrypt($row->id)) . '" class="btn btn-sm btn-warning" title="Edit">
-                            <i class="fa fa-edit"></i>
-                        </a>';
+                        <i class="fa fa-edit"></i>
+                    </a>';
                     }
                     if (auth()->user()->can('karir.delete')) {
                         $btn .= '<button class="btn btn-sm btn-danger btn-delete" data-id="' . $row->id . '" title="Hapus">
-                            <i class="fa fa-trash"></i>
-                        </button>';
+                        <i class="fa fa-trash"></i>
+                    </button>';
                     }
                     $btn .= '</div>';
                     return $btn;
                 })
+
                 ->addColumn('Kota', function ($row) {
                     return $row->getKota->name ?? $row->Kota;
                 })
-                ->rawColumns(['StatusBadge', 'JumlahPelamar', 'action'])
+
+                ->rawColumns(['PosisiDisplay', 'StatusBadge', 'JumlahPelamar', 'action', 'DeskripsiSingkat'])
                 ->make(true);
         }
 

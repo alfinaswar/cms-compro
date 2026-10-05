@@ -99,6 +99,8 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         Route::post('/penerima-notif-email', [NotificationEmailRecipientController::class, 'store'])->name('notification-email.store');
         Route::put('/penerima-notif-email/{id}', [NotificationEmailRecipientController::class, 'update'])->name('notification-email.update');
         Route::delete('/penerima-notif-email/{id}', [NotificationEmailRecipientController::class, 'destroy'])->name('notification-email.destroy');
+        Route::put('/{id}/toggle-status', [NotificationEmailRecipientController::class, 'toggleStatus'])
+            ->name('notification-email.toggle-status');
 
         Route::get('/', [PengaturanWebsiteController::class, 'index'])->name('pengaturan-website.index');
         Route::get('/create', [PengaturanWebsiteController::class, 'create'])->name('pengaturan-website.create');
@@ -208,7 +210,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     });
     Route::prefix('komunikasi-dan-transaksi')->group(function () {
         Route::get('/kotak-masuk', [ContactUsController::class, 'list'])->name('contact.list');
-        Route::get('/export', [ContactUsController::class, 'encuxport'])->name('contact.export');
+        Route::get('/export', [ContactUsController::class, 'export'])->name('contact.export');
         Route::delete('/contact/{id}', [ContactUsController::class, 'destroy']);
     });
     Route::resource('jenis-laporan', JenisLaporanKeuanganController::class)->names('jenis-laporan');

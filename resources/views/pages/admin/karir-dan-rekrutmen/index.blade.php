@@ -134,11 +134,14 @@
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
                         orderable: false,
-                        searchable: false
+                        searchable: false,
+                        className: 'text-center'
                     },
                     {
-                        data: 'Posisi',
-                        name: 'Posisi'
+                        data: 'PosisiDisplay', // ✅ UBAH DARI 'Posisi' KE 'PosisiDisplay'
+                        name: 'Posisi', // Tetap pakai 'Posisi' untuk sorting/searching di server
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: 'Kota',
@@ -156,19 +159,22 @@
                     {
                         data: 'StatusBadge',
                         name: 'Status',
-                        orderable: false
+                        orderable: false,
+                        className: 'text-center'
                     },
                     {
                         data: 'JumlahPelamar',
                         name: 'JumlahPelamar',
                         orderable: false,
-                        searchable: false
+                        searchable: false,
+                        className: 'text-center'
                     },
                     {
                         data: 'action',
                         name: 'action',
                         orderable: false,
-                        searchable: false
+                        searchable: false,
+                        className: 'text-center'
                     }
                 ]
             });

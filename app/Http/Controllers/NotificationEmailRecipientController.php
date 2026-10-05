@@ -19,14 +19,34 @@ class NotificationEmailRecipientController extends Controller
 
     public function index(Request $request)
     {
-        // Jika request AJAX dari DataTables
         if ($request->ajax()) {
             $data = NotificationEmailRecipient::select('id', 'Email', 'Nama', 'StatusAktif', 'created_at')
                 ->orderBy('created_at', 'desc');
 
             return DataTables::of($data)
                 ->addIndexColumn()
+                // ✅ UBAH KOLOM STATUS MENJADI TOGGLE SWITCH
                 ->addColumn('Status', function ($row) {
+                    $checked = $row->StatusAktif ? 'checked' : '';
+                    $canEdit = auth()->user()->can('pengaturan-form-kontak.edit');
+
+                    if ($canEdit) {
+                        return '
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox"
+                                   class="custom-control-input toggle-status"
+                                   id="status_' . $row->id . '"
+                                   data-id="' . $row->id . '"
+                                   ' . $checked . '>
+                            <label class="custom-control-label" for="status_' . $row->id . '">
+                                <span class="status-label-' . $row->id . '">'
+                            . ($row->StatusAktif ? 'Aktif' : 'Nonaktif') .
+                            '</span>
+                            </label>
+                        </div>';
+                    }
+
+                    // Fallback jika tidak punya permission
                     return $row->StatusAktif
                         ? '<span class="badge badge-success px-2 py-1">Aktif</span>'
                         : '<span class="badge badge-secondary px-2 py-1">Nonaktif</span>';
@@ -47,7 +67,6 @@ class NotificationEmailRecipientController extends Controller
                 ->make(true);
         }
 
-        // Return view biasa untuk load pertama kali
         return view('pages.admin.notification-email.index');
     }
 
@@ -94,7 +113,21 @@ class NotificationEmailRecipientController extends Controller
 
         return response()->json(['message' => 'Data email berhasil diperbarui.']);
     }
+    public function toggleStatus($id)
+    {
+        $recipient = NotificationEmailRecipient::findOrFail($id);
 
+        // Toggle status (true -> false, false -> true)
+        $recipient->StatusAktif = !$recipient->StatusAktif;
+        $recipient->UserUpdate = auth()->user()->name;
+        $recipient->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status email berhasil diubah menjadi ' . ($recipient->StatusAktif ? 'Aktif' : 'Nonaktif'),
+            'status' => $recipient->StatusAktif,
+        ]);
+    }
     public function destroy($id)
     {
         // dd($id);

@@ -181,14 +181,17 @@
                                     <a href="{{ route('berita.index') }}" class="btn btn-secondary">
                                         <i class="fa fa-arrow-left mr-2"></i> Kembali
                                     </a>
-                                    <div>
-                                        <button type="submit" name="action" value="draft" class="btn btn-info mr-2">
+                                    <div class="ml-auto d-flex" style="gap: 8px;">
+                                        <button type="submit" name="action" value="draft" class="btn btn-info">
                                             <i class="fa fa-save mr-1"></i> Simpan Draf
                                         </button>
-                                        <button type="submit" name="action" value="publish" class="btn btn-success">
+                                        <button type="submit" name="action" value="publish"
+                                            class="btn btn-success ml-2">
                                             <i class="fa fa-paper-plane mr-1"></i> Publikasi
                                         </button>
                                     </div>
+
+
                                 </div>
                             </div>
                         </div>

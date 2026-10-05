@@ -45,13 +45,14 @@
                                 <div class="tab-pane fade show active" id="tab-id">
                                     <div class="form-group">
                                         <label><strong>Judul Halaman</strong> <span class="text-danger">*</span></label>
-                                        <input type="text" name="translations[id][Judul]"
+                                        {{-- ✅ TAMBAH id="JudulId" untuk SEO Preview --}}
+                                        <input type="text" name="translations[id][Judul]" id="JudulId"
                                             class="form-control form-control-lg" value="{{ old('translations.id.Judul') }}"
                                             required placeholder="Masukkan judul halaman">
                                     </div>
                                     <div class="form-group">
                                         <label><strong>Deskripsi Singkat</strong></label>
-                                        <textarea name="translations[id][DeskripsiSingkat]" class="form-control" rows="3"
+                                        <textarea name="translations[id][DeskripsiSingkat]" id="DeskripsiSingkatId" class="form-control" rows="3"
                                             placeholder="Tulis deskripsi singkat halaman">{{ old('translations.id.DeskripsiSingkat') }}</textarea>
                                     </div>
                                     <div class="form-group">
@@ -134,6 +135,7 @@
                         </div>
                     </div>
 
+                    {{-- ✅ PERUBAHAN 1: DEFAULT DRAFT --}}
                     <div class="card shadow-sm border-0 mb-3">
                         <div class="card-header bg-white border-bottom">
                             <h5 class="mb-0"><i
@@ -141,9 +143,13 @@
                         </div>
                         <div class="card-body">
                             <select name="IsPublished" class="form-control">
-                                <option value="0">Draft</option>
-                                <option value="1" selected>Publikasikan</option>
+                                <option value="0" selected>📝 Draft</option>
+                                <option value="1">✅ Publikasikan</option>
                             </select>
+                            <small class="text-muted d-block mt-2">
+                                <i class="fa fa-info-circle mr-1"></i>Default: <strong>Draft</strong>. Ubah ke
+                                "Publikasikan" hanya jika halaman sudah siap tayang.
+                            </small>
                         </div>
                     </div>
 
@@ -153,22 +159,56 @@
                                     (Indonesia)</strong></h5>
                         </div>
                         <div class="card-body">
+
+                            {{-- ✅ PERUBAHAN 2: PREVIEW GOOGLE REAL-TIME --}}
+                            <div class="mb-3"
+                                style="background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:12px;">
+                                <small class="text-muted d-block mb-2"><i class="fa fa-eye mr-1"></i>Preview Google
+                                    (Real-time):</small>
+                                <div style="font-family: arial, sans-serif;">
+                                    {{-- Baris Favicon + Domain --}}
+                                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                                        <span
+                                            style="width:20px; height:20px; border-radius:50%; background:#f1f3f4; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">
+                                            <i class="fa fa-globe" style="font-size:10px; color:#5f6368;"></i>
+                                        </span>
+                                        <span style="color:#202124; font-size:12px; line-height:16px;">
+                                            {{ parse_url(url('/'), PHP_URL_HOST) }}
+                                        </span>
+                                    </div>
+                                    {{-- Judul Biru --}}
+                                    <div id="seoPreviewTitle"
+                                        style="color:#1a0dab; font-size:18px; line-height:22px; margin-bottom:2px; word-break:break-word;">
+                                        Judul Halaman</div>
+                                    {{-- URL Hijau --}}
+                                    <div id="seoPreviewUrl"
+                                        style="color:#006621; font-size:13px; margin-bottom:3px; word-break:break-all;">
+                                        {{ url('/page') }}/slug-halaman</div>
+                                    {{-- Deskripsi Abu-abu --}}
+                                    <div id="seoPreviewDesc" style="color:#545454; font-size:13px; line-height:1.45;">
+                                        Deskripsi halaman akan muncul di sini...</div>
+                                </div>
+                            </div>
+
                             <div class="form-group">
-                                <label>SEO Title</label>
-                                <input type="text" name="translations[id][SEOTitle]" class="form-control"
-                                    maxlength="70" value="{{ old('translations.id.SEOTitle') }}"
-                                    placeholder="Masukkan judul SEO (max 70 karakter)">
+                                <label><strong>SEO Title</strong> <span class="float-right text-muted"
+                                        id="counterTitle">0/70</span></label>
+                                <input type="text" name="translations[id][SEOTitle]" id="inputSEOTitle"
+                                    class="form-control" maxlength="70" value="{{ old('translations.id.SEOTitle') }}"
+                                    placeholder="Kosongkan untuk pakai Judul">
                             </div>
                             <div class="form-group">
-                                <label>Meta Description</label>
-                                <textarea name="translations[id][SEODescription]" class="form-control" rows="3" maxlength="160"
-                                    placeholder="Tuliskan deskripsi SEO (max 160 karakter)">{{ old('translations.id.SEODescription') }}</textarea>
+                                <label><strong>Meta Description</strong> <span class="float-right text-muted"
+                                        id="counterDesc">0/160</span></label>
+                                <textarea name="translations[id][SEODescription]" id="inputSEODesc" class="form-control" rows="3"
+                                    maxlength="160" placeholder="Deskripsi untuk hasil pencarian Google">{{ old('translations.id.SEODescription') }}</textarea>
                             </div>
                             <div class="form-group mb-0">
-                                <label>SEO Keywords</label>
+                                <label><strong>SEO Keywords</strong></label>
                                 <input type="text" name="translations[id][SEOKeywords]" class="form-control"
                                     value="{{ old('translations.id.SEOKeywords') }}"
                                     placeholder="Contoh: keyword1, keyword2, ...">
+                                <small class="text-muted">Pisahkan dengan koma.</small>
                             </div>
                         </div>
                     </div>
@@ -212,13 +252,55 @@
                 }
             });
 
-            // Auto-generate slug
+            // ==========================================================
+            // SEO PREVIEW REAL-TIME (KHUSUS BAHASA INDONESIA)
+            // ==========================================================
+            var baseUrlPage = '{{ url('/page') }}';
+
+            function updateSEOPreview() {
+                // 1. Judul: pakai SEO Title, fallback ke Judul Indonesia
+                var judul = $('#JudulId').val() || 'Judul Halaman';
+                var seoTitle = $('#inputSEOTitle').val() || judul;
+
+                // 2. Deskripsi: pakai Meta Description, fallback ke Deskripsi Singkat Indonesia
+                var seoDesc = $('#inputSEODesc').val() ||
+                    $('#DeskripsiSingkatId').val() ||
+                    'Deskripsi halaman akan muncul di sini...';
+
+                // 3. URL: pakai Slug (auto-generated dari judul Indonesia)
+                var slug = $('#Slug').val() || 'slug-halaman';
+
+                $('#seoPreviewTitle').text(seoTitle);
+                $('#seoPreviewUrl').text(baseUrlPage + '/' + slug);
+                $('#seoPreviewDesc').text(seoDesc);
+            }
+
+            function updateCounters() {
+                $('#counterTitle').text($('#inputSEOTitle').val().length + '/70');
+                $('#counterDesc').text($('#inputSEODesc').val().length + '/160');
+            }
+
+            // Bind semua field Indonesia yang mempengaruhi preview
+            $('#JudulId, #DeskripsiSingkatId, #inputSEOTitle, #inputSEODesc, #Slug').on('input', function() {
+                updateSEOPreview();
+                updateCounters();
+            });
+
+            // Panggil sekali saat halaman dimuat
+            updateSEOPreview();
+            updateCounters();
+
+            // ==========================================================
+            // AUTO-GENERATE SLUG DARI JUDUL INDONESIA
+            // ==========================================================
             $('input[name="translations[id][Judul]"]').on('input', function() {
                 if (!$('#Slug').val()) {
                     let slug = $(this).val().toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-')
                         .replace(/-+/g, '-');
                     $('#Slug').val(slug);
                 }
+                // Update preview URL setelah slug di-generate otomatis
+                updateSEOPreview();
             });
         });
     </script>
