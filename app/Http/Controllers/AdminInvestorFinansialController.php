@@ -53,10 +53,21 @@ class AdminInvestorFinansialController extends Controller
 
         $saham = InformasiSaham::first();
         if ($saham) {
+            $oldData = $saham->getOriginal();
             $saham->update($validated);
+            activity()
+                ->causedBy(auth()->user())
+                ->performedOn($saham)
+                ->withProperties(['old' => $oldData, 'attributes' => $validated])
+                ->log('Memperbarui data informasi saham JTPE');
         } else {
             $validated['UserCreate'] = auth()->user()->name;
-            InformasiSaham::create($validated);
+            $saham = InformasiSaham::create($validated);
+            activity()
+                ->causedBy(auth()->user())
+                ->performedOn($saham)
+                ->withProperties(['attributes' => $validated])
+                ->log('Memperbarui data informasi saham JTPE');
         }
 
         return redirect()->back()->with('success', 'Data informasi saham JTPE berhasil diperbarui.');
@@ -77,7 +88,12 @@ class AdminInvestorFinansialController extends Controller
         ]);
 
         $validated['UserCreate'] = auth()->user()->name;
-        StrukturKepemilikan::create($validated);
+        $struktur = StrukturKepemilikan::create($validated);
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($struktur)
+            ->withProperties(['attributes' => $validated])
+            ->log('Menambahkan struktur kepemilikan: ' . $validated['KategoriPemegang']);
 
         return redirect()->back()->with('success', 'Baris struktur kepemilikan saham berhasil ditambahkan.');
     }
@@ -98,7 +114,13 @@ class AdminInvestorFinansialController extends Controller
         ]);
 
         $validated['UserUpdate'] = auth()->user()->name;
+        $oldData = $item->getOriginal();
         $item->update($validated);
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($item)
+            ->withProperties(['old' => $oldData, 'attributes' => $validated])
+            ->log('Memperbarui struktur kepemilikan: ' . $validated['KategoriPemegang']);
 
         return redirect()->back()->with('success', 'Struktur kepemilikan berhasil diperbarui.');
     }
@@ -107,6 +129,11 @@ class AdminInvestorFinansialController extends Controller
     {
         $item = StrukturKepemilikan::findOrFail($id);
         $item->update(['UserDelete' => auth()->user()->name]);
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($item)
+            ->withProperties(['old' => $item->getOriginal()])
+            ->log('Menghapus struktur kepemilikan: ' . $item->KategoriPemegang);
         $item->delete();
 
         return response()->json(['status' => 200, 'message' => 'Data kepemilikan berhasil dihapus.']);
@@ -141,10 +168,21 @@ class AdminInvestorFinansialController extends Controller
         $validated['UserUpdate'] = auth()->user()->name;
 
         if ($skema->exists) {
+            $oldData = $skema->getOriginal();
             $skema->update($validated);
+            activity()
+                ->causedBy(auth()->user())
+                ->performedOn($skema)
+                ->withProperties(['old' => $oldData, 'attributes' => $validated])
+                ->log('Memperbarui skema pengendali: ' . $validated['Judul']);
         } else {
             $validated['UserCreate'] = auth()->user()->name;
-            SkemaPengendali::create($validated);
+            $skema = SkemaPengendali::create($validated);
+            activity()
+                ->causedBy(auth()->user())
+                ->performedOn($skema)
+                ->withProperties(['attributes' => $validated])
+                ->log('Memperbarui skema pengendali: ' . $validated['Judul']);
         }
 
         return redirect()->back()->with('success', 'Bagan skema pengendali berhasil diperbarui.');

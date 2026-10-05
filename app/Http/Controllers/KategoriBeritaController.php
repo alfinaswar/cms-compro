@@ -46,7 +46,9 @@ class KategoriBeritaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'NamaKategori' => 'required'
+            'NamaKategori' => 'required|unique:kategori_berita,NamaKategori'
+        ], [
+            'NamaKategori.unique' => 'Nama Kategori sudah ada, tidak boleh sama.'
         ]);
 
         $kategori = KategoriBerita::create([
@@ -82,6 +84,8 @@ class KategoriBeritaController extends Controller
 
         $request->validate([
             'NamaKategori' => 'required|string|max:100|unique:kategori_berita,NamaKategori,' . $id
+        ], [
+            'NamaKategori.unique' => 'Nama Kategori tidak boleh sama.'
         ]);
 
         $oldData = $kategori->getOriginal();

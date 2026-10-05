@@ -154,6 +154,12 @@ class HalamanSolusiController extends Controller
             }
         }
 
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($solusi)
+            ->withProperties(['attributes' => $solusi->toArray()])
+            ->log('Menambahkan halaman solusi baru: ' . ($solusi->Judul ?? ''));
+
         return redirect()->route('halaman-solusi.index')->with('success', 'Solusi berhasil disimpan.');
     }
 

@@ -131,6 +131,12 @@ class CustomPagesController extends Controller
             }
         }
 
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($page)
+            ->withProperties(['attributes' => $page->toArray()])
+            ->log('Menambahkan halaman baru: ' . ($validated['translations']['id']['Judul'] ?? ''));
+
         return redirect()->route('custom-pages.index')->with('success', 'Halaman berhasil ditambahkan.');
     }
     public function show($locale, $slug)
@@ -224,6 +230,12 @@ class CustomPagesController extends Controller
             );
         }
 
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($page)
+            ->withProperties(['attributes' => $page->toArray()])
+            ->log('Memperbarui halaman: ' . ($validated['translations']['id']['Judul'] ?? ''));
+
         return redirect()->route('custom-pages.index')->with('success', 'Halaman berhasil diperbarui.');
     }
 
@@ -239,6 +251,14 @@ class CustomPagesController extends Controller
         if ($page->Thumbnail && Storage::disk('public')->exists($page->Thumbnail)) {
             Storage::disk('public')->delete($page->Thumbnail);
         }
+
+        $judul = $page->translate('id')->Judul ?? $page->id;
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($page)
+            ->withProperties(['attributes' => $page->toArray()])
+            ->log('Menghapus halaman: ' . $judul);
 
         $page->delete();
 

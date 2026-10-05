@@ -95,8 +95,7 @@ class BeritaController extends Controller
      */
     public function create()
     {
-        $kategoris = KategoriBerita::orderBy('NamaKategori')->get()
-        0
+        $kategoris = KategoriBerita::orderBy('NamaKategori')->get();
         return view('pages.admin.berita.create', compact('kategoris'));
     }
 
@@ -221,16 +220,17 @@ class BeritaController extends Controller
             'TanggalPublikasi' => $validated['TanggalPublikasi'],
             'Penulis' => $validated['Penulis'],
             'UserUpdate' => auth()->user()->name,
+            // Slug tidak diubah pada update
         ];
 
         if (isset($validated['PathThumbnail'])) {
             $mainData['PathThumbnail'] = $validated['PathThumbnail'];
         }
 
-        // Update Slug jika Judul berubah
-        if ($berita->Judul !== $validated['Judul']) {
-            $mainData['Slug'] = Str::slug($validated['Judul']) . '-' . time();
-        }
+        // Jangan update slug!
+        // if ($berita->Judul !== $validated['Judul']) {
+        //     $mainData['Slug'] = Str::slug($validated['Judul']) . '-' . time();
+        // }
 
         $berita->update($mainData);
 
@@ -298,6 +298,13 @@ class BeritaController extends Controller
         }
 
         $berita->update(['UserDelete' => auth()->user()->name]);
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($berita)
+            ->withProperties(['old' => $berita->toArray()])
+            ->log('Menghapus berita: ' . ($berita->translations()->where('Locale', 'id')->value('Judul') ?? $berita->id));
+
         $berita->delete();  // Soft delete
 
         return response()->json(['status' => 200, 'message' => 'Berita berhasil dihapus']);

@@ -43,7 +43,13 @@ class AdminInvestorInformasiLainnyaController extends Controller
         ]);
 
         $validated['UserCreate'] = auth()->user()->name;
-        LembagaPenunjang::create($validated);
+        $lembaga = LembagaPenunjang::create($validated);
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($lembaga)
+            ->withProperties(['attributes' => $validated])
+            ->log('Menambahkan lembaga penunjang: ' . $validated['NamaInstitusi']);
 
         return redirect()->back()->with('success', 'Lembaga penunjang berhasil ditambahkan.');
     }
@@ -65,7 +71,14 @@ class AdminInvestorInformasiLainnyaController extends Controller
         ]);
 
         $validated['UserUpdate'] = auth()->user()->name;
+        $oldData = $item->getOriginal();
         $item->update($validated);
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($item)
+            ->withProperties(['old' => $oldData, 'attributes' => $validated])
+            ->log('Memperbarui lembaga penunjang: ' . $validated['NamaInstitusi']);
 
         return redirect()->back()->with('success', 'Data lembaga penunjang berhasil diperbarui.');
     }
@@ -74,6 +87,13 @@ class AdminInvestorInformasiLainnyaController extends Controller
     {
         $item = LembagaPenunjang::findOrFail($id);
         $item->update(['UserDelete' => auth()->user()->name]);
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($item)
+            ->withProperties(['old' => $item->getOriginal()])
+            ->log('Menghapus lembaga penunjang: ' . $item->NamaInstitusi);
+
         $item->delete();
 
         return response()->json(['status' => 200, 'message' => 'Lembaga penunjang berhasil dihapus.']);
@@ -99,7 +119,13 @@ class AdminInvestorInformasiLainnyaController extends Controller
         }
 
         $validated['UserCreate'] = auth()->user()->name;
-        KeterbukaanInformasi::create($validated);
+        $keterbukaan = KeterbukaanInformasi::create($validated);
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($keterbukaan)
+            ->withProperties(['attributes' => $validated])
+            ->log('Menambahkan keterbukaan informasi: ' . $validated['Judul']);
 
         return redirect()->back()->with('success', 'Dokumen keterbukaan informasi berhasil ditambahkan.');
     }
@@ -128,7 +154,14 @@ class AdminInvestorInformasiLainnyaController extends Controller
         }
 
         $validated['UserUpdate'] = auth()->user()->name;
+        $oldData = $item->getOriginal();
         $item->update($validated);
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($item)
+            ->withProperties(['old' => $oldData, 'attributes' => $validated])
+            ->log('Memperbarui keterbukaan informasi: ' . $validated['Judul']);
 
         return redirect()->back()->with('success', 'Dokumen keterbukaan informasi berhasil diperbarui.');
     }

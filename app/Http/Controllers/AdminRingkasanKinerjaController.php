@@ -71,12 +71,18 @@ class AdminRingkasanKinerjaController extends Controller
         $validated['UserUpdate'] = auth()->user()->name ?? 'Administrator';
 
         $pengaturan = PengaturanKinerjaKeuangan::first();
+        $oldData = $pengaturan ? $pengaturan->toArray() : [];
         if ($pengaturan) {
             $pengaturan->update($validated);
         } else {
             $validated['UserCreate'] = auth()->user()->name ?? 'Administrator';
             PengaturanKinerjaKeuangan::create($validated);
         }
+
+        activity()
+            ->causedBy(auth()->user())
+            ->withProperties(['old' => $oldData, 'attributes' => $validated])
+            ->log('Memperbarui pengaturan periode kinerja keuangan');
 
         return redirect()->back()->with('success', 'Pengaturan Periode Tahun & Pertumbuhan berhasil disimpan!');
     }
@@ -112,6 +118,11 @@ class AdminRingkasanKinerjaController extends Controller
             }
         }
 
+        activity()
+            ->causedBy(auth()->user())
+            ->withProperties(['attributes' => ['Tahun' => $tahunBaru]])
+            ->log('Menambahkan tahun baru: ' . $tahunBaru . ' ke ringkasan kinerja');
+
         return redirect()->back()->with('success', "Tahun $tahunBaru berhasil ditambahkan ke dalam sistem!");
     }
 
@@ -123,6 +134,11 @@ class AdminRingkasanKinerjaController extends Controller
 
         $tahun = (int) $request->input('Tahun');
         RingkasanKinerjaNilai::where('Tahun', $tahun)->delete();
+
+        activity()
+            ->causedBy(auth()->user())
+            ->withProperties(['attributes' => ['Tahun' => $tahun]])
+            ->log('Menghapus data kinerja tahun: ' . $tahun);
 
         return redirect()->back()->with('success', "Seluruh data kinerja untuk Tahun $tahun berhasil dihapus.");
     }
@@ -148,6 +164,12 @@ class AdminRingkasanKinerjaController extends Controller
         $validated['UserCreate'] = auth()->user()->name ?? 'Administrator';
 
         $pos = RingkasanKinerjaPos::create($validated);
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($pos)
+            ->withProperties(['attributes' => $validated])
+            ->log('Menambahkan pos kinerja baru: ' . $pos->NamaPos);
 
         if ($request->has('nilais') && is_array($request->input('nilais'))) {
             foreach ($request->input('nilais') as $yr => $valStr) {

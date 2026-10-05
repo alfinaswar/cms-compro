@@ -45,6 +45,7 @@ class AdminInvestorTataKelolaController extends Controller
         ]);
 
         $bagan = BaganOrganisasi::first() ?? new BaganOrganisasi();
+        $oldBagan = $bagan->toArray();
 
         if ($request->hasFile('GambarBagan')) {
             if ($bagan->PathGambar && Storage::disk('public')->exists($bagan->PathGambar)) {
@@ -66,8 +67,14 @@ class AdminInvestorTataKelolaController extends Controller
             $bagan->update($validated);
         } else {
             $validated['UserCreate'] = auth()->user()->name;
-            BaganOrganisasi::create($validated);
+            $bagan = BaganOrganisasi::create($validated);
         }
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($bagan)
+            ->withProperties(['old' => $oldBagan, 'attributes' => $validated])
+            ->log('Memperbarui bagan organisasi: ' . $validated['Judul']);
 
         return redirect()->back()->with('success', 'Bagan organisasi dan informasi sekretariat berhasil diperbarui.');
     }
@@ -91,7 +98,13 @@ class AdminInvestorTataKelolaController extends Controller
         }
 
         $validated['UserCreate'] = auth()->user()->name;
-        ManajemenTataKelola::create($validated);
+        $manajemen = ManajemenTataKelola::create($validated);
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($manajemen)
+            ->withProperties(['attributes' => $validated])
+            ->log('Menambahkan anggota manajemen: ' . $validated['Nama']);
 
         return redirect()->back()->with('success', 'Anggota manajemen berhasil ditambahkan.');
     }
@@ -127,6 +140,7 @@ class AdminInvestorTataKelolaController extends Controller
     public function destroyManajemen($id)
     {
         $person = ManajemenTataKelola::findOrFail($id);
+        $oldData = $person->getOriginal();
         if ($person->Foto && Storage::disk('public')->exists($person->Foto)) {
             Storage::disk('public')->delete($person->Foto);
         }

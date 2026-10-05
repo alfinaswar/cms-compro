@@ -143,7 +143,13 @@ class HeroSliderController extends Controller
                 ->store('hero-sliders/shapes', 'public');
         }
 
-        HeroSlider::create($data);
+        $heroSlider = HeroSlider::create($data);
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($heroSlider)
+            ->withProperties(['attributes' => $data])
+            ->log('Menambahkan hero slider baru: ' . $heroSlider->JudulUtama);
 
         return redirect()->route('hero-slider.index')
             ->with('success', 'Hero Slider berhasil ditambahkan.');
