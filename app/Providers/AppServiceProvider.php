@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\HeroSlider;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Cache;
@@ -28,8 +29,9 @@ class AppServiceProvider extends ServiceProvider
             }));
 
             View::share('heroSliders', Cache::remember('hero_sliders', 3600, function () {
-                return \App\Models\HeroSlider::get();
+                return HeroSlider::where('status', 1)->get();
             }));
+
         } catch (\Throwable $e) {
             // Abaikan error database jika tabel/migrasi belum selesai atau saat cli setup
         }
@@ -37,6 +39,6 @@ class AppServiceProvider extends ServiceProvider
 
     public function register(): void
     {
-        
+
     }
 }

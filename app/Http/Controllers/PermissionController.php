@@ -66,16 +66,23 @@ class PermissionController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        // ✅ Validasi kondisional: module & action required HANYA jika custom_name kosong
         $request->validate([
-            'module' => 'required|string|max:100',
-            'action' => 'required|string|max:100',
-            'custom_name' => 'nullable|string|max:255',
+            'module' => 'required_without:custom_name|nullable|string|max:100',
+            'action' => 'required_without:custom_name|nullable|string|max:100',
+            'custom_name' => 'nullable|string|max:255|regex:/^[a-z0-9\-_]+(\.[a-z0-9\-_]+)*$/',
+        ], [
+            'custom_name.regex' => 'Format permission harus: modul.aksi (huruf kecil, angka, dash, underscore)',
         ]);
 
-        // Format permission name: module.action
-        $permissionName = $request->module . '.' . $request->action;
+        // ✅ Tentukan nama permission berdasarkan input user
+        if ($request->filled('custom_name')) {
+            $permissionName = strtolower(trim($request->custom_name));
+        } else {
+            $permissionName = $request->module . '.' . $request->action;
+        }
 
-        // Cek apakah permission sudah ada
+        // Cek duplikat
         if (Permission::where('name', $permissionName)->exists()) {
             return redirect()->back()
                 ->withInput()
@@ -94,56 +101,85 @@ class PermissionController extends Controller
             ->with('success', 'Permission "' . $permission->name . '" berhasil ditambahkan.');
     }
 
-    public function edit($id): View
+    public function edit($id)
     {
         $permission = Permission::findOrFail($id);
+        $parts = explode('.', $permission->name);
         $modules = $this->getModules();
         $actions = $this->getActions();
 
-        // Parse existing permission name
-        $parts = explode('.', $permission->name);
-        $module = count($parts) > 1 ? $parts[0] : 'general';
-        $action = count($parts) > 1 ? $parts[1] : $permission->name;
+        // Cek apakah formatnya modul.aksi standar
+        $isStandardFormat = count($parts) === 2
+            && array_key_exists($parts[0], $modules)
+            && array_key_exists($parts[1], $actions);
+        // dd($isStandardFormat);
+        if ($isStandardFormat) {
+            $module = $parts[0];
+            $action = $parts[1];
+            $customName = $permission->name;
+            ;
+        } else {
+            // Format custom, tampilkan di field custom_name
+            $module = '';
+            $action = '';
+            $customName = $permission->name;
+        }
 
-        return view('permissions.edit', compact('permission', 'modules', 'actions', 'module', 'action'));
+        return view('permissions.edit', compact(
+            'permission',
+            'modules',
+            'actions',
+            'module',
+            'action',
+            'customName'
+        ));
     }
 
     public function update(Request $request, $id): RedirectResponse
     {
+        // ✅ Validasi kondisional
+        $request->validate([
+            'module' => 'required_without:custom_name|nullable|string|max:100',
+            'action' => 'required_without:custom_name|nullable|string|max:100',
+            'custom_name' => 'nullable|string|max:255|regex:/^[a-z0-9\-_]+(\.[a-z0-9\-_]+)*$/',
+        ], [
+            'custom_name.regex' => 'Format permission harus: modul.aksi (huruf kecil, angka, dash, underscore)',
+        ]);
+
+        // Tentukan nama permission baru
+        $permissionName = $request->filled('custom_name')
+            ? strtolower(trim($request->custom_name))
+            : $request->module . '.' . $request->action;
+
         $permission = Permission::findOrFail($id);
         $oldName = $permission->name;
 
-        $request->validate([
-            'module' => 'required|string|max:100',
-            'action' => 'required|string|max:100',
-        ]);
-
-        $newPermissionName = $request->module . '.' . $request->action;
-
-        // Cek apakah permission baru sudah ada (kecuali permission yang sedang diedit)
+        // Cek duplikat (kecuali dirinya sendiri)
         if (
-            Permission::where('name', $newPermissionName)
+            Permission::where('name', $permissionName)
                 ->where('id', '!=', $id)
                 ->exists()
         ) {
             return redirect()->back()
                 ->withInput()
-                ->withErrors(['permission' => 'Permission "' . $newPermissionName . '" sudah ada.']);
+                ->withErrors(['permission' => 'Permission "' . $permissionName . '" sudah ada.']);
         }
 
-        $permission->update(['name' => $newPermissionName]);
+        // ✅ Jangan izinkan ubah nama permission (karena bisa merusak relasi role/user)
+        if ($oldName !== $permissionName) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['permission' => 'Nama permission tidak boleh diubah karena sudah terikat dengan role. Buat permission baru jika diperlukan.']);
+        }
 
         activity()
             ->performedOn($permission)
             ->causedBy(auth()->user())
-            ->withProperties([
-                'old' => ['name' => $oldName],
-                'attributes' => $permission->toArray(),
-            ])
-            ->log('Mengupdate Permission dari "' . $oldName . '" menjadi "' . $newPermissionName . '"');
+            ->withProperties(['attributes' => $permission->toArray()])
+            ->log('Mengupdate Permission: ' . $permission->name);
 
         return redirect()->route('permissions.index')
-            ->with('success', 'Permission berhasil diperbarui menjadi "' . $newPermissionName . '".');
+            ->with('success', 'Permission "' . $permission->name . '" berhasil diperbarui.');
     }
 
     public function destroy($id): RedirectResponse
