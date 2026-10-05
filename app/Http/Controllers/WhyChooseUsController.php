@@ -5,6 +5,8 @@ use App\Models\WhyChooseUs;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Activitylog\Models\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class WhyChooseUsController extends Controller
 {
@@ -51,7 +53,7 @@ class WhyChooseUsController extends Controller
                     }
                 })
 
-                ->rawColumns(['status', 'action','Icon'])
+                ->rawColumns(['status', 'action', 'Icon'])
                 ->make(true);
         }
 
@@ -64,40 +66,55 @@ class WhyChooseUsController extends Controller
     }
 
     public function store(Request $request)
-{
-    $validated = $request->validate([
-        'Icon' => 'required|image|mimes:png,jpg,jpeg,svg,webp|max:2048',
-        'Urutan' => 'required|integer|min:0',
-        'Status' => 'required|boolean',
+    {
+        $validated = $request->validate([
+            'Icon' => 'required|image|mimes:png,jpg,jpeg,svg,webp|max:2048',
+            'Urutan' => 'required|integer|min:0',
+            'Status' => 'required|boolean',
 
-        // Translations
-        'translations.id.Judul' => 'required|string|max:255',
-        'translations.id.Deskripsi' => 'required|string',
-        'translations.en.Judul' => 'nullable|string|max:255',
-        'translations.en.Deskripsi' => 'nullable|string',
-    ]);
+            // Translations
+            'translations.id.Judul' => 'required|string|max:255',
+            'translations.id.Deskripsi' => 'required|string',
+            'translations.en.Judul' => 'nullable|string|max:255',
+            'translations.en.Deskripsi' => 'nullable|string',
+        ]);
 
-    $iconPath = $request->file('Icon')->store('why-choose-us/icons', 'public');
+        $iconPath = $request->file('Icon')->store('why-choose-us/icons', 'public');
 
-    $item = WhyChooseUs::create([
-        'Icon' => $iconPath,
-        'Urutan' => $request->Urutan,
-        'Status' => $request->Status,
-    ]);
+        $mainData = [
+            'Icon' => $iconPath,
+            'Urutan' => $request->Urutan,
+            'Status' => $request->Status,
+        ];
 
-    // Simpan terjemahan
-    foreach (['id', 'en'] as $locale) {
-        if (!empty($validated['translations'][$locale]['Judul'])) {
-            $item->translations()->create([
-                'Locale' => $locale,
-                'Judul' => $validated['translations'][$locale]['Judul'] ?? null,
-                'Deskripsi' => $validated['translations'][$locale]['Deskripsi'] ?? null,
-            ]);
+        $item = WhyChooseUs::create($mainData);
+
+        // Simpan terjemahan
+        $translationsData = [];
+        foreach (['id', 'en'] as $locale) {
+            if (!empty($validated['translations'][$locale]['Judul'])) {
+                $translation = [
+                    'Locale' => $locale,
+                    'Judul' => $validated['translations'][$locale]['Judul'] ?? null,
+                    'Deskripsi' => $validated['translations'][$locale]['Deskripsi'] ?? null,
+                ];
+                $item->translations()->create($translation);
+                $translationsData[$locale] = $translation;
+            }
         }
-    }
 
-    return redirect()->route('why-choose-us.index')->with('success', 'Data keunggulan berhasil ditambahkan.');
-}
+        // Logging activity untuk store
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($item)
+            ->withProperties([
+                'attributes' => $mainData,
+                'translations' => $translationsData
+            ])
+            ->log('Membuat data keunggulan: ' . ($validated['translations']['id']['Judul'] ?? ''));
+
+        return redirect()->route('why-choose-us.index')->with('success', 'Data keunggulan berhasil ditambahkan.');
+    }
 
     public function edit($id)
     {
@@ -106,47 +123,66 @@ class WhyChooseUsController extends Controller
     }
 
     public function update(Request $request, $id)
-{
-    $validated = $request->validate([
-        'Icon' => 'nullable|image|mimes:png,jpg,jpeg,svg,webp|max:2048',
-        'Urutan' => 'required|integer|min:0',
-        'Status' => 'required|boolean',
+    {
+        $validated = $request->validate([
+            'Icon' => 'nullable|image|mimes:png,jpg,jpeg,svg,webp|max:2048',
+            'Urutan' => 'required|integer|min:0',
+            'Status' => 'required|boolean',
 
-        // Translations
-        'translations.id.Judul' => 'required|string|max:255',
-        'translations.id.Deskripsi' => 'required|string',
-        'translations.en.Judul' => 'nullable|string|max:255',
-        'translations.en.Deskripsi' => 'nullable|string',
-    ]);
+            // Translations
+            'translations.id.Judul' => 'required|string|max:255',
+            'translations.id.Deskripsi' => 'required|string',
+            'translations.en.Judul' => 'nullable|string|max:255',
+            'translations.en.Deskripsi' => 'nullable|string',
+        ]);
 
-    $item = WhyChooseUs::findOrFail($id);
+        $item = WhyChooseUs::findOrFail($id);
 
-    // Handle Icon Update
-    if ($request->hasFile('Icon')) {
-        if ($item->Icon && \Storage::disk('public')->exists($item->Icon)) {
-            \Storage::disk('public')->delete($item->Icon);
+        // Handle Icon Update
+        if ($request->hasFile('Icon')) {
+            if ($item->Icon && \Storage::disk('public')->exists($item->Icon)) {
+                \Storage::disk('public')->delete($item->Icon);
+            }
+            $item->Icon = $request->file('Icon')->store('why-choose-us/icons', 'public');
         }
-        $item->Icon = $request->file('Icon')->store('why-choose-us/icons', 'public');
-    }
 
-    $item->update([
-        'Urutan' => $request->Urutan,
-        'Status' => $request->Status,
-    ]);
+        $mainData = [
+            'Urutan' => $request->Urutan,
+            'Status' => $request->Status,
+            'Icon' => $item->Icon, // ambil icon yang baru jika diupdate, atau lama jika tidak
+        ];
 
-    // Update/Create Translations
-    foreach (['id', 'en'] as $locale) {
-        $item->translations()->updateOrCreate(
-            ['Locale' => $locale],
-            [
+        $item->update([
+            'Urutan' => $request->Urutan,
+            'Status' => $request->Status,
+        ]);
+
+        // Update/Create Translations
+        $translationsData = [];
+        foreach (['id', 'en'] as $locale) {
+            $trans = [
                 'Judul' => $validated['translations'][$locale]['Judul'] ?? null,
                 'Deskripsi' => $validated['translations'][$locale]['Deskripsi'] ?? null,
-            ]
-        );
-    }
+            ];
+            $item->translations()->updateOrCreate(
+                ['Locale' => $locale],
+                $trans
+            );
+            $translationsData[$locale] = $trans;
+        }
 
-    return redirect()->route('why-choose-us.index')->with('success', 'Data keunggulan berhasil diperbarui.');
-}
+        // Logging activity untuk update
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($item)
+            ->withProperties([
+                'attributes' => $mainData,
+                'translations' => $translationsData
+            ])
+            ->log('Mengupdate data keunggulan: ' . ($validated['translations']['id']['Judul'] ?? ''));
+
+        return redirect()->route('why-choose-us.index')->with('success', 'Data keunggulan berhasil diperbarui.');
+    }
 
     public function destroy($id)
     {
@@ -158,7 +194,32 @@ class WhyChooseUsController extends Controller
                 Storage::disk('public')->delete($item->Icon);
             }
 
+            // Untuk logging, ambil data sebelum dihapus
+            $mainData = [
+                'Icon' => $item->Icon,
+                'Urutan' => $item->Urutan,
+                'Status' => $item->Status,
+            ];
+            $translationsData = [];
+            foreach ($item->translations as $trans) {
+                $translationsData[$trans->Locale] = [
+                    'Judul' => $trans->Judul,
+                    'Deskripsi' => $trans->Deskripsi,
+                ];
+            }
+
             $item->delete();
+
+            // Logging activity untuk delete
+            activity()
+                ->causedBy(auth()->user())
+                ->performedOn($item)
+                ->withProperties([
+                    'attributes' => $mainData,
+                    'translations' => $translationsData
+                ])
+                ->log('Menghapus data keunggulan: ' . ($translationsData['id']['Judul'] ?? 'tidak diketahui'));
+
             return response()->json(['message' => 'Data berhasil dihapus!']);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Gagal menghapus data.'], 500);

@@ -63,18 +63,24 @@ class PenghargaanPerusahaanController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $request->validate([
             'Judul' => 'required|string',
             'Keterangan' => 'required|string',
         ]);
 
         PenghargaanPerusahaan::truncate();
-        PenghargaanPerusahaan::create([
+        $mainData = [
             'Judul' => $request->Judul,
             'Deskripsi' => $request->Keterangan,
             'UserCreate' => auth()->check() ? auth()->user()->name : null,
-        ]);
+        ];
+        $penghargaan = PenghargaanPerusahaan::create($mainData);
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($penghargaan)
+            ->withProperties(['attributes' => $mainData])
+            ->log('Membuat Penghargaan Perusahaan: ' . $request->Judul);
 
         return redirect()->route('penghargaan-perusahaan.index')->with('success', 'Penghargaan Perusahaan berhasil disimpan.');
     }
@@ -114,6 +120,7 @@ class PenghargaanPerusahaanController extends Controller
             $penghargaanPerusahaan->details()->delete();
         }
 
+        $detailsSaved = [];
         if ($request->hasFile('details')) {
             foreach ($request->file('details') as $i => $detailFile) {
                 $judul = $request->input("details.$i.Judul");
@@ -124,23 +131,41 @@ class PenghargaanPerusahaanController extends Controller
                     $gambarPath = $detailFile['Gambar']->store('penghargaan_perusahaan', 'public');
                 }
 
-                $penghargaanPerusahaan->details()->create([
+                $created = $penghargaanPerusahaan->details()->create([
                     'Judul' => $judul,
                     'Deskripsi' => $deskripsi,
                     'Gambar' => $gambarPath,
                     'UserCreate' => auth()->user()->name ?? null,
                 ]);
+                $detailsSaved[] = [
+                    'Judul' => $judul,
+                    'Deskripsi' => $deskripsi,
+                    'Gambar' => $gambarPath,
+                ];
             }
         } else {
             foreach ($request->details as $detail) {
-                $penghargaanPerusahaan->details()->create([
+                $created = $penghargaanPerusahaan->details()->create([
                     'Judul' => $detail['Judul'],
                     'Deskripsi' => $detail['Deskripsi'],
                     'Gambar' => null,
                     'UserCreate' => auth()->user()->name ?? null,
                 ]);
+                $detailsSaved[] = [
+                    'Judul' => $detail['Judul'],
+                    'Deskripsi' => $detail['Deskripsi'],
+                    'Gambar' => null,
+                ];
             }
         }
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($penghargaanPerusahaan)
+            ->withProperties([
+                'updated_details' => $detailsSaved
+            ])
+            ->log('Mengupdate Detail Penghargaan Perusahaan Id: ' . $penghargaanPerusahaan->id);
 
         return redirect()->route('penghargaan-perusahaan.index')->with('success', 'Detail Penghargaan Perusahaan berhasil diupdate.');
     }
@@ -154,6 +179,13 @@ class PenghargaanPerusahaanController extends Controller
 
         $penghargaanPerusahaan->UserDelete = auth()->check() ? auth()->user()->name : null;
         $penghargaanPerusahaan->save();
+
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($penghargaanPerusahaan)
+            ->withProperties(['id' => $penghargaanPerusahaan->id])
+            ->log('Menghapus Penghargaan Perusahaan Id: ' . $penghargaanPerusahaan->id);
+
         $penghargaanPerusahaan->delete();
 
         return response()->json(['success' => 'Penghargaan Perusahaan berhasil dihapus!']);

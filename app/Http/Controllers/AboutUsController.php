@@ -159,6 +159,9 @@ class AboutUsController extends Controller
 
         DB::beginTransaction();
         try {
+            // For activity() logging, we'll collect old/new attribute and details for all sections
+            $logs = [];
+
             foreach ($request->input('sections', []) as $sectionId => $data) {
                 $sectionId = (int) $sectionId;
                 if (!isset(self::SECTIONS[$sectionId])) {
@@ -166,6 +169,10 @@ class AboutUsController extends Controller
                 }
 
                 $about = AboutUs::findOrFail($sectionId);
+
+                // Store old data for comparison/logs
+                $oldSection = $about->only(['SubJudul', 'Judul', 'Deskripsi', 'Gambar', 'UserUpdate']);
+
                 $gambarPath = $about->Gambar;
 
                 if ($request->hasFile("sections.{$sectionId}.Gambar")) {
@@ -175,30 +182,77 @@ class AboutUsController extends Controller
                     $gambarPath = $request->file("sections.{$sectionId}.Gambar")->store('about-us', 'public');
                 }
 
-                $about->update([
+                $updateData = [
                     'SubJudul' => $data['SubJudul'] ?? null,
                     'Judul' => $data['Judul'] ?? null,
                     'Deskripsi' => $data['Deskripsi'] ?? null,
                     'Gambar' => $gambarPath,
                     'UserUpdate' => auth()->check() ? auth()->user()->name : null,
-                ]);
+                ];
+
+                $about->update($updateData);
 
                 $config = self::SECTIONS[$sectionId];
 
+                // For logging meta/details change
+                $beforeDetails = [];
+                $afterDetails = [];
+
                 if (!empty($config['meta_keys'])) {
+                    // Meta data handling
+                    $originalMeta = [];
+                    foreach ($config['meta_keys'] as $key => $label) {
+                        $found = $about->getDetail->firstWhere('Judul', $key);
+                        $originalMeta[$key] = $found ? $found->Deskripsi : null;
+                    }
                     $this->syncMetaDetails($about, $data['meta'] ?? [], $config['meta_keys']);
+                    $newMeta = [];
+                    foreach ($config['meta_keys'] as $key => $label) {
+                        $found = AboutUsDetail::where('IdAbout', $about->id)->where('Judul', $key)->first();
+                        $newMeta[$key] = $found ? $found->Deskripsi : null;
+                    }
+                    $beforeDetails = $originalMeta;
+                    $afterDetails = $newMeta;
                 } else {
+                    // Detail data handling
+                    $originalDetails = AboutUsDetail::where('IdAbout', $about->id)->get()->map(function ($item) {
+                        return $item->only(['id', 'Judul', 'Deskripsi', 'Gambar']);
+                    })->toArray();
                     $this->syncDetails(
                         $about,
                         $data['details'] ?? [],
                         $request,
                         $sectionId
                     );
+                    $newDetails = AboutUsDetail::where('IdAbout', $about->id)->get()->map(function ($item) {
+                        return $item->only(['id', 'Judul', 'Deskripsi', 'Gambar']);
+                    })->toArray();
+                    $beforeDetails = $originalDetails;
+                    $afterDetails = $newDetails;
                 }
+
+                // Log for this section
+                $logs[] = [
+                    'section_id' => $sectionId,
+                    'section_key' => $config['key'] ?? '',
+                    'section_label' => $config['label'] ?? '',
+                    'changes' => [
+                        'attributes' => [
+                            'before' => $oldSection,
+                            'after' => $updateData,
+                        ],
+                        'details' => [
+                            'before' => $beforeDetails,
+                            'after' => $afterDetails,
+                        ]
+                    ]
+                ];
             }
 
+            // Insert activity log with details of all section changes
             activity()
                 ->causedBy(auth()->user())
+                ->withProperties(['changes' => $logs])
                 ->log('Memperbarui konten halaman Tentang Kami');
 
             DB::commit();
@@ -354,8 +408,8 @@ class AboutUsController extends Controller
         }
 
         $toDelete = AboutUsDetail::where('IdAbout', $about->id)
-            ->when(count($keepIds), fn ($q) => $q->whereNotIn('id', $keepIds))
-            ->when(!count($keepIds), fn ($q) => $q)
+            ->when(count($keepIds), fn($q) => $q->whereNotIn('id', $keepIds))
+            ->when(!count($keepIds), fn($q) => $q)
             ->get();
 
         foreach ($toDelete as $row) {
