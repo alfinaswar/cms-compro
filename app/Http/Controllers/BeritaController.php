@@ -95,7 +95,8 @@ class BeritaController extends Controller
      */
     public function create()
     {
-        $kategoris = KategoriBerita::orderBy('NamaKategori')->get();
+        $kategoris = KategoriBerita::orderBy('NamaKategori')->get()
+        0
         return view('pages.admin.berita.create', compact('kategoris'));
     }
 

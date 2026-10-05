@@ -37,10 +37,11 @@
                         <div class="card-body">
 
                             <!-- TABS BAHASA -->
-                             <!-- TABS BAHASA -->
+                            <!-- TABS BAHASA -->
                             <ul class="nav nav-tabs mb-4" id="langTabs" role="tablist">
                                 <li class="nav-item">
-                                    <a class="nav-link active" id="tab-id-tab" data-toggle="tab" href="#tab-id" role="tab">
+                                    <a class="nav-link active" id="tab-id-tab" data-toggle="tab" href="#tab-id"
+                                        role="tab">
                                         🇮🇩 Bahasa Indonesia <span class="text-danger">*</span>
                                     </a>
                                 </li>
@@ -62,7 +63,8 @@
                                             </div>
                                             <input type="text" name="translations[id][Judul]" id="JudulId"
                                                 class="form-control form-control-lg @error('translations.id.Judul') is-invalid @enderror"
-                                                placeholder="Tulis judul berita yang menarik..." value="{{ old('translations.id.Judul') }}" required autofocus>
+                                                placeholder="Tulis judul berita yang menarik..."
+                                                value="{{ old('translations.id.Judul') }}" required autofocus>
                                         </div>
                                         @error('translations.id.Judul')
                                             <span class="invalid-feedback d-block mt-1">{{ $message }}</span>
@@ -95,7 +97,8 @@
                                             </div>
                                             <input type="text" name="translations[en][Judul]" id="JudulEn"
                                                 class="form-control form-control-lg @error('translations.en.Judul') is-invalid @enderror"
-                                                placeholder="Write an engaging news title..." value="{{ old('translations.en.Judul') }}">
+                                                placeholder="Write an engaging news title..."
+                                                value="{{ old('translations.en.Judul') }}">
                                         </div>
                                         @error('translations.en.Judul')
                                             <span class="invalid-feedback d-block mt-1">{{ $message }}</span>
@@ -111,7 +114,8 @@
                                     <!-- ✅ UNTUK INGGRIS: name="translations[en][Konten]" dan id="summernoteEN" -->
                                     <div class="form-group">
                                         <label><strong>Full Content</strong></label>
-                                        <textarea name="translations[en][Konten]" id="summernoteEN" class="form-control @error('translations.en.Konten') is-invalid @enderror">{{ old('translations.en.Konten') }}</textarea>
+                                        <textarea name="translations[en][Konten]" id="summernoteEN"
+                                            class="form-control @error('translations.en.Konten') is-invalid @enderror">{{ old('translations.en.Konten') }}</textarea>
                                         @error('translations.en.Konten')
                                             <span class="invalid-feedback d-block mt-1">{{ $message }}</span>
                                         @enderror
@@ -129,7 +133,8 @@
                                         <label><strong>Kategori</strong> <span class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <select name="Kategori" id="selectKategori"
-                                                class="form-control select2-kategori @error('Kategori') is-invalid @enderror" required>
+                                                class="form-control select2-kategori @error('Kategori') is-invalid @enderror"
+                                                required>
                                                 <option value="">-- Pilih Kategori --</option>
                                                 @foreach ($kategoris as $kat)
                                                     <option value="{{ $kat->NamaKategori }}"
@@ -152,10 +157,13 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label><strong>Tags</strong> <small class="text-muted">(Pisahkan dengan koma)</small></label>
+                                        <label><strong>Tags</strong> <small class="text-muted">(Pisahkan dengan
+                                                koma)</small></label>
                                         <input type="text" name="Tags" id="inputTags" class="form-control"
-                                            placeholder="Contoh: jasuindo, konstruksi, proyek" value="{{ old('Tags') }}">
-                                        <small class="text-muted"><i class="fa fa-info-circle"></i> Pisahkan dengan koma (,)</small>
+                                            placeholder="Contoh: jasuindo, konstruksi, proyek"
+                                            value="{{ old('Tags') }}">
+                                        <small class="text-muted"><i class="fa fa-info-circle"></i> Pisahkan dengan koma
+                                            (,)</small>
                                     </div>
                                 </div>
                             </div>
@@ -193,10 +201,22 @@
                             <h3 class="card-title"><i class="fa fa-image mr-2"></i>Thumbnail Berita</h3>
                         </div>
                         <div class="card-body text-center">
-                            <img id="previewThumb" src="{{ asset('img/no-image.png') }}" class="img-fluid mb-3"
-                                style="max-height: 180px; border-radius: 8px; border: 1px solid #ddd;">
+
+                            <!-- Placeholder saat belum ada gambar -->
+                            <div id="thumbPlaceholder" class="mb-3 text-muted"
+                                style="height: 180px; display: flex; align-items: center; justify-content: center; border: 2px dashed #cbd5e1; border-radius: 8px; background-color: #f8fafc;">
+                                <div>
+                                    <i class="fa fa-image fa-3x mb-2" style="opacity: 0.5;"></i>
+                                    <p class="mb-0 small font-weight-bold">Belum ada gambar dipilih</p>
+                                </div>
+                            </div>
+
+                            <!-- Preview Gambar (Disembunyikan secara default) -->
+                            <img id="previewThumb" src="" class="img-fluid mb-3"
+                                style="max-height: 180px; border-radius: 8px; border: 1px solid #ddd; display: none; object-fit: cover; width: 100%;">
+
                             <input type="file" name="PathThumbnail" class="form-control form-control-sm"
-                                accept="image/*" onchange="previewImage(this, 'previewThumb')" required>
+                                accept="image/*" onchange="previewImage(this)" required>
                             @error('PathThumbnail')
                                 <span class="text-danger text-sm d-block mt-1">{{ $message }}</span>
                             @enderror
@@ -215,9 +235,12 @@
                             <div class="form-group">
                                 <label><strong>Status</strong></label>
                                 <select name="Status" class="form-control">
-                                    <option value="Draf" {{ old('Status') == 'Draf' ? 'selected' : '' }}>📝 Draf</option>
-                                    <option value="Diterbitkan" {{ old('Status') == 'Diterbitkan' ? 'selected' : '' }}>✅ Diterbitkan</option>
-                                    <option value="Arsip" {{ old('Status') == 'Arsip' ? 'selected' : '' }}>📦 Arsip</option>
+                                    <option value="Draf" {{ old('Status') == 'Draf' ? 'selected' : '' }}>📝 Draf
+                                    </option>
+                                    <option value="Diterbitkan" {{ old('Status') == 'Diterbitkan' ? 'selected' : '' }}>✅
+                                        Diterbitkan</option>
+                                    <option value="Arsip" {{ old('Status') == 'Arsip' ? 'selected' : '' }}>📦 Arsip
+                                    </option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -244,32 +267,39 @@
                             <div class="alert alert-light border mb-3">
                                 <small class="text-muted d-block mb-1">Preview Google:</small>
                                 <div style="font-family: arial, sans-serif;">
-                                    <div id="seoPreviewTitle" style="color: #1a0dab; font-size: 18px; line-height: 21px; margin-bottom: 2px;">Judul Berita</div>
-                                    <div style="color: #006621; font-size: 14px; margin-bottom: 2px;">jasuindo.com/berita/judul-berita</div>
-                                    <div id="seoPreviewDesc" style="color: #545454; font-size: 13px; line-height: 1.4;">Deskripsi berita akan muncul di sini...</div>
+                                    <div id="seoPreviewTitle"
+                                        style="color: #1a0dab; font-size: 18px; line-height: 21px; margin-bottom: 2px;">
+                                        Judul Berita</div>
+                                    <div style="color: #006621; font-size: 14px; margin-bottom: 2px;">
+                                        jasuindo.com/berita/judul-berita</div>
+                                    <div id="seoPreviewDesc" style="color: #545454; font-size: 13px; line-height: 1.4;">
+                                        Deskripsi berita akan muncul di sini...</div>
                                 </div>
                             </div>
 
                             <!-- SEO Title -->
                             <div class="form-group">
-                                <label><strong>SEO Title</strong> <span class="float-right text-muted" id="counterTitle">0/70</span></label>
-                                <input type="text" name="translations[id][SEOTitle]" id="inputSEOTitle" class="form-control"
-                                    maxlength="70" value="{{ old('translations.id.SEOTitle') }}"
+                                <label><strong>SEO Title</strong> <span class="float-right text-muted"
+                                        id="counterTitle">0/70</span></label>
+                                <input type="text" name="translations[id][SEOTitle]" id="inputSEOTitle"
+                                    class="form-control" maxlength="70" value="{{ old('translations.id.SEOTitle') }}"
                                     placeholder="Kosongkan untuk pakai Judul">
                             </div>
 
                             <!-- SEO Description -->
                             <div class="form-group">
-                                <label><strong>Meta Description</strong> <span class="float-right text-muted" id="counterDesc">0/160</span></label>
-                                <textarea name="translations[id][SEODescription]" id="inputSEODesc" class="form-control" rows="3" maxlength="160"
-                                    placeholder="Deskripsi untuk hasil pencarian Google">{{ old('translations.id.SEODescription') }}</textarea>
+                                <label><strong>Meta Description</strong> <span class="float-right text-muted"
+                                        id="counterDesc">0/160</span></label>
+                                <textarea name="translations[id][SEODescription]" id="inputSEODesc" class="form-control" rows="3"
+                                    maxlength="160" placeholder="Deskripsi untuk hasil pencarian Google">{{ old('translations.id.SEODescription') }}</textarea>
                             </div>
 
                             <!-- SEO Keywords -->
                             <div class="form-group">
                                 <label><strong>SEO Keywords</strong></label>
                                 <input type="text" name="translations[id][SEOKeywords]" class="form-control"
-                                    value="{{ old('translations.id.SEOKeywords') }}" placeholder="jasuindo, konstruksi, berita">
+                                    value="{{ old('translations.id.SEOKeywords') }}"
+                                    placeholder="jasuindo, konstruksi, berita">
                                 <small class="text-muted">Pisahkan dengan koma.</small>
                             </div>
                         </div>
@@ -319,7 +349,7 @@
     <script src="{{ asset('assets/plugins/summernote/summernote-bs4.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/select2/js/select2.full.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
+    <script>
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -376,7 +406,7 @@
                 data.append('_token', '{{ csrf_token() }}');
 
                 $.ajax({
-                    url: '{{ route("berita.upload-image") }}',
+                    url: '{{ route('berita.upload-image') }}',
                     method: 'POST',
                     data: data,
                     contentType: false,
@@ -406,8 +436,12 @@
                 $('#seoPreviewDesc').text(seoDesc);
             }
             $('#JudulId, #inputSEOTitle, #inputSEODesc').on('input', updateSEOPreview);
-            $('#inputSEOTitle').on('input', function() { $('#counterTitle').text($(this).val().length + '/70'); });
-            $('#inputSEODesc').on('input', function() { $('#counterDesc').text($(this).val().length + '/160'); });
+            $('#inputSEOTitle').on('input', function() {
+                $('#counterTitle').text($(this).val().length + '/70');
+            });
+            $('#inputSEODesc').on('input', function() {
+                $('#counterDesc').text($(this).val().length + '/160');
+            });
 
             // Button Action (Draf/Publish)
             $('button[name="action"]').on('click', function() {
@@ -427,17 +461,24 @@
                 errorMsg.hide();
 
                 $.ajax({
-                    url: '{{ route("kategori-berita.store") }}',
+                    url: '{{ route('kategori-berita.store') }}',
                     method: 'POST',
                     data: $(this).serialize(),
                     dataType: 'json',
                     success: function(response) {
                         if (response.status === 200) {
-                            var newOption = new Option(response.data.NamaKategori, response.data.NamaKategori, false, true);
+                            var newOption = new Option(response.data.NamaKategori, response.data
+                                .NamaKategori, false, true);
                             $('#selectKategori').append(newOption).trigger('change');
                             input.val('');
                             $('#modalTambahKategori').modal('hide');
-                            Swal.fire({ icon: 'success', title: 'Berhasil!', text: response.message, timer: 1500, showConfirmButton: false });
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: response.message,
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
                         }
                     },
                     error: function(xhr) {
@@ -448,7 +489,8 @@
                         }
                     },
                     complete: function() {
-                        btn.prop('disabled', false).html('<i class="fa fa-save mr-1"></i> Simpan');
+                        btn.prop('disabled', false).html(
+                            '<i class="fa fa-save mr-1"></i> Simpan');
                     }
                 });
             });
@@ -460,11 +502,24 @@
         });
 
         // Preview Image Thumbnail
-        function previewImage(input, previewId) {
+        function previewImage(input) {
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
-                reader.onload = function(e) { $('#' + previewId).attr('src', e.target.result); }
+                reader.onload = function(e) {
+                    // 1. Masukkan source gambar
+                    $('#previewThumb').attr('src', e.target.result);
+
+                    // 2. Sembunyikan placeholder
+                    $('#thumbPlaceholder').hide();
+
+                    // 3. Tampilkan gambar preview
+                    $('#previewThumb').show();
+                }
                 reader.readAsDataURL(input.files[0]);
+            } else {
+                // Jika user membatalkan pilihan file (opsional, untuk reset)
+                $('#previewThumb').attr('src', '').hide();
+                $('#thumbPlaceholder').show();
             }
         }
     </script>
