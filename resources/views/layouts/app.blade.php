@@ -183,8 +183,10 @@
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto align-items-center">
                 <li class="nav-item d-flex align-items-center">
-                    <span class="mr-3 font-weight-semibold"
-                        style="font-size: 1rem;">{{ now()->translatedFormat('l, d F Y H:i') }}</span>
+                    <span class="mr-3 font-weight-semibold" style="font-size: 1rem;">
+                        {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y H:i') }}
+                    </span>
+
                     <form action="{{ route('logout') }}" method="POST" style="margin-bottom: 0;">
                         @csrf
                         <button type="submit" class="btn btn-danger btn-sm"

@@ -30,6 +30,7 @@ use App\Http\Controllers\PengaturanWebsiteController;
 use App\Http\Controllers\PenghargaanPerusahaanController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\StaticPageController;
 use App\Http\Controllers\StrukturOrganisasiController;
 use App\Http\Controllers\StrukturOrganisasiDetailController;
 use App\Http\Controllers\UserController;
@@ -69,6 +70,9 @@ Route::group(['prefix' => '{locale}', 'where' => ['locale' => 'id|en']], functio
     Route::post('/career/{id}/apply', [LowonganKerjaController::class, 'apply'])->name('frontend.career.apply');
     Route::get('/contact-us', [ContactUsController::class, 'index'])->name('frontend.contact.index');
     Route::post('/store-contact-us', [ContactUsController::class, 'store'])->name('frontend.contact.store');
+    Route::get('/{slug}', [StaticPageController::class, 'show'])
+        ->name('static-pages.show')
+        ->where('slug', 'kebijakan-privasi|syarat-ketentuan|tentang-kami|faq');
 });
 Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     // === GROUP DASHBOARD ===
@@ -191,6 +195,13 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         Route::get('/custom-pages/{id}/edit', [CustomPagesController::class, 'edit'])->name('custom-pages.edit');
         Route::put('/custom-pages/{id}', [CustomPagesController::class, 'update'])->name('custom-pages.update');
         Route::delete('/custom-pages/{id}', [CustomPagesController::class, 'destroy'])->name('custom-pages.destroy');
+
+        Route::prefix('static-pages')->name('static-pages.')->group(function () {
+            Route::get('/', [StaticPageController::class, 'index'])->name('index');
+            Route::get('/{id}/edit', [StaticPageController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [StaticPageController::class, 'update'])->name('update');
+            Route::post('/upload-image', [StaticPageController::class, 'uploadImage'])->name('upload-image');
+        });
     });
     // Menu
     Route::prefix('menu')->group(function () {
