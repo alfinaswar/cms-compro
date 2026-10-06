@@ -284,17 +284,29 @@
                     </button>
 
                     @php
-                        // Logic untuk Language Switcher
-                        $targetLocale = $currentLocale === 'id' ? 'en' : 'id';
+                        $currentLocale = app()->getLocale();
                         $segments = request()->segments();
-                        if (in_array($segments[0] ?? '', ['id', 'en'])) {
-                            $segments[0] = $targetLocale;
+
+                        // Bangun URL untuk Bahasa Indonesia
+                        $idSegments = $segments;
+                        if (in_array($idSegments[0] ?? '', ['id', 'en'])) {
+                            $idSegments[0] = 'id';
                         } else {
-                            array_unshift($segments, $targetLocale);
+                            array_unshift($idSegments, 'id');
                         }
-                        $localizedUrl = url(implode('/', $segments));
+                        $urlId = url(implode('/', $idSegments));
+
+                        // Bangun URL untuk Bahasa Inggris
+                        $enSegments = $segments;
+                        if (in_array($enSegments[0] ?? '', ['id', 'en'])) {
+                            $enSegments[0] = 'en';
+                        } else {
+                            array_unshift($enSegments, 'en');
+                        }
+                        $urlEn = url(implode('/', $enSegments));
                     @endphp
 
+                    <!-- Language Switcher Desktop -->
                     <!-- Language Switcher Desktop -->
                     <div class="relative group">
                         <button
@@ -313,12 +325,12 @@
                             class="absolute top-full right-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                             <div
                                 class="bg-white rounded-xl shadow-xl border border-slate-100 py-2 min-w-[160px] overflow-hidden">
-                                <a href="{{ $currentLocale == 'id' ? $localizedUrl : url('/id') }}"
+                                <a href="{{ $urlId }}"
                                     class="flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-brand-50 hover:text-brand-600 {{ $currentLocale == 'id' ? 'bg-brand-50 text-brand-600 font-semibold' : '' }}">
                                     <img src="https://flagcdn.com/w20/id.png" class="w-5 h-auto rounded-sm mr-2">
                                     {{ __('Bahasa Indonesia') }}
                                 </a>
-                                <a href="{{ $currentLocale == 'en' ? $localizedUrl : url('/en') }}"
+                                <a href="{{ $urlEn }}"
                                     class="flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-brand-50 hover:text-brand-600 {{ $currentLocale == 'en' ? 'bg-brand-50 text-brand-600 font-semibold' : '' }}">
                                     <img src="https://flagcdn.com/w20/gb.png" class="w-5 h-auto rounded-sm mr-2">
                                     {{ __('English') }}
@@ -452,14 +464,15 @@
                     @endforeach
 
                     <!-- Language Switcher & Contact (Mobile) -->
+                    <!-- Language Switcher & Contact (Mobile) -->
                     <div class="border-t border-gray-200 pt-4 mt-4 space-y-2">
-                        <a href="{{ $currentLocale == 'id' ? $localizedUrl : url('/id') }}"
+                        <a href="{{ $urlId }}"
                             class="w-full flex items-center justify-center space-x-2 px-4 py-3 text-slate-700 hover:bg-brand-50 rounded-lg transition-colors {{ $currentLocale == 'id' ? 'bg-brand-50 text-brand-600 font-semibold' : '' }}">
                             <img src="https://flagcdn.com/w20/id.png" alt="Indonesia" class="w-5 h-auto rounded-sm">
                             <span class="font-medium">{{ __('Bahasa Indonesia') }}</span>
                         </a>
 
-                        <a href="{{ $currentLocale == 'en' ? $localizedUrl : url('/en') }}"
+                        <a href="{{ $urlEn }}"
                             class="w-full flex items-center justify-center space-x-2 px-4 py-3 text-slate-700 hover:bg-brand-50 rounded-lg transition-colors {{ $currentLocale == 'en' ? 'bg-brand-50 text-brand-600 font-semibold' : '' }}">
                             <img src="https://flagcdn.com/w20/gb.png" alt="English" class="w-5 h-auto rounded-sm">
                             <span class="font-medium">{{ __('English') }}</span>
