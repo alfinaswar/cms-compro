@@ -2,21 +2,14 @@
 
 @section('content-frontend')
     @php
-        // Helper untuk static page
         $displayJudul = $translation->Judul ?: $page->Label;
         $displayKonten = $translation->Konten ?: '';
         $displayDesc = $translation->SEODescription ?: Str::limit(strip_tags($displayKonten), 120);
-
-        // Estimasi waktu baca (asumsi 200 kata per menit)
         $wordCount = str_word_count(strip_tags($displayKonten));
         $readingTime = max(1, ceil($wordCount / 200));
-
-        // Breadcrumb sederhana: Home > Judul
         $breadcrumbs = [['title' => __('Home'), 'url' => url('/')], ['title' => $displayJudul, 'url' => null]];
         $shareUrl = url()->current();
     @endphp
-
-    <!-- Hero Section -->
     <section
         class="relative pt-24 pb-10 md:pt-32 md:pb-20 bg-gradient-to-br from-brand-900 via-brand-800 to-brand-900 overflow-hidden">
         <div class="absolute inset-0 opacity-10">
@@ -58,7 +51,6 @@
                     </span>
                 </div>
 
-                <!-- Breadcrumb -->
                 <nav class="mt-7 flex items-center justify-center space-x-2 text-xs sm:text-sm text-slate-300 flex-wrap">
                     @foreach ($breadcrumbs as $index => $crumb)
                         @if ($index < count($breadcrumbs) - 1)
@@ -75,66 +67,44 @@
         </div>
     </section>
 
-    <!-- Main Content, full width (col-md-12 equivalent) -->
     <section class="py-6 md:py-12 bg-slate-50">
         <div class="container mx-auto px-3 sm:px-8 md:px-16">
-            <div class="w-full"> <!-- full width, remove max-w-2xl and mx-auto -->
+            <div class="w-full">
 
                 <article class="bg-white rounded-xl overflow-hidden shadow-md border border-slate-200 p-0">
-
-                    <!-- Featured Image: Optional, can remove for privacy policy or keep if needed -->
-                    {{-- No featured image for privacy policy, but if needed, uncomment below --}}
-                    {{--
-                    @if ($thumbnailUrl)
-                        <div class="aspect-video overflow-hidden flex justify-center">
-                            <img src="{{ $thumbnailUrl }}" alt="{{ $displayJudul }}"
-                                class="w-full h-full object-cover mx-auto block">
-                        </div>
-                    @endif
-                    --}}
-
-                    <!-- Content -->
-                    <div class="py-8 px-2 sm:px-8 md:px-16"> <!-- text-center removed, px widened -->
+                    <div class="py-8 px-2 sm:px-8 md:px-16">
                         <!-- Title -->
                         <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-4 leading-tight text-center">
                             {{ $displayJudul }}
                         </h2>
-
-                        <!-- Rich Text Content -->
                         <div class="prose prose-slate max-w-none mb-8 mx-auto">
                             {!! $displayKonten !!}
-                        </div>
-                        <!-- Share Buttons -->
+                        </div>-->
                         <div class="flex justify-center gap-3 mt-8">
-                            {{-- WhatsApp --}}
                             <a href="https://wa.me/?text={{ urlencode($displayJudul . ' ' . $shareUrl) }}" target="_blank"
                                 rel="noopener"
                                 class="inline-flex items-center px-3 py-2 bg-green-500 hover:bg-green-600 text-white text-sm font-semibold rounded-full shadow transition-colors"
                                 title="Share to WhatsApp">
                                 <i class="fa-brands fa-whatsapp mr-2"></i> WhatsApp
                             </a>
-                            {{-- Facebook --}}
                             <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode($shareUrl) }}"
                                 target="_blank" rel="noopener"
                                 class="inline-flex items-center px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-full shadow transition-colors"
                                 title="Share to Facebook">
                                 <i class="fa-brands fa-facebook-f mr-2"></i> Facebook
                             </a>
-                            {{-- Twitter/X --}}
                             <a href="https://twitter.com/intent/tweet?url={{ urlencode($shareUrl) }}&text={{ urlencode($displayJudul) }}"
                                 target="_blank" rel="noopener"
                                 class="inline-flex items-center px-3 py-2 bg-sky-500 hover:bg-sky-700 text-white text-sm font-semibold rounded-full shadow transition-colors"
                                 title="Share to Twitter">
                                 <i class="fa-brands fa-x-twitter mr-2"></i> Twitter
                             </a>
-                            {{-- Telegram --}}
                             <a href="https://t.me/share/url?url={{ urlencode($shareUrl) }}&text={{ urlencode($displayJudul) }}"
                                 target="_blank" rel="noopener"
                                 class="inline-flex items-center px-3 py-2 bg-cyan-500 hover:bg-cyan-700 text-white text-sm font-semibold rounded-full shadow transition-colors"
                                 title="Share via Telegram">
                                 <i class="fa-brands fa-telegram mr-2"></i> Telegram
                             </a>
-                            {{-- Copy Link --}}
                             <button onclick="navigator.clipboard.writeText('{{ $shareUrl }}');" type="button"
                                 class="inline-flex items-center px-3 py-2 bg-slate-400 hover:bg-slate-600 text-white text-sm font-semibold rounded-full shadow transition-colors"
                                 title="Copy Link">
