@@ -136,9 +136,9 @@
                             // 1. Terjemahan Nama Menu
                             $translation = $menu->translations->firstWhere('Locale', $currentLocale);
                             $menuName = $translation ? $translation->NamaMenu : $menu->NamaMenu;
-
                             $hasChildren = $menu->children->count() > 0;
-                            // dd(json_encode($menu[3]));
+
+                            // 2. URL
                             if ($menu->JenisLink === 'route' && !empty($menu->RouteName)) {
                                 try {
                                     $menuUrl = route($menu->RouteName);
@@ -150,7 +150,8 @@
                             } else {
                                 $menuUrl = '#';
                             }
-                            // 3. Cek Active State
+
+                            // 3. Cek Active State (termasuk jika salah satu child-nya aktif)
                             if ($menu->JenisLink === 'route' && !empty($menu->RouteName)) {
                                 $isActive =
                                     request()->routeIs($menu->RouteName) || request()->routeIs($menu->RouteName . '.*');
@@ -161,12 +162,35 @@
                                 $isActive =
                                     $pathWithoutLocale === $menuPath || ($menuPath === '' && $pathWithoutLocale === '');
                             }
+
+                            // Jika menu punya children, periksa apakah ada child yang aktif
+                            if ($hasChildren && !$isActive) {
+                                foreach ($menu->children as $childCheck) {
+                                    if ($childCheck->JenisLink === 'route' && !empty($childCheck->RouteName)) {
+                                        if (
+                                            request()->routeIs($childCheck->RouteName) ||
+                                            request()->routeIs($childCheck->RouteName . '.*')
+                                        ) {
+                                            $isActive = true;
+                                            break;
+                                        }
+                                    } else {
+                                        $childPath = trim($childCheck->Url ?? '', '/');
+                                        if (!empty($childPath) && $pathWithoutLocale === $childPath) {
+                                            $isActive = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
                         @endphp
 
                         @if ($hasChildren)
-                            <div class="relative group">
+                            <!-- Dropdown Parent Item -->
+                            <div
+                                class="relative py-2 group after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-brand-600 after:transition-all after:duration-300 hover:after:w-full {{ $isActive ? 'after:w-full' : 'after:w-0' }}">
                                 <a href="{{ $menuUrl !== '#' ? $menuUrl : 'javascript:void(0)' }}"
-                                    class="nav-link flex items-center space-x-1 menu-link font-medium transition-colors duration-200 py-2 {{ $isActive ? 'text-brand-400' : 'text-black hover:text-brand-500' }}">
+                                    class="nav-link flex items-center space-x-1 menu-link font-medium transition-colors duration-200 {{ $isActive ? 'text-brand-600 font-semibold' : 'text-black hover:text-brand-500' }}">
                                     @if ($menu->Icon)
                                         <i class="{{ $menu->Icon }}"></i>
                                     @endif
@@ -179,7 +203,7 @@
                                 <div
                                     class="absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                                     <div
-                                        class="bg-white rounded-xl shadow-2xl border border-slate-100 py-3 min-w-[240px] overflow-hidden">
+                                        class="bg-white rounded-xl shadow-2xl border border-slate-100 py-3 min-w-[240px] overflow-hidden relative">
                                         <div
                                             class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white border-l border-t border-slate-100 transform rotate-45">
                                         </div>
@@ -194,7 +218,6 @@
                                                     ? $childTranslation->NamaMenu
                                                     : $child->NamaMenu;
 
-                                                // URL Child
                                                 if ($child->JenisLink === 'route' && !empty($child->RouteName)) {
                                                     try {
                                                         $childUrl = route($child->RouteName);
@@ -207,21 +230,15 @@
                                                     $childUrl = '#';
                                                 }
 
-                                                // Active State Child
                                                 if ($child->JenisLink === 'route' && !empty($child->RouteName)) {
                                                     $isChildActive = request()->routeIs($child->RouteName);
                                                 } else {
-                                                    $currentPath = trim(request()->path(), '/');
-                                                    $pathWithoutLocale = implode(
-                                                        '/',
-                                                        array_slice(explode('/', $currentPath), 1),
-                                                    );
                                                     $childPath = trim($child->Url ?? '', '/');
                                                     $isChildActive = $pathWithoutLocale === $childPath;
                                                 }
                                             @endphp
                                             <a href="{{ $childUrl }}" target="{{ $child->Target ?? '_self' }}"
-                                                class="flex items-center px-5 py-3 text-sm text-slate-700 hover:bg-brand-50 hover:text-brand-600 transition-colors duration-200 {{ $isChildActive ? 'bg-brand-50 text-brand-600 font-semibold' : '' }}">
+                                                class="flex items-center px-5 py-3 text-sm transition-colors duration-200 {{ $isChildActive ? 'bg-brand-50 text-brand-600 font-semibold' : 'text-slate-700 hover:bg-brand-50 hover:text-brand-600' }}">
                                                 @if ($child->Icon)
                                                     <i class="{{ $child->Icon }} w-5 mr-3 text-brand-500"></i>
                                                 @else
@@ -234,48 +251,20 @@
                                 </div>
                             </div>
                         @else
-                            <!-- Menu Biasa -->
-                            <a href="{{ $menuUrl }}" target="{{ $menu->Target ?? '_self' }}"
-                                class="nav-link menu-link font-medium transition-colors duration-200 py-2 {{ $isActive ? 'text-brand-400' : 'text-black hover:text-brand-500' }}">
-                                @if ($menu->Icon)
-                                    <i class="{{ $menu->Icon }} mr-1"></i>
-                                @endif
-                                {{ $menuName }}
-                            </a>
+                            <!-- Single Menu Item -->
+                            <div
+                                class="relative py-2 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full {{ $isActive ? 'after:w-full' : 'after:w-0' }}">
+                                <a href="{{ $menuUrl }}" target="{{ $menu->Target ?? '_self' }}"
+                                    class="nav-link menu-link font-medium transition-colors duration-200 {{ $isActive ? 'text-brand-600 font-semibold' : 'text-black hover:text-brand-500' }}">
+                                    @if ($menu->Icon)
+                                        <i class="{{ $menu->Icon }} mr-1"></i>
+                                    @endif
+                                    {{ $menuName }}
+                                </a>
+                            </div>
                         @endif
                     @endforeach
                 </div>
-
-                <!-- Script: Change menu color on scroll -->
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        const navbar = document.getElementById('main-navbar');
-                        const menuLinks = document.querySelectorAll('#desktop-menu .menu-link');
-
-                        function setLinkColor(scrolled) {
-                            menuLinks.forEach(function(link) {
-                                if (link.classList.contains('text-brand-400')) return; // keep active color
-
-                                link.classList.remove('text-black', 'text-white');
-                                if (scrolled) {
-                                    link.classList.add('text-black');
-                                } else {
-                                    link.classList.add('text-black');
-                                }
-                            });
-                        }
-
-                        function handleScroll() {
-                            // ketika discroll, tetap hitam (default)
-                            setLinkColor(true);
-                        }
-
-                        // Init
-                        setLinkColor(false);
-
-                        window.addEventListener('scroll', handleScroll);
-                    });
-                </script>
 
                 <!-- Right Side Actions -->
                 <div class="hidden lg:flex items-center space-x-4">
@@ -284,29 +273,16 @@
                     </button>
 
                     @php
-                        $currentLocale = app()->getLocale();
+                        $targetLocale = $currentLocale === 'id' ? 'en' : 'id';
                         $segments = request()->segments();
-
-                        // Bangun URL untuk Bahasa Indonesia
-                        $idSegments = $segments;
-                        if (in_array($idSegments[0] ?? '', ['id', 'en'])) {
-                            $idSegments[0] = 'id';
+                        if (in_array($segments[0] ?? '', ['id', 'en'])) {
+                            $segments[0] = $targetLocale;
                         } else {
-                            array_unshift($idSegments, 'id');
+                            array_unshift($segments, $targetLocale);
                         }
-                        $urlId = url(implode('/', $idSegments));
-
-                        // Bangun URL untuk Bahasa Inggris
-                        $enSegments = $segments;
-                        if (in_array($enSegments[0] ?? '', ['id', 'en'])) {
-                            $enSegments[0] = 'en';
-                        } else {
-                            array_unshift($enSegments, 'en');
-                        }
-                        $urlEn = url(implode('/', $enSegments));
+                        $localizedUrl = url(implode('/', $segments));
                     @endphp
 
-                    <!-- Language Switcher Desktop -->
                     <!-- Language Switcher Desktop -->
                     <div class="relative group">
                         <button
@@ -325,12 +301,12 @@
                             class="absolute top-full right-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
                             <div
                                 class="bg-white rounded-xl shadow-xl border border-slate-100 py-2 min-w-[160px] overflow-hidden">
-                                <a href="{{ $urlId }}"
+                                <a href="{{ $currentLocale == 'id' ? $localizedUrl : url('/id') }}"
                                     class="flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-brand-50 hover:text-brand-600 {{ $currentLocale == 'id' ? 'bg-brand-50 text-brand-600 font-semibold' : '' }}">
                                     <img src="https://flagcdn.com/w20/id.png" class="w-5 h-auto rounded-sm mr-2">
                                     {{ __('Bahasa Indonesia') }}
                                 </a>
-                                <a href="{{ $urlEn }}"
+                                <a href="{{ $currentLocale == 'en' ? $localizedUrl : url('/en') }}"
                                     class="flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-brand-50 hover:text-brand-600 {{ $currentLocale == 'en' ? 'bg-brand-50 text-brand-600 font-semibold' : '' }}">
                                     <img src="https://flagcdn.com/w20/gb.png" class="w-5 h-auto rounded-sm mr-2">
                                     {{ __('English') }}
@@ -366,7 +342,6 @@
                             $translation = $menu->translations->firstWhere('Locale', $currentLocale);
                             $menuName = $translation ? $translation->NamaMenu : $menu->NamaMenu;
 
-                            // URL Mobile Parent
                             if ($menu->JenisLink === 'route' && !empty($menu->RouteName)) {
                                 try {
                                     $menuUrl = route($menu->RouteName);
@@ -379,7 +354,6 @@
                                 $menuUrl = '#';
                             }
 
-                            // Active State Mobile Parent
                             if ($menu->JenisLink === 'route' && !empty($menu->RouteName)) {
                                 $isActive =
                                     request()->routeIs($menu->RouteName) || request()->routeIs($menu->RouteName . '.*');
@@ -395,7 +369,7 @@
                         @if ($hasChildren)
                             <div class="mobile-dropdown">
                                 <button
-                                    class="mobile-dropdown-btn w-full flex items-center justify-between px-4 py-3 text-slate-700 hover:bg-brand-50 hover:text-brand-600 rounded-lg font-medium transition-colors {{ $isActive ? 'bg-brand-50 text-brand-600' : '' }}">
+                                    class="mobile-dropdown-btn w-full flex items-center justify-between px-4 py-3 hover:bg-brand-50 hover:text-brand-600 rounded-lg font-medium transition-colors {{ $isActive ? 'bg-brand-50 text-brand-600 font-semibold' : 'text-slate-700' }}">
                                     <span class="flex items-center">
                                         @if ($menu->Icon)
                                             <i class="{{ $menu->Icon }} mr-2"></i>
@@ -409,12 +383,13 @@
                                     @foreach ($menu->children as $child)
                                         @php
                                             $childTranslation = $child->translations->firstWhere(
-                                                'locale',
+                                                'Locale',
                                                 $currentLocale,
                                             );
-                                            $childName = $childTranslation ? $childTranslation->nama : $child->NamaMenu;
+                                            $childName = $childTranslation
+                                                ? $childTranslation->NamaMenu
+                                                : $child->NamaMenu;
 
-                                            // URL Mobile Child
                                             if ($child->JenisLink === 'route' && !empty($child->RouteName)) {
                                                 try {
                                                     $childUrl = route($child->RouteName);
@@ -427,21 +402,15 @@
                                                 $childUrl = '#';
                                             }
 
-                                            // Active State Mobile Child
                                             if ($child->JenisLink === 'route' && !empty($child->RouteName)) {
                                                 $isChildActive = request()->routeIs($child->RouteName);
                                             } else {
-                                                $currentPath = trim(request()->path(), '/');
-                                                $pathWithoutLocale = implode(
-                                                    '/',
-                                                    array_slice(explode('/', $currentPath), 1),
-                                                );
                                                 $childPath = trim($child->Url ?? '', '/');
                                                 $isChildActive = $pathWithoutLocale === $childPath;
                                             }
                                         @endphp
                                         <a href="{{ $childUrl }}" target="{{ $child->Target ?? '_self' }}"
-                                            class="mobile-link flex items-center px-4 py-2.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-600 rounded-lg transition-colors {{ $isChildActive ? 'bg-brand-50 text-brand-600 font-semibold' : '' }}">
+                                            class="mobile-link flex items-center px-4 py-2.5 text-sm rounded-lg transition-colors {{ $isChildActive ? 'bg-brand-50 text-brand-600 font-semibold' : 'text-slate-600 hover:bg-brand-50 hover:text-brand-600' }}">
                                             @if ($child->Icon)
                                                 <i class="{{ $child->Icon }} mr-2 text-brand-500"></i>
                                             @else
@@ -454,7 +423,7 @@
                             </div>
                         @else
                             <a href="{{ $menuUrl }}" target="{{ $menu->Target ?? '_self' }}"
-                                class="mobile-link flex items-center px-4 py-3 text-slate-700 hover:bg-brand-50 hover:text-brand-600 rounded-lg font-medium transition-colors {{ $isActive ? 'bg-brand-50 text-brand-600' : '' }}">
+                                class="mobile-link flex items-center px-4 py-3 rounded-lg font-medium transition-colors {{ $isActive ? 'bg-brand-50 text-brand-600 font-semibold' : 'text-slate-700 hover:bg-brand-50 hover:text-brand-600' }}">
                                 @if ($menu->Icon)
                                     <i class="{{ $menu->Icon }} mr-2"></i>
                                 @endif
@@ -464,22 +433,21 @@
                     @endforeach
 
                     <!-- Language Switcher & Contact (Mobile) -->
-                    <!-- Language Switcher & Contact (Mobile) -->
                     <div class="border-t border-gray-200 pt-4 mt-4 space-y-2">
-                        <a href="{{ $urlId }}"
-                            class="w-full flex items-center justify-center space-x-2 px-4 py-3 text-slate-700 hover:bg-brand-50 rounded-lg transition-colors {{ $currentLocale == 'id' ? 'bg-brand-50 text-brand-600 font-semibold' : '' }}">
+                        <a href="{{ $currentLocale == 'id' ? $localizedUrl : url('/id') }}"
+                            class="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-lg transition-colors {{ $currentLocale == 'id' ? 'bg-brand-50 text-brand-600 font-semibold' : 'text-slate-700 hover:bg-brand-50' }}">
                             <img src="https://flagcdn.com/w20/id.png" alt="Indonesia" class="w-5 h-auto rounded-sm">
                             <span class="font-medium">{{ __('Bahasa Indonesia') }}</span>
                         </a>
 
-                        <a href="{{ $urlEn }}"
-                            class="w-full flex items-center justify-center space-x-2 px-4 py-3 text-slate-700 hover:bg-brand-50 rounded-lg transition-colors {{ $currentLocale == 'en' ? 'bg-brand-50 text-brand-600 font-semibold' : '' }}">
+                        <a href="{{ $currentLocale == 'en' ? $localizedUrl : url('/en') }}"
+                            class="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-lg transition-colors {{ $currentLocale == 'en' ? 'bg-brand-50 text-brand-600 font-semibold' : 'text-slate-700 hover:bg-brand-50' }}">
                             <img src="https://flagcdn.com/w20/gb.png" alt="English" class="w-5 h-auto rounded-sm">
                             <span class="font-medium">{{ __('English') }}</span>
                         </a>
 
                         <a href="{{ route('frontend.contact.index') }}"
-                            class="block w-full text-center bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
+                            class="block w-full text-center bg-[#0099FF]hover:bg-brand-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
                             {{ __('Contact Us') }}
                         </a>
                     </div>
@@ -487,6 +455,36 @@
             </div>
         </div>
     </nav>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navbar = document.getElementById('main-navbar');
+            const menuLinks = document.querySelectorAll('#desktop-menu .menu-link');
+
+            function setLinkColor(scrolled) {
+                menuLinks.forEach(function(link) {
+                    // Jangan timpa warna teks jika menu sedang aktif
+                    if (link.classList.contains('text-brand-600') || link.classList.contains(
+                            'text-brand-400')) return;
+
+                    if (scrolled) {
+                        link.classList.remove('text-white');
+                        link.classList.add('text-black');
+                    } else {
+                        link.classList.remove('text-white');
+                        link.classList.add('text-black');
+                    }
+                });
+            }
+
+            function handleScroll() {
+                setLinkColor(window.scrollY > 20);
+            }
+
+            setLinkColor(window.scrollY > 20);
+            window.addEventListener('scroll', handleScroll);
+        });
+    </script>
 
     <!-- ========================================== -->
     <!-- CONTENT SECTION -->

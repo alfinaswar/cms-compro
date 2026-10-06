@@ -17,7 +17,7 @@
         </nav>
 
         <!-- Heading -->
-        <h1 class="text-3xl md:text-5xl font-bold tracking-tight mb-3 font-serif" style="font-family: 'Noto Serif', serif, system-ui;">
+        <h1 class="text-3xl md:text-5xl font-bold tracking-tight mb-3">
             Laporan Keuangan &amp; Publikasi
         </h1>
         <p class="text-sm md:text-base text-white/90 max-w-2xl mx-auto leading-relaxed">

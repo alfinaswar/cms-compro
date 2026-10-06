@@ -92,7 +92,7 @@
                         <span class="text-[10px] font-bold tracking-wider uppercase text-[#0051d5] bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
                             Pasar Modal &amp; Performa Saham
                         </span>
-                        <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-2 font-serif" style="font-family: 'Noto Serif', serif, system-ui;">
+                        <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-2">
                             Informasi Saham JTPE
                         </h2>
                     </div>
@@ -226,7 +226,7 @@
                         <span class="text-[10px] font-bold tracking-wider uppercase text-[#0051d5] bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
                             Distribusi Dukungan Berdasarkan Tipe Modal
                         </span>
-                        <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-2 font-serif" style="font-family: 'Noto Serif', serif, system-ui;">
+                        <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-2">
                             Struktur Kepemilikan Emiten atau Perusahaan Publik
                         </h2>
                     </div>
@@ -347,7 +347,7 @@
                             <span class="text-[10px] font-bold tracking-wider uppercase text-[#0051d5] bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
                                 Struktur Kepemilikan Piramida &amp; Entitas Pengendali
                             </span>
-                            <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-2 font-serif" style="font-family: 'Noto Serif', serif, system-ui;">
+                            <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-2">
                                 Pemegang Saham Utama dan Pengendali Perusahaan
                             </h2>
                         </div>
@@ -478,7 +478,7 @@
                         <span class="text-[10px] font-bold tracking-wider uppercase text-[#0051d5] bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
                             Daftar Portofolio &amp; Bisnis Terintegrasi
                         </span>
-                        <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-2 font-serif" style="font-family: 'Noto Serif', serif, system-ui;">
+                        <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-2">
                             Entitas Anak &amp; Perusahaan Asosiasi
                         </h2>
                         <p class="text-xs md:text-sm text-slate-500 mt-1">
@@ -580,7 +580,7 @@
                 <!-- ------------------------------------------ -->
                 <div class="bg-gradient-to-r from-[#0a557a] to-[#094e70] rounded-2xl p-8 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-md">
                     <div>
-                        <h3 class="text-xl font-bold font-serif mb-1" style="font-family: 'Noto Serif', serif, system-ui;">
+                        <h3 class="text-xl font-bold mb-1">
                             Butuh Klarifikasi Terkait Data Finansial?
                         </h3>
                         <p class="text-xs md:text-sm text-sky-100 max-w-xl">
