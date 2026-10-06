@@ -156,6 +156,16 @@
 
     @push('styles')
         <style>
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+
+            .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+        </style>
+        <style>
             .mono-label {
                 font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
                 letter-spacing: .18em;
@@ -301,19 +311,6 @@
         </div>
     </section>
 
-    @push('styles')
-        {{-- Sembunyikan scrollbar pada tab pills (estetika) --}}
-        <style>
-            .scrollbar-hide::-webkit-scrollbar {
-                display: none;
-            }
-
-            .scrollbar-hide {
-                -ms-overflow-style: none;
-                scrollbar-width: none;
-            }
-        </style>
-    @endpush
 
     <!-- 3. COMPANY PROFILE -->
     <section id="profil" class="py-20 bg-white scroll-mt-24">
