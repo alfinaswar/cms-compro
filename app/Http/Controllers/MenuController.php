@@ -97,24 +97,9 @@ class MenuController extends Controller
         $allMenus = Menu::with('translations')->orderBy('Urutan')->get();
         $parentMenus = Menu::whereNull('ParentId')->orderBy('Urutan')->get();
 
-        // ✅ AMBIL SEMUA ROUTE LARAVEL YANG PUNYA NAMA
         $availableRoutes = collect(Route::getRoutes()->getRoutes())
-            ->filter(function ($route) {
-                return $route->getName() &&
-                    !str_starts_with($route->getName(), 'debugbar') &&
-                    !str_starts_with($route->getName(), 'ignition') &&
-                    !str_starts_with($route->getName(), 'livewire') &&
-                    !str_starts_with($route->getName(), 'admin');
-            })
-
-            ->map(function ($route) {
-                return [
-                    'name' => $route->getName(),
-                    'uri' => $route->uri(),
-                    'method' => implode(',', $route->methods())
-                ];
-            })
-            ->sortBy('name')
+            ->filter(fn($r) => $r->getName() && str_starts_with($r->getName(), 'frontend.'))
+            ->map(fn($r) => ['name' => $r->getName(), 'uri' => $r->uri()])
             ->values();
         return view('pages.admin.menu.index', compact('allMenus', 'parentMenus', 'availableRoutes'));
     }
@@ -122,7 +107,11 @@ class MenuController extends Controller
     public function create()
     {
         $parentMenus = Menu::whereNull('ParentId')->orderBy('Urutan')->get();
-        $availableRoutes = $this->getAvailableRoutes();
+        $availableRoutes = collect(Route::getRoutes()->getRoutes())
+            ->filter(fn($r) => $r->getName() && str_starts_with($r->getName(), 'frontend.'))
+            ->map(fn($r) => ['name' => $r->getName(), 'uri' => $r->uri()])
+            ->values();
+
         return view('pages.admin.menu.create', compact('parentMenus', 'availableRoutes'));
     }
 
@@ -188,21 +177,16 @@ class MenuController extends Controller
 
     public function edit($id)
     {
-        // dd($id);
-        // Hapus dd($id) ini sebelum production
         $menu = Menu::with('translations')->findOrFail($id);
-
         $parentMenus = Menu::whereNull('ParentId')
-            ->where('id', '!=', $id) // Mencegah menu menjadi parent dari dirinya sendiri
+            ->where('id', '!=', $id)
             ->orderBy('Urutan')
             ->get();
-        // dd($parentMenus);
-        // Ambil list route Laravel
-        $availableRoutes = collect(\Illuminate\Support\Facades\Route::getRoutes()->getRoutes())
-            ->filter(fn($r) => $r->getName() && !str_starts_with($r->getName(), 'master.'))
+        $availableRoutes = collect(Route::getRoutes()->getRoutes())
+            ->filter(fn($r) => $r->getName() && str_starts_with($r->getName(), 'frontend.'))
             ->map(fn($r) => ['name' => $r->getName(), 'uri' => $r->uri()])
             ->values();
-        // dd($availableRoutes);
+
         return view('pages.admin.menu.edit', compact('menu', 'parentMenus', 'availableRoutes'));
     }
 

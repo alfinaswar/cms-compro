@@ -140,31 +140,15 @@
                 {{-- ============================================ --}}
                 {{-- MANAJEMEN PORTAL & WEB --}}
                 {{-- ============================================ --}}
-                @canany([
-                    'homepage.view',
-                    'tentang-kami.view',
-                    'solusi.view',
-                    'investor.view',
-                    'kebijakan-privasi.view',
-                    'syarat-ketentuan.view',
-                    'kelola-halaman.view',
-                    'kelola-halaman.create',
-                    'menu.view',
-                    'karir.view',
-                ])
+                @canany(['homepage.view', 'tentang-kami.view', 'solusi.view', 'investor.view', 'kebijakan-privasi.view',
+                    'syarat-ketentuan.view', 'kelola-halaman.view', 'kelola-halaman.create', 'menu.view', 'karir.view'])
                     <li class="nav-header text-uppercase" style="font-size: 11px; letter-spacing: 1px; color: #6c757d;">
                         <i class="fas fa-globe mr-1"></i> Manajemen Portal & Web
                     </li>
 
                     {{-- Manajemen Konten --}}
-                    @canany([
-                        'homepage.view',
-                        'tentang-kami.view',
-                        'solusi.view',
-                        'investor.view',
-                        'kebijakan-privasi.view',
-                        'syarat-ketentuan.view',
-                    ])
+                    @canany(['homepage.view', 'tentang-kami.view', 'solusi.view', 'investor.view', 'kebijakan-privasi.view',
+                        'syarat-ketentuan.view'])
                         @php
                             // Cek apakah salah satu submenu Manajemen Konten sedang active (biar parent juga open)
                             $menuKontenActive =
@@ -210,23 +194,14 @@
                                         </a>
                                     </li>
                                 @endcan
+                                <li class="nav-item">
+                                    <a href="{{ route('static-pages.index') }}"
+                                        class="nav-link {{ request()->routeIs('static-pages.*') ? 'active' : '' }}">
+                                        <i class="nav-icon fa fa-file-alt"></i>
+                                        <p>Halaman Statis</p>
+                                    </a>
+                                </li>
 
-                                @can('kebijakan-privasi.view')
-                                    <li class="nav-item">
-                                        <a href="#" class="nav-link">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Kebijakan Privasi</p>
-                                        </a>
-                                    </li>
-                                @endcan
-                                @can('syarat-ketentuan.view')
-                                    <li class="nav-item">
-                                        <a href="#" class="nav-link">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>Syarat & Ketentuan</p>
-                                        </a>
-                                    </li>
-                                @endcan
                             </ul>
                         </li>
                     @endcanany
@@ -301,7 +276,6 @@
                     {{-- Kelola Halaman --}}
                     @canany(['kelola-halaman.view', 'kelola-halaman.create'])
                         @php
-                            // Jika nanti ada submenu yang bisa active di "Kelola Halaman", cek di sini
                             $menuHalamanActive = false;
                         @endphp
                         <li class="nav-item has-treeview {{ $menuHalamanActive ? 'menu-open' : '' }}">
@@ -329,6 +303,7 @@
                                         </a>
                                     </li>
                                 @endcan
+
                             </ul>
                         </li>
                     @endcanany
@@ -371,14 +346,8 @@
                 {{-- ============================================ --}}
                 {{-- SISTEM & PENGATURAN --}}
                 {{-- ============================================ --}}
-                @canany([
-                    'users.view',
-                    'roles.view',
-                    'permissions.view',
-                    'pengaturan-website.view',
-                    'informasi-kantor.view',
-                    'log-aktivitas.view',
-                ])
+                @canany(['users.view', 'roles.view', 'permissions.view', 'pengaturan-website.view',
+                    'informasi-kantor.view', 'log-aktivitas.view'])
                     <li class="nav-header text-uppercase" style="font-size: 11px; letter-spacing: 1px; color: #6c757d;">
                         <i class="fas fa-cogs mr-1"></i> Sistem & Pengaturan
                     </li>

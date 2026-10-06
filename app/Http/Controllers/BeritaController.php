@@ -86,8 +86,8 @@ class BeritaController extends Controller
                 ->rawColumns(['Thumbnail', 'Judul', 'TanggalPublikasi', 'StatusBadge', 'action'])
                 ->make(true);
         }
-
-        return view('pages.admin.berita.index');
+        $kategori = KategoriBerita::get();
+        return view('pages.admin.berita.index', compact('kategori'));
     }
 
     /**

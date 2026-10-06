@@ -106,12 +106,12 @@
                     <div class="col-md-2 mb-2 mb-md-0">
                         <select id="filterKategori" class="form-control form-control-custom">
                             <option value="">Semua Kategori</option>
-                            <option value="IHSG">IHSG</option>
-                            <option value="Inovasi Produk">Inovasi Produk</option>
-                            <option value="Teknologi">Teknologi</option>
-                            <option value="Investor Relation">Investor Relation</option>
+                            @foreach ($kategori ?? [] as $k)
+                                <option value="{{ $k->id }}">{{ $k->NamaKategori }}</option>
+                            @endforeach
                         </select>
                     </div>
+
 
                     <!-- Filter Status -->
                     <div class="col-md-2 mb-2 mb-md-0">

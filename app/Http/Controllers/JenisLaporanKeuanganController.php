@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\JenisLaporanKeuangan;
 use App\Models\LaporanKeuanganDetail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
 
@@ -117,17 +118,35 @@ class JenisLaporanKeuanganController extends Controller
             return response()->json(['status' => 404, 'message' => 'Data tidak ditemukan'], 404);
         }
 
+        foreach ($jenis->allDetails()->get() as $detail) {
+            if ($detail->PathFile && Storage::disk('public')->exists($detail->PathFile)) {
+                Storage::disk('public')->delete($detail->PathFile);
+            }
+            $detail->update(['UserDelete' => auth()->user()->name]);
+            $detail->delete();
+
+            activity()
+                ->performedOn($detail)
+                ->causedBy(auth()->user())
+                ->withProperties(['attributes' => $detail->toArray()])
+                ->log('Menghapus detail laporan keuangan: ID ' . $detail->id . ', Jenis ' . $jenis->NamaJenis);
+        }
+
         $jenis->update(['UserDelete' => auth()->user()->name]);
         $jenis->delete();
 
-        return response()->json(['status' => 200, 'message' => 'Jenis laporan berhasil dihapus']);
+        activity()
+            ->performedOn($jenis)
+            ->causedBy(auth()->user())
+            ->withProperties(['attributes' => $jenis->toArray()])
+            ->log('Menghapus jenis laporan keuangan dan semua detailnya: ' . $jenis->NamaJenis);
+
+        return response()->json(['status' => 200, 'message' => 'Jenis laporan dan semua detail berhasil dihapus']);
     }
 
-    // app/Http/Controllers/FrontendController.php (atau sesuai nama controller Anda)
 
     public function laporanKeuanganFe()
     {
-        // 1. Ambil semua kategori aktif, urutkan berdasarkan 'Urutan'
         $categories = JenisLaporanKeuangan::where('Status', 1)
             ->orderBy('Urutan', 'asc')
             ->with([
@@ -138,8 +157,6 @@ class JenisLaporanKeuanganController extends Controller
                 }
             ])
             ->get();
-
-        // 2. Ambil daftar tahun unik untuk filter global (opsional, untuk UX yang lebih baik)
         $availableYears = LaporanKeuanganDetail::where('Status', 1)
             ->select('TahunPeriode')
             ->distinct()

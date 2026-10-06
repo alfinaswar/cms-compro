@@ -164,37 +164,39 @@
             </div>
         </form>
     </section>
+@endsection
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            function updatePreview() {
+                var module = $('#module').val();
+                var action = $('#action').val();
+                var custom = $('#custom_name').val().trim();
 
-    @push('scripts')
-        <script>
-            $(document).ready(function() {
-                function updatePreview() {
-                    var module = $('#module').val();
-                    var action = $('#action').val();
-                    var custom = $('#custom_name').val().trim();
-
-                    if (custom) {
-                        $('#permissionPreview').text(custom);
-                    } else if (module && action) {
+                if (custom) {
+                    $('#permissionPreview').text(custom);
+                    // ✅ Ganti disabled dengan visual indication (readonly + CSS)
+                    $('#module, #action').prop('readonly', true).addClass('bg-light');
+                    $('#custom_name').closest('.form-group').addClass('border-primary');
+                } else {
+                    $('#module, #action').prop('readonly', false).removeClass('bg-light');
+                    $('#custom_name').closest('.form-group').removeClass('border-primary');
+                    if (module && action) {
                         $('#permissionPreview').text(module + '.' + action);
                     } else {
                         $('#permissionPreview').text('modul.aksi');
                     }
                 }
+            }
 
-                $('#module, #action, #custom_name').on('input change', updatePreview);
+            $('#module, #action, #custom_name').on('input change', updatePreview);
 
-                // Jika custom_name diisi, disable select
-                $('#custom_name').on('input', function() {
-                    if ($(this).val().trim()) {
-                        $('#module, #action').prop('disabled', true).addClass('bg-light');
-                    } else {
-                        $('#module, #action').prop('disabled', false).removeClass('bg-light');
-                    }
-                });
-
-                updatePreview();
+            // ✅ SEBELUM SUBMIT: pastikan field tidak readonly agar value terkirim
+            $('#formPermission, form').on('submit', function() {
+                $('#module, #action').prop('readonly', false);
             });
-        </script>
-    @endpush
-@endsection
+
+            updatePreview();
+        });
+    </script>
+@endpush
