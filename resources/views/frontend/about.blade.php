@@ -32,7 +32,6 @@
                 [$a, $b] = array_pad(explode('|||', $plain, 2), 2, '');
                 return [trim($a), trim($b)];
             }
-            // Fallback: baris pertama = judul, sisanya = deskripsi
             $lines = preg_split("/\r\n|\n|\r/", strip_tags($plain));
             $first = trim($lines[0] ?? '');
             $rest = trim(implode("\n", array_slice($lines, 1)));
@@ -72,13 +71,87 @@
         $awardsRest = $awardDetails->slice(6)->values();
 
         $mediaMeta = $mediaMeta ?? [];
-        $videoBadge = $mediaMeta['video_badge'] ?? ($en ? 'Official Company Profile Video 2024' : 'Video Profil Perusahaan Resmi 2024');
+        $videoBadge =
+            $mediaMeta['video_badge'] ??
+            ($en ? 'Official Company Profile Video 2024' : 'Video Profil Perusahaan Resmi 2024');
         $videoTagline = $mediaMeta['video_tagline'] ?? 'IDENTITAS • PEMBAYARAN • PROTEKSI MEREK';
         $videoUrl = $mediaMeta['video_url'] ?? null;
         $pdfUrl = $mediaMeta['pdf_url'] ?? '#';
-        $quoteSubtitle = $mediaMeta['quote_subtitle'] ?? ($en ? 'Executive Governance Leadership' : 'Kepemimpinan & Tata Kelola Eksekutif');
+        $quoteSubtitle =
+            $mediaMeta['quote_subtitle'] ??
+            ($en ? 'Executive Governance Leadership' : 'Kepemimpinan & Tata Kelola Eksekutif');
         $quoteAuthor = $mediaMeta['quote_author'] ?? ($en ? 'Board of Directors' : 'Dewan Direksi');
         $quoteCompany = $mediaMeta['quote_company'] ?? 'PT Jasuindo Tiga Perkasa Tbk';
+
+        // ====== FALLBACK TIMELINE (digunakan jika deskripsi DB kosong) ======
+        $timelineFallback = [
+            '1990' => [
+                'year' => '1990',
+                'title' => $en ? 'Early Operations & Factory Establishment' : 'Awal Operasional & Pendirian Pabrik',
+                'desc' => $en
+                    ? 'Initiated certified security printing operations in Sidoarjo, East Java, dedicated to state securities, high-security documents, and commercial security products.'
+                    : 'Inisiasi operasional percetakan sekuritas tersertifikasi di Sidoarjo, Jawa Timur, yang didedikasikan untuk surat berharga negara, dokumen keamanan tinggi, dan produk sekuritas komersial.',
+            ],
+            '2010' => [
+                'year' => '2010',
+                'title' => $en ? 'EMV Payment Card Bureau Accreditation' : 'Akreditasi Biro Kartu Pembayaran EMV',
+                'desc' => $en
+                    ? 'Operated a personalized smart card factory and obtained licensed certification from Mastercard and VISA as a chip producer and personalization bureau.'
+                    : 'Pengoperasian pabrik kartu pintar terpersonalisasi dan perolehan sertifikasi berlisensi dari Mastercard dan VISA sebagai produsen chip dan biro personalisasi.',
+            ],
+            '2013' => [
+                'year' => '2013',
+                'title' => $en ? 'International Strategic Partnership' : 'Kemitraan Strategis Internasional',
+                'desc' => $en
+                    ? 'Established a sovereign security printing joint venture with Arjowiggins Security, producing high-specification electronic passports and global brand security seals.'
+                    : 'Pembentukan entitas usaha percetakan sekuritas sovereign bersama Arjowiggins Security, memproduksi paspor elektronik berspesifikasi tinggi dan segel sekuritas merek global.',
+            ],
+            '2018' => [
+                'year' => '2018',
+                'title' => $en ? 'INTERGRAF Certification & JCB License' : 'Sertifikasi INTERGRAF & Lisensi JCB',
+                'desc' => $en
+                    ? 'Achieved the highest INTERGRAF ISO 14298:2013 certification for High Security Printing Management, along with official JCB global payment network authorization.'
+                    : 'Meraih sertifikasi tertinggi INTERGRAF ISO 14298:2013 untuk kategori High Security Printing Management, bersamaan dengan otorisasi resmi jaringan pembayaran global JCB.',
+            ],
+            '2019' => [
+                'year' => $en ? '2019 – Present' : '2019 – Sekarang',
+                'title' => $en
+                    ? 'TOPPAN Strategic Alliance & Forbes Recognition'
+                    : 'Aliansi Strategis TOPPAN & Pengakuan Forbes',
+                'desc' => $en
+                    ? 'Toppan Printing Co., Ltd. officially became the second-largest shareholder, injecting 300+ global patents into the R&D roadmap. Repeatedly recognized by Forbes Asia as "Best Under a Billion".'
+                    : 'Toppan Printing Co., Ltd. resmi menjadi pemegang saham terbesar kedua, menyuntikkan 300+ portofolio paten global ke dalam peta jalan R&D. Diakui berulang kali oleh Forbes Asia sebagai "Best Under a Billion".',
+            ],
+        ];
+
+        // Gabungkan data DB dengan fallback: jika DB punya item → pakai judul DB + deskripsi DB (atau fallback jika kosong)
+        $buildTimeline = function () use ($timelineDetails, $timelineFallback, $tr, $split, $en) {
+            $result = [];
+
+            if ($timelineDetails->count() > 0) {
+                foreach ($timelineDetails as $item) {
+                    [$tTitle, $tDesc] = $split($tr($item, 'Deskripsi'));
+                    $year = trim($tr($item, 'Judul') ?? '');
+                    $cleanYear = preg_replace('/[^0-9]/', '', $year); // ambil angka tahun saja untuk matching
+                    $fallback = $timelineFallback[$cleanYear] ?? null;
+
+                    $result[] = [
+                        'year' => $year,
+                        'title' => $tTitle ?: $fallback['title'] ?? ($en ? 'Milestone' : 'Pencapaian'),
+                        'desc' => $tDesc ?: $fallback['desc'] ?? '',
+                    ];
+                }
+            } else {
+                // DB kosong sama sekali → pakai seluruh fallback
+                foreach ($timelineFallback as $f) {
+                    $result[] = $f;
+                }
+            }
+
+            return $result;
+        };
+
+        $timeline = $buildTimeline();
     @endphp
 
     @push('styles')
@@ -119,25 +192,32 @@
     @endpush
 
     <!-- 1. HERO + STATS -->
-    <section class="relative pt-28 pb-16 bg-[#eef2fb] overflow-hidden">
+    <section class="relative pt-28 pb-16 overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=2069&auto=format&fit=crop"
+                alt="{{ $en ? 'About Jasuindo' : 'Tentang Jasuindo' }}" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-br from-cyan-700/90 via-brand-700/90 to-brand-900/95"></div>
+        </div>
+
         <div class="container mx-auto px-6 relative z-10">
             <div class="max-w-4xl mx-auto text-center">
                 <nav
-                    class="inline-flex items-center gap-2 bg-white border border-slate-200 rounded-full px-4 py-1.5 text-xs text-slate-500 mb-8 shadow-sm">
-                    <a href="{{ route('frontend.main') }}" class="hover:text-blue-600 transition-colors"><i
+                    class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 text-xs text-slate-200 mb-8">
+                    <a href="{{ route('frontend.main') }}" class="hover:text-white transition-colors"><i
                             class="fa-solid fa-house mr-1"></i>{{ __('Home') }}</a>
-                    <span class="text-slate-300">/</span>
-                    <span class="font-semibold text-slate-700">{{ $en ? 'About Us' : 'Tentang Kami' }}</span>
+                    <span class="text-white/40">/</span>
+                    <span class="font-semibold text-white">{{ $en ? 'About Us' : 'Tentang Kami' }}</span>
                 </nav>
 
-                <h1 class="text-3xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-6">
+                <h1 class="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-6">
                     {{ $tr($Hero, 'Judul') ?? ($en ? 'Safeguarding Trust, Advancing' : 'Menjaga Kepercayaan, Mengembangkan') }}<br>
-                    <span class="text-blue-600">{{ $tr($Hero, 'SubJudul') ?? ($en ? 'Digital Identity & Security Document Credentials' : 'Kredensial Identitas & Dokumen Sekuritas Digital') }}</span>
+                    <span
+                        class="text-cyan-300">{{ $tr($Hero, 'SubJudul') ?? ($en ? 'Digital Identity & Security Document Credentials' : 'Kredensial Identitas & Dokumen Sekuritas Digital') }}</span>
                 </h1>
                 @if ($tr($Hero, 'Deskripsi'))
-                    <div class="text-slate-600 leading-relaxed max-w-2xl mx-auto mb-12">{!! $tr($Hero, 'Deskripsi') !!}</div>
+                    <div class="text-slate-100/90 leading-relaxed max-w-2xl mx-auto mb-12">{!! $tr($Hero, 'Deskripsi') !!}</div>
                 @else
-                    <p class="text-slate-600 leading-relaxed max-w-2xl mx-auto mb-12">
+                    <p class="text-slate-100/90 leading-relaxed max-w-2xl mx-auto mb-12">
                         {{ $en ? 'Pioneer manufacturer of official state security documents, EMV banking chip infrastructure, cryptographic brand authentication, and integrated smart card solutions across Southeast Asia since 1990.' : 'Pelopor manufaktur dokumen sekuritas resmi negara, infrastruktur chip perbankan EMV, autentikasi merek kriptografis, dan solusi smart card terintegrasi di kawasan Asia Tenggara sejak 1990.' }}
                     </p>
                 @endif
@@ -147,9 +227,9 @@
                         @foreach ($heroDetails as $stat)
                             @php [$statLabel, $statDesc] = $split($tr($stat, 'Deskripsi')); @endphp
                             <div
-                                class="bg-white border border-slate-200 rounded-lg px-5 py-4 shadow-sm hover:shadow-md hover:border-blue-200 transition-all">
+                                class="bg-white/95 backdrop-blur-sm border border-white/20 rounded-lg px-5 py-4 shadow-lg shadow-brand-950/20 hover:shadow-xl hover:-translate-y-0.5 transition-all">
                                 <p class="mono-label text-[10px] font-bold text-blue-600 uppercase mb-2">
-                                    {{ $statLabel ?: ($tr($stat, 'Judul') ?? '') }}
+                                    {{ $statLabel ?: $tr($stat, 'Judul') ?? '' }}
                                 </p>
                                 <p class="text-xl font-extrabold text-slate-900 mb-1">{{ $tr($stat, 'Judul') }}</p>
                                 @if ($statDesc)
@@ -163,19 +243,77 @@
         </div>
     </section>
 
-    <!-- 2. TAB NAVIGATION -->
-    <div class="bg-[#eef2fb] pb-10">
+    <!-- ========================================== -->
+    <!-- 2. TAB NAVIGATION (Sticky + Icon) -->
+    <!-- ========================================== -->
+    <section class="bg-white border-b border-slate-200 sticky top-20 z-40 scroll-mt-20">
         <div class="container mx-auto px-6">
-            <div class="flex flex-wrap justify-center gap-2">
-                @foreach ($tabs as $i => $tab)
-                    <a href="{{ $tab['href'] }}" data-tab-link
-                        class="tab-pill px-4 py-2 rounded-full text-xs font-semibold border {{ $i === 0 ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300 hover:text-blue-600' }}">
-                        {{ $tab['label'] }}
-                    </a>
-                @endforeach
+            {{-- Header mini --}}
+            <div class="py-5 flex items-end justify-between gap-4 border-b border-slate-100">
+                <div>
+                    <p class="mono-label text-[10px] font-bold text-blue-600 uppercase mb-1">
+                        {{ $en ? 'On This Page' : 'Di Halaman Ini' }}
+                    </p>
+                    <h2 class="text-xl md:text-2xl font-extrabold text-slate-900 leading-tight">
+                        {{ $en ? 'Explore About Jasuindo' : 'Jelajahi Tentang Jasuindo' }}
+                    </h2>
+                </div>
+                <a href="{{ route('frontend.contact.index') }}"
+                    class="hidden md:inline-flex items-center gap-2 text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors whitespace-nowrap">
+                    {{ $en ? 'Contact Us' : 'Hubungi Kami' }}
+                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                </a>
+            </div>
+
+            {{-- Tab Pills --}}
+            <div class="py-4 -mb-px overflow-x-auto scrollbar-hide">
+                <div class="flex gap-2 md:gap-3 min-w-max">
+                    @foreach ($tabs as $i => $tab)
+                        @php
+                            $icons = [
+                                'fa-solid fa-building',
+                                'fa-solid fa-gem',
+                                'fa-solid fa-hand-holding-heart',
+                                'fa-solid fa-award',
+                            ];
+                            $icon = $icons[$i] ?? 'fa-solid fa-circle';
+                            $isActive = $i === 0;
+                        @endphp
+                        <a href="{{ $tab['href'] }}" data-tab-link data-tab-index="{{ $i }}"
+                            class="tab-pill group inline-flex items-center gap-2.5 px-4 md:px-5 py-2.5 md:py-3 rounded-xl text-xs md:text-sm font-semibold border-2 transition-all duration-200 whitespace-nowrap
+                        {{ $isActive
+                            ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/20'
+                            : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50' }}">
+                            <span
+                                class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0
+                            {{ $isActive ? 'bg-white/20' : 'bg-slate-100 group-hover:bg-blue-100' }} transition-colors">
+                                <i class="{{ $icon }} text-[11px]"></i>
+                            </span>
+                            <span class="leading-tight">
+                                <span
+                                    class="mono-label text-[9px] opacity-60 block">{{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}</span>
+                                <span class="block mt-0.5">{{ $tab['label'] }}</span>
+                            </span>
+                        </a>
+                    @endforeach
+                </div>
             </div>
         </div>
-    </div>
+    </section>
+
+    @push('styles')
+        {{-- Sembunyikan scrollbar pada tab pills (estetika) --}}
+        <style>
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+
+            .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+        </style>
+    @endpush
 
     <!-- 3. COMPANY PROFILE -->
     <section id="profil" class="py-20 bg-white scroll-mt-24">
@@ -194,8 +332,7 @@
                                 class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700">
                             <span
                                 class="absolute top-4 left-4 mono-label text-[9px] font-bold text-white bg-slate-900/70 backdrop-blur-sm px-2.5 py-1 rounded uppercase tracking-widest">
-                                <i class="fa-solid fa-circle-play mr-1"></i>
-                                {{ $videoBadge }}
+                                <i class="fa-solid fa-circle-play mr-1"></i> {{ $videoBadge }}
                             </span>
                             @if ($videoUrl)
                                 <a href="{{ $videoUrl }}" target="_blank" rel="noopener"
@@ -215,7 +352,8 @@
                                 <p class="text-white font-bold text-sm">
                                     {{ $tr($Media, 'Judul') ?? ($en ? 'Driving Business Performance' : 'Memacu Kinerja Bisnis') }}
                                 </p>
-                                <p class="mono-label text-[9px] text-slate-300 uppercase tracking-widest">{{ $videoTagline }}</p>
+                                <p class="mono-label text-[9px] text-slate-300 uppercase tracking-widest">
+                                    {{ $videoTagline }}</p>
                             </div>
                         </div>
                         <div class="bg-white px-5 py-3 flex items-center justify-between gap-3">
@@ -239,8 +377,7 @@
                                     {{ $tr($Media, 'SubJudul') ?? ($en ? 'Message from the Board of Directors' : 'Pesan Dewan Direksi') }}
                                 </h3>
                                 <p class="mono-label text-[9px] text-slate-500 uppercase tracking-widest">
-                                    {{ $quoteSubtitle }}
-                                </p>
+                                    {{ $quoteSubtitle }}</p>
                             </div>
                         </div>
                         @if ($tr($Media, 'Deskripsi'))
@@ -262,25 +399,23 @@
                         <div class="text-sm text-slate-600 leading-relaxed mb-8">{!! $tr($Riwayat, 'Deskripsi') !!}</div>
                     @endif
 
-                    @if ($timelineDetails->count())
+                    @if (count($timeline) > 0)
                         <div class="mt-2">
-                            @foreach ($timelineDetails as $item)
-                                @php [$tTitle, $tDesc] = $split($tr($item, 'Deskripsi')); @endphp
+                            @foreach ($timeline as $item)
                                 <div class="timeline-item">
                                     <p class="text-sm font-extrabold text-blue-600 mb-1">
-                                        {{ $tr($item, 'Judul') }}
-                                        @if ($tTitle)
-                                            <span class="text-slate-900 font-bold ml-1">{{ $tTitle }}</span>
-                                        @endif
+                                        {{ $item['year'] }}
+                                        <span class="text-slate-900 font-bold ml-1">{{ $item['title'] }}</span>
                                     </p>
-                                    @if ($tDesc)
-                                        <div class="text-xs text-slate-500 leading-relaxed">{!! $tDesc !!}</div>
-                                    @elseif ($tr($item, 'Deskripsi') && !$tTitle)
-                                        <div class="text-xs text-slate-500 leading-relaxed">{!! $tr($item, 'Deskripsi') !!}</div>
+                                    @if (!empty($item['desc']))
+                                        <div class="text-xs text-slate-500 leading-relaxed">{!! $item['desc'] !!}</div>
                                     @endif
                                 </div>
                             @endforeach
                         </div>
+                    @else
+                        <p class="text-sm text-slate-500 italic">
+                            {{ $en ? 'No history data available.' : 'Belum ada data riwayat.' }}</p>
                     @endif
                 </div>
             </div>
@@ -354,7 +489,8 @@
                             class="bg-white rounded-xl border border-slate-200 overflow-hidden flex flex-col sm:flex-row shadow-sm hover:shadow-lg hover:border-blue-200 transition-all group">
                             <div class="sm:w-44 h-40 sm:h-auto flex-shrink-0 overflow-hidden">
                                 @if (!empty($detail->Gambar) && !$isFaIcon($detail->Gambar))
-                                    <img src="{{ asset('storage/' . $detail->Gambar) }}" alt="{{ $tr($detail, 'Judul') }}"
+                                    <img src="{{ asset('storage/' . $detail->Gambar) }}"
+                                        alt="{{ $tr($detail, 'Judul') }}"
                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                                 @else
                                     <div class="w-full h-full bg-slate-100 flex items-center justify-center">
@@ -441,17 +577,21 @@
                                     <div
                                         class="bg-slate-800/60 border border-slate-700 rounded-lg p-4 hover:border-blue-500/50 transition-colors">
                                         <p class="flex items-center gap-2 text-xs font-bold text-white mb-1">
-                                            <i class="fa-solid fa-circle-check text-blue-400"></i> {{ $tr($iso, 'Judul') }}
+                                            <i class="fa-solid fa-circle-check text-blue-400"></i>
+                                            {{ $tr($iso, 'Judul') }}
                                         </p>
-                                        <div class="text-[11px] text-slate-400 leading-snug pl-6">{!! $tr($iso, 'Deskripsi') !!}</div>
+                                        <div class="text-[11px] text-slate-400 leading-snug pl-6">{!! $tr($iso, 'Deskripsi') !!}
+                                        </div>
                                     </div>
                                 @endforeach
                             </div>
                         @endif
 
                         @if ($tr($Iso, 'Deskripsi'))
-                            <div class="mt-6 pt-4 border-t border-slate-800 flex flex-col md:flex-row justify-between gap-2">
-                                <span class="mono-label text-[9px] text-slate-500 uppercase">{!! strip_tags($tr($Iso, 'Deskripsi')) !!}</span>
+                            <div
+                                class="mt-6 pt-4 border-t border-slate-800 flex flex-col md:flex-row justify-between gap-2">
+                                <span
+                                    class="mono-label text-[9px] text-slate-500 uppercase">{!! strip_tags($tr($Iso, 'Deskripsi')) !!}</span>
                                 <span
                                     class="mono-label text-[9px] font-bold text-blue-400 uppercase">{{ $en ? 'Full Integrated Compliance' : 'Kepatuhan Terintegrasi Penuh' }}</span>
                             </div>
