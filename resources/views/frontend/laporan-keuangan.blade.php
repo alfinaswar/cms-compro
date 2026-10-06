@@ -66,7 +66,7 @@
             {{-- ========================================== --}}
             <div class="lg:col-span-3">
                 <div class="sticky-sidebar space-y-5">
-                    
+
                     {{-- Navigasi Cepat Daftar Laporan --}}
                     <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5">
                         <div class="flex items-center gap-2.5 pb-3.5 mb-2 border-b border-slate-100">
