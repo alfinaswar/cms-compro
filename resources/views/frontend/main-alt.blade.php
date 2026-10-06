@@ -288,40 +288,71 @@
                                     alt="Manufacturing" class="hero-bg-media">
                             @endif
                             {{-- Overlay navy agar teks terbaca --}}
-                            <div
-                                class="absolute inset-0 bg-gradient-to-b from-brand-950/85 via-brand-900/70 to-brand-950/90">
+                            <div class="absolute inset-0 bg-gradient-to-b from-[#0B192E] via-[#0B192E]/85 to-[#0B192E]/54">
                             </div>
                         </div>
 
                         {{-- Konten --}}
                         <div class="container mx-auto px-6 relative z-20 py-32">
-                            <div class="max-w-3xl mx-auto text-center animate-fade-in-up">
-                                <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6">
-                                    {{ $hJudul }}
-                                    @if (!empty($hHighlight))
-                                        <br><span class="text-brand-400">{{ $hHighlight }}</span>
+
+                            <div class="max-w-6xl mx-auto text-center animate-fade-in-up">
+
+                                <h1 class="text-[60px] md:text-6xl font-extrabold text-white leading-tight mb-6">
+                                    @php
+                                        $judulParts = explode(',', $hJudul, 2);
+                                    @endphp
+
+                                    {{ trim($judulParts[0]) }}@if (isset($judulParts[1]))
+                                        ,
+                                    @endif
+
+                                    @if (isset($judulParts[1]))
+                                        <span class="text-brand-400">
+                                            {{ trim($judulParts[1]) }}
+                                        </span>
                                     @endif
                                 </h1>
+
+                                @if (!empty($hHighlight))
+                                    <br>
+                                    <span class="text-brand-400">
+                                        {{ $hHighlight }}
+                                    </span>
+                                @endif
+                                </h1>
+
                                 @if (!empty($hDeskripsi))
-                                    <p class="text-base md:text-lg text-slate-300 mb-8 leading-relaxed max-w-2xl mx-auto">
+                                    <p class="text-base md:text-[17px] text-[#CBD5E1] mb-8 font-light leading-relaxed max-w-2xl mx-auto">
                                         {{ $hDeskripsi }}
                                     </p>
                                 @endif
+
                                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
+
                                     @if (!empty($hTeksCTA) && !empty($slider->LinkCTA))
                                         <a href="{{ $slider->LinkCTA }}"
-                                            class="inline-flex justify-center items-center px-7 py-3.5 text-sm font-bold text-white bg-brand-600 hover:bg-brand-500 rounded-lg transition-all shadow-lg shadow-brand-600/30">
-                                            {!! $hTeksCTA !!} <i class="fa-solid fa-arrow-right ml-2"></i>
+                                            class="inline-flex justify-center items-center px-[15px] py-[8px] text-sm font-normal text-white bg-brand-600 hover:bg-brand-500 rounded-full transition-all shadow-lg shadow-brand-600/30">
+
+                                            {!! $hTeksCTA !!}
+                                            <i class="fa-solid fa-arrow-right ml-2"></i>
+
                                         </a>
                                     @endif
+
                                     @if (!empty($hTeksCTA2) && !empty($slider->LinkCTA2))
                                         <a href="{{ $slider->LinkCTA2 }}"
-                                            class="inline-flex justify-center items-center px-7 py-3.5 text-sm font-bold text-white border-2 border-white/60 hover:bg-white/10 rounded-lg transition-all">
+                                            class="inline-flex justify-center items-center  px-[15px] py-[8px] text-sm font-normal text-white border-2 border-white/60 hover:bg-white/10 rounded-lg transition-all">
+
                                             {!! $hTeksCTA2 !!}
+
+
                                         </a>
                                     @endif
+
                                 </div>
+
                             </div>
+
                         </div>
                     </div>
                 @endforeach
@@ -402,7 +433,7 @@
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-[40px]">
                 @foreach ($Why as $item)
                     @php
                         $trans = $item->translate($locale);
@@ -436,9 +467,9 @@
     <!-- ========================================== -->
     <!-- 4. EMPAT PILAR LAYANAN (Solutions) -->
     <!-- ========================================== -->
-    <section id="solusi" class="py-20 bg-slate-50">
+    <section id="solusi" class="py-20 bg-slate-50 p-[40px]">
         <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-end mb-12">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-end mb-[80px]">
                 <div>
                     <span
                         class="text-xs font-bold text-brand-600 uppercase tracking-widest">{{ __('Our Services') }}</span>
@@ -446,7 +477,7 @@
                         {{ __('Four Pillars of Integrated Security & Identity Manufacturing') }}
                     </h2>
                 </div>
-                <p class="text-slate-600 leading-relaxed">
+                <p class="text-slate-600 leading-relaxed ml-0 lg:ml-[160px]">
                     {{ __('End-to-end solutions with international standards: from security micro-chips, anti-counterfeit passport manufacturing, to commercial printing of massive assets for your business.') }}
                 </p>
             </div>
@@ -478,7 +509,48 @@
                                     <i class="fa-solid fa-arrow-right text-sm"></i>
                                 </div>
                             </div>
-                            <p class="text-sm text-slate-600 leading-relaxed mb-4">{{ $sDeskripsi }}</p>
+                            <p class="text-sm text-slate-600 leading-relaxed mb-[40px]">{{ $sDeskripsi }}</p>
+
+                            <ul class="space-y-3 mb-[60px]">
+                                <!-- Item 1 -->
+                                <li class="flex items-start gap-3">
+                                    <svg class="w-5 h-5 text-[#0284c7] shrink-0 mt-0.5" fill="currentColor"
+                                        viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    <span class="text-slate-700 text-sm font-semibold text-base leading-snug">
+                                        {{ __('E–Passport & Polycarbonate Data Pages: Standar ICAO Doc 9303.') }}
+                                    </span>
+                                </li>
+
+                                <!-- Item 2 -->
+                                <li class="flex items-start gap-3">
+                                    <svg class="w-5 h-5 text-[#0284c7] shrink-0 mt-0.5" fill="currentColor"
+                                        viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    <span class="text-slate-700 font-semibold text-base leading-snug">
+                                        {{ __('Smart ID Card: KTP–el, Kartu Pegawai, Kredensial Terenkripsi.') }}
+                                    </span>
+                                </li>
+
+                                <!-- Item 3 -->
+                                <li class="flex items-start gap-3">
+                                    <svg class="w-5 h-5 text-[#0284c7] shrink-0 mt-0.5" fill="currentColor"
+                                        viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 10-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    <span class="text-slate-700 font-semibold text-base leading-snug">
+                                        {{ __('Dokumen Vital: Ijazah Nasional SIVIL & PIN, Sertifikat Tanah Resmi.') }}
+                                    </span>
+                                </li>
+                            </ul>
 
                             @if (count($poin) > 0)
                                 <ul class="space-y-2 mb-5">
@@ -507,37 +579,42 @@
     <!-- ========================================== -->
     <!-- 5. SECURITY TIERS (Dark Section) -->
     <!-- ========================================== -->
-    <section class="py-24 bg-brand-950 relative overflow-hidden">
+    <section class="py-24 bg-[#0B192E] relative overflow-hidden">
+        <svg class="absolute bottom-0 left-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path d="M 0,0 C 0,50 30,80 100,85 L 100,100 L 0,100 Z" class="fill-[#0b2139]" />
+        </svg>
+
         <div
             class="absolute top-0 right-0 w-96 h-96 bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10">
         </div>
         <div class="container mx-auto px-6 relative z-10">
             <div class="text-center max-w-3xl mx-auto mb-14">
                 <span
-                    class="text-xs font-bold text-white uppercase tracking-widest">{{ __('Multi-Layer Security Architecture') }}</span>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-white mt-3 mb-4">
+                    class="text-xs text-[#38BDF8] uppercase tracking-widest px-[10px] py-[5px] bg-[#0e2345] border-[#24324B] text-sm rounded-full">{{ __('Multi-Layer Security Architecture') }}</span>
+                <h2 class="text-[36px] md:text-4xl font-extrabold text-white mt-3 mb-4">
                     {{ __('Precision Security in Every Detail') }}</h2>
-                <p class="text-white leading-relaxed">
+                <p class="text-white font-light text-[16px] leading-relaxed">
                     {{ __('Document forgery requires more than just visual quality. We deploy layered security technology that can be adjusted to the threat profile and your needs.') }}
                 </p>
             </div>
 
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6  p-[40px]">
                 @foreach ($tiers as $t)
                     <div
-                        class="bg-brand-900/60 border border-brand-800 rounded-xl p-6 hover:border-brand-600 transition-colors">
+                        class="bg-[#0e2345] border border-[#24324B] rounded-xl p-[40px] hover:border-brand-600 transition-colors">
                         <div class="flex items-center justify-between mb-4">
                             <span
                                 class="text-[10px] font-bold tracking-widest text-white bg-brand-800/70 px-2.5 py-1 rounded">{{ $t['tier'] }}</span>
                             <i class="{{ $t['icon'] }} text-white"></i>
                         </div>
-                        <h3 class="font-bold text-white mb-2 leading-snug">{{ $t['title'] }}</h3>
+                        <h3 class="font-bold text-xl text-white mb-3 leading-snug tracking-tight max-w-[180px]">
+                            {{ $t['title'] }}
+                        </h3>
                         <p class="text-xs text-white leading-relaxed mb-4">{{ $t['desc'] }}</p>
                         <div class="space-y-2">
                             @foreach ($t['features'] as $f)
-                                <div class="bg-brand-950/70 rounded-lg p-3">
-                                    <p class="text-xs font-semibold text-white mb-0.5">{{ $f['t'] }}</p>
+                                <div class="bg-[#22395B] rounded-lg p-3">
+                                    <p class="text-xs font-semibold text-white mb-[10px]">{{ $f['t'] }}</p>
                                     <p class="text-[11px] text-white leading-snug">{{ $f['d'] }}</p>
                                 </div>
                             @endforeach
@@ -549,8 +626,8 @@
 
             <div class="text-center mt-12">
                 <a href="{{ route('frontend.about-us') }}"
-                    class="inline-flex items-center px-7 py-3.5 bg-brand-600 hover:bg-brand-500 text-white text-sm font-bold rounded-lg transition-all shadow-lg shadow-brand-600/30">
-                    {{ __('Learn Our Track Record') }} <i class="fa-solid fa-arrow-right ml-2"></i>
+                    class="inline-flex items-center px-7 py-2.5 bg-brand-600 hover:bg-brand-500 text-white text-sm font-normal rounded-full transition-all shadow-lg shadow-brand-600/30">
+                    {{ __('Learn Our Track Record') }} <i class="fa-light fa-arrow-right ml-6"></i>
                 </a>
             </div>
         </div>
@@ -559,12 +636,12 @@
     <!-- ========================================== -->
     <!-- 6. KAPABILITAS -->
     <!-- ========================================== -->
-    <section class="py-20 bg-white">
+    <section class="py-20 bg-white p-[40px]">
         <div class="container mx-auto px-6">
-            <div class="max-w-4xl mb-12">
+            <div class="mb-12">
                 <span
                     class="text-xs font-bold text-brand-600 uppercase tracking-widest">{{ __('Jasuindo Advantages & Capabilities') }}</span>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-3 leading-tight">
+                <h2 class="text-[36px] md:text-4xl font-extrabold text-slate-900 mt-3 leading-tight">
                     {{ __('More Than Just Printing. We Safeguard What You Entrust.') }}
                 </h2>
             </div>
@@ -576,7 +653,7 @@
                         <div class="w-11 h-11 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center mb-4">
                             <i class="{{ $c['icon'] }} text-lg"></i>
                         </div>
-                        <h3 class="font-bold text-lg text-slate-900 mb-2">{{ $c['title'] }}</h3>
+                        <h3 class="font-bold text-[20px] text-slate-900 mb-2">{{ $c['title'] }}</h3>
                         <p class="text-sm text-slate-600 leading-relaxed mb-4">{{ $c['desc'] }}</p>
                         <div class="pt-4 border-t border-slate-100 flex items-center gap-2">
                             <i class="{{ $c['footIcon'] }} {{ $c['footColor'] }} text-sm"></i>
@@ -597,29 +674,203 @@
                 {{ __('Recognized & Certified by Domestic and International Credential Standards') }}
             </p>
         </div>
+        {{-- Buat muter looping logo kerjasama :) --}}
+        <style>
+            @keyframes marquee {
+                0% {
+                    transform: translateX(0%);
+                }
 
-        <div class="relative w-full">
-            <div class="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white to-transparent z-10"></div>
-            <div class="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white to-transparent z-10"></div>
+                100% {
+                    transform: translateX(-50%);
+                }
+            }
 
-            <div class="flex overflow-hidden justify-center">
-                <div class="flex flex-wrap justify-center">
+            .animate-marquee {
+                display: flex;
+                width: max-content;
+                animation: marquee 30s linear infinite;
+            }
+
+            .animate-marquee:hover {
+                animation-play-state: paused;
+            }
+        </style>
+
+        <div class="relative w-full overflow-hidden py-4">
+            <div
+                class="pointer-events-none absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white to-transparent z-10">
+            </div>
+            <div
+                class="pointer-events-none absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white to-transparent z-10">
+            </div>
+            <div class="animate-marquee">
+                <div class="flex items-center gap-16 px-8">
                     @foreach ($allLogos as $l)
                         <div
-                            class="flex items-center justify-center h-20 opacity-80 hover:opacity-100 transition-opacity my-6 mx-10">
+                            class="flex items-center justify-center h-16 w-36 shrink-0 opacity-80 hover:opacity-100 transition-opacity">
                             @if ($l->PathLogo)
                                 <img src="{{ asset('storage/' . $l->PathLogo) }}" alt="{{ $l->NamaPartner }}"
-                                    class="h-14 w-auto object-contain">
+                                    class="max-h-full max-w-full object-contain">
                             @else
-                                <span class="font-bold text-xl text-slate-500">{{ $l->NamaPartner }}</span>
+                                <span
+                                    class="font-bold text-lg text-slate-500 whitespace-nowrap">{{ $l->NamaPartner }}</span>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+
+                <div class="flex items-center gap-16 px-8" aria-hidden="true">
+                    @foreach ($allLogos as $l)
+                        <div
+                            class="flex items-center justify-center h-16 w-36 shrink-0 opacity-80 hover:opacity-100 transition-opacity">
+                            @if ($l->PathLogo)
+                                <img src="{{ asset('storage/' . $l->PathLogo) }}" alt="{{ $l->NamaPartner }}"
+                                    class="max-h-full max-w-full object-contain">
+                            @else
+                                <span
+                                    class="font-bold text-lg text-slate-500 whitespace-nowrap">{{ $l->NamaPartner }}</span>
                             @endif
                         </div>
                     @endforeach
                 </div>
             </div>
-
         </div>
     </section>
+
+    {{-- berita --}}
+    {{-- <section class="py-20 bg-[#F8FAFC] p-[60px]">
+    <div class="container mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+            <!-- SIDEBAR KIRI: Card Featured Article (Dark Blue Gradient) -->
+            <div class="lg:col-span-5 bg-gradient-to-b from-[#0F2854] via-[#0e274d] to-[#0F2854] text-white p-[40px] rounded-2xl shadow-xl flex flex-col justify-between border border-slate-800">
+                <div>
+                    <!-- Badge & Tanggal -->
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="inline-flex items-center gap-1.5 bg-[#0e3b66]/80 text-[#38bdf8] text-[11px] font-mono font-bold tracking-wider uppercase px-3 py-1 rounded-full border border-[#0284c7]/30">
+                            <svg class="w-3 h-3 text-amber-400 fill-current" viewBox="0 0 20 20">
+                                <path d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.381z"/>
+                            </svg>
+                            {{ __('ARTIKEL TERBARU') }}
+                        </span>
+                        <span class="text-xs font-mono text-slate-400">18 Februari 2025</span>
+                    </div>
+
+                    <!-- Tag Kategori -->
+                    <span class="text-[11px] font-mono font-bold tracking-widest text-[#38bdf8] uppercase block mb-3">
+                        {{ __('WAWASAN SEKURITI & IDENTITAS') }}
+                    </span>
+
+                    <!-- Judul Utama -->
+                    <h3 class="text-xl md:text-2xl font-bold leading-snug text-white mb-4">
+                        {{ __('Menjaga Kedaulatan Identitas di Era Digital: Integrasi Chip Kriptografi & Polikarbonat') }}
+                    </h3>
+
+                    <!-- Deskripsi Ringkas -->
+                    <p class="text-xs md:text-sm text-slate-300 leading-relaxed mb-8">
+                        {{ __('Kupas tuntas bagaimana perpaduan material polikarbonat tanpa perekat kimia dan enkripsi chip berstandar militer melindungi identitas nasional dari risiko kloning dan serangan siber.') }}
+                    </p>
+                </div>
+
+                <div>
+                    <!-- Metadata: Waktu Baca & Penulis -->
+                    <div class="flex items-center gap-2 text-xs font-mono text-slate-400 mb-6 border-t border-slate-800/80 pt-4">
+                        <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span>5 min baca</span>
+                        <span>•</span>
+                        <span>Tim Riset & Rekayasa Sekuriti</span>
+                    </div>
+
+                    <!-- Tombol Aksi -->
+                    <div class="space-y-3">
+                        <a href="#" class="w-full flex items-center justify-center gap-2 bg-[#0284c7] hover:bg-[#0369a1] text-white font-semibold text-xs md:text-sm py-3 px-5 rounded-full transition-colors shadow-md">
+                            {{ __('Baca Artikel Selengkapnya') }}
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                        </a>
+
+                        <a href="#" class="w-full flex items-center justify-center gap-2 bg-[#0f284e] hover:bg-[#163666] text-slate-200 font-semibold text-xs md:text-sm py-3 px-5 rounded-full border border-slate-700/60 transition-colors">
+                            {{ __('Artikel Topik Serupa') }}
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BAGIAN KANAN: Header & Daftar Berita Kanan -->
+            <div class="lg:col-span-7 space-y-6">
+
+                <!-- Header Section Kanan -->
+                <div class="flex items-end justify-between border-b border-slate-100 pb-2">
+                    <div>
+                        <span class="text-xs font-mono font-bold tracking-wider text-[#0284c7] uppercase block mb-1">
+                            {{ __('KABAR TERKINI') }}
+                        </span>
+                        <h2 class="text-[24px] md:text-3xl font-extrabold text-slate-900 tracking-tight">
+                            {{ __('News & Regulatory Insights') }}
+                        </h2>
+                    </div>
+                    <a href="#" class="inline-flex items-center gap-1 text-xs md:text-sm font-semibold text-[#0284c7] hover:underline shrink-0">
+                        {{ __('Lihat Semua Kabar') }}
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+
+                <!-- List Berita 1 -->
+                <div class="bg-white rounded-2xl p-[20px] md:p-[24px] border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow flex flex-col sm:flex-row gap-5 items-center">
+                    <div class="w-full sm:w-48 h-32 shrink-0 rounded-xl overflow-hidden bg-slate-100">
+                        <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500&auto=format&fit=crop" alt="Pabrik Manufaktur" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 text-xs mb-1.5">
+                            <span class="font-mono font-bold text-[#0284c7] uppercase">{{ __('MANUFAKTUR PASPOR') }}</span>
+                            <span class="text-slate-300">•</span>
+                            <span class="text-slate-400 font-mono">14 Februari 2025</span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-sm md:text-base leading-snug mb-2 hover:text-[#0284c7] transition-colors cursor-pointer">
+                            {{ __('Ekspansi Manufaktur Data Page Paspor Polikarbonat Berstandar Global ICAO Doc 9303') }}
+                        </h4>
+                        <p class="text-xs text-slate-500 leading-relaxed line-clamp-2 mb-3">
+                            {{ __('Peningkatan kapasitas pabrik lini polikarbonat berkeamanan tertinggi guna melayani permintaan sovereign credential di pasar Asia Tenggara dan domestik.') }}
+                        </p>
+                        <a href="#" class="inline-flex items-center gap-1 text-xs font-bold text-[#0284c7] hover:underline">
+                            {{ __('Baca Selengkapnya') }}
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- List Berita 2 -->
+                <div class="bg-white rounded-2xl p-[20px] md:p-[24px] border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow flex flex-col sm:flex-row gap-5 items-center">
+                    <div class="w-full sm:w-48 h-32 shrink-0 rounded-xl overflow-hidden bg-slate-100">
+                        <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=500&auto=format&fit=crop" alt="Smart ID Card" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 text-xs mb-1.5">
+                            <span class="font-mono font-bold text-[#0284c7] uppercase">{{ __('SMART MOBILITY') }}</span>
+                            <span class="text-slate-300">•</span>
+                            <span class="text-slate-400 font-mono">28 Januari 2025</span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 text-sm md:text-base leading-snug mb-2 hover:text-[#0284c7] transition-colors cursor-pointer">
+                            {{ __('Implementasi Smart ID Terenkripsi MIFARE DESFire EV3 untuk Korporasi & Transportasi Publik') }}
+                        </h4>
+                        <p class="text-xs text-slate-500 leading-relaxed line-clamp-2 mb-3">
+                            {{ __('Solusi closed-loop payment dan akses keamanan fisik mutakhir mengadopsi standar kriptografi perangkat keras mutakhir anti-kloning.') }}
+                        </p>
+                        <a href="#" class="inline-flex items-center gap-1 text-xs font-bold text-[#0284c7] hover:underline">
+                            {{ __('Baca Selengkapnya') }}
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</section> --}}
 
     <!-- ========================================== -->
     <!-- 8. NEWS & REGULATORY INSIGHTS -->
@@ -731,22 +982,24 @@
     <!-- ========================================== -->
     <!-- 9. RFQ / CONTACT CARD -->
     <!-- ========================================== -->
-    <section id="kontak" class="py-20 bg-white">
+    <section id="kontak" class="py-20 p-[40px] bg-white">
         <div class="container mx-auto px-6">
             <div
-                class="bg-brand-950 rounded-3xl p-8 md:p-12 grid grid-cols-1 lg:grid-cols-2 gap-10 relative overflow-hidden">
+                class="bg-[#0B192E] rounded-3xl p-8 md:p-12 grid grid-cols-1 lg:grid-cols-2 gap-10 relative overflow-hidden
+                [background:radial-gradient(circle_at_10%_20%,rgba(14,165,233,0.12),transparent_35%),radial-gradient(circle_at_90%_80%,rgba(37,99,235,0.12),transparent_40%),#0B192E]">
+
                 <div
                     class="absolute bottom-0 left-0 w-72 h-72 bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10">
                 </div>
 
                 {{-- Left: Info --}}
-                <div class="relative z-10">
+                <div class="relative z-10 p-4 md:p-0">
                     <span
-                        class="inline-block text-[10px] font-bold text-white bg-brand-800/70 px-2.5 py-1 rounded uppercase tracking-widest mb-5">
-                        <i class="fa-solid fa-file-signature mr-1"></i> {{ __('Government & Procurement (RFQ)') }}
+                        class="inline-block mb-[20px] text-[10px] font-light font-mono text-[#38BDF8] px-[10px] py-[5px] bg-[#24324B] border border-[#24324B] text-sm rounded-full">
+                        <i class="fa-solid fa-file-signature mr-1"></i> {{ __('Permintaan & Penawaran (RFQ)') }}
                     </span>
 
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-white leading-tight mb-4">
+                    <h2 class="text-[36px] md:text-4xl font-extrabold text-white leading-tight mb-4">
                         {{ __('Interested in Our Solutions?') }}</h2>
                     <p class="text-slate-400 text-sm leading-relaxed mb-8">
                         {{ __('Do you have custom specifications or require enterprise-scale bidding? Fill out the Request for Quotation (RFQ) form and our team will provide the best technical consultation and field proposal for your institution.') }}
@@ -755,35 +1008,36 @@
                     <div class="space-y-5 mb-8">
                         <div class="flex items-start gap-4">
                             <div
-                                class="w-9 h-9 rounded-lg bg-brand-800/70 text-white flex items-center justify-center flex-shrink-0">
+                                class="w-9 h-9 rounded-lg bg-[#24324B] border border-[#075985]/60 text-white flex items-center justify-center flex-shrink-0">
                                 <i class="fa-solid fa-comments"></i>
                             </div>
                             <div>
-                                <p class="text-sm font-bold text-white mb-0.5">
+                                <p class="text-sm font-semibold text-white mb-0.5">
                                     {{ __('Product Consultation & Customization') }}</p>
-                                <p class="text-xs text-slate-400">Discuss technical specifications, multi-layer security
-                                    features, and materials.</p>
+                                <p class="text-xs text-slate-400">
+                                    {{ __('Technical specifications, multi-layer security features, and materials can be custom-designed to meet specific requirements..') }}
+                                </p>
                             </div>
                         </div>
                         <div class="flex items-start gap-4">
                             <div
-                                class="w-9 h-9 rounded-lg bg-brand-800/70 text-white flex items-center justify-center flex-shrink-0">
+                                class="w-9 h-9 rounded-lg bg-[#24324B] border border-[#075985]/60  text-white flex items-center justify-center flex-shrink-0">
                                 <i class="fa-solid fa-file-invoice-dollar"></i>
                             </div>
                             <div>
-                                <p class="text-sm font-bold text-white mb-0.5">
+                                <p class="text-sm font-semibold text-white mb-0.5">
                                     {{ __('Competitive & Transparent Quotation') }}</p>
-                                <p class="text-xs text-slate-400">Clear pricing structure and volume-based procurement
-                                    terms.</p>
+                                <p class="text-xs text-slate-400">
+                                    {{ __('Clear pricing structure and volume-based procurement terms.') }}</p>
                             </div>
                         </div>
                         <div class="flex items-start gap-4">
                             <div
-                                class="w-9 h-9 rounded-lg bg-brand-800/70 text-white flex items-center justify-center flex-shrink-0">
+                                class="w-9 h-9 rounded-lg bg-[#24324B] border border-[#075985]/60  text-white flex items-center justify-center flex-shrink-0">
                                 <i class="fa-solid fa-box-open"></i>
                             </div>
                             <div>
-                                <p class="text-sm font-bold text-white mb-0.5">
+                                <p class="text-sm font-semibold text-white mb-0.5">
                                     {{ __('Official Physical Sample Delivery') }}</p>
                                 <p class="text-xs text-slate-400">We send specimen samples of security documents for your
                                     evaluation.</p>

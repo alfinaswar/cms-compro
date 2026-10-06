@@ -27,6 +27,7 @@ class LandingPageController extends Controller
         $Solution = HalamanSolusi::get();
         $Why = WhyChooseUs::get();
         $logo = ClientLogo::with('details')->get();
+        // dd($Why);
         return view('frontend.main-alt', compact('logo', 'heroSliders', 'websiteSettings', 'KeyFigures', 'Solution', 'Why'));
     }
 

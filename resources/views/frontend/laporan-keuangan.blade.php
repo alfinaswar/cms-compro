@@ -66,7 +66,7 @@
             {{-- ========================================== --}}
             <div class="lg:col-span-3">
                 <div class="sticky-sidebar space-y-5">
-                    
+
                     {{-- Navigasi Cepat Daftar Laporan --}}
                     <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5">
                         <div class="flex items-center gap-2.5 pb-3.5 mb-2 border-b border-slate-100">
@@ -167,8 +167,8 @@
                             <i class="fa-solid fa-file-contract"></i>
                         </div>
                         <div>
-                            <h2 class="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
-                                {{ $currentLocale === 'en' ? 'Prospectus & Corporate Disclosure' : 'Prospektus & Keterbukaan' }}
+                            <h2 class="text-xl md:text-2xl font-bold text-slate-900 font-serif" style="font-family: 'Noto Serif', serif, system-ui;" tracking-tight">
+                                {{ $currentLocale === 'en' ? 'Prospectus & Corporate Disclosure' : 'Prospektus & 449' }}
                             </h2>
                             <p class="text-xs md:text-sm text-slate-500 mt-1">
                                 {{ $currentLocale === 'en' ? 'Official prospectus and material corporate action disclosures filed on the IDX (JTPE).' : 'Dokumen resmi prospektus penawaran umum perdana dan keterbukaan informasi perseroan di BEI (IDX: JTPE).' }}

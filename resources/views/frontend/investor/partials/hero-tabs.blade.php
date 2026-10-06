@@ -30,7 +30,7 @@
 <!-- 4 TABS NAVIGATION BAR (STICKY OR HEADER) -->
 <!-- ========================================== -->
 <div class="bg-white border-b border-[#e5eeff] shadow-sm sticky top-20 z-40">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-center container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center overflow-x-auto py-3 no-scrollbar space-x-2">
             <!-- Tab 1: Laporan Keuangan -->
             <a href="{{ route('frontend.laporan-keuangan', ['locale' => $currentLocale]) }}"

@@ -84,6 +84,12 @@
         section[id] {
             scroll-margin-top: 80px;
         }
+
+        @import "tailwindcss";
+
+        @theme {
+            --font-mono: "Libertinus Mono", ui-monospace, monospace;
+        }
     </style>
 </head>
 
@@ -477,7 +483,7 @@
     <!-- ========================================== -->
     <!-- FOOTER -->
     <!-- ========================================== -->
-    <footer class="bg-brand-950 text-white">
+    <footer class="bg-[#0F2854] text-white">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">
 
