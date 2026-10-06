@@ -170,16 +170,16 @@ class WhyChooseUsController extends Controller
             );
             $translationsData[$locale] = $trans;
         }
-
-        // Logging activity untuk update
-        activity()
-            ->causedBy(auth()->user())
-            ->performedOn($item)
-            ->withProperties([
-                'attributes' => $mainData,
-                'translations' => $translationsData
-            ])
-            ->log('Mengupdate data keunggulan: ' . ($validated['translations']['id']['Judul'] ?? ''));
+        $trans =
+            // Logging activity untuk update
+            activity()
+                ->causedBy(auth()->user())
+                ->performedOn($item)
+                ->withProperties([
+                    'attributes' => $mainData,
+                    'translations' => $translationsData
+                ])
+                ->log('Mengupdate data keunggulan: ' . ($validated['translations']['id']['Judul'] ?? ''));
 
         return redirect()->route('why-choose-us.index')->with('success', 'Data keunggulan berhasil diperbarui.');
     }
@@ -225,4 +225,5 @@ class WhyChooseUsController extends Controller
             return response()->json(['message' => 'Gagal menghapus data.'], 500);
         }
     }
+
 }

@@ -128,6 +128,7 @@ class StrukturOrganisasiController extends Controller
         return redirect()->route('struktur-organisasi.index')->with('success', 'Section berhasil diperbarui.');
     }
 
+
     public function destroy($id)
     {
         $section = StrukturOrganisasi::find($id);

@@ -13,4 +13,8 @@ class WhyChooseUsTranslation extends Model
     {
         return $this->belongsTo(WhyChooseUs::class, 'why_choose_us_id');
     }
+    public function getData()
+    {
+
+    }
 }

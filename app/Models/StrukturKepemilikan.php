@@ -26,4 +26,5 @@ class StrukturKepemilikan extends Model
             ->logUnguarded()
             ->logOnlyDirty();
     }
+
 }
