@@ -32,10 +32,19 @@ class BeritaController extends Controller
                 }
             ])->latest();
             if ($request->has('kategori') && !empty($request->kategori)) {
-                $query->where('Kategori', $request->kategori);
+                $query->where(function($q) use ($request) {
+                    $q->where('Kategori', $request->kategori)
+                      ->orWhereHas('kategori', function($kq) use ($request) {
+                          $kq->where('NamaKategori', $request->kategori);
+                      });
+                });
             }
             if ($request->has('status') && !empty($request->status)) {
-                $query->where('Status', $request->status);
+                if (in_array(strtolower($request->status), ['draf', 'draft'])) {
+                    $query->whereIn('Status', ['Draf', 'Draft']);
+                } else {
+                    $query->where('Status', $request->status);
+                }
             }
 
             return DataTables::of($query)
@@ -55,18 +64,30 @@ class BeritaController extends Controller
                         . '<small class="text-muted" style="font-size:12px;">Oleh: ' . e($penulis) . '</small>';
                 })
                 ->addColumn('TanggalPublikasi', function ($row) {
-                    if (!$row->created_at)
+                    $tanggal = $row->TanggalPublikasi ? \Carbon\Carbon::parse($row->TanggalPublikasi) : $row->created_at;
+                    if (!$tanggal)
                         return '-';
-                    return '<div class="font-weight-bold text-dark" style="font-size:13px;">' . $row->created_at->translatedFormat('d M Y') . '</div>'
-                        . '<small class="text-muted" style="font-size:11px;">' . $row->created_at->format('H:i') . ' WIB</small>';
+                    return '<div class="font-weight-bold text-dark" style="font-size:13px;">' . $tanggal->translatedFormat('d M Y') . '</div>'
+                        . '<small class="text-muted" style="font-size:11px;">' . ($row->created_at ? $row->created_at->format('H:i') . ' WIB' : '') . '</small>';
                 })
                 ->addColumn('StatusBadge', function ($row) {
-                    if ($row->Status === 'Draf') {
+                    if ($row->Status === 'Draf' || $row->Status === 'Draft') {
                         return '<span class="badge badge-pill badge-warning text-dark px-3 py-1" style="background-color: #FFF3CD; border: 1px solid #FFEEBA;"><i class="fa fa-circle mr-1 text-warning" style="font-size:8px;"></i> Draf</span>';
                     } elseif ($row->Status === 'Diterbitkan' || $row->Status === 'Terbit') {
                         return '<span class="badge badge-pill badge-success px-3 py-1" style="background-color: #D4EDDA; color: #155724; border: 1px solid #C3E6CB;"><i class="fa fa-circle mr-1 text-success" style="font-size:8px;"></i> Terbit</span>';
                     }
                     return '<span class="badge badge-pill badge-secondary px-3 py-1">' . e($row->Status) . '</span>';
+                })
+                ->addColumn('Tags', function ($row) {
+                    if (!$row->Tags) return '-';
+                    $tags = array_map('trim', explode(',', $row->Tags));
+                    $html = '';
+                    foreach ($tags as $t) {
+                        if ($t !== '') {
+                            $html .= '<span class="badge badge-light border text-secondary mr-1 mb-1">' . e($t) . '</span>';
+                        }
+                    }
+                    return $html ?: '-';
                 })
                 ->addColumn('action', function ($row) {
                     // Tombol aksi clean tanpa background tebal (flat icon look)
@@ -87,10 +108,10 @@ class BeritaController extends Controller
                     if ($row->kategori) {
                         return '<span class="badge badge-info px-2 py-1">' . e($row->kategori->NamaKategori) . '</span>';
                     }
-                    return '-';
+                    return '<span class="badge badge-info px-2 py-1">' . e($row->Kategori ?? '-') . '</span>';
                 })
 
-                ->rawColumns(['Thumbnail', 'Judul', 'TanggalPublikasi', 'StatusBadge', 'action', 'Kategori'])
+                ->rawColumns(['Thumbnail', 'Judul', 'TanggalPublikasi', 'StatusBadge', 'action', 'Kategori', 'Tags'])
                 ->make(true);
         }
         $kategori = KategoriBerita::get();
@@ -155,7 +176,16 @@ class BeritaController extends Controller
 
         $seoTitleDefault = $validated['translations']['id']['Judul'] ?? '';
         $seoDescriptionDefault = $ringkasanDefault;
+        $slugBase = Str::slug($validated['translations']['id']['Judul'] ?? $validated['Judul'] ?? 'berita');
+        $slug = $slugBase;
+        $count = 1;
+        while (Berita::where('Slug', $slug)->exists()) {
+            $slug = $slugBase . '-' . $count;
+            $count++;
+        }
+
         $mainData = [
+            'Judul' => $validated['translations']['id']['Judul'] ?? $validated['Judul'] ?? null,
             'Kategori' => $validated['Kategori'],
             'Tags' => $tags,
             'PathThumbnail' => $validated['PathThumbnail'],
@@ -163,7 +193,7 @@ class BeritaController extends Controller
             'TanggalPublikasi' => $validated['TanggalPublikasi'],
             'Penulis' => $validated['Penulis'] ?? (auth()->user() ? auth()->user()->name : null),
             'UserCreate' => (auth()->user() ? auth()->user()->name : null),
-            'Slug' => Str::slug($validated['translations']['id']['Judul']) . '-' . time(),
+            'Slug' => $slug,
         ];
 
         $berita = Berita::create($mainData);
@@ -225,9 +255,7 @@ class BeritaController extends Controller
      */
     public function edit($id)
     {
-        // dd($id);
-        $berita = Berita::where('Slug', $id)->first();
-        // dd($berita);
+        $berita = Berita::where('Slug', $id)->orWhere('id', $id)->firstOrFail();
         $kategoris = KategoriBerita::orderBy('NamaKategori')->get();
         return view('pages.admin.berita.edit', compact('berita', 'kategoris'));
     }
@@ -314,12 +342,13 @@ class BeritaController extends Controller
 
         // Data Utama (Non-translatable)
         $mainData = [
+            'Judul' => $validated['translations']['id']['Judul'] ?? $validated['Judul'] ?? $berita->Judul,
             'Kategori' => $validated['Kategori'],
             'Tags' => $tags,
             'Status' => $validated['Status'],
             'TanggalPublikasi' => $validated['TanggalPublikasi'],
             'Penulis' => $validated['Penulis'],
-            'UserUpdate' => auth()->user()->name,
+            'UserUpdate' => auth()->user() ? auth()->user()->name : null,
             // Slug tidak diubah pada update
         ];
 
@@ -509,11 +538,7 @@ class BeritaController extends Controller
             ->latest('TanggalPublikasi')
             ->take(3)
             ->get();
-        $categories = Berita::where('Status', 'Diterbitkan')
-            ->select('Kategori')
-            ->distinct()
-            ->pluck('Kategori')
-            ->filter();
+        $categories = KategoriBerita::pluck('NamaKategori');
 
         return view('frontend.news', compact('news', 'recentNews', 'categories', 'locale'));
     }
@@ -522,59 +547,35 @@ class BeritaController extends Controller
     {
         $locale = app()->getLocale();
 
-        // 1. Main News: Eager load translation sesuai bahasa aktif
-        $news = Berita::with([
-            'translations' => function ($q) use ($locale) {
-                $q->where('Locale', $locale);
-            }
-        ])->where('Slug', $slug)->firstOrFail();
+        // 1. Main News: Eager load all translations so fallback works
+        $news = Berita::with('translations')->where('Slug', $slug)->firstOrFail();
 
-        // 2. Recent News (Sidebar): Eager load translation
-        $recentNews = Berita::with([
-            'translations' => function ($q) use ($locale) {
-                $q->where('Locale', $locale);
-            }
-        ])
+        // 2. Recent News (Sidebar): Eager load translations
+        $recentNews = Berita::with('translations')
             ->where('id', '!=', $news->id)
             ->where('Status', 'Diterbitkan')
             ->latest('TanggalPublikasi')
             ->take(3)
             ->get();
 
-        // 3. Categories (Data ini tidak diterjemahkan di tabel terpisah, ambil dari utama)
-        $categories = Berita::where('Status', 'Diterbitkan')
-            ->select('Kategori')
-            ->distinct()
-            ->pluck('Kategori')
-            ->filter();
+        // 3. Categories from master KategoriBerita
+        $categories = KategoriBerita::pluck('NamaKategori');
 
-        // 4. Prev/Next Posts: Eager load translation
-        $prevPost = Berita::with([
-            'translations' => function ($q) use ($locale) {
-                $q->where('Locale', $locale);
-            }
-        ])
+        // 4. Prev/Next Posts: Eager load translations
+        $prevPost = Berita::with('translations')
             ->where('TanggalPublikasi', '<', $news->TanggalPublikasi)
             ->where('Status', 'Diterbitkan')
             ->latest('TanggalPublikasi')
             ->first();
 
-        $nextPost = Berita::with([
-            'translations' => function ($q) use ($locale) {
-                $q->where('Locale', $locale);
-            }
-        ])
+        $nextPost = Berita::with('translations')
             ->where('TanggalPublikasi', '>', $news->TanggalPublikasi)
             ->where('Status', 'Diterbitkan')
             ->oldest('TanggalPublikasi')
             ->first();
 
-        // 5. Related Posts: Eager load translation
-        $relatedPosts = Berita::with([
-            'translations' => function ($q) use ($locale) {
-                $q->where('Locale', $locale);
-            }
-        ])
+        // 5. Related Posts: Eager load translations
+        $relatedPosts = Berita::with('translations')
             ->where('Kategori', $news->Kategori)
             ->where('id', '!=', $news->id)
             ->where('Status', 'Diterbitkan')

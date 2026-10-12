@@ -52,9 +52,10 @@ class LaporanKeuanganDetailController extends Controller
         return redirect()->back()->with('success', 'Dokumen berhasil ditambahkan.');
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $jenisId, $id = null)
     {
-        $detail = LaporanKeuanganDetail::findOrFail($id);
+        $documentId = $id ?? $jenisId;
+        $detail = LaporanKeuanganDetail::findOrFail($documentId);
 
         $validated = $request->validate([
             'Judul' => 'required|string|max:255',
@@ -81,9 +82,10 @@ class LaporanKeuanganDetailController extends Controller
         return response()->json(['status' => 200, 'message' => 'Dokumen berhasil diperbarui']);
     }
 
-    public function destroy($id)
+    public function destroy($jenisId, $id = null)
     {
-        $detail = LaporanKeuanganDetail::find($id);
+        $documentId = $id ?? $jenisId;
+        $detail = LaporanKeuanganDetail::find($documentId);
         if (!$detail) {
             return response()->json(['status' => 404, 'message' => 'Data tidak ditemukan'], 404);
         }
@@ -100,7 +102,10 @@ class LaporanKeuanganDetailController extends Controller
 
     public function download($id)
     {
-        $detail = LaporanKeuanganDetail::findOrFail($id);
+        $detail = LaporanKeuanganDetail::whereHas('jenis')->findOrFail($id);
+        if (!$detail->PathFile || !Storage::disk('public')->exists($detail->PathFile)) {
+            abort(404, 'File laporan tidak ditemukan.');
+        }
         $detail->increment('JumlahDownload');
 
         return Storage::disk('public')->download($detail->PathFile);

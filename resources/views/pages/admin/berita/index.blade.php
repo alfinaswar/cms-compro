@@ -229,7 +229,11 @@
                 },
                 language: {
                     processing: '<i class="fa fa-spinner fa-spin fa-2x fa-fw text-primary"></i>',
-                    info: "Menampilkan <b>_START_</b> sampai <b>_END_</b> dari <b>_TOTAL_</b> data (disaring dari total _MAX_ berita)",
+                    info: "Menampilkan <b>_START_</b> sampai <b>_END_</b> dari <b>_TOTAL_</b> data",
+                    infoFiltered: "(disaring dari total <b>_MAX_</b> data)",
+                    infoEmpty: "Menampilkan 0 sampai 0 dari 0 data",
+                    zeroRecords: "Tidak ada data yang cocok",
+                    emptyTable: "Tidak ada data tersedia",
                     paginate: {
                         next: 'Selanjutnya',
                         previous: 'Sebelumnya'

@@ -46,9 +46,9 @@
                     @forelse($news as $item)
                         @php
                             // Ambil terjemahan sesuai bahasa aktif, fallback ke data utama jika kosong
-                            $trans = $item->translate($locale);
-                            $displayJudul = $trans->Judul ?: $item->Judul;
-                            $displayRingkasan = $trans->Ringkasan ?: $item->Ringkasan;
+                            $trans = $item->translate($locale) ?? $item->translate('id') ?? $item->translations->first();
+                            $displayJudul = $trans?->Judul ?: ($item->Judul ?: 'Berita');
+                            $displayRingkasan = $trans?->Ringkasan ?: ($item->Ringkasan ?: '');
                             $thumbnailUrl = $item->PathThumbnail ? asset('storage/' . $item->PathThumbnail) : asset('img/no-image.png');
                         @endphp
 
@@ -157,8 +157,8 @@
                             <div class="space-y-4">
                                 @foreach ($recentNews as $recent)
                                     @php
-                                        $recentTrans = $recent->translate($locale);
-                                        $recentJudul = $recentTrans->Judul ?: $recent->Judul;
+                                        $recentTrans = $recent->translate($locale) ?? $recent->translate('id') ?? $recent->translations->first();
+                                        $recentJudul = $recentTrans?->Judul ?: ($recent->Judul ?: 'Berita');
                                         $recentThumb = $recent->PathThumbnail ? asset('storage/' . $recent->PathThumbnail) : asset('img/no-image.png');
                                     @endphp
                                     <div class="flex gap-3">

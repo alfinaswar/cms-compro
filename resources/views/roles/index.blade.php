@@ -129,9 +129,10 @@
                     if (result.isConfirmed) {
                         $.ajax({
                             url: '{{ route('roles.destroy', ':id') }}'.replace(':id', id),
-                            type: 'DELETE',
+                            type: 'POST',
                             data: {
-                                _token: '{{ csrf_token() }}'
+                                _token: '{{ csrf_token() }}',
+                                _method: 'DELETE'
                             },
                             success: function(response) {
                                 if (response.status === 200) {

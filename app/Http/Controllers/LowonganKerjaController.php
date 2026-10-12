@@ -29,6 +29,12 @@ class LowonganKerjaController extends Controller
      */
     public function index(Request $request)
     {
+        // Auto-close lowongan yang sudah melewati batas waktu
+        LowonganKerja::where('Status', 'Buka')
+            ->whereNotNull('BatasWaktu')
+            ->whereDate('BatasWaktu', '<', now()->toDateString())
+            ->update(['Status' => 'Tutup']);
+
         if ($request->ajax()) {
             // Eager load SEMUA translations (id dan en)
             $data = LowonganKerja::with('translations')
@@ -41,17 +47,16 @@ class LowonganKerjaController extends Controller
                     $idTrans = $row->translations->firstWhere('Locale', 'id');
                     $enTrans = $row->translations->firstWhere('Locale', 'en');
 
-                    $posisiId = $idTrans ? $idTrans->Posisi : $row->Posisi;
-                    $posisiEn = $enTrans ? $enTrans->Posisi : '';
+                    $posisiId = $idTrans?->Posisi ?: ($row->Posisi ?: '-');
+                    $posisiEn = $enTrans?->Posisi ?: '';
 
-                    $html = '<strong class="text-dark">' . $posisiId . '</strong>';
+                    $html = '<strong class="text-dark">' . e($posisiId) . '</strong>';
                     if ($posisiEn) {
-                        $html .= '<br><small class="text-muted"><span class="mr-1">🇬🇧</span>' . $posisiEn . '</small>';
+                        $html .= '<br><small class="text-muted"><span class="mr-1">🇬🇧</span>' . e($posisiEn) . '</small>';
                     }
 
                     return $html;
                 })
-
 
                 ->addColumn('StatusBadge', function ($row) {
                     $isClosed = false;
@@ -72,7 +77,7 @@ class LowonganKerjaController extends Controller
 
                 ->addColumn('DeskripsiSingkat', function ($row) {
                     $trans = $row->translations->firstWhere('Locale', 'id');
-                    $desc = $trans ? $trans->Deskripsi : '';
+                    $desc = $trans?->Deskripsi ?: ($row->Deskripsi ?: '');
                     return '<small>' . Str::limit(strip_tags($desc), 80, '...') . '</small>';
                 })
 
@@ -147,20 +152,29 @@ class LowonganKerjaController extends Controller
             'BatasWaktu.after_or_equal' => 'Batas waktu tidak boleh di masa lalu.',
             'Status.required' => 'Status lowongan wajib dipilih.',
         ]);
+
+        $posisiId = $request->input('translations.id.Posisi');
+        $deskripsiId = $request->input('translations.id.Deskripsi');
+        $kualifikasiId = $request->input('translations.id.Kualifikasi');
+
         $lowongan = LowonganKerja::create([
+            'Posisi' => $posisiId,
+            'Deskripsi' => $deskripsiId,
+            'Kualifikasi' => $kualifikasiId,
             'Kota' => $request->Kota,
             'BatasWaktu' => $request->BatasWaktu,
             'Status' => $request->Status,
             'UserCreate' => auth()->user()->name,
         ]);
+
         $translationsData = $request->input('translations', []);
         foreach ($translationsData as $locale => $data) {
             if (!empty($data['Posisi'])) {
                 $lowongan->translations()->create([
                     'Locale' => $locale,
                     'Posisi' => $data['Posisi'],
-                    'Deskripsi' => $data['Deskripsi'],
-                    'Kualifikasi' => $data['Kualifikasi'],
+                    'Deskripsi' => $data['Deskripsi'] ?? null,
+                    'Kualifikasi' => $data['Kualifikasi'] ?? null,
                 ]);
             }
         }
@@ -168,7 +182,7 @@ class LowonganKerjaController extends Controller
             ->causedBy(auth()->user())
             ->performedOn($lowongan)
             ->withProperties(['attributes' => $lowongan->toArray()])
-            ->log('Menambah lowongan kerja: ' . $lowongan->translate('id')->Posisi);
+            ->log('Menambah lowongan kerja: ' . ($lowongan->translate('id')->Posisi ?? $posisiId));
 
         return redirect()->route('karir.index')->with('success', 'Lowongan kerja berhasil ditambahkan.');
     }
@@ -178,8 +192,12 @@ class LowonganKerjaController extends Controller
      */
     public function edit($id)
     {
-        $id = decrypt($id);
-        $lowongan = LowonganKerja::with('translations')->findOrFail($id);
+        try {
+            $decrypted = is_numeric($id) ? $id : decrypt($id);
+        } catch (\Exception $e) {
+            $decrypted = $id;
+        }
+        $lowongan = LowonganKerja::with('translations')->findOrFail($decrypted);
         $Kota = MasterKota::get();
         return view('pages.admin.karir-dan-rekrutmen.edit', compact('lowongan', 'Kota'));
     }
@@ -209,7 +227,15 @@ class LowonganKerjaController extends Controller
 
         $oldMain = $lowongan->getOriginal();
         $oldTranslations = $lowongan->translations->pluck('Posisi', 'Locale')->toArray();
+
+        $posisiId = $request->input('translations.id.Posisi') ?: $lowongan->Posisi;
+        $deskripsiId = $request->input('translations.id.Deskripsi') ?: $lowongan->Deskripsi;
+        $kualifikasiId = $request->input('translations.id.Kualifikasi') ?: $lowongan->Kualifikasi;
+
         $lowongan->update([
+            'Posisi' => $posisiId,
+            'Deskripsi' => $deskripsiId,
+            'Kualifikasi' => $kualifikasiId,
             'Kota' => $request->Kota,
             'BatasWaktu' => $request->BatasWaktu,
             'Status' => $request->Status,
@@ -230,7 +256,7 @@ class LowonganKerjaController extends Controller
             }
         }
         $lowongan->load('translations');
-        $posisiBaru = $lowongan->translate('id')->Posisi;
+        $posisiBaru = $lowongan->translate('id')->Posisi ?? $posisiId;
 
         activity()
             ->causedBy(auth()->user())

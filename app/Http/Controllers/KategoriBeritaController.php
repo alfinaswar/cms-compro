@@ -26,10 +26,10 @@ class KategoriBeritaController extends Controller
                 ->addColumn('action', function ($row) {
                     $btn = '<div class="btn-group btn-group-sm">';
                     if (auth()->user()->can('kategori-berita.edit')) {
-                        $btn .= '<button class="btn btn-warning btn-edit" data-id="' . $row->id . '" data-nama="' . $row->NamaKategori . '" title="Edit"><i class="fa fa-edit"></i></button>';
+                        $btn .= '<button class="btn btn-warning btn-edit" data-id="' . $row->id . '" data-nama="' . htmlspecialchars($row->NamaKategori, ENT_QUOTES) . '" title="Edit"><i class="fa fa-edit"></i></button>';
                     }
                     if (auth()->user()->can('kategori-berita.delete')) {
-                        $btn .= '<button class="btn btn-danger btn-delete" data-id="' . $row->id . '" title="Hapus"><i class="fa fa-trash"></i></button>';
+                        $btn .= '<button class="btn btn-danger btn-delete" data-id="' . $row->id . '" data-nama="' . htmlspecialchars($row->NamaKategori, ENT_QUOTES) . '" title="Hapus"><i class="fa fa-trash"></i></button>';
                     }
                     $btn .= '</div>';
                     return $btn;
@@ -45,11 +45,23 @@ class KategoriBeritaController extends Controller
     // Store method
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'NamaKategori' => 'required|unique:kategori_berita,NamaKategori'
         ], [
+            'NamaKategori.required' => 'Nama kategori wajib diisi.',
             'NamaKategori.unique' => 'Nama Kategori sudah ada, tidak boleh sama.'
         ]);
+
+        if ($validator->fails()) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'status' => 422,
+                    'message' => $validator->errors()->first('NamaKategori'),
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
 
         $kategori = KategoriBerita::create([
             'NamaKategori' => $request->NamaKategori,
@@ -82,11 +94,23 @@ class KategoriBeritaController extends Controller
     {
         $kategori = KategoriBerita::findOrFail($id);
 
-        $request->validate([
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'NamaKategori' => 'required|string|max:100|unique:kategori_berita,NamaKategori,' . $id
         ], [
+            'NamaKategori.required' => 'Nama kategori wajib diisi.',
             'NamaKategori.unique' => 'Nama Kategori tidak boleh sama.'
         ]);
+
+        if ($validator->fails()) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'status' => 422,
+                    'message' => $validator->errors()->first('NamaKategori'),
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
 
         $oldData = $kategori->getOriginal();
 

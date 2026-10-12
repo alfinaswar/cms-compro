@@ -143,8 +143,8 @@
                         </div>
                         <div class="card-body">
                             <select name="IsPublished" class="form-control">
-                                <option value="0" selected>📝 Draft</option>
-                                <option value="1">✅ Publikasikan</option>
+                                <option value="0" {{ old('IsPublished', '0') == '0' ? 'selected' : '' }}>📝 Draft</option>
+                                <option value="1" {{ old('IsPublished') == '1' ? 'selected' : '' }}>✅ Publikasikan</option>
                             </select>
                             <small class="text-muted d-block mt-2">
                                 <i class="fa fa-info-circle mr-1"></i>Default: <strong>Draft</strong>. Ubah ke

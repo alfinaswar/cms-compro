@@ -66,20 +66,23 @@ class PermissionController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        // ✅ Validasi kondisional: module & action required HANYA jika custom_name kosong
-        $request->validate([
-            'module' => 'required_without:custom_name|nullable|string|max:100',
-            'action' => 'required_without:custom_name|nullable|string|max:100',
-            'custom_name' => 'nullable|string|max:255|regex:/^[a-z0-9\-_]+(\.[a-z0-9\-_]+)*$/',
-        ], [
-            'custom_name.regex' => 'Format permission harus: modul.aksi (huruf kecil, angka, dash, underscore)',
-        ]);
-
-        // ✅ Tentukan nama permission berdasarkan input user
         if ($request->filled('custom_name')) {
+            $request->validate([
+                'custom_name' => 'required|string|max:255|regex:/^[a-z0-9\-_]+(\.[a-z0-9\-_]+)*$/',
+            ], [
+                'custom_name.required' => 'Nama permission wajib diisi.',
+                'custom_name.regex' => 'Format permission harus: modul.aksi (huruf kecil, angka, dash, underscore)',
+            ]);
             $permissionName = strtolower(trim($request->custom_name));
         } else {
-            $permissionName = $request->module . '.' . $request->action;
+            $request->validate([
+                'module' => 'required|string|max:100',
+                'action' => 'required|string|max:100',
+            ], [
+                'module.required' => 'Modul wajib dipilih.',
+                'action.required' => 'Aksi wajib dipilih.',
+            ]);
+            $permissionName = strtolower(trim($request->module)) . '.' . strtolower(trim($request->action));
         }
 
         // Cek duplikat

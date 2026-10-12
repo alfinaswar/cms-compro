@@ -3,9 +3,9 @@
 @section('content-frontend')
     @php
         // Helper untuk berita utama
-        $trans = $news->translate($locale);
-        $displayJudul = $trans->Judul ?: $news->Judul;
-        $displayKonten = $trans->Konten ?: $news->Konten;
+        $trans = $news->translate($locale) ?? $news->translate('id') ?? $news->translations->first();
+        $displayJudul = $trans?->Judul ?: ($news->Judul ?: 'Berita');
+        $displayKonten = $trans?->Konten ?: ($news->Konten ?: '');
         $thumbnailUrl = $news->PathThumbnail ? asset('storage/' . $news->PathThumbnail) : asset('img/no-image.png');
     @endphp
 
@@ -157,8 +157,8 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
                             @if ($prevPost)
                                 @php
-                                    $prevTrans = $prevPost->translate($locale);
-                                    $prevJudul = $prevTrans->Judul ?: $prevPost->Judul;
+                                    $prevTrans = $prevPost->translate($locale) ?? $prevPost->translate('id') ?? $prevPost->translations->first();
+                                    $prevJudul = $prevTrans?->Judul ?: ($prevPost->Judul ?: 'Berita');
                                 @endphp
                                 <a href="{{ url('news/' . $prevPost->Slug) }}"
                                     class="bg-white rounded-xl p-5 border border-slate-200 hover:border-brand-500 hover:shadow-md transition-all group">
@@ -180,8 +180,8 @@
 
                             @if ($nextPost)
                                 @php
-                                    $nextTrans = $nextPost->translate($locale);
-                                    $nextJudul = $nextTrans->Judul ?: $nextPost->Judul;
+                                    $nextTrans = $nextPost->translate($locale) ?? $nextPost->translate('id') ?? $nextPost->translations->first();
+                                    $nextJudul = $nextTrans?->Judul ?: ($nextPost->Judul ?: 'Berita');
                                 @endphp
                                 <a href="{{ url('news/' . $nextPost->Slug) }}"
                                     class="bg-white rounded-xl p-5 border border-slate-200 hover:border-brand-500 hover:shadow-md transition-all group">
@@ -223,8 +223,8 @@
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 @foreach ($relatedPosts as $related)
                                     @php
-                                        $relTrans = $related->translate($locale);
-                                        $relJudul = $relTrans->Judul ?: $related->Judul;
+                                        $relTrans = $related->translate($locale) ?? $related->translate('id') ?? $related->translations->first();
+                                        $relJudul = $relTrans?->Judul ?: ($related->Judul ?: 'Berita');
                                         $relThumb = $related->PathThumbnail
                                             ? asset('storage/' . $related->PathThumbnail)
                                             : asset('img/no-image.png');
@@ -298,8 +298,8 @@
                             <div class="space-y-4">
                                 @foreach ($recentNews as $recent)
                                     @php
-                                        $recentTrans = $recent->translate($locale);
-                                        $recentJudul = $recentTrans->Judul ?: $recent->Judul;
+                                        $recentTrans = $recent->translate($locale) ?? $recent->translate('id') ?? $recent->translations->first();
+                                        $recentJudul = $recentTrans?->Judul ?: ($recent->Judul ?: 'Berita');
                                         $recentThumb = $recent->PathThumbnail
                                             ? asset('storage/' . $recent->PathThumbnail)
                                             : asset('img/no-image.png');

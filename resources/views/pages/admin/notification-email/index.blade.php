@@ -224,7 +224,7 @@
                         </div>
 
                         <!-- ✅ Field TerimaEmail -->
-                        <div class="form-group mb-0">
+                        <div class="form-group">
                             <div class="custom-control custom-switch">
                                 <input type="checkbox" class="custom-control-input" id="TerimaEmail" name="TerimaEmail"
                                     value="1">
@@ -235,6 +235,21 @@
                             <small class="text-muted d-block mt-2">
                                 <i class="fas fa-info-circle mr-1"></i>
                                 Email ini akan menerima notifikasi saat ada pesan baru masuk.
+                            </small>
+                        </div>
+
+                        <!-- ✅ Field StatusAktif -->
+                        <div class="form-group mb-0">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="StatusAktif" name="StatusAktif"
+                                    value="1" checked>
+                                <label class="custom-control-label font-weight-bold text-dark" for="StatusAktif">
+                                    Status Aktif
+                                </label>
+                            </div>
+                            <small class="text-muted d-block mt-2">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Aktifkan atau nonaktifkan email ini di sistem.
                             </small>
                         </div>
                     </div>
@@ -335,6 +350,7 @@
                 $('#formMethod').val('POST');
                 $('#emailId').val('');
                 $('#TerimaEmail').prop('checked', false);
+                $('#StatusAktif').prop('checked', true);
                 $('#modalEmailLabel').html('<i class="fas fa-envelope mr-2"></i>Tambah Email Baru');
                 $('.text-danger').text('');
                 $('.form-control').removeClass('is-invalid');
@@ -353,7 +369,7 @@
 
                 $.ajax({
                     url: url,
-                    type: method === 'POST' ? 'POST' : 'PUT',
+                    type: 'POST',
                     data: $(this).serialize(),
                     success: function(response) {
                         $('#modalEmail').modal('hide');
@@ -396,11 +412,13 @@
                 var email = $(this).data('email');
                 var nama = $(this).data('nama');
                 var terimaEmail = $(this).data('terima-email');
+                var statusAktif = $(this).data('status-aktif');
 
                 $('#emailId').val(id);
                 $('#Email').val(email);
                 $('#Nama').val(nama);
                 $('#TerimaEmail').prop('checked', terimaEmail == '1' || terimaEmail === 1);
+                $('#StatusAktif').prop('checked', statusAktif == '1' || statusAktif === 1 || statusAktif === undefined);
                 $('#formMethod').val('PUT');
                 $('#modalEmailLabel').html('<i class="fas fa-edit mr-2"></i>Edit Data Email');
 

@@ -72,7 +72,16 @@ class LowonganKerja extends Model
     }
     public function translate($locale = 'id')
     {
-        return $this->translations->firstWhere('Locale', $locale) ?: new LowonganKerjaTranslation();
+        $trans = $this->translations->firstWhere('Locale', $locale);
+        if (!$trans && $locale === 'id' && ($this->Posisi || $this->Deskripsi || $this->Kualifikasi)) {
+            $dummy = new LowonganKerjaTranslation();
+            $dummy->Posisi = $this->Posisi;
+            $dummy->Deskripsi = $this->Deskripsi;
+            $dummy->Kualifikasi = $this->Kualifikasi;
+            $dummy->Locale = 'id';
+            return $dummy;
+        }
+        return $trans ?: new LowonganKerjaTranslation();
     }
     public function getKota()
     {

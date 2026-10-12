@@ -35,28 +35,21 @@ class HomeController extends Controller
             ->whereYear('created_at', now()->year)
             ->count();
 
-        $countArtikelDraftBulanIni = Berita::where('Status', 'Draf')
-            ->whereMonth('created_at', now()->month)
-            ->whereYear('created_at', now()->year)
-            ->count();
+        $countArtikelDraftBulanIni = Berita::whereIn('Status', ['Draf', 'Draft'])->count();
 
         $countLowongan = LowonganKerja::where('Status', 'Buka')->count();
         $countPesan = ContactUs::whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
             ->count();
 
-        $countPelamar = LamaranKerja::whereMonth('created_at', now()->month)
-            ->whereYear('created_at', now()->year)
-            ->count();
+        $countPelamar = LamaranKerja::whereHas('getLowongan')->count();
 
+        $countUser = \App\Models\User::count();
         $countAnggota = StrukturOrganisasiDetail::where('Status', 'Aktif')->count();
-        $artikelTerbaru = Berita::where('Status', 'Diterbitkan')
-            ->with([
-                'translations' => function ($query) {
-                    $query->where('Locale', 'id');
-                }
-            ])
+        $artikelTerbaru = Berita::whereIn('Status', ['Diterbitkan', 'Terbit'])
+            ->with('translations')
             ->latest('TanggalPublikasi')
+            ->latest('id')
             ->take(5)
             ->get();
 
@@ -73,6 +66,7 @@ class HomeController extends Controller
             'countArtikelDraftBulanIni',
             'countLowongan',
             'countPesan',
+            'countUser',
             'countAnggota',
             'artikelTerbaru',
             'pesanTerbaru',

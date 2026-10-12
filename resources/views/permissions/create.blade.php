@@ -70,11 +70,9 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="module"><strong>Pilih Modul</strong> <span
-                                                class="text-danger">*</span></label>
+                                        <label for="module"><strong>Pilih Modul</strong></label>
                                         <select name="module" id="module"
-                                            class="form-control form-control @error('module') is-invalid @enderror"
-                                            required>
+                                            class="form-control @error('module') is-invalid @enderror">
                                             <option value="">-- Pilih Modul --</option>
                                             @foreach ($modules as $value => $label)
                                                 <option value="{{ $value }}"
@@ -92,10 +90,9 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="action"><strong>Pilih Aksi</strong> <span
-                                                class="text-danger">*</span></label>
+                                        <label for="action"><strong>Pilih Aksi</strong></label>
                                         <select name="action" id="action"
-                                            class="form-control  @error('action') is-invalid @enderror" required>
+                                            class="form-control @error('action') is-invalid @enderror">
                                             <option value="">-- Pilih Aksi --</option>
                                             @foreach ($actions as $value => $label)
                                                 <option value="{{ $value }}"
@@ -175,12 +172,7 @@
 
                 if (custom) {
                     $('#permissionPreview').text(custom);
-                    // ✅ Ganti disabled dengan visual indication (readonly + CSS)
-                    $('#module, #action').prop('readonly', true).addClass('bg-light');
-                    $('#custom_name').closest('.form-group').addClass('border-primary');
                 } else {
-                    $('#module, #action').prop('readonly', false).removeClass('bg-light');
-                    $('#custom_name').closest('.form-group').removeClass('border-primary');
                     if (module && action) {
                         $('#permissionPreview').text(module + '.' + action);
                     } else {
@@ -190,12 +182,6 @@
             }
 
             $('#module, #action, #custom_name').on('input change', updatePreview);
-
-            // ✅ SEBELUM SUBMIT: pastikan field tidak readonly agar value terkirim
-            $('#formPermission, form').on('submit', function() {
-                $('#module, #action').prop('readonly', false);
-            });
-
             updatePreview();
         });
     </script>

@@ -212,7 +212,7 @@
                             </div>
 
                             <!-- Preview Gambar (Disembunyikan secara default) -->
-                            <img id="previewThumb" src="" class="img-fluid mb-3"
+                            <img id="previewThumb" class="img-fluid mb-3"
                                 style="max-height: 180px; border-radius: 8px; border: 1px solid #ddd; display: none; object-fit: cover; width: 100%;">
 
                             <input type="file" name="PathThumbnail" class="form-control form-control-sm"
@@ -270,7 +270,7 @@
                                     <div id="seoPreviewTitle"
                                         style="color: #1a0dab; font-size: 18px; line-height: 21px; margin-bottom: 2px;">
                                         Judul Berita</div>
-                                    <div style="color: #006621; font-size: 14px; margin-bottom: 2px;">
+                                    <div id="seoPreviewUrl" style="color: #006621; font-size: 14px; margin-bottom: 2px;">
                                         jasuindo.com/berita/judul-berita</div>
                                     <div id="seoPreviewDesc" style="color: #545454; font-size: 13px; line-height: 1.4;">
                                         Deskripsi berita akan muncul di sini...</div>
@@ -429,10 +429,18 @@
 
             // SEO Preview Real-time (Mengacu ke Judul Indonesia)
             function updateSEOPreview() {
-                var judul = $('#JudulId').val() || 'Judul Berita';
+                var rawJudul = $('#JudulId').val() || '';
+                var judul = rawJudul || 'Judul Berita';
                 var seoTitle = $('#inputSEOTitle').val() || judul;
                 var seoDesc = $('#inputSEODesc').val() || 'Deskripsi berita akan muncul di sini...';
+                var slug = rawJudul.toLowerCase()
+                    .replace(/[^\w\s-]/g, '')
+                    .trim()
+                    .replace(/[\s_-]+/g, '-')
+                    .replace(/^-+|-+$/g, '');
+                var seoUrl = 'jasuindo.com/berita/' + (slug || 'judul-berita');
                 $('#seoPreviewTitle').text(seoTitle);
+                $('#seoPreviewUrl').text(seoUrl);
                 $('#seoPreviewDesc').text(seoDesc);
             }
             $('#JudulId, #inputSEOTitle, #inputSEODesc').on('input', updateSEOPreview);

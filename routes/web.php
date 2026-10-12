@@ -74,9 +74,18 @@ Route::group(['prefix' => '{locale}', 'where' => ['locale' => 'id|en']], functio
         ->name('static-pages.show')
         ->where('slug', 'kebijakan-privasi|syarat-ketentuan|tentang-kami|faq');
 });
+
+Route::middleware('auth')->group(function () {
+    Route::get('/roles/{id}/edit', fn($id) => redirect()->route('roles.edit', $id));
+    Route::get('/roles/{id}', fn($id) => redirect()->route('roles.show', $id));
+    Route::get('/roles', fn() => redirect()->route('roles.index'));
+});
+
 Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     // === GROUP DASHBOARD ===
     Route::resource('manajemen-akun/roles', RoleController::class)->names('roles');
+    Route::get('roles/{id}/edit', fn($id) => redirect()->route('roles.edit', $id));
+    Route::get('roles', fn() => redirect()->route('roles.index'));
     Route::resource('manajemen-akun/users', UserController::class)->names('users');
     Route::resource('permissions', PermissionController::class);
 

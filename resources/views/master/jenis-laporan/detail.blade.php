@@ -393,8 +393,11 @@
                             url: '{{ route('jenis-laporan.details.destroy', ['jenisId' => ':jenisId', 'id' => ':id']) }}'
                                  .replace(':jenisId', jenisId)
                                  .replace(':id', id),
-                            type: 'DELETE',
-                            data: { _token: '{{ csrf_token() }}' },
+                            type: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                _method: 'DELETE'
+                            },
                             success: function(res) {
                                 Swal.fire({ icon: 'success', title: 'Dihapus!', text: res.message, timer: 1500, showConfirmButton: false });
                                 location.reload();

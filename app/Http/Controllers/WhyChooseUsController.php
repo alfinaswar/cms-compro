@@ -46,11 +46,15 @@ class WhyChooseUsController extends Controller
                 })
                 ->addColumn('Icon', function ($row) {
                     if ($row->Icon) {
-                        $url = asset('storage/' . $row->Icon);
-                        return '<img src="' . $url . '" alt="Icon" style="height:40px;">';
-                    } else {
-                        return '<span class="text-muted">-</span>';
+                        if (\Illuminate\Support\Str::startsWith($row->Icon, 'fa-')) {
+                            return '<i class="' . e($row->Icon) . ' fa-2x text-primary"></i>';
+                        }
+                        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($row->Icon)) {
+                            $url = asset('storage/' . $row->Icon);
+                            return '<img src="' . $url . '" alt="Icon" style="height:40px; max-width:60px; object-fit:contain;" onerror="this.onerror=null; this.parentElement.innerHTML=\'<i class=\\\'fa fa-award fa-2x text-primary\\\'></i>\';">';
+                        }
                     }
+                    return '<i class="fa fa-award fa-2x text-primary" title="Default Icon"></i>';
                 })
 
                 ->rawColumns(['status', 'action', 'Icon'])

@@ -73,9 +73,10 @@ class NotificationEmailRecipientController extends Controller
                     if (auth()->user()->can('pengaturan-form-kontak.edit')) {
                         $btn .= '<button type="button" class="btn btn-info btn-sm btn-edit mr-1"
                                     data-id="' . $row->id . '"
-                                    data-email="' . $row->Email . '"
-                                    data-nama="' . $row->Nama . '"
+                                    data-email="' . htmlspecialchars($row->Email, ENT_QUOTES) . '"
+                                    data-nama="' . htmlspecialchars($row->Nama ?? '', ENT_QUOTES) . '"
                                     data-terima-email="' . ($row->TerimaEmail ? '1' : '0') . '"
+                                    data-status-aktif="' . ($row->StatusAktif ? '1' : '0') . '"
                                     data-toggle="modal"
                                     data-target="#modalEmail"
                                     title="Edit">';
@@ -84,7 +85,7 @@ class NotificationEmailRecipientController extends Controller
                     if (auth()->user()->can('pengaturan-form-kontak.delete')) {
                         $btn .= '<button type="button" class="btn btn-danger btn-sm btn-delete"
                                     data-id="' . $row->id . '"
-                                    data-email="' . $row->Email . '"
+                                    data-email="' . htmlspecialchars($row->Email, ENT_QUOTES) . '"
                                     title="Hapus">';
                         $btn .= '<i class="fas fa-trash"></i></button>';
                     }
@@ -103,6 +104,11 @@ class NotificationEmailRecipientController extends Controller
             'Email' => 'required|email|unique:notification_email_recipient,Email',
             'Nama' => 'nullable|string|max:255',
             'TerimaEmail' => 'nullable|boolean',
+            'StatusAktif' => 'nullable|boolean',
+        ], [
+            'Email.required' => 'Alamat email wajib diisi.',
+            'Email.email' => 'Format email tidak valid.',
+            'Email.unique' => 'Email ini sudah terdaftar di sistem.',
         ]);
 
         if ($validator->fails()) {
@@ -113,7 +119,7 @@ class NotificationEmailRecipientController extends Controller
             'Email' => $request->Email,
             'Nama' => $request->Nama,
             'TerimaEmail' => $request->has('TerimaEmail'),
-            'StatusAktif' => true,
+            'StatusAktif' => $request->has('StatusAktif'),
             'UserCreate' => auth()->user()->name,
         ]);
 
@@ -138,6 +144,11 @@ class NotificationEmailRecipientController extends Controller
             'Email' => 'required|email|unique:notification_email_recipient,Email,' . $id,
             'Nama' => 'nullable|string|max:255',
             'TerimaEmail' => 'nullable|boolean',
+            'StatusAktif' => 'nullable|boolean',
+        ], [
+            'Email.required' => 'Alamat email wajib diisi.',
+            'Email.email' => 'Format email tidak valid.',
+            'Email.unique' => 'Email ini sudah terdaftar di sistem.',
         ]);
 
         if ($validator->fails()) {
@@ -152,6 +163,7 @@ class NotificationEmailRecipientController extends Controller
             'Email' => $request->Email,
             'Nama' => $request->Nama,
             'TerimaEmail' => $request->has('TerimaEmail'),
+            'StatusAktif' => $request->has('StatusAktif'),
             'UserUpdate' => auth()->user()->name,
         ]);
 
@@ -163,11 +175,13 @@ class NotificationEmailRecipientController extends Controller
                     'Email' => $oldRecipient->Email,
                     'Nama' => $oldRecipient->Nama,
                     'TerimaEmail' => $oldRecipient->TerimaEmail,
+                    'StatusAktif' => $oldRecipient->StatusAktif,
                 ],
                 'after' => [
                     'Email' => $recipient->Email,
                     'Nama' => $recipient->Nama,
                     'TerimaEmail' => $recipient->TerimaEmail,
+                    'StatusAktif' => $recipient->StatusAktif,
                 ],
                 'ip_address' => $request->ip(),
             ])

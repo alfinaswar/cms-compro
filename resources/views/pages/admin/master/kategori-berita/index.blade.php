@@ -284,7 +284,8 @@
 
                 $.ajax({
                     url: '{{ route('kategori-berita.update', ':id') }}'.replace(':id', id),
-                    type: 'PUT',
+                    type: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
                     data: $(this).serialize(),
                     dataType: 'json',
                     success: function(res) {

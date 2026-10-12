@@ -310,11 +310,11 @@
                                     <i class="fas fa-users"></i>
                                 </div>
                             </div>
-                            <div class="metric-value">{{ $countAnggota }}</div>
-                            <div class="metric-title">Anggota Tim & Akun</div>
+                            <div class="metric-value">{{ $countUser }}</div>
+                            <div class="metric-title">Akun Pengguna</div>
                         </div>
                         <div class="metric-footer">
-                            <span class="text-muted">1 wajib reset sandi</span>
+                            <span class="text-muted">{{ $countUser }} akun terdaftar</span>
                             <a href="{{ route('users.index') }}">Kelola Akun <i class="fas fa-chevron-right ml-1"
                                     style="font-size: 10px;"></i></a>
                         </div>
@@ -342,7 +342,7 @@
                                     <tbody>
                                         @forelse ($pesanTerbaru as $pesan)
                                             <tr>
-                                                <td style="width: 50px;" class="text-center pl-3">
+                                                 <td style="width: 50px;" class="text-center pl-3">
                                                     <div class="bg-light rounded-circle d-flex align-items-center justify-content-center text-secondary font-weight-bold"
                                                         style="width: 36px; height: 36px; font-size: 13px;">
                                                         {{ strtoupper(substr($pesan->NamaLengkap ?? 'A', 0, 2)) }}
@@ -353,7 +353,7 @@
                                                         {{ $pesan->NamaLengkap }}</div>
                                                     <div class="text-muted text-truncate"
                                                         style="font-size: 12px; max-width: 380px;">
-                                                        {{ Str::limit($pesan->Pesan ?? 'Tidak ada pesan', 100) }}
+                                                        {{ !empty(trim($pesan->Pesan ?? '')) ? Str::limit($pesan->Pesan, 100) : (!empty($pesan->ProdukYangDibutuhkan) ? Str::limit($pesan->ProdukYangDibutuhkan, 100) : 'Tidak ada pesan') }}
                                                     </div>
                                                 </td>
                                                 <td class="text-right text-muted pr-3"
@@ -415,16 +415,16 @@
                                                     @endif
                                                 </td>
                                                 <td class="align-middle">
-                                                    <a href="{{ route('berita.edit', $item->id) }}"
+                                                    <a href="{{ route('berita.edit', $item->Slug ?? $item->id) }}"
                                                         class="text-dark font-weight-bold" style="font-size: 13px;">
-                                                        {{ Str::limit($item->translations->first()->Judul ?? $item->Judul, 100) }}
+                                                        {{ Str::limit($item->translations->firstWhere('Locale', 'id')?->Judul ?? $item->translations->first()?->Judul ?? $item->Judul ?? 'Tanpa Judul', 100) }}
                                                     </a>
                                                 </td>
                                                 <td class="align-middle text-muted" style="font-size: 12px;">
                                                     {{ $item->TanggalPublikasi ? \Illuminate\Support\Carbon::parse($item->TanggalPublikasi)->format('d M Y') : '-' }}
                                                 </td>
                                                 <td class="align-middle text-right pr-3">
-                                                    <a href="{{ route('berita.edit', $item->Slug) }}"
+                                                    <a href="{{ route('berita.edit', $item->Slug ?? $item->id) }}"
                                                         class="text-muted hover-primary">
                                                         <i class="fas fa-edit"></i>
                                                     </a>

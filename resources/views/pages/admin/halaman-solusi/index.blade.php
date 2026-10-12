@@ -40,7 +40,8 @@
                                     <th>Judul</th>
                                     <th>Slug</th>
                                     <th>Konten</th>
-                                    <th style="width: 120px;">Aksi</th>
+                                    <th style="width: 100px;" class="text-center">Status</th>
+                                    <th style="width: 120px;" class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -82,9 +83,10 @@
                         $.ajax({
                             url: '{{ route('halaman-solusi.destroy', ':id') }}'.replace(
                                 ':id', id),
-                            type: 'DELETE',
+                            type: 'POST',
                             data: {
-                                _token: '{{ csrf_token() }}'
+                                _token: '{{ csrf_token() }}',
+                                _method: 'DELETE'
                             },
                             success: function(response) {
                                 if (response.status === 200) {
@@ -113,16 +115,24 @@
                 },
                 language: {
                     processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
+                    lengthMenu: 'Tampilkan _MENU_ data',
+                    search: 'Cari:',
+                    info: 'Menampilkan _START_ sampai _END_ dari _TOTAL_ data',
+                    infoEmpty: 'Menampilkan 0 sampai 0 dari 0 data',
+                    infoFiltered: '(disaring dari total _MAX_ data)',
+                    zeroRecords: 'Tidak ada data yang cocok',
+                    emptyTable: 'Tidak ada data tersedia',
                     paginate: {
-                        next: '>>',
-                        previous: '<<'
+                        next: 'Selanjutnya',
+                        previous: 'Sebelumnya'
                     }
                 },
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
                         orderable: false,
-                        searchable: false
+                        searchable: false,
+                        className: 'text-center'
                     },
                     {
                         data: 'Judul',
@@ -139,10 +149,16 @@
                         searchable: false
                     },
                     {
+                        data: 'Status',
+                        name: 'IsPublished',
+                        className: 'text-center'
+                    },
+                    {
                         data: 'action',
                         name: 'action',
                         orderable: false,
-                        searchable: false
+                        searchable: false,
+                        className: 'text-center'
                     }
                 ]
             });

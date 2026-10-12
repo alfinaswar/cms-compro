@@ -131,10 +131,10 @@
                                                 class="form-control-file"
                                                 accept="image/*">
                                             <small class="text-muted">Opsional. Maks. 2MB.</small>
-                                            @if (!empty($about->Gambar) && !str_contains($about->Gambar, 'fa-'))
+                                            @if (!empty($about->Gambar) && !str_contains($about->Gambar, 'fa-') && \Illuminate\Support\Facades\Storage::disk('public')->exists($about->Gambar))
                                                 <div class="mt-2">
                                                     <img src="{{ asset('storage/' . $about->Gambar) }}"
-                                                        class="img-thumbnail" style="max-height: 120px;" alt="Preview">
+                                                        class="img-thumbnail" style="max-height: 120px;" alt="Preview" onerror="this.parentElement.style.display='none';">
                                                 </div>
                                             @endif
                                         </div>
@@ -203,11 +203,12 @@
                                                                 value="{{ $detail->id }}">
                                                             <div class="d-flex align-items-start">
                                                                 <div class="detail-preview mr-2">
-                                                                    @if ($detail->Gambar && !$isFa)
+                                                                    @if ($detail->Gambar && !$isFa && \Illuminate\Support\Facades\Storage::disk('public')->exists($detail->Gambar))
                                                                         <img src="{{ asset('storage/' . $detail->Gambar) }}"
-                                                                            class="img-preview" alt="">
+                                                                            class="img-preview" alt="" onerror="this.style.display='none'; $(this).siblings('.preview-placeholder').show();">
+                                                                        <i class="fa fa-image text-muted preview-placeholder" style="display:none;"></i>
                                                                     @else
-                                                                        <img src="" class="img-preview" style="display:none" alt="">
+                                                                        <img class="img-preview" style="display:none" alt="">
                                                                         <i class="fa fa-image text-muted preview-placeholder"></i>
                                                                     @endif
                                                                 </div>
@@ -334,7 +335,7 @@
                         <td>
                             <div class="d-flex align-items-start">
                                 <div class="detail-preview mr-2">
-                                    <img src="" class="img-preview" style="display:none" alt="">
+                                    <img class="img-preview" style="display:none" alt="">
                                     <i class="fa fa-image text-muted preview-placeholder"></i>
                                 </div>
                                 <div class="flex-grow-1">

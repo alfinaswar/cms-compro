@@ -22,7 +22,7 @@ class JenisLaporanKeuanganController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = JenisLaporanKeuangan::latest();
+            $data = JenisLaporanKeuangan::orderBy('Urutan', 'asc')->orderBy('id', 'asc');
 
             return DataTables::of($data)
                 ->addIndexColumn()

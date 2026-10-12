@@ -278,7 +278,7 @@
                         <div class="absolute inset-0 z-0">
                             @if ($slider->TipeMedia == 'video' && !empty($slider->Video))
                                 <video autoplay loop muted playsinline class="hero-bg-media">
-                                    <source src="{{ asset('storage/' . $slider->Video) }}" type="video/mp4">
+                                    <source src="{{ asset('storage/' . $slider->Video) }}?v={{ file_exists(public_path('storage/' . $slider->Video)) ? filemtime(public_path('storage/' . $slider->Video)) : time() }}" type="video/mp4">
                                 </video>
                             @elseif($slider->TipeMedia == 'image' && !empty($slider->GambarLatar))
                                 <img src="{{ asset('storage/' . $slider->GambarLatar) }}" alt="{{ $hJudul }}"
@@ -288,7 +288,7 @@
                                     alt="Manufacturing" class="hero-bg-media">
                             @endif
                             {{-- Overlay navy agar teks terbaca --}}
-                            <div class="absolute inset-0 bg-gradient-to-b from-[#0B192E] via-[#0B192E]/85 to-[#0B192E]/54">
+                            <div class="absolute inset-0 z-10 pointer-events-none bg-gradient-to-b from-[#0B192E] via-[#0B192E]/85 to-[#0B192E]/54">
                             </div>
                         </div>
 

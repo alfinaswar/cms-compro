@@ -304,8 +304,13 @@
         }
 
         .cu-btn-ghost:hover {
-            background: #e9ecef;
-            color: var(--cu-text);
+            background: #e9ecef !important;
+            color: #007bff !important;
+        }
+
+        .cu-btn-ghost:hover i,
+        .cu-btn-auto-refresh:hover i {
+            color: #007bff !important;
         }
 
         .cu-btn-accent {
@@ -901,8 +906,9 @@
                 if (isLoading) return;
                 isLoading = true;
 
-                let dateStart = $('#dateRange').data('daterangepicker')?.startDate?.format('YYYY-MM-DD') || '';
-                let dateEnd = $('#dateRange').data('daterangepicker')?.endDate?.format('YYYY-MM-DD') || '';
+                let hasDate = $('#dateRange').val().trim() !== '';
+                let dateStart = hasDate ? ($('#dateRange').data('daterangepicker')?.startDate?.format('YYYY-MM-DD') || '') : '';
+                let dateEnd = hasDate ? ($('#dateRange').data('daterangepicker')?.endDate?.format('YYYY-MM-DD') || '') : '';
 
                 if (!silent) {
                     $('#cuTotalLabel').html('<i class="fa fa-spinner fa-spin mr-1"></i>Memuat...');
@@ -1040,6 +1046,10 @@
                 currentFilter = 'all';
                 $('.cu-filter-tab').removeClass('active');
                 $('.cu-filter-tab[data-filter="all"]').addClass('active');
+                $('#messageDetail').hide();
+                $('#emptyState').show();
+                $('.cu-body').removeClass('cu-show-detail');
+                selectedMessageId = null;
                 loadMessages(false);
             });
 
@@ -1137,9 +1147,9 @@
             // Export
             // ==========================================
             $('#btnExportExcel').click(function() {
-                let dateStart = $('#dateRange').data('daterangepicker')?.startDate?.format('YYYY-MM-DD') ||
-                    '';
-                let dateEnd = $('#dateRange').data('daterangepicker')?.endDate?.format('YYYY-MM-DD') || '';
+                let hasDate = $('#dateRange').val().trim() !== '';
+                let dateStart = hasDate ? ($('#dateRange').data('daterangepicker')?.startDate?.format('YYYY-MM-DD') || '') : '';
+                let dateEnd = hasDate ? ($('#dateRange').data('daterangepicker')?.endDate?.format('YYYY-MM-DD') || '') : '';
                 let params = [];
                 if (dateStart) params.push('date_start=' + dateStart);
                 if (dateEnd) params.push('date_end=' + dateEnd);
@@ -1244,7 +1254,18 @@
                             <p>Tidak ada pesan</p>
                         </div>
                     `);
+                    $('#messageDetail').hide();
+                    $('#emptyState').show();
+                    $('.cu-body').removeClass('cu-show-detail');
+                    selectedMessageId = null;
                     return;
+                }
+
+                if (selectedMessageId && !messages.some(m => m.id == selectedMessageId)) {
+                    $('#messageDetail').hide();
+                    $('#emptyState').show();
+                    $('.cu-body').removeClass('cu-show-detail');
+                    selectedMessageId = null;
                 }
 
                 let html = '';

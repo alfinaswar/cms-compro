@@ -35,6 +35,11 @@ class HalamanSolusiController extends Controller
                 ->addColumn('Konten', function ($row) {
                     return Str::limit(strip_tags($row->Konten), 100);
                 })
+                ->addColumn('Status', function ($row) {
+                    return $row->IsPublished
+                        ? '<span class="badge badge-success">Publikasi</span>'
+                        : '<span class="badge badge-secondary">Draft</span>';
+                })
                 ->addColumn('action', function ($row) {
                     $encryptedId = encrypt($row->id);
                     $btn = '<div class="btn-group btn-group-sm">';
@@ -50,7 +55,7 @@ class HalamanSolusiController extends Controller
                     $btn .= '</div>';
                     return $btn;
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['Status', 'action'])
                 ->make(true);
         }
 

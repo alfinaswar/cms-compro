@@ -67,13 +67,11 @@ class HeroSliderController extends Controller
                     }
                 })
                 ->addColumn('Status', function ($row) {
-                    if ($row->Status == 1) {
+                    $isAktif = in_array((string)$row->Status, ['1', 'true', 'Aktif', 'aktif'], true) || $row->Status === 1 || $row->Status === true;
+                    if ($isAktif) {
                         return '<span class="badge bg-success">Aktif</span>';
-                    } elseif ($row->Status == 0) {
-                        return '<span class="badge bg-secondary">Tidak Aktif</span>';
-                    } else {
-                        return '<span class="badge bg-light text-dark">Tidak Diketahui</span>';
                     }
+                    return '<span class="badge bg-secondary">Tidak Aktif</span>';
                 })
 
                 ->rawColumns(['action', 'GambarLatar', 'GambarBentuk', 'Status'])

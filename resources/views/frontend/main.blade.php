@@ -98,7 +98,7 @@
                             <div class="absolute inset-0 z-0">
                                 @if ($slider->TipeMedia == 'video' && !empty($slider->Video))
                                     <video autoplay loop muted playsinline class="hero-bg-media">
-                                        <source src="{{ asset('storage/' . $slider->Video) }}" type="video/mp4">
+                                        <source src="{{ asset('storage/' . $slider->Video) }}?v={{ file_exists(public_path('storage/' . $slider->Video)) ? filemtime(public_path('storage/' . $slider->Video)) : time() }}" type="video/mp4">
                                     </video>
                                 @elseif($slider->TipeMedia == 'image' && !empty($slider->GambarLatar))
                                     <img src="{{ asset('storage/' . $slider->GambarLatar) }}" alt="{{ $hJudul }}"
@@ -107,6 +107,9 @@
                                     <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop"
                                         alt="Technology Background" class="hero-bg-media">
                                 @endif
+                                <div
+                                    class="absolute inset-0 z-10 pointer-events-none bg-gradient-to-b from-slate-950/75 via-brand-950/50 to-slate-950/80">
+                                </div>
                             </div>
 
                             @if (!empty($slider->GambarBentuk))
