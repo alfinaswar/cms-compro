@@ -105,6 +105,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         Route::delete('/penerima-notif-email/{id}', [NotificationEmailRecipientController::class, 'destroy'])->name('notification-email.destroy');
         Route::put('/{id}/toggle-status', [NotificationEmailRecipientController::class, 'toggleStatus'])
             ->name('notification-email.toggle-status');
+        Route::put('/{id}/toggle-terima-email', [NotificationEmailRecipientController::class, 'toggleTerimaEmail'])->name('notification-email.toggle-terima-email');
 
         Route::get('/', [PengaturanWebsiteController::class, 'index'])->name('pengaturan-website.index');
         Route::get('/create', [PengaturanWebsiteController::class, 'create'])->name('pengaturan-website.create');
@@ -222,7 +223,10 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     Route::prefix('komunikasi-dan-transaksi')->group(function () {
         Route::get('/kotak-masuk', [ContactUsController::class, 'list'])->name('contact.list');
         Route::get('/export', [ContactUsController::class, 'export'])->name('contact.export');
-        Route::delete('/contact/{id}', [ContactUsController::class, 'destroy']);
+        Route::delete('/{id}', [ContactUsController::class, 'destroy'])->name('contact.destroy');
+        Route::post('/{id}/mark-read', [ContactUsController::class, 'markAsRead'])->name('contact.mark-read');
+        Route::post('/{id}/mark-unread', [ContactUsController::class, 'markAsUnread'])->name('contact.mark-unread');
+        Route::post('/mark-all-read', [ContactUsController::class, 'markAllAsRead'])->name('contact.mark-all-read');
     });
     Route::resource('jenis-laporan', JenisLaporanKeuanganController::class)->names('jenis-laporan');
     Route::prefix('jenis-laporan/{jenisId}/dokumen')->name('jenis-laporan.details.')->group(function () {

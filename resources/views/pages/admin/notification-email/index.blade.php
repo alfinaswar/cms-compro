@@ -3,7 +3,6 @@
 @section('content')
     @push('styles')
         <style>
-            /* Modern Styling untuk Tabel & Card */
             .card-modern {
                 background: #ffffff;
                 border-radius: 12px;
@@ -68,7 +67,6 @@
                 color: white;
             }
 
-            /* DataTables Custom DOM spacing */
             .dataTables_wrapper .dataTables_length,
             .dataTables_wrapper .dataTables_filter {
                 margin-bottom: 16px;
@@ -108,11 +106,11 @@
                 border-color: #cbd5e1;
             }
 
-            .toggle-status {
+            .toggle-status,
+            .toggle-terima-email {
                 cursor: pointer;
             }
 
-            /* Saat switch sedang loading */
             .toggle-switch-loading {
                 opacity: 0.6;
                 pointer-events: none;
@@ -162,10 +160,11 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 5%" class="text-center">No</th>
-                                        <th style="width: 35%">Alamat Email</th>
-                                        <th style="width: 35%">Nama Penerima</th>
-                                        <th style="width: 10%" class="text-center">Status</th>
-                                        <th style="width: 15%" class="text-center">Aksi</th>
+                                        <th style="width: 25%">Alamat Email</th>
+                                        <th style="width: 20%">Nama Penerima</th>
+                                        <th style="width: 15%" class="text-center">Terima Email</th>
+                                        <th style="width: 15%" class="text-center">Status</th>
+                                        <th style="width: 20%" class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -209,7 +208,8 @@
                             </div>
                             <small class="text-danger" id="error-Email"></small>
                         </div>
-                        <div class="form-group mb-0">
+
+                        <div class="form-group">
                             <label for="Nama" class="font-weight-bold text-dark">Nama Penerima <small
                                     class="text-muted font-weight-normal">(Opsional)</small></label>
                             <div class="input-group">
@@ -222,7 +222,23 @@
                             </div>
                             <small class="text-danger" id="error-Nama"></small>
                         </div>
+
+                        <!-- ✅ Field TerimaEmail -->
+                        <div class="form-group mb-0">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="TerimaEmail" name="TerimaEmail"
+                                    value="1">
+                                <label class="custom-control-label font-weight-bold text-dark" for="TerimaEmail">
+                                    Terima Email Notifikasi
+                                </label>
+                            </div>
+                            <small class="text-muted d-block mt-2">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Email ini akan menerima notifikasi saat ada pesan baru masuk.
+                            </small>
+                        </div>
                     </div>
+
                     <div class="modal-footer border-top-0 px-4 pb-4">
                         <button type="button" class="btn btn-light border" data-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-primary px-4" id="btnSimpan">
@@ -238,6 +254,17 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
+            // ✅ Base URLs
+            const URL_STORE = "{{ route('notification-email.store') }}";
+            const URL_UPDATE = "{{ route('notification-email.update', ':id') }}";
+            const URL_DESTROY = "{{ route('notification-email.destroy', ':id') }}";
+            const URL_TOGGLE_STATUS = "{{ route('notification-email.toggle-status', ':id') }}";
+            const URL_TOGGLE_TERIMA = "{{ route('notification-email.toggle-terima-email', ':id') }}";
+
+            function buildUrl(template, id) {
+                return template.replace(':id', id);
+            }
+
             // 1. Inisialisasi DataTables
             var table = $('#tableEmail').DataTable({
                 responsive: true,
@@ -266,9 +293,16 @@
                         }
                     },
                     {
+                        data: 'TerimaEmail',
+                        name: 'TerimaEmail',
+                        className: 'text-center',
+                        orderable: false
+                    },
+                    {
                         data: 'Status',
                         name: 'StatusAktif',
-                        className: 'text-center'
+                        className: 'text-center',
+                        orderable: false
                     },
                     {
                         data: 'action',
@@ -295,27 +329,24 @@
                 }
             });
 
-            // 2. Reset Form saat modal dibuka untuk tambah
+            // 2. Reset Form
             window.resetForm = function() {
                 $('#formEmail')[0].reset();
                 $('#formMethod').val('POST');
                 $('#emailId').val('');
+                $('#TerimaEmail').prop('checked', false);
                 $('#modalEmailLabel').html('<i class="fas fa-envelope mr-2"></i>Tambah Email Baru');
                 $('.text-danger').text('');
                 $('.form-control').removeClass('is-invalid');
             };
 
-            // 3. Handle Submit Form (Tambah / Edit)
+            // 3. Handle Submit Form
             $('#formEmail').on('submit', function(e) {
                 e.preventDefault();
 
                 var id = $('#emailId').val();
                 var method = $('#formMethod').val();
-
-                // ✅ PERBAIKAN: Gunakan replace untuk menyisipkan ID ke dalam route helper
-                var url = method === 'POST' ?
-                    "{{ route('notification-email.store') }}" :
-                    "{{ route('notification-email.update', ':id') }}".replace(':id', id);
+                var url = method === 'POST' ? URL_STORE : buildUrl(URL_UPDATE, id);
 
                 var btn = $('#btnSimpan');
                 btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Menyimpan...');
@@ -326,7 +357,6 @@
                     data: $(this).serialize(),
                     success: function(response) {
                         $('#modalEmail').modal('hide');
-
                         setTimeout(function() {
                             table.ajax.reload(null, false);
                         }, 500);
@@ -365,10 +395,12 @@
                 var id = $(this).data('id');
                 var email = $(this).data('email');
                 var nama = $(this).data('nama');
+                var terimaEmail = $(this).data('terima-email');
 
                 $('#emailId').val(id);
                 $('#Email').val(email);
                 $('#Nama').val(nama);
+                $('#TerimaEmail').prop('checked', terimaEmail == '1' || terimaEmail === 1);
                 $('#formMethod').val('PUT');
                 $('#modalEmailLabel').html('<i class="fas fa-edit mr-2"></i>Edit Data Email');
 
@@ -402,10 +434,7 @@
                         });
 
                         $.ajax({
-                            url: "{{ route('notification-email.destroy', ['id' => ':id']) }}"
-                                .replace(':id', id),
-
-
+                            url: buildUrl(URL_DESTROY, id),
                             type: 'DELETE',
                             data: {
                                 _token: '{{ csrf_token() }}'
@@ -428,7 +457,8 @@
                     }
                 });
             });
-            // 6. Handle Toggle Status (Aktif/Nonaktif)
+
+            // ✅ 6. Handle Toggle StatusAktif
             $(document).on('change', '.toggle-status', function(e) {
                 var checkbox = $(this);
                 var id = checkbox.data('id');
@@ -436,7 +466,6 @@
                 var label = $('.status-label-' + id);
                 var statusText = newStatus ? 'Aktifkan' : 'Nonaktifkan';
 
-                // Kembalikan ke value sebelumnya sampai user konfirmasi
                 checkbox.prop('checked', !newStatus);
 
                 Swal.fire({
@@ -449,19 +478,16 @@
                     reverseButtons: true
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Set ke value baru setelah konfirmasi, dan tampilkan loading visual
                         checkbox.prop('checked', newStatus);
                         checkbox.closest('.custom-control').addClass('toggle-switch-loading');
 
                         $.ajax({
-                            url: "{{ route('notification-email.toggle-status', ':id') }}"
-                                .replace(':id', id),
+                            url: buildUrl(URL_TOGGLE_STATUS, id),
                             type: 'PUT',
                             data: {
                                 _token: '{{ csrf_token() }}'
                             },
                             success: function(response) {
-                                // Update label teks
                                 label.text(newStatus ? 'Aktif' : 'Nonaktif');
                                 checkbox.closest('.custom-control').removeClass(
                                     'toggle-switch-loading');
@@ -474,9 +500,65 @@
                                 });
                             },
                             error: function(xhr) {
-                                // Kembalikan ke status semula jika gagal
                                 checkbox.prop('checked', !newStatus);
                                 label.text(!newStatus ? 'Aktif' : 'Nonaktif');
+                                checkbox.closest('.custom-control').removeClass(
+                                    'toggle-switch-loading');
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal!',
+                                    text: xhr.responseJSON?.message ||
+                                        'Gagal mengubah status',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+
+            // ✅ 7. Handle Toggle TerimaEmail
+            $(document).on('change', '.toggle-terima-email', function(e) {
+                var checkbox = $(this);
+                var id = checkbox.data('id');
+                var newStatus = checkbox.is(':checked');
+                var statusText = newStatus ? 'mengaktifkan' : 'menonaktifkan';
+
+                checkbox.prop('checked', !newStatus);
+
+                Swal.fire({
+                    title: `Konfirmasi Ubah Status`,
+                    html: `Anda yakin ingin <b>${statusText}</b> penerimaan email notifikasi untuk alamat ini?`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: `Ya, ${statusText === 'mengaktifkan' ? 'Aktifkan' : 'Nonaktifkan'}`,
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        checkbox.prop('checked', newStatus);
+                        checkbox.closest('.custom-control').addClass('toggle-switch-loading');
+
+                        $.ajax({
+                            url: buildUrl(URL_TOGGLE_TERIMA, id),
+                            type: 'PUT',
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                checkbox.closest('.custom-control').removeClass(
+                                    'toggle-switch-loading');
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Status diubah',
+                                    text: response.message,
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+                            },
+                            error: function(xhr) {
+                                checkbox.prop('checked', !newStatus);
                                 checkbox.closest('.custom-control').removeClass(
                                     'toggle-switch-loading');
                                 Swal.fire({

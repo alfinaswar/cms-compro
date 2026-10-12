@@ -91,8 +91,14 @@
                         <i class="fas fa-bullhorn mr-1"></i> Publikasi & Berita
                     </li>
 
-                    <li class="nav-item has-treeview {{ request()->segment(1) == 'berita' ? 'menu-open' : '' }}">
-                        <a href="#" class="nav-link {{ request()->segment(1) == 'berita' ? 'active' : '' }}">
+                    @php
+                        $newsMenuActive =
+                            request()->is('admin/publikasi-dan-berita') ||
+                            request()->is('admin/publikasi-dan-berita/berita/create') ||
+                            request()->is('admin/data-master/kategori-berita*');
+                    @endphp
+                    <li class="nav-item has-treeview {{ $newsMenuActive ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ $newsMenuActive ? 'active' : '' }}">
                             <i class="nav-icon fas fa-newspaper"></i>
                             <p>
                                 News & Artikel
@@ -103,30 +109,33 @@
                             @can('berita.view')
                                 <li class="nav-item">
                                     <a href="{{ route('berita.index') }}"
-                                        class="nav-link {{ request()->segment(2) == 'berita' ? 'active' : '' }}">
+                                        class="nav-link {{ request()->is('admin/publikasi-dan-berita') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Semua Artikel</p>
                                     </a>
                                 </li>
                             @endcan
+
                             @can('berita.create')
                                 <li class="nav-item">
                                     <a href="{{ route('berita.create') }}"
-                                        class="nav-link {{ request()->segment(2) == 'create' && request()->segment(1) == 'berita' ? 'active' : '' }}">
+                                        class="nav-link {{ request()->is('admin/publikasi-dan-berita/berita/create') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Tambah Artikel</p>
                                     </a>
                                 </li>
                             @endcan
+
                             @can('kategori-berita.view')
                                 <li class="nav-item">
                                     <a href="{{ route('kategori-berita.index') }}"
-                                        class="nav-link {{ request()->segment(2) == 'kategori-berita' ? 'active' : '' }}">
+                                        class="nav-link {{ request()->is('admin/data-master/kategori-berita*') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Kategori</p>
                                     </a>
                                 </li>
                             @endcan
+
                             {{-- <li class="nav-item">
                                 <a href="#" class="nav-link">
                                     <i class="far fa-circle nav-icon"></i>
@@ -135,6 +144,7 @@
                             </li> --}}
                         </ul>
                     </li>
+
                 @endcanany
 
                 {{-- ============================================ --}}

@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
+        // Cek apakah sudah ada table, jika sudah ada jangan jalankan
+        if (Schema::hasTable('static_page_translation')) {
+            return;
+        }
+
         Schema::create('static_page_translation', function (Blueprint $table) {
             $table->id();
             $table->string('StaticPageId');
@@ -22,6 +27,6 @@ return new class extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('StaticPageTranslations');
+        Schema::dropIfExists('static_page_translation');
     }
 };

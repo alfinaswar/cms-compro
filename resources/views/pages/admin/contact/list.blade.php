@@ -5,7 +5,10 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Kontak Masuk</h1>
+                    <h1>
+                        Kontak Masuk
+                        <span class="cu-unread-badge" id="cuUnreadBadge" style="display:none;">0</span>
+                    </h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -28,14 +31,41 @@
                             <span class="cu-subtitle" id="cuTotalLabel">Memuat...</span>
                         </div>
                         <div class="cu-toolbar-actions">
+                            <!-- Filter Tabs -->
+                            <div class="cu-filter-tabs">
+                                <button type="button" class="cu-filter-tab active" data-filter="all">Semua</button>
+                                <button type="button" class="cu-filter-tab" data-filter="unread">Belum Dibaca</button>
+                                <button type="button" class="cu-filter-tab" data-filter="read">Sudah Dibaca</button>
+                            </div>
+
+                            <!-- Date Range -->
                             <div class="cu-daterange">
                                 <i class="fa fa-calendar"></i>
                                 <input type="text" id="dateRange" placeholder="Filter tanggal..." autocomplete="off"
                                     readonly>
                             </div>
+
+                            <!-- ✅ Auto-Refresh -->
+                            <button type="button" class="cu-btn cu-btn-ghost cu-btn-auto-refresh" id="btnToggleAutoRefresh"
+                                title="Auto-refresh aktif (30 detik)">
+                                <i class="fa fa-sync"></i>
+                            </button>
+
+                            <!-- ✅ Last Refresh -->
+                            <span class="cu-refresh-indicator" id="refreshIndicator">
+                                <span class="pulse-dot"></span>
+                                <span id="lastRefreshTime">Live</span>
+                            </span>
+
+                            <button type="button" class="cu-btn cu-btn-ghost" id="btnMarkAllRead"
+                                title="Tandai semua sudah dibaca">
+                                <i class="fa fa-check-double"></i>
+                            </button>
+
                             <button type="button" class="cu-btn cu-btn-ghost" id="btnReset" title="Reset filter">
                                 <i class="fa fa-redo"></i>
                             </button>
+
                             @can('kotak-masuk.view')
                                 <button type="button" class="cu-btn cu-btn-accent" id="btnExportExcel">
                                     <i class="fa fa-file-excel mr-1"></i> Export
@@ -45,7 +75,7 @@
                     </div>
 
                     <div class="cu-body">
-                        <!-- ==================== KOLOM KIRI: LIST PESAN ==================== -->
+                        <!-- KOLOM KIRI: LIST PESAN -->
                         <div class="cu-list-pane">
                             <div class="cu-search">
                                 <i class="fa fa-search"></i>
@@ -60,7 +90,7 @@
                             </div>
                         </div>
 
-                        <!-- ==================== KOLOM KANAN: DETAIL PESAN ==================== -->
+                        <!-- KOLOM KANAN: DETAIL PESAN -->
                         <div class="cu-detail-pane">
                             <div id="emptyState" class="cu-empty">
                                 <i class="fa fa-envelope-open"></i>
@@ -78,10 +108,17 @@
                                             <span id="detailDate"></span>
                                         </div>
                                     </div>
-                                    <button type="button" class="cu-icon-btn cu-icon-btn-danger" id="btnDeleteMessage"
-                                        data-id="" title="Hapus">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
+                                    <div class="cu-detail-actions">
+                                        <!-- ✅ Toggle Read Button -->
+                                        <button type="button" class="cu-icon-btn" id="btnToggleRead"
+                                            title="Tandai belum dibaca">
+                                            <i class="fa fa-envelope"></i>
+                                        </button>
+                                        <button type="button" class="cu-icon-btn cu-icon-btn-danger" id="btnDeleteMessage"
+                                            data-id="" title="Hapus">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div class="cu-detail-phone" id="detailPhoneWrap" style="display:none;">
@@ -96,7 +133,6 @@
                                         <i class="fa fa-envelope mr-2"></i>Balas Melalui Email
                                     </a>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -108,7 +144,8 @@
 
     <!-- Template Item Pesan -->
     <template id="messageItemTemplate">
-        <div class="cu-item" data-id="">
+        <div class="cu-item" data-id="" data-is-read="false">
+            <div class="cu-unread-dot" style="display:none;"></div>
             <div class="cu-avatar"></div>
             <div class="cu-item-body">
                 <div class="cu-item-top">
@@ -134,6 +171,7 @@
             --cu-accent: #007bff;
             --cu-accent-soft: rgba(0, 123, 255, 0.08);
             --cu-danger: #dc3545;
+            --cu-unread: #007bff;
 
             background: var(--cu-bg);
             border: 1px solid var(--cu-border);
@@ -158,6 +196,22 @@
             font-size: 20px;
             font-weight: 600;
             color: var(--cu-text);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ✅ Badge Unread Counter */
+        .cu-unread-badge {
+            background: var(--cu-unread);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+            min-width: 22px;
+            text-align: center;
+            margin-left: 4px;
         }
 
         .cu-subtitle {
@@ -169,6 +223,39 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* ✅ Filter Tabs */
+        .cu-filter-tabs {
+            display: flex;
+            background: var(--cu-panel-alt);
+            border: 1px solid var(--cu-border);
+            border-radius: 8px;
+            padding: 3px;
+        }
+
+        .cu-filter-tab {
+            border: none;
+            background: transparent;
+            color: var(--cu-muted);
+            font-size: 12.5px;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .cu-filter-tab:hover {
+            color: var(--cu-text);
+        }
+
+        .cu-filter-tab.active {
+            background: #fff;
+            color: var(--cu-accent);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            font-weight: 600;
         }
 
         .cu-daterange {
@@ -211,13 +298,14 @@
             transition: background 0.15s ease;
         }
 
-        /* .cu-btn:hover {
-                background: #2a55cc;
-            } */
-
         .cu-btn-ghost {
             padding: 8px 11px;
             color: var(--cu-muted);
+        }
+
+        .cu-btn-ghost:hover {
+            background: #e9ecef;
+            color: var(--cu-text);
         }
 
         .cu-btn-accent {
@@ -236,7 +324,6 @@
             min-height: 560px;
         }
 
-        /* ---- List pane ---- */
         .cu-list-pane {
             width: 340px;
             flex-shrink: 0;
@@ -293,6 +380,7 @@
             display: block;
         }
 
+        /* ✅ Item dengan indikator unread */
         .cu-item {
             display: flex;
             gap: 10px;
@@ -300,6 +388,7 @@
             cursor: pointer;
             border-left: 3px solid transparent;
             transition: background 0.12s ease;
+            position: relative;
         }
 
         .cu-item:hover {
@@ -309,6 +398,42 @@
         .cu-item.active {
             background: var(--cu-accent-soft);
             border-left-color: var(--cu-accent);
+        }
+
+        /* ✅ Pesan belum dibaca */
+        .cu-item.unread {
+            background: #f0f7ff;
+        }
+
+        .cu-item.unread:hover {
+            background: #e6f0fa;
+        }
+
+        .cu-item.unread .cu-item-name {
+            font-weight: 700;
+            color: #0a2540;
+        }
+
+        .cu-item.unread .cu-item-preview {
+            color: #334155;
+            font-weight: 500;
+        }
+
+        /* ✅ Dot indikator unread */
+        .cu-unread-dot {
+            position: absolute;
+            left: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--cu-unread);
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
+        }
+
+        .cu-item.unread {
+            padding-left: 22px;
         }
 
         .cu-avatar {
@@ -323,6 +448,10 @@
             justify-content: center;
             font-size: 13px;
             font-weight: 700;
+        }
+
+        .cu-item.unread .cu-avatar {
+            background: #0056b3;
         }
 
         .cu-item-body {
@@ -350,6 +479,11 @@
             font-size: 11px;
             color: var(--cu-muted);
             flex-shrink: 0;
+        }
+
+        .cu-item.unread .cu-item-date {
+            color: var(--cu-accent);
+            font-weight: 600;
         }
 
         .cu-item-preview {
@@ -409,6 +543,11 @@
             gap: 12px;
         }
 
+        .cu-detail-actions {
+            display: flex;
+            gap: 6px;
+        }
+
         .cu-detail-name {
             margin: 0 0 4px;
             font-size: 18px;
@@ -434,12 +573,30 @@
             border-radius: 8px;
             cursor: pointer;
             flex-shrink: 0;
+            transition: all 0.15s ease;
+        }
+
+        .cu-icon-btn:hover {
+            background: #e9ecef;
+            color: var(--cu-text);
         }
 
         .cu-icon-btn-danger:hover {
             background: rgba(220, 53, 69, 0.08);
             color: var(--cu-danger);
             border-color: rgba(220, 53, 69, 0.4);
+        }
+
+        /* ✅ Tombol toggle read aktif */
+        .cu-icon-btn.is-unread {
+            background: var(--cu-accent);
+            border-color: var(--cu-accent);
+            color: #fff;
+        }
+
+        .cu-icon-btn.is-unread:hover {
+            background: #0069d9;
+            color: #fff;
         }
 
         .cu-detail-phone {
@@ -480,12 +637,6 @@
             text-decoration: none;
         }
 
-        .cu-reply-btn:hover {
-            background: #3fd9ee;
-            color: #06222a;
-            text-decoration: none;
-        }
-
         .cu-list::-webkit-scrollbar {
             width: 6px;
         }
@@ -495,7 +646,7 @@
         }
 
         .cu-list::-webkit-scrollbar-thumb {
-            background: #2a3348;
+            background: #c5cbd4;
             border-radius: 3px;
         }
 
@@ -547,6 +698,74 @@
             color: #fff;
         }
 
+        /* ✅ Tombol Auto-Refresh */
+        .cu-btn-auto-refresh {
+            position: relative;
+        }
+
+        .cu-btn-auto-refresh.cu-btn-active {
+            background: #fef3c7 !important;
+            color: #d97706 !important;
+            border-color: #fbbf24 !important;
+        }
+
+        .cu-btn-auto-refresh .fa-sync {
+            animation: spin 2s linear infinite;
+        }
+
+        .cu-btn-auto-refresh.cu-btn-active .fa-pause {
+            animation: none;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ✅ Last Refresh Time Indicator */
+        .cu-refresh-indicator {
+            font-size: 11px;
+            color: var(--cu-muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .cu-refresh-indicator .pulse-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse 2s infinite;
+        }
+
+        .cu-refresh-indicator.paused .pulse-dot {
+            background: #f59e0b;
+            animation: none;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+        }
+
+        /* ✅ Animasi pesan baru */
+        .cu-item {
+            transition: background 0.3s ease, transform 0.4s ease, opacity 0.4s ease;
+        }
+
         @media (max-width: 768px) {
             .cu-body {
                 flex-direction: column;
@@ -563,7 +782,6 @@
                 max-height: 320px;
             }
 
-            .cu-detail-pane.cu-hide-mobile-list~.cu-list-pane,
             .cu-body.cu-show-detail .cu-list-pane {
                 display: none;
             }
@@ -571,10 +789,17 @@
             .cu-body.cu-show-detail .cu-detail-pane {
                 display: flex;
             }
+
+            .cu-filter-tabs {
+                width: 100%;
+            }
+
+            .cu-filter-tab {
+                flex: 1;
+            }
         }
     </style>
 @endpush
-
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
@@ -582,8 +807,199 @@
         $(document).ready(function() {
             let selectedMessageId = null;
             let allMessages = [];
+            let currentFilter = 'all';
 
-            // Inisialisasi Date Range Picker
+            // ==========================================
+            // ✅ AUTO-REFRESH CONFIG
+            // ==========================================
+            const AUTO_REFRESH_INTERVAL = 30000; // 30 detik
+            let autoRefreshTimer = null;
+            let isTabActive = true;
+            let isLoading = false;
+
+            const URL_MARK_READ = "{{ route('contact.mark-read', ':id') }}";
+            const URL_MARK_UNREAD = "{{ route('contact.mark-unread', ':id') }}";
+            const URL_DESTROY = "{{ route('contact.destroy', ':id') }}";
+            const URL_MARK_ALL = "{{ route('contact.mark-all-read') }}";
+            const URL_LIST = "{{ route('contact.list') }}";
+            const URL_EXPORT = "{{ route('contact.export') }}";
+
+            function buildUrl(template, id) {
+                return template.replace(':id', id);
+            }
+
+            // ==========================================
+            // ✅ COUNTER UPDATE
+            // ==========================================
+            function updateAllCounters(filteredMessages) {
+                const unreadCount = allMessages.filter(m => !m.IsRead).length;
+                updateUnreadBadge(unreadCount);
+
+                const displayedCount = filteredMessages ? filteredMessages.length : 0;
+                let label = displayedCount + ' pesan';
+
+                const activeFilters = [];
+                if (currentFilter === 'unread') activeFilters.push('Belum Dibaca');
+                if (currentFilter === 'read') activeFilters.push('Sudah Dibaca');
+                if ($('#searchInput').val().trim()) activeFilters.push('Search');
+
+                if (activeFilters.length > 0) {
+                    label += ' <span class="text-muted small">(' + activeFilters.join(', ') + ')</span>';
+                }
+
+                $('#cuTotalLabel').html(label);
+            }
+
+            function updateUnreadBadge(count) {
+                const $badge = $('#cuUnreadBadge');
+                if (count > 0) {
+                    $badge.text(count > 99 ? '99+' : count).show();
+                } else {
+                    $badge.hide();
+                }
+            }
+
+            // ==========================================
+            // ✅ DETECT CHANGES (new / removed / changed)
+            // ==========================================
+            function diffMessages(newMessages, oldMessages) {
+                const oldIds = new Set(oldMessages.map(m => m.id));
+                const added = newMessages.filter(m => !oldIds.has(m.id));
+                const removed = oldMessages.filter(m => !newMessages.some(n => n.id === m.id));
+                const changed = newMessages.filter(m => {
+                    const oldMsg = oldMessages.find(o => o.id === m.id);
+                    return oldMsg && oldMsg.IsRead !== m.IsRead;
+                });
+                return {
+                    added,
+                    removed,
+                    changed
+                };
+            }
+
+            // ==========================================
+            // ✅ ANIMATE NEW MESSAGE (highlight kuning)
+            // ==========================================
+            function highlightNewMessage(id) {
+                const $item = $(`.cu-item[data-id="${id}"]`);
+                if (!$item.length) return;
+
+                $item.css({
+                    'background-color': '#fef3c7',
+                    'transition': 'background-color 0.5s ease'
+                });
+
+                setTimeout(() => {
+                    $item.css('background-color', '');
+                }, 3000);
+            }
+
+            // ==========================================
+            // ✅ LOAD MESSAGES (dengan diff detection)
+            // ==========================================
+            function loadMessages(silent = false) {
+                if (isLoading) return;
+                isLoading = true;
+
+                let dateStart = $('#dateRange').data('daterangepicker')?.startDate?.format('YYYY-MM-DD') || '';
+                let dateEnd = $('#dateRange').data('daterangepicker')?.endDate?.format('YYYY-MM-DD') || '';
+
+                if (!silent) {
+                    $('#cuTotalLabel').html('<i class="fa fa-spinner fa-spin mr-1"></i>Memuat...');
+                }
+
+                $.ajax({
+                    url: URL_LIST,
+                    data: {
+                        date_start: dateStart,
+                        date_end: dateEnd
+                    },
+                    success: function(response) {
+                        const newMessages = response.data || [];
+                        const diff = diffMessages(newMessages, allMessages);
+
+                        allMessages = newMessages;
+
+                        // ✅ Notifikasi hanya untuk silent refresh (auto) & ada pesan baru
+                        if (silent && diff.added.length > 0) {
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'info',
+                                title: `${diff.added.length} pesan baru masuk!`,
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true
+                            });
+                        }
+
+                        applyFilters();
+
+                        // Animasi highlight untuk pesan baru
+                        if (silent && diff.added.length > 0) {
+                            diff.added.forEach(msg => {
+                                setTimeout(() => highlightNewMessage(msg.id), 100);
+                            });
+                        }
+
+                        isLoading = false;
+                    },
+                    error: function(xhr) {
+                        console.error('Gagal load:', xhr);
+                        if (!silent) {
+                            $('#messageList').html(`
+                                <div class="cu-list-empty">
+                                    <i class="fa fa-exclamation-triangle"></i>
+                                    <p>Gagal memuat pesan.</p>
+                                </div>
+                            `);
+                        }
+                        updateAllCounters([]);
+                        isLoading = false;
+                    }
+                });
+            }
+
+            // ==========================================
+            // ✅ AUTO-REFRESH LIFECYCLE
+            // ==========================================
+            function startAutoRefresh() {
+                stopAutoRefresh();
+                if (!isTabActive) return;
+
+                autoRefreshTimer = setInterval(() => {
+                    if (isTabActive && !isLoading) {
+                        loadMessages(true); // silent
+                    }
+                }, AUTO_REFRESH_INTERVAL);
+            }
+
+            function stopAutoRefresh() {
+                if (autoRefreshTimer) {
+                    clearInterval(autoRefreshTimer);
+                    autoRefreshTimer = null;
+                }
+            }
+
+            // ✅ Page Visibility API: Pause saat tab tidak aktif
+            document.addEventListener('visibilitychange', function() {
+                const wasInactive = !isTabActive;
+                isTabActive = !document.hidden;
+
+                if (isTabActive) {
+                    // Jika sebelumnya tab tidak aktif → langsung refresh + restart timer
+                    if (wasInactive) {
+                        loadMessages(true);
+                    }
+                    startAutoRefresh();
+                } else {
+                    stopAutoRefresh();
+                }
+            });
+
+            // ==========================================
+            // Date Range Picker
+            // ==========================================
             $('#dateRange').daterangepicker({
                 autoUpdateInput: false,
                 locale: {
@@ -609,60 +1025,136 @@
                 }
             });
 
-            // Load messages
-            loadMessages();
+            // ✅ Initial load + start auto-refresh
+            loadMessages(false);
+            startAutoRefresh();
 
-            // Reset button
+            // ==========================================
+            // Reset
+            // ==========================================
             $('#btnReset').click(function() {
                 $('#dateRange').val('');
                 $('#dateRange').data('daterangepicker').setStartDate(moment().subtract(29, 'days'));
                 $('#dateRange').data('daterangepicker').setEndDate(moment());
-                loadMessages();
+                $('#searchInput').val('');
+                currentFilter = 'all';
+                $('.cu-filter-tab').removeClass('active');
+                $('.cu-filter-tab[data-filter="all"]').addClass('active');
+                loadMessages(false);
             });
 
-            // Apply date filter automatically once range picked
             $('#dateRange').on('apply.daterangepicker', function(ev, picker) {
                 $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format(
                     'DD/MM/YYYY'));
-                loadMessages();
+                loadMessages(false);
             });
 
-            // Live search (client-side, over already-loaded messages)
+            // ==========================================
+            // Filter & Search
+            // ==========================================
+            $(document).on('click', '.cu-filter-tab', function() {
+                $('.cu-filter-tab').removeClass('active');
+                $(this).addClass('active');
+                currentFilter = $(this).data('filter');
+                applyFilters();
+            });
+
             $('#searchInput').on('keyup', function() {
-                let q = $(this).val().toLowerCase().trim();
-                if (!q) {
-                    renderMessageList(allMessages);
+                applyFilters();
+            });
+
+            function applyFilters() {
+                const q = $('#searchInput').val().toLowerCase().trim();
+                let filtered = allMessages;
+
+                if (currentFilter === 'unread') filtered = filtered.filter(m => !m.IsRead);
+                else if (currentFilter === 'read') filtered = filtered.filter(m => m.IsRead);
+
+                if (q) {
+                    filtered = filtered.filter(m =>
+                        (m.NamaLengkap || '').toLowerCase().includes(q) ||
+                        (m.Email || '').toLowerCase().includes(q) ||
+                        (m.Pesan || '').toLowerCase().includes(q)
+                    );
+                }
+
+                renderMessageList(filtered);
+                updateAllCounters(filtered);
+            }
+
+            // ==========================================
+            // Mark All as Read
+            // ==========================================
+            $('#btnMarkAllRead').click(function() {
+                const unreadCount = allMessages.filter(m => !m.IsRead).length;
+                if (unreadCount === 0) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Sudah semua terbaca',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
                     return;
                 }
-                let filtered = allMessages.filter(m =>
-                    (m.NamaLengkap || '').toLowerCase().includes(q) ||
-                    (m.Email || '').toLowerCase().includes(q) ||
-                    (m.Pesan || '').toLowerCase().includes(q)
-                );
-                renderMessageList(filtered);
+
+                Swal.fire({
+                    title: 'Tandai semua sudah dibaca?',
+                    text: `${unreadCount} pesan akan ditandai.`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Tandai Semua',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true,
+                    confirmButtonColor: '#007bff'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: URL_MARK_ALL,
+                            type: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(res) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil!',
+                                    text: res.message,
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+                                loadMessages(false);
+                            },
+                            error: function(xhr) {
+                                Swal.fire('Gagal!', xhr.responseJSON?.message ??
+                                    'Terjadi kesalahan.', 'error');
+                            }
+                        });
+                    }
+                });
             });
 
-            // Export Excel
+            // ==========================================
+            // Export
+            // ==========================================
             $('#btnExportExcel').click(function() {
                 let dateStart = $('#dateRange').data('daterangepicker')?.startDate?.format('YYYY-MM-DD') ||
                     '';
                 let dateEnd = $('#dateRange').data('daterangepicker')?.endDate?.format('YYYY-MM-DD') || '';
-
-                let url = "{{ route('contact.export') }}";
                 let params = [];
                 if (dateStart) params.push('date_start=' + dateStart);
                 if (dateEnd) params.push('date_end=' + dateEnd);
-                if (params.length) url += '?' + params.join('&');
-
+                const url = params.length ? URL_EXPORT + '?' + params.join('&') : URL_EXPORT;
                 window.location.href = url;
             });
 
-            // Delete message
+            // ==========================================
+            // Delete
+            // ==========================================
             $(document).on('click', '#btnDeleteMessage', function() {
                 let id = $(this).data('id');
                 Swal.fire({
                     title: 'Hapus Pesan?',
-                    text: "Data yang dihapus tidak dapat dikembalikan.",
+                    text: "Data tidak dapat dikembalikan.",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Ya, Hapus!',
@@ -672,7 +1164,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: '{{ url('admin/contact') }}/' + id,
+                            url: buildUrl(URL_DESTROY, id),
                             type: 'DELETE',
                             data: {
                                 _token: '{{ csrf_token() }}'
@@ -685,10 +1177,11 @@
                                     timer: 1500,
                                     showConfirmButton: false
                                 });
-                                loadMessages();
+                                loadMessages(false);
                                 $('#messageDetail').hide();
                                 $('#emptyState').show();
                                 $('.cu-body').removeClass('cu-show-detail');
+                                selectedMessageId = null;
                             },
                             error: function(xhr) {
                                 Swal.fire('Gagal!', xhr.responseJSON?.message ??
@@ -699,93 +1192,155 @@
                 });
             });
 
-            // Function to load messages
-            function loadMessages() {
-                let dateStart = $('#dateRange').data('daterangepicker')?.startDate?.format('YYYY-MM-DD') || '';
-                let dateEnd = $('#dateRange').data('daterangepicker')?.endDate?.format('YYYY-MM-DD') || '';
+            // ==========================================
+            // Toggle Read/Unread
+            // ==========================================
+            $('#btnToggleRead').click(function() {
+                if (!selectedMessageId) return;
+                const msg = allMessages.find(m => m.id == selectedMessageId);
+                if (!msg) return;
+
+                const isCurrentlyRead = msg.IsRead;
+                const url = isCurrentlyRead ?
+                    buildUrl(URL_MARK_UNREAD, selectedMessageId) :
+                    buildUrl(URL_MARK_READ, selectedMessageId);
 
                 $.ajax({
-                    url: "{{ route('contact.list') }}",
+                    url: url,
+                    type: 'POST',
                     data: {
-                        date_start: dateStart,
-                        date_end: dateEnd
+                        _token: '{{ csrf_token() }}'
                     },
-                    success: function(response) {
-                        allMessages = response.data;
-                        renderMessageList(allMessages);
-                        $('#cuTotalLabel').text(allMessages.length + ' pesan');
+                    success: function(res) {
+                        msg.IsRead = !isCurrentlyRead;
+                        msg.ReadAt = msg.IsRead ? moment().format('YYYY-MM-DD HH:mm:ss') : null;
+                        updateItemUI(selectedMessageId, msg.IsRead);
+                        updateToggleReadButton(msg.IsRead);
+                        applyFilters();
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: res.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
                     },
                     error: function(xhr) {
-                        $('#messageList').html(`
-                        <div class="cu-list-empty">
-                            <i class="fa fa-exclamation-triangle"></i>
-                            <p>Gagal memuat pesan.</p>
-                        </div>
-                    `);
+                        Swal.fire('Gagal!', xhr.responseJSON?.message ?? 'Terjadi kesalahan.',
+                            'error');
                     }
                 });
-            }
+            });
 
-            // Function to render message list
+            // ==========================================
+            // Render & UI Helpers
+            // ==========================================
             function renderMessageList(messages) {
                 if (messages.length === 0) {
                     $('#messageList').html(`
-                    <div class="cu-list-empty">
-                        <i class="fa fa-inbox fa-2x mb-2"></i>
-                        <p>Tidak ada pesan</p>
-                    </div>
-                `);
+                        <div class="cu-list-empty">
+                            <i class="fa fa-inbox fa-2x mb-2"></i>
+                            <p>Tidak ada pesan</p>
+                        </div>
+                    `);
                     return;
                 }
 
                 let html = '';
-                let template = $('#messageItemTemplate').html();
-
                 messages.forEach((msg) => {
-                    let itemHtml = template;
-                    let initial = msg.NamaLengkap ? msg.NamaLengkap.charAt(0).toUpperCase() : '?';
-                    let preview = msg.Pesan ? msg.Pesan.substring(0, 60) : '';
-                    let date = msg.created_at ? moment(msg.created_at).format('DD MMM') : '';
-                    let activeClass = (msg.id == selectedMessageId) ? ' active' : '';
+                    const initial = msg.NamaLengkap ? msg.NamaLengkap.charAt(0).toUpperCase() : '?';
+                    const preview = msg.Pesan ? msg.Pesan.substring(0, 60) : '';
+                    const date = msg.created_at ? moment(msg.created_at).format('DD MMM') : '';
+                    const activeClass = (msg.id == selectedMessageId) ? ' active' : '';
+                    const unreadClass = !msg.IsRead ? ' unread' : '';
 
-                    itemHtml = itemHtml.replace('data-id=""', `data-id="${msg.id}"`);
-                    itemHtml = itemHtml.replace('class="cu-item" data-id',
-                        `class="cu-item${activeClass}" data-id`);
-                    itemHtml = itemHtml.replace('cu-avatar"></div>', `cu-avatar">${initial}</div>`);
-                    itemHtml = itemHtml.replace('cu-item-name"></span>',
-                        `cu-item-name">${msg.NamaLengkap || '-'}</span>`);
-                    itemHtml = itemHtml.replace('cu-item-date"></span>', `cu-item-date">${date}</span>`);
-                    itemHtml = itemHtml.replace('cu-item-preview"></p>', `cu-item-preview">${preview}</p>`);
-
-                    html += itemHtml;
+                    html += `
+                        <div class="cu-item${activeClass}${unreadClass}" data-id="${msg.id}" data-is-read="${msg.IsRead}">
+                            ${!msg.IsRead ? '<div class="cu-unread-dot"></div>' : ''}
+                            <div class="cu-avatar">${initial}</div>
+                            <div class="cu-item-body">
+                                <div class="cu-item-top">
+                                    <span class="cu-item-name">${msg.NamaLengkap || '-'}</span>
+                                    <span class="cu-item-date">${date}</span>
+                                </div>
+                                <p class="cu-item-preview">${preview}</p>
+                            </div>
+                        </div>
+                    `;
                 });
 
                 $('#messageList').html(html);
             }
 
-            // Handle message click
+            function updateItemUI(id, isRead) {
+                const $item = $(`.cu-item[data-id="${id}"]`);
+                if (!$item.length) return;
+                $item.attr('data-is-read', isRead);
+                if (isRead) {
+                    $item.removeClass('unread');
+                    $item.find('.cu-unread-dot').remove();
+                } else {
+                    $item.addClass('unread');
+                    if ($item.find('.cu-unread-dot').length === 0) {
+                        $item.prepend('<div class="cu-unread-dot"></div>');
+                    }
+                }
+            }
+
+            function updateToggleReadButton(isRead) {
+                const $btn = $('#btnToggleRead');
+                const $icon = $btn.find('i');
+                if (isRead) {
+                    $icon.removeClass('fa-envelope-open').addClass('fa-envelope');
+                    $btn.removeClass('is-unread');
+                    $btn.attr('title', 'Tandai sebagai belum dibaca');
+                } else {
+                    $icon.removeClass('fa-envelope').addClass('fa-envelope-open');
+                    $btn.addClass('is-unread');
+                    $btn.attr('title', 'Tandai sebagai sudah dibaca');
+                }
+            }
+
+            // ==========================================
+            // Message Click + Auto-mark
+            // ==========================================
             $(document).on('click', '.cu-item', function() {
                 let id = $(this).data('id');
                 let message = allMessages.find(m => m.id == id);
+                if (!message) return;
 
-                if (message) {
-                    show_messageDetail(message);
-                    selectedMessageId = id;
+                show_messageDetail(message);
+                selectedMessageId = id;
+                $('.cu-item').removeClass('active');
+                $(this).addClass('active');
 
-                    $('.cu-item').removeClass('active');
-                    $(this).addClass('active');
+                if (!message.IsRead) {
+                    $.ajax({
+                        url: buildUrl(URL_MARK_READ, id),
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function() {
+                            message.IsRead = true;
+                            message.ReadAt = moment().format('YYYY-MM-DD HH:mm:ss');
+                            updateItemUI(id, true);
+                            updateToggleReadButton(true);
+                            applyFilters();
+                        }
+                    });
+                } else {
+                    updateToggleReadButton(true);
+                }
 
-                    // On mobile, hide list and show detail
-                    if ($(window).width() < 768) {
-                        $('.cu-body').addClass('cu-show-detail');
-                    }
+                if ($(window).width() < 768) {
+                    $('.cu-body').addClass('cu-show-detail');
                 }
             });
 
-            // Function to show message detail
             function show_messageDetail(msg) {
                 let date = msg.created_at ? moment(msg.created_at).format('DD MMMM YYYY, HH:mm') : '';
-
                 $('#detailName').text(msg.NamaLengkap || '-');
                 $('#detailEmail').text(msg.Email || '-');
                 $('#detailDate').text(date);
@@ -800,14 +1355,15 @@
 
                 $('#btnDeleteMessage').data('id', msg.id);
                 $('#btnReplyEmail').attr('href', `mailto:${msg.Email}?subject=Re: Contact Us - ${msg.NamaLengkap}`);
+                updateToggleReadButton(msg.IsRead);
 
                 $('#emptyState').hide();
                 $('#messageDetail').show();
             }
 
-            // Back button (mobile) — tap outside or add a lightweight back affordance
-            $(document).on('click', '.cu-detail-pane', function(e) {
-                // no-op placeholder; back handled via list click / browser back on small screens
+            // ✅ Cleanup saat halaman di-unload
+            $(window).on('beforeunload', function() {
+                stopAutoRefresh();
             });
         });
     </script>

@@ -37,4 +37,8 @@ class Berita extends Model
     {
         return $this->translations->firstWhere('Locale', $locale) ?: new BeritaTranslation();
     }
+    public function kategori()
+    {
+        return $this->belongsTo(KategoriBerita::class, 'Kategori', 'id');
+    }
 }

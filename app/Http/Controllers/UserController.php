@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Spatie\Permission\Models\Role;
 use Yajra\DataTables\DataTables;
@@ -166,8 +167,10 @@ class UserController extends Controller
         ]);
 
         $input = $request->all();
+        $passwordChanged = false;
         if (!empty($input['password'])) {
             $input['password'] = Hash::make($input['password']);
+            $passwordChanged = true;
         } else {
             $input = Arr::except($input, array('password'));
         }
@@ -191,9 +194,19 @@ class UserController extends Controller
             ])
             ->log('Mengupdate user: ' . $user->name);
 
+        // Jika password diubah dan user tersebut adalah user yang sedang login, logoutkan dan minta login ulang
+        if ($passwordChanged && $user->id === Auth::id()) {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return redirect()
+                ->route('login')
+                ->with('success', 'Password berhasil diubah. Silakan login ulang.');
+        }
+
         return redirect()
             ->route('users.index')
-            ->with('success', 'User updated successfully');
+            ->with('success', $passwordChanged ? 'Password berhasil diubah dan user harus login ulang' : 'User updated successfully');
     }
 
     /**

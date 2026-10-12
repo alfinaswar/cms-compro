@@ -83,7 +83,14 @@ class BeritaController extends Controller
                     $btn .= '</div>';
                     return $btn;
                 })
-                ->rawColumns(['Thumbnail', 'Judul', 'TanggalPublikasi', 'StatusBadge', 'action'])
+                ->addColumn('Kategori', function ($row) {
+                    if ($row->kategori) {
+                        return '<span class="badge badge-info px-2 py-1">' . e($row->kategori->NamaKategori) . '</span>';
+                    }
+                    return '-';
+                })
+
+                ->rawColumns(['Thumbnail', 'Judul', 'TanggalPublikasi', 'StatusBadge', 'action', 'Kategori'])
                 ->make(true);
         }
         $kategori = KategoriBerita::get();
@@ -105,53 +112,104 @@ class BeritaController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'translations.id.Judul' => 'required|string|max:255',
             'Kategori' => 'required|string|max:100',
             'Tags' => 'nullable|string',
-            'PathThumbnail' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'PathThumbnail' => 'required|image|mimes:webp|max:307',
+
             'Status' => 'required|in:Draf,Diterbitkan,Arsip',
             'TanggalPublikasi' => 'nullable|date',
             'Penulis' => 'nullable|string|max:100',
-            'translations.id.Judul' => 'required|string|max:255',
-            'translations.id.Ringkasan' => 'nullable|string',
             'Konten' => 'required|string',
+            'translations.id.Ringkasan' => 'nullable|string',
             'translations.id.SEOTitle' => 'nullable|string|max:70',
             'translations.id.SEODescription' => 'nullable|string|max:160',
             'translations.id.SEOKeywords' => 'nullable|string|max:255',
             'translations.en.Judul' => 'nullable|string|max:255',
             'translations.en.Ringkasan' => 'nullable|string',
             'translations.en.Konten' => 'nullable|string',
+
+            'translations.en.SEOTitle' => 'nullable|string|max:70',
+            'translations.en.SEODescription' => 'nullable|string|max:160',
+            'translations.en.SEOKeywords' => 'nullable|string|max:255',
         ]);
+
+        // Handle thumbnail upload
         if ($request->hasFile('PathThumbnail')) {
             $validated['PathThumbnail'] = $request->file('PathThumbnail')->store('berita/thumbnail', 'public');
         }
+
+        // Tags
+        $tags = $validated['Tags'];
+        if (is_array($tags)) {
+            $tags = implode(', ', $tags);
+        }
+        $kontenId = $validated['Konten'];
+        $ringkasanDefault = null;
+        if ($kontenId) {
+            $ringkasanDefault = trim(preg_split('/\R{2,}|\n{2,}/', strip_tags($kontenId))[0] ?? '');
+            if (empty($ringkasanDefault)) {
+                $ringkasanDefault = Str::limit(strip_tags($kontenId), 200);
+            }
+        }
+
+        $seoTitleDefault = $validated['translations']['id']['Judul'] ?? '';
+        $seoDescriptionDefault = $ringkasanDefault;
         $mainData = [
             'Kategori' => $validated['Kategori'],
-            'Tags' => is_array($validated['Tags']) ? implode(', ', $validated['Tags']) : $validated['Tags'],
+            'Tags' => $tags,
             'PathThumbnail' => $validated['PathThumbnail'],
             'Status' => $validated['Status'],
             'TanggalPublikasi' => $validated['TanggalPublikasi'],
-            'Penulis' => $validated['Penulis'] ?? auth()->user()->name,
-            'UserCreate' => auth()->user()->name,
+            'Penulis' => $validated['Penulis'] ?? (auth()->user() ? auth()->user()->name : null),
+            'UserCreate' => (auth()->user() ? auth()->user()->name : null),
             'Slug' => Str::slug($validated['translations']['id']['Judul']) . '-' . time(),
         ];
+
         $berita = Berita::create($mainData);
         $translationsData = $request->input('translations', []);
         $translationsData['id']['Konten'] = $validated['Konten'];
-        foreach ($translationsData as $locale => $trans) {
-            if (!empty($trans['Judul']) || !empty($trans['Konten'])) {
+
+        foreach (['id', 'en'] as $locale) {
+            if (
+                isset($translationsData[$locale]) &&
+                (!empty($translationsData[$locale]['Judul']) || !empty($translationsData[$locale]['Konten']))
+            ) {
+                $data = $translationsData[$locale];
+                if ($locale === 'id') {
+                    $data['Ringkasan'] = !empty($data['Ringkasan']) ? $data['Ringkasan'] : $ringkasanDefault;
+                }
+                $data['SEOTitle'] = !empty($data['SEOTitle'])
+                    ? $data['SEOTitle'] : ($locale === 'id' ? $seoTitleDefault : ($data['Judul'] ?? null));
+
+                $data['SEODescription'] = !empty($data['SEODescription'])
+                    ? $data['SEODescription'] : ($locale === 'id' ? $seoDescriptionDefault : (isset($data['Ringkasan']) ? $data['Ringkasan'] : null));
+
+                if (empty($data['SEOKeywords'])) {
+                    if (!empty($data['Judul'])) {
+                        $words = array_unique(array_slice(
+                            preg_split('/[\s,\.]+/', strtolower(strip_tags($data['Judul']))),
+                            0,
+                            5
+                        ));
+                        $data['SEOKeywords'] = implode(', ', $words);
+                    } else {
+                        $data['SEOKeywords'] = null;
+                    }
+                }
+
                 $berita->translations()->create([
                     'Locale' => $locale,
-                    'Judul' => $trans['Judul'] ?? null,
-                    'Ringkasan' => $trans['Ringkasan'] ?? null,
-                    'Konten' => $trans['Konten'] ?? null,
-                    'SEOTitle' => $trans['SEOTitle'] ?? null,
-                    'SEODescription' => $trans['SEODescription'] ?? null,
-                    'SEOKeywords' => $trans['SEOKeywords'] ?? null,
+                    'Judul' => $data['Judul'] ?? null,
+                    'Ringkasan' => $data['Ringkasan'] ?? null,
+                    'Konten' => $data['Konten'] ?? null,
+                    'SEOTitle' => $data['SEOTitle'] ?? null,
+                    'SEODescription' => $data['SEODescription'] ?? null,
+                    'SEOKeywords' => $data['SEOKeywords'] ?? null,
                 ]);
             }
         }
 
-        // Activity Log
         $judulLog = $translationsData['id']['Judul'] ?? 'Berita Baru';
         activity()
             ->causedBy(auth()->user())
@@ -184,11 +242,10 @@ class BeritaController extends Controller
         $validated = $request->validate([
             'Kategori' => 'required|string|max:100',
             'Tags' => 'nullable|string',
-            'PathThumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'PathThumbnail' => 'required|image|mimes:webp|max:307',
             'Status' => 'required|in:Draf,Diterbitkan,Arsip',
             'TanggalPublikasi' => 'nullable|date',
             'Penulis' => 'nullable|string|max:100',
-            // Indonesia (Flat names sesuai permintaan)
             'Judul' => 'required|string|max:255',
             'Ringkasan' => 'nullable|string',
             'Konten' => 'required|string',
@@ -206,16 +263,59 @@ class BeritaController extends Controller
 
         // Handle Thumbnail Update
         if ($request->hasFile('PathThumbnail')) {
-            if ($berita->PathThumbnail && Storage::disk('public')->exists($berita->PathThumbnail)) {
-                Storage::disk('public')->delete($berita->PathThumbnail);
+            if ($berita->PathThumbnail && \Storage::disk('public')->exists($berita->PathThumbnail)) {
+                \Storage::disk('public')->delete($berita->PathThumbnail);
             }
             $validated['PathThumbnail'] = $request->file('PathThumbnail')->store('berita/thumbnail', 'public');
+        }
+
+        // Tags selalu string - jika array, konversi ke string
+        $tags = $validated['Tags'];
+        if (is_array($tags)) {
+            $tags = implode(', ', $tags);
+        }
+
+        // RINGKASAN: Jika kosong, ambil paragraf pertama dari konten
+        $ringkasan = $validated['Ringkasan'] ?? null;
+        if (empty($ringkasan) && !empty($validated['Konten'])) {
+            // Ambil 1 paragraf awal dari konten (setelah bersihkan tag HTML)
+            $kontenText = trim(strip_tags($validated['Konten']));
+            $paragraphs = preg_split('/\r\n|\r|\n/', $kontenText);
+            $ringkasan = trim($paragraphs[0]);
+            if (empty($ringkasan)) {
+                // Jika string kosong, ambil 200 karakter awal
+                $ringkasan = mb_substr($kontenText, 0, 200) . (mb_strlen($kontenText) > 200 ? "..." : "");
+            }
+        }
+
+        // SEO TITLE: Jika kosong, gunakan judul
+        $seoTitle = $validated['SEOTitle'] ?? null;
+        if (empty($seoTitle)) {
+            $seoTitle = $validated['Judul'];
+        }
+
+        // SEO DESCRIPTION: Jika kosong, ambil dari ringkasan (atau judul)
+        $seoDescription = $validated['SEODescription'] ?? null;
+        if (empty($seoDescription)) {
+            $seoDescription = !empty($ringkasan) ? $ringkasan : $validated['Judul'];
+            $seoDescription = mb_substr(strip_tags($seoDescription), 0, 160);
+        }
+
+        // SEO KEYWORDS: Jika kosong, buat dari judul (5 kata unik pertama)
+        $seoKeywords = $validated['SEOKeywords'] ?? null;
+        if (empty($seoKeywords)) {
+            $words = array_unique(array_slice(
+                preg_split('/[\s,\.]+/', strtolower(strip_tags($validated['Judul']))),
+                0,
+                5
+            ));
+            $seoKeywords = implode(', ', array_filter($words));
         }
 
         // Data Utama (Non-translatable)
         $mainData = [
             'Kategori' => $validated['Kategori'],
-            'Tags' => is_array($validated['Tags']) ? implode(', ', $validated['Tags']) : $validated['Tags'],
+            'Tags' => $tags,
             'Status' => $validated['Status'],
             'TanggalPublikasi' => $validated['TanggalPublikasi'],
             'Penulis' => $validated['Penulis'],
@@ -227,38 +327,68 @@ class BeritaController extends Controller
             $mainData['PathThumbnail'] = $validated['PathThumbnail'];
         }
 
-        // Jangan update slug!
-        // if ($berita->Judul !== $validated['Judul']) {
-        //     $mainData['Slug'] = Str::slug($validated['Judul']) . '-' . time();
-        // }
-
         $berita->update($mainData);
 
         // Siapkan Data Translasi
         $translationsData = $request->input('translations', []);
 
-        // ✅ PENTING: Masukkan field flat Indonesia ke dalam array translations[id]
+        // Field flat Indonesia -- pastikan field mengisi default data jika kosong
         $translationsData['id'] = [
             'Judul' => $validated['Judul'],
-            'Ringkasan' => $validated['Ringkasan'] ?? null,
+            'Ringkasan' => $ringkasan,
             'Konten' => $validated['Konten'],
-            'SEOTitle' => $validated['SEOTitle'] ?? null,
-            'SEODescription' => $validated['SEODescription'] ?? null,
-            'SEOKeywords' => $validated['SEOKeywords'] ?? null,
+            'SEOTitle' => $seoTitle,
+            'SEODescription' => $seoDescription,
+            'SEOKeywords' => $seoKeywords,
         ];
 
         // Update/Create ke Tabel Translasi
         foreach ($translationsData as $locale => $trans) {
-            if (!empty($trans['Judul']) || !empty($trans['Konten'])) {
+            // Untuk locale selain 'id', ambil langkah fallback ringkasan, seo title dll jika kosong
+            $judul = $trans['Judul'] ?? null;
+            $konten = $trans['Konten'] ?? null;
+            $ringkasanT = $trans['Ringkasan'] ?? null;
+            $seoTitleT = $trans['SEOTitle'] ?? null;
+            $seoDescT = $trans['SEODescription'] ?? null;
+            $seoKeywordsT = $trans['SEOKeywords'] ?? null;
+
+            if (empty($ringkasanT) && !empty($konten)) {
+                $kontenText = trim(strip_tags($konten));
+                $paragraphs = preg_split('/\r\n|\r|\n/', $kontenText);
+                $ringkasanT = trim($paragraphs[0]);
+                if (empty($ringkasanT)) {
+                    $ringkasanT = mb_substr($kontenText, 0, 200) . (mb_strlen($kontenText) > 200 ? "..." : "");
+                }
+            }
+
+            if (empty($seoTitleT) && !empty($judul)) {
+                $seoTitleT = $judul;
+            }
+
+            if (empty($seoDescT)) {
+                $seoDescT = !empty($ringkasanT) ? $ringkasanT : ($judul ?? '');
+                $seoDescT = mb_substr(strip_tags($seoDescT), 0, 160);
+            }
+
+            if (empty($seoKeywordsT) && !empty($judul)) {
+                $words = array_unique(array_slice(
+                    preg_split('/[\s,\.]+/', strtolower(strip_tags($judul))),
+                    0,
+                    5
+                ));
+                $seoKeywordsT = implode(', ', array_filter($words));
+            }
+
+            if (!empty($judul) || !empty($konten)) {
                 $berita->translations()->updateOrCreate(
                     ['Locale' => $locale],
                     [
-                        'Judul' => $trans['Judul'] ?? null,
-                        'Ringkasan' => $trans['Ringkasan'] ?? null,
-                        'Konten' => $trans['Konten'] ?? null,
-                        'SEOTitle' => $trans['SEOTitle'] ?? null,
-                        'SEODescription' => $trans['SEODescription'] ?? null,
-                        'SEOKeywords' => $trans['SEOKeywords'] ?? null,
+                        'Judul' => $judul ?? null,
+                        'Ringkasan' => $ringkasanT,
+                        'Konten' => $konten ?? null,
+                        'SEOTitle' => $seoTitleT,
+                        'SEODescription' => $seoDescT,
+                        'SEOKeywords' => $seoKeywordsT,
                     ]
                 );
             }

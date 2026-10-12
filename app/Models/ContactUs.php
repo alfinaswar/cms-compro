@@ -14,4 +14,11 @@ class ContactUs extends Model
      * @var array
      */
     protected $guarded = ['id'];
+
+    protected $casts = [
+        'IsRead' => 'boolean',
+        'ReadAt' => 'datetime:Y-m-d H:i:s',
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
+    ];
 }

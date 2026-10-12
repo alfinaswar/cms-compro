@@ -2,7 +2,6 @@
 
 @push('styles')
     <style>
-        /* Kostumisasi Tampilan Sesuai Gambar Referensi */
         .card-filter {
             background: #ffffff;
             border-radius: 12px;
@@ -27,6 +26,40 @@
             border-top: none !important;
             background-color: #fcfcfd;
             padding: 14px 16px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .table-custom thead th.sorting,
+        .table-custom thead th.sorting_asc,
+        .table-custom thead th.sorting_desc {
+            position: relative;
+            padding-right: 24px !important;
+        }
+
+        .table-custom thead th.sorting:after,
+        .table-custom thead th.sorting_asc:after,
+        .table-custom thead th.sorting_desc:after {
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            color: #a0aec0;
+        }
+
+        .table-custom thead th.sorting:after {
+            content: "\f0dc";
+        }
+
+        .table-custom thead th.sorting_asc:after {
+            content: "\f0de";
+        }
+
+        .table-custom thead th.sorting_desc:after {
+            content: "\f0dd";
         }
 
         .table-custom tbody td {
@@ -36,7 +69,6 @@
             font-size: 13px;
         }
 
-        /* Sembunyikan elemen bawaan DataTable agar bisa diganti dengan Custom Toolbar */
         .dataTables_wrapper .dataTables_filter,
         .dataTables_wrapper .dataTables_length {
             display: none;
@@ -69,13 +101,15 @@
         <div class="container-fluid">
             <div class="row mb-2 align-items-center">
                 <div class="col-sm-6">
-                    <h1 class="m-0 font-weight-bold" style="font-size: 20px; color: #1a202c;">Manajemen Berita / News</h1>
+                    <h1 class="m-0 font-weight-bold" style="font-size: 20px; color: #1a202c;">
+                        List Berita
+                    </h1>
                 </div>
                 <div class="col-sm-6 text-right">
                     @can('berita.create')
                         <a class="btn btn-primary px-4 py-2" href="{{ route('berita.create') }}"
                             style="border-radius: 8px; font-weight: 500;">
-                            <i class="fa fa-plus mr-2"></i> Tulis Berita Baru
+                            <i class="fa fa-plus mr-2"></i> Tulis Berita
                         </a>
                     @endcan
                 </div>
@@ -86,10 +120,10 @@
     <section class="content">
         <div class="container-fluid">
             <div class="card card-filter p-3 mb-4">
-                <!-- Filter Toolbar / Header Control (Sesuai Referensi Gambar) -->
+                <!-- Toolbar Filter & Controls -->
                 <div class="row align-items-center">
-                    <!-- Search Input -->
-                    <div class="col-md-5 mb-2 mb-md-0">
+                    <!-- Search -->
+                    <div class="col-md-4 mb-2 mb-md-0">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text bg-white border-right-0"
@@ -98,10 +132,9 @@
                                 </span>
                             </div>
                             <input type="text" id="customSearch" class="form-control form-control-custom border-left-0"
-                                placeholder="Cari judul berita, tag, atau kategori..." style="border-radius: 0 8px 8px 0;">
+                                placeholder="Cari berita..." style="border-radius: 0 8px 8px 0;">
                         </div>
                     </div>
-
                     <!-- Filter Kategori -->
                     <div class="col-md-2 mb-2 mb-md-0">
                         <select id="filterKategori" class="form-control form-control-custom">
@@ -111,8 +144,6 @@
                             @endforeach
                         </select>
                     </div>
-
-
                     <!-- Filter Status -->
                     <div class="col-md-2 mb-2 mb-md-0">
                         <select id="filterStatus" class="form-control form-control-custom">
@@ -121,35 +152,48 @@
                             <option value="Diterbitkan">Terbit</option>
                         </select>
                     </div>
-
-                    <!-- Length Menu (Show entries) -->
-                    <div class="col-md-3 d-flex align-items-center justify-content-md-end">
-                        <span class="text-muted mr-2" style="font-size: 13px; white-space: nowrap;">Tampilkan:</span>
-                        <select id="customLength" class="form-control form-control-custom" style="width: 100px;">
-                            <option value="10">10 Data</option>
-                            <option value="25">25 Data</option>
-                            <option value="50">50 Data</option>
-                            <option value="100">100 Data</option>
+                    <!-- Show Entries -->
+                    <div class="col-md-2 mb-2 mb-md-0 d-flex align-items-center">
+                        <span class="text-muted mr-2" style="font-size: 13px; white-space: nowrap;">Show</span>
+                        <select id="customLength" class="form-control form-control-custom" style="width: 90px;">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- Tabel Data -->
+                <!-- Tabel List Berita -->
                 <div class="table-responsive mt-3">
                     <table id="tableBerita" class="table table-custom w-100">
                         <thead>
                             <tr>
-                                <th style="width: 90px;">IMAGE FEATURED</th>
-                                <th>JUDUL BERITA</th>
-                                <th>KATEGORI</th>
-                                <th>TAGS</th>
-                                <th>TANGGAL</th>
-                                <th>STATUS</th>
-                                <th style="width: 80px;">AKSI</th>
+                                <th style="width: 40px;" class="no-sort">No</th>
+                                <th style="width: 90px;" class="no-sort">Thumb</th>
+                                <th>Judul</th>
+                                <th>Kategori</th>
+                                <th>Tags</th>
+                                <th>Tanggal Terbit</th>
+                                <th>Status</th>
+                                <th style="width: 80px;" class="no-sort">Aksi</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
+                        {{-- <tfoot>
+                            <tr>
+                                <th>No</th>
+                                <th>Thumb</th>
+                                <th>Judul</th>
+                                <th>Kategori</th>
+                                <th>Tags</th>
+                                <th>Tanggal Terbit</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </tfoot> --}}
                     </table>
+                    <!-- Pagination handled by DataTable, but can place manual fallback here if needed -->
                 </div>
             </div>
         </div>
@@ -192,6 +236,14 @@
                     }
                 },
                 columns: [{
+                        // NO (auto number)
+                        data: null,
+                        name: 'no',
+                        orderable: false,
+                        searchable: false,
+                        className: 'text-center'
+                    },
+                    {
                         data: 'Thumbnail',
                         name: 'PathThumbnail',
                         orderable: false,
@@ -199,12 +251,13 @@
                     },
                     {
                         data: 'Judul',
-                        name: 'Judul'
+                        name: 'Judul',
+                        orderable: true // bisa sort
                     },
                     {
                         data: 'Kategori',
                         name: 'Kategori',
-                        orderable: false
+                        orderable: true // bisa sort
                     },
                     {
                         data: 'Tags',
@@ -213,12 +266,13 @@
                     },
                     {
                         data: 'TanggalPublikasi',
-                        name: 'created_at'
+                        name: 'created_at',
+                        orderable: true // bisa sort
                     },
                     {
                         data: 'StatusBadge',
                         name: 'Status',
-                        orderable: false
+                        orderable: true // bisa sort
                     },
                     {
                         data: 'action',
@@ -226,7 +280,29 @@
                         orderable: false,
                         searchable: false
                     }
-                ]
+                ],
+                // Index column for "NO"
+                order: [
+                    [5, 'desc']
+                ],
+                columnDefs: [{
+                    targets: [0, 1, 7],
+                    orderable: false
+                }],
+                drawCallback: function(settings) {
+                    var api = this.api();
+                    api.column(0, {
+                        search: 'applied',
+                        order: 'applied'
+                    }).nodes().each(function(cell, i) {
+                        var pageInfo = api.page.info();
+                        cell.innerHTML = pageInfo.start + i + 1;
+                    });
+                },
+                // Enable the tfoot for DataTable pagination/footer
+                initComplete: function(settings, json) {
+                    // No special logic
+                }
             });
 
             // Trigger Pencarian Custom Input
@@ -239,9 +315,20 @@
                 table.draw();
             });
 
-            // Trigger Custom Length Menu (10, 25, 50 Data)
+            // Trigger Custom Length Menu
             $('#customLength').change(function() {
                 table.page.len($(this).val()).draw();
+            });
+
+            // Table header sorting visual cue (optional if you need to highlight sort)
+            $('#tableBerita thead').on('click', 'th', function() {
+                var colIdx = $(this).index();
+                // Only trigger if sortable (do not trigger for non-sortable columns)
+                if (!$(this).hasClass("no-sort") && table.settings()[0].aoColumns[colIdx].bSortable) {
+                    table.order([colIdx, table.order()[0] && table.order()[0][0] === colIdx && table
+                    .order()[0][1] === 'asc' ? 'desc' : 'asc'
+                    ]).draw();
+                }
             });
 
             // Hapus Data via AJAX

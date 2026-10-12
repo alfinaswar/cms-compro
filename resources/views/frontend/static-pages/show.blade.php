@@ -79,7 +79,7 @@
                         </h2>
                         <div class="prose prose-slate max-w-none mb-8 mx-auto">
                             {!! $displayKonten !!}
-                        </div>-->
+                        </div>
                         <div class="flex justify-center gap-3 mt-8">
                             <a href="https://wa.me/?text={{ urlencode($displayJudul . ' ' . $shareUrl) }}" target="_blank"
                                 rel="noopener"

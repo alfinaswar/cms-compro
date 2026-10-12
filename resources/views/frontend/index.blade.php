@@ -624,15 +624,16 @@
                         © {{ date('Y') }} PT Jasuindo Tiga Perkasa Tbk. {{ __('All rights reserved') }}
                     </p>
                     <div class="flex space-x-6 text-xs">
-                        <a href="#"
+                        <a href="http://cms-compro.test/id/syarat-ketentuan"
                             class="text-slate-500 hover:text-white transition-colors">{{ __('Terms & Conditions') }}</a>
-                        <a href="#"
+                        <a href="http://cms-compro.test/id/kebijakan-privasi"
                             class="text-slate-500 hover:text-white transition-colors">{{ __('Privacy Policy') }}</a>
-                        <a href="#"
+                        <a href="http://cms-compro.test/id/faq"
                             class="text-slate-500 hover:text-white transition-colors">{{ __('Cookies') }}</a>
-                        <a href="#"
+                        <a href="http://cms-compro.test/id/tentang-kami"
                             class="text-slate-500 hover:text-white transition-colors">{{ __('Sitemap') }}</a>
                     </div>
+
                 </div>
             </div>
         </div>
