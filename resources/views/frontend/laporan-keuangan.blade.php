@@ -339,18 +339,21 @@
                                 </div>
                             </div>
 
-                            {{-- Year Dropdown Filter --}}
+                            {{-- Year Dropdown Filter untuk Annual Report --}}
                             <div class="flex items-center gap-2">
                                 <label for="annualYearSelect"
                                     class="text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">
                                     {{ $currentLocale === 'en' ? 'Year:' : 'Tahun:' }}
                                 </label>
                                 <select id="annualYearSelect" onchange="filterAnnualReport(this.value)"
-                                    class="px-3 py-1.5 text-xs md:text-sm font-semibold text-slate-700 bg-[#EEF4FF] border border-slate-300 rounded-xl outline-none focus:border-[#0099ff] focus:ring-1 focus:ring-[#0099ff] cursor-pointer">
+                                    class="px-4 py-1.5 pr-10 text-xs md:text-sm font-semibold text-slate-700 bg-[#EEF4FF] border border-slate-300 rounded-xl outline-none focus:border-[#0099ff] focus:ring-1 focus:ring-[#0099ff] cursor-pointer appearance-none">
                                     <option value="2025" selected>2025</option>
                                     <option value="2024">2024</option>
                                     <option value="2023">2023</option>
                                 </select>
+                                <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                                    <i class="fa-solid fa-chevron-down text-xs text-slate-500"></i>
+                                </div>
                             </div>
                         </div>
 
@@ -418,11 +421,11 @@
                                             <i class="fa-solid fa-arrow-down-to-bracket text-xs"></i> Unduh Laporan Tahunan
                                             (PDF)
                                         </a>
-                                        <button type="button"
+                                        {{-- <button type="button"
                                             onclick="alert('Laporan Tahunan 2025 lengkap telah tersedia untuk diunduh.')"
                                             class="inline-flex items-center gap-1.5 text-slate-700 text-xs md:text-sm font-semibold rounded-xl transition-all">
                                             <i class="fa-regular fa-eye text-xs text-slate-500"></i> Ringkasan Eksekutif
-                                        </button>
+                                        </button> --}}
                                     </div>
                                 </div>
                             </div>
@@ -655,17 +658,22 @@
                             </div>
 
                             {{-- Year Dropdown Filter --}}
+                            {{-- Year Dropdown Filter untuk Quarterly Report --}}
                             <div class="flex items-center gap-2">
                                 <label for="quarterYearSelect"
                                     class="text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">
                                     {{ $currentLocale === 'en' ? 'Year:' : 'Tahun:' }}
                                 </label>
                                 <select id="quarterYearSelect" onchange="filterQuarterReport(this.value)"
-                                    class="px-3 py-1.5 text-xs md:text-sm font-semibold text-slate-700 bg-[#EEF4FF] border border-slate-300 rounded-xl outline-none focus:border-[#0099ff] focus:ring-1 focus:ring-[#0099ff] cursor-pointer">
+                                    class="px-4 py-1.5 pr-10 text-xs md:text-sm font-semibold text-slate-700 bg-[#EEF4FF] border border-slate-300 rounded-xl outline-none focus:border-[#0099ff] focus:ring-1 focus:ring-[#0099ff] cursor-pointer appearance-none">
                                     <option value="2026" selected>2026</option>
                                     <option value="2025">2025</option>
                                     <option value="2024">2024</option>
                                 </select>
+                                <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                                    <i class="fas fa-chevron-down text-xs text-slate-500"></i>
+                                </div>
+
                             </div>
                         </div>
 
