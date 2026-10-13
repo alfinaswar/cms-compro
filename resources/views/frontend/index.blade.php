@@ -128,6 +128,40 @@
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
 
+        /* Logo switching: gelap (terang/putih) saat transparent, terang (gelap/warna) saat scrolled */
+        .logo-light {
+            display: none;
+        }
+
+        .logo-dark {
+            display: block;
+        }
+
+        .navbar-scrolled .logo-light {
+            display: block;
+        }
+
+        .navbar-scrolled .logo-dark {
+            display: none;
+        }
+
+        /* Fallback SVG juga ikut aturan yang sama */
+        .navbar-transparent .logo-svg-dark {
+            display: block;
+        }
+
+        .navbar-transparent .logo-svg-light {
+            display: none;
+        }
+
+        .navbar-scrolled .logo-svg-dark {
+            display: none;
+        }
+
+        .navbar-scrolled .logo-svg-light {
+            display: block;
+        }
+
         /* Smooth scroll offset for fixed navbar */
         section[id] {
             scroll-margin-top: 80px;
@@ -162,11 +196,29 @@
                 <div class="flex-shrink-0 flex items-center">
                     <a href="{{ route('frontend.main') }}" class="flex items-center space-x-2">
                         @if (!empty($websiteSettings) && !empty($websiteSettings->PathLogo))
+                            {{-- Logo GELAP (putih/terang) — tampil saat navbar transparent (sebelum scroll) --}}
+                            @php
+                                $logoGelap = !empty($websiteSettings->PathLogoGelap)
+                                    ? asset('storage/' . $websiteSettings->PathLogoGelap)
+                                    : asset('storage/' . $websiteSettings->PathLogo);
+                            @endphp
+                            <img src="{{ $logoGelap }}" alt="{{ $websiteSettings->NamaPerusahaan ?? __('Logo') }}"
+                                width="180" height="64" style="object-fit: contain;" class="logo-dark">
+
+                            {{-- Logo TERANG (gelap/warna asli) — tampil saat navbar scrolled (setelah scroll) --}}
                             <img src="{{ asset('storage/' . $websiteSettings->PathLogo) }}"
                                 alt="{{ $websiteSettings->NamaPerusahaan ?? __('Logo') }}" width="180" height="64"
-                                style="object-fit: contain;">
+                                style="object-fit: contain;" class="logo-light">
                         @else
-                            <svg width="64" height="64" viewBox="0 0 40 40" fill="none"
+                            {{-- Fallback SVG jika tidak ada logo di DB --}}
+                            <svg class="logo-svg-dark" width="64" height="64" viewBox="0 0 40 40" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M5 20L12 12L19 20L26 12L33 20" stroke="white" stroke-width="3"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M5 28L12 20L19 28" stroke="#e0f2fe" stroke-width="3" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                            <svg class="logo-svg-light" width="64" height="64" viewBox="0 0 40 40" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path d="M5 20L12 12L19 20L26 12L33 20" stroke="#0284c7" stroke-width="3"
                                     stroke-linecap="round" stroke-linejoin="round" />
@@ -316,7 +368,8 @@
 
                 <!-- Right Side Actions -->
                 <div class="hidden lg:flex items-center space-x-4">
-                    <button class="nav-icon hover:text-brand-500 transition-colors duration-200 p-2">
+                    <button onclick="openSearchModal()"
+                        class="nav-icon hover:text-brand-500 transition-colors duration-200 p-2" aria-label="Search">
                         <i class="fa-solid fa-magnifying-glass text-lg"></i>
                     </button>
 
@@ -384,7 +437,9 @@
 
                 <!-- Mobile Menu Button -->
                 <div class="lg:hidden flex items-center space-x-2">
-                    <button class="mobile-btn hover:text-brand-500 transition-colors duration-200 p-2">
+                    <button onclick="openSearchModal()"
+                        class="mobile-btn hover:text-brand-500 transition-colors duration-200 p-2"
+                        aria-label="Search">
                         <i class="fa-solid fa-magnifying-glass text-lg"></i>
                     </button>
                     <button id="mobile-menu-btn" class="mobile-btn hover:text-brand-500 focus:outline-none p-2">
@@ -688,6 +743,117 @@
     </footer>
 
     <!-- ========================================== -->
+    <!-- SEARCH MODAL (dengan Live Suggestions) -->
+    <!-- ========================================== -->
+    <div id="searchModal" class="fixed inset-0 z-[100] hidden items-start justify-center pt-20 md:pt-32 px-4"
+        style="background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px);">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden transform transition-all">
+
+            {{-- Header --}}
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-magnifying-glass text-brand-600"></i>
+                    <h3 class="text-base font-bold text-slate-900">{{ __('Search Articles') }}</h3>
+                </div>
+                <button onclick="closeSearchModal()"
+                    class="w-9 h-9 rounded-lg hover:bg-slate-200 text-slate-500 flex items-center justify-center transition-colors"
+                    aria-label="Close">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            {{-- Form --}}
+            <form id="searchModalForm" action="{{ route('frontend.news') }}" method="GET" class="p-6">
+                <div class="relative">
+                    <i
+                        class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="searchModalInput" name="search" autocomplete="off"
+                        placeholder="{{ __('Search news, articles, topics...') }}"
+                        class="w-full pl-12 pr-12 py-4 bg-slate-50 border border-slate-200 rounded-xl text-base focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:bg-white outline-none transition-all">
+
+                    {{-- Loading Spinner --}}
+                    <div id="searchLoader" class="absolute right-4 top-1/2 -translate-y-1/2 hidden">
+                        <svg class="animate-spin h-5 w-5 text-brand-600" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                            </path>
+                        </svg>
+                    </div>
+
+                    {{-- Clear Button --}}
+                    <button type="button" id="searchClearBtn" onclick="clearSearch()"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 hidden w-7 h-7 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-600 flex items-center justify-center transition-colors">
+                        <i class="fa-solid fa-xmark text-xs"></i>
+                    </button>
+
+                    <button type="submit"
+                        class="hidden absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold rounded-lg transition-colors">
+                        {{ __('Search') }}
+                    </button>
+                </div>
+
+                {{-- Live Results Container --}}
+                <div id="searchResults" class="mt-3 hidden max-h-80 overflow-y-auto">
+                    <div class="border border-slate-200 rounded-xl overflow-hidden divide-y divide-slate-100"
+                        id="searchResultsList">
+                        {{-- Hasil akan diisi oleh JS --}}
+                    </div>
+                </div>
+
+                {{-- Empty State --}}
+                <div id="searchEmpty" class="mt-4 hidden text-center py-6">
+                    <i class="fa-regular fa-folder-open text-3xl text-slate-300 mb-2"></i>
+                    <p class="text-sm text-slate-500">{{ __('No articles found') }}</p>
+                    <p class="text-xs text-slate-400 mt-1">{{ __('Try different keywords') }}</p>
+                </div>
+
+                {{-- Quick Keywords --}}
+                <div id="searchKeywords" class="mt-5">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                        {{ __('Popular Searches') }}
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        @foreach ($popularKeywords as $kw)
+                            <button type="button" onclick="fillSearch('{{ addslashes($kw) }}')"
+                                class="px-3 py-1.5 bg-slate-100 hover:bg-brand-50 hover:text-brand-700 text-slate-700 text-xs font-medium rounded-lg transition-colors">
+                                {{ $kw }}
+                            </button>
+                        @endforeach
+                    </div>
+                </div>
+
+                {{-- Hint --}}
+                <p class="mt-4 text-xs text-slate-400 flex items-center gap-2">
+                    <i class="fa-solid fa-keyboard"></i>
+                    {{ __('Press') }} <kbd
+                        class="px-1.5 py-0.5 bg-slate-100 border border-slate-200 rounded text-[10px] font-mono">ESC</kbd>
+                    {{ __('to close') }}
+                    <span class="mx-1">•</span>
+                    <kbd
+                        class="px-1.5 py-0.5 bg-slate-100 border border-slate-200 rounded text-[10px] font-mono">Enter</kbd>
+                    {{ __('for full search') }}
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .search-highlight {
+            background-color: #fef3c7;
+            color: #92400e;
+            font-weight: 600;
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+
+        .search-result-item:hover {
+            background-color: #f0f9ff;
+        }
+    </style>
+    <!-- ========================================== -->
     <!-- SCRIPTS -->
     <!-- ========================================== -->
     <script>
@@ -747,7 +913,204 @@
         window.addEventListener('scroll', handleScroll);
         handleScroll();
     </script>
+    <script>
+        // ===== SEARCH MODAL =====
+        const searchModal = document.getElementById('searchModal');
+        const searchModalInput = document.getElementById('searchModalInput');
 
+        function openSearchModal() {
+            searchModal.classList.remove('hidden');
+            searchModal.classList.add('flex');
+            setTimeout(() => searchModalInput.focus(), 100);
+            document.body.style.overflow = 'hidden'; // prevent scroll
+        }
+
+        function closeSearchModal() {
+            searchModal.classList.add('hidden');
+            searchModal.classList.remove('flex');
+            document.body.style.overflow = ''; // restore scroll
+        }
+
+        function fillSearch(keyword) {
+            searchModalInput.value = keyword;
+            searchModalInput.focus();
+        }
+
+        // Close on backdrop click
+        searchModal.addEventListener('click', function(e) {
+            if (e.target === searchModal) closeSearchModal();
+        });
+
+        // Close on ESC, open on Ctrl+K or Cmd+K
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeSearchModal();
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                openSearchModal();
+            }
+        });
+    </script>
+    <script>
+        // ===== SEARCH MODAL with Live Suggestions =====
+        const searchModal = document.getElementById('searchModal');
+        const searchModalInput = document.getElementById('searchModalInput');
+        const searchResults = document.getElementById('searchResults');
+        const searchResultsList = document.getElementById('searchResultsList');
+        const searchEmpty = document.getElementById('searchEmpty');
+        const searchLoader = document.getElementById('searchLoader');
+        const searchClearBtn = document.getElementById('searchClearBtn');
+        const searchKeywords = document.getElementById('searchKeywords');
+
+        let searchDebounceTimer = null;
+        let currentAbortController = null;
+
+        function openSearchModal() {
+            searchModal.classList.remove('hidden');
+            searchModal.classList.add('flex');
+            setTimeout(() => searchModalInput.focus(), 100);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSearchModal() {
+            searchModal.classList.add('hidden');
+            searchModal.classList.remove('flex');
+            document.body.style.overflow = '';
+            clearSearch();
+        }
+
+        function fillSearch(keyword) {
+            searchModalInput.value = keyword;
+            searchModalInput.focus();
+            searchModalInput.dispatchEvent(new Event('input')); // trigger search
+        }
+
+        function clearSearch() {
+            searchModalInput.value = '';
+            searchResults.classList.add('hidden');
+            searchEmpty.classList.add('hidden');
+            searchKeywords.classList.remove('hidden');
+            searchClearBtn.classList.add('hidden');
+            if (currentAbortController) {
+                currentAbortController.abort();
+                currentAbortController = null;
+            }
+        }
+
+        // Highlight keyword dalam teks
+        function highlightText(text, query) {
+            if (!query) return text;
+            const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+            return text.replace(regex, '<mark class="search-highlight">$1</mark>');
+        }
+
+        // Fetch artikel dari API
+        async function fetchSearchResults(query) {
+            if (query.length < 2) {
+                searchResults.classList.add('hidden');
+                searchEmpty.classList.add('hidden');
+                searchKeywords.classList.remove('hidden');
+                return;
+            }
+
+            // Batalkan request sebelumnya
+            if (currentAbortController) {
+                currentAbortController.abort();
+            }
+            currentAbortController = new AbortController();
+
+            // Tampilkan loading
+            searchLoader.classList.remove('hidden');
+            searchKeywords.classList.add('hidden');
+
+            try {
+                const response = await fetch(
+                    `{{ route('frontend.api.search-articles') }}?q=${encodeURIComponent(query)}`, {
+                        signal: currentAbortController.signal
+                    });
+
+                if (!response.ok) throw new Error('Network response error');
+
+                const data = await response.json();
+
+                // Sembunyikan loader
+                searchLoader.classList.add('hidden');
+
+                if (data.results.length === 0) {
+                    searchResults.classList.add('hidden');
+                    searchEmpty.classList.remove('hidden');
+                } else {
+                    searchEmpty.classList.add('hidden');
+                    searchResults.classList.remove('hidden');
+
+                    // Render hasil
+                    searchResultsList.innerHTML = data.results.map(article => `
+                    <a href="${article.url}" class="search-result-item flex gap-3 p-3 hover:bg-brand-50 transition-colors">
+                        <div class="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden bg-slate-100">
+                            ${article.thumbnail
+                                ? `<img src="${article.thumbnail}" alt="${article.judul}" class="w-full h-full object-cover">`
+                                : `<div class="w-full h-full flex items-center justify-center"><i class="fa-regular fa-newspaper text-slate-400"></i></div>`
+                            }
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] font-bold text-brand-600 bg-brand-50 px-1.5 py-0.5 rounded uppercase">${article.kategori}</span>
+                                <span class="text-[10px] text-slate-400">${article.tanggal}</span>
+                            </div>
+                            <h4 class="text-sm font-semibold text-slate-900 line-clamp-2 leading-snug">
+                                ${highlightText(article.judul, query)}
+                            </h4>
+                            ${article.ringkasan ? `
+                                    <p class="text-xs text-slate-500 line-clamp-1 mt-0.5">
+                                        ${highlightText(article.ringkasan, query)}
+                                    </p>
+                                ` : ''}
+                        </div>
+                        <div class="flex-shrink-0 self-center">
+                            <i class="fa-solid fa-arrow-right text-slate-400 text-xs"></i>
+                        </div>
+                    </a>
+                `).join('');
+                }
+            } catch (error) {
+                if (error.name !== 'AbortError') {
+                    console.error('Search error:', error);
+                    searchLoader.classList.add('hidden');
+                }
+            }
+        }
+
+        // Event listener input dengan debounce
+        searchModalInput.addEventListener('input', function(e) {
+            const value = e.target.value.trim();
+
+            // Show/hide clear button
+            if (value.length > 0) {
+                searchClearBtn.classList.remove('hidden');
+            } else {
+                searchClearBtn.classList.add('hidden');
+            }
+
+            // Debounce 300ms
+            clearTimeout(searchDebounceTimer);
+            searchDebounceTimer = setTimeout(() => {
+                fetchSearchResults(value);
+            }, 300);
+        });
+
+        // Close on backdrop click
+        searchModal.addEventListener('click', function(e) {
+            if (e.target === searchModal) closeSearchModal();
+        });
+
+        // Close on ESC, open on Ctrl+K / Cmd+K
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeSearchModal();
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                openSearchModal();
+            }
+        });
+    </script>
 </body>
 
 </html>

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\AboutUs;
 use App\Models\AboutUsDetail;
+use App\Models\AboutUsDetailTranslation;
+use App\Models\AboutUsTranslation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -92,6 +94,7 @@ class AboutUsController extends Controller
         return view('pengaturan.landing-page.about.manage', [
             'sections' => $sections,
             'sectionConfig' => self::SECTIONS,
+            'locales' => ['id' => '🇮🇩 Bahasa Indonesia', 'en' => '🇬🇧 English'],
         ]);
     }
 
@@ -110,8 +113,12 @@ class AboutUsController extends Controller
      */
     public function show()
     {
+        $locale = app()->getLocale();
         $ids = array_keys(self::SECTIONS);
-        $loaded = AboutUs::with('getDetail')->whereIn('id', $ids)->get()->keyBy('id');
+        $loaded = AboutUs::with(['getDetail.translations', 'translations'])
+            ->whereIn('id', $ids)
+            ->get()
+            ->keyBy('id');
 
         $Hero = $loaded[5] ?? null;
         $Riwayat = $loaded[1] ?? null;
@@ -124,6 +131,11 @@ class AboutUsController extends Controller
 
         $mediaMeta = $this->extractMeta($Media, self::SECTIONS[6]['meta_keys'] ?? []);
 
+        // Helper closure untuk akses translation per section di view
+        $t = function ($section) use ($locale) {
+            return $section ? $section->translate($locale) : null;
+        };
+
         return view('frontend.about', compact(
             'Hero',
             'Riwayat',
@@ -133,7 +145,9 @@ class AboutUsController extends Controller
             'TanggungJawab',
             'Award',
             'Iso',
-            'Cta'
+            'Cta',
+            'locale',
+            't'
         ));
     }
 
@@ -149,9 +163,10 @@ class AboutUsController extends Controller
     {
         $request->validate([
             'sections' => 'required|array',
-            'sections.*.SubJudul' => 'nullable|string|max:255',
-            'sections.*.Judul' => 'nullable|string|max:500',
-            'sections.*.Deskripsi' => 'nullable|string',
+            'sections.*.translations' => 'required|array',
+            'sections.*.translations.*.SubJudul' => 'nullable|string|max:500',
+            'sections.*.translations.*.Judul' => 'nullable|string|max:500',
+            'sections.*.translations.*.Deskripsi' => 'nullable|string',
             'sections.*.Gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'sections.*.details' => 'nullable|array',
             'sections.*.meta' => 'nullable|array',
@@ -159,22 +174,18 @@ class AboutUsController extends Controller
 
         DB::beginTransaction();
         try {
-            // For activity() logging, we'll collect old/new attribute and details for all sections
             $logs = [];
 
             foreach ($request->input('sections', []) as $sectionId => $data) {
                 $sectionId = (int) $sectionId;
-                if (!isset(self::SECTIONS[$sectionId])) {
+                if (!isset(self::SECTIONS[$sectionId]))
                     continue;
-                }
 
                 $about = AboutUs::findOrFail($sectionId);
+                $oldSection = $about->only(['SubJudul', 'Judul', 'Deskripsi', 'Gambar']);
 
-                // Store old data for comparison/logs
-                $oldSection = $about->only(['SubJudul', 'Judul', 'Deskripsi', 'Gambar', 'UserUpdate']);
-
+                // Handle Gambar section (tetap single, tidak di-translate)
                 $gambarPath = $about->Gambar;
-
                 if ($request->hasFile("sections.{$sectionId}.Gambar")) {
                     if ($gambarPath && Storage::disk('public')->exists($gambarPath)) {
                         Storage::disk('public')->delete($gambarPath);
@@ -182,85 +193,63 @@ class AboutUsController extends Controller
                     $gambarPath = $request->file("sections.{$sectionId}.Gambar")->store('about-us', 'public');
                 }
 
-                $updateData = [
-                    'SubJudul' => $data['SubJudul'] ?? null,
-                    'Judul' => $data['Judul'] ?? null,
-                    'Deskripsi' => $data['Deskripsi'] ?? null,
+                // Simpan ke kolom lama (fallback ke bahasa Indonesia)
+                $idTrans = $data['translations']['id'] ?? [];
+                $about->update([
+                    'SubJudul' => $idTrans['SubJudul'] ?? null,
+                    'Judul' => $idTrans['Judul'] ?? null,
+                    'Deskripsi' => $idTrans['Deskripsi'] ?? null,
                     'Gambar' => $gambarPath,
                     'UserUpdate' => auth()->check() ? auth()->user()->name : null,
-                ];
+                ]);
 
-                $about->update($updateData);
+                // Simpan ke tabel translations untuk setiap locale
+                foreach ($data['translations'] as $locale => $trans) {
+                    AboutUsTranslation::updateOrCreate(
+                        ['IdAbout' => $about->id, 'Locale' => $locale],
+                        [
+                            'SubJudul' => $trans['SubJudul'] ?? null,
+                            'Judul' => $trans['Judul'] ?? null,
+                            'Deskripsi' => $trans['Deskripsi'] ?? null,
+                        ]
+                    );
+                }
 
                 $config = self::SECTIONS[$sectionId];
-
-                // For logging meta/details change
                 $beforeDetails = [];
                 $afterDetails = [];
 
                 if (!empty($config['meta_keys'])) {
-                    // Meta data handling
-                    $originalMeta = [];
-                    foreach ($config['meta_keys'] as $key => $label) {
-                        $found = $about->getDetail->firstWhere('Judul', $key);
-                        $originalMeta[$key] = $found ? $found->Deskripsi : null;
-                    }
+                    $beforeDetails = $this->extractMeta($about, $config['meta_keys']);
                     $this->syncMetaDetails($about, $data['meta'] ?? [], $config['meta_keys']);
-                    $newMeta = [];
-                    foreach ($config['meta_keys'] as $key => $label) {
-                        $found = AboutUsDetail::where('IdAbout', $about->id)->where('Judul', $key)->first();
-                        $newMeta[$key] = $found ? $found->Deskripsi : null;
-                    }
-                    $beforeDetails = $originalMeta;
-                    $afterDetails = $newMeta;
+                    $about->refresh();
+                    $afterDetails = $this->extractMeta($about, $config['meta_keys']);
                 } else {
-                    // Detail data handling
-                    $originalDetails = AboutUsDetail::where('IdAbout', $about->id)->get()->map(function ($item) {
-                        return $item->only(['id', 'Judul', 'Deskripsi', 'Gambar']);
-                    })->toArray();
-                    $this->syncDetails(
-                        $about,
-                        $data['details'] ?? [],
-                        $request,
-                        $sectionId
-                    );
-                    $newDetails = AboutUsDetail::where('IdAbout', $about->id)->get()->map(function ($item) {
-                        return $item->only(['id', 'Judul', 'Deskripsi', 'Gambar']);
-                    })->toArray();
-                    $beforeDetails = $originalDetails;
-                    $afterDetails = $newDetails;
+                    $beforeDetails = AboutUsDetail::where('IdAbout', $about->id)->get()->toArray();
+                    $this->syncDetails($about, $data['details'] ?? [], $request, $sectionId);
+                    $afterDetails = AboutUsDetail::where('IdAbout', $about->id)->with('translations')->get()->toArray();
                 }
 
-                // Log for this section
                 $logs[] = [
                     'section_id' => $sectionId,
-                    'section_key' => $config['key'] ?? '',
-                    'section_label' => $config['label'] ?? '',
+                    'section_key' => $config['key'],
                     'changes' => [
-                        'attributes' => [
-                            'before' => $oldSection,
-                            'after' => $updateData,
-                        ],
-                        'details' => [
-                            'before' => $beforeDetails,
-                            'after' => $afterDetails,
-                        ]
+                        'attributes' => ['before' => $oldSection, 'after' => $about->only(['SubJudul', 'Judul', 'Deskripsi', 'Gambar'])],
+                        'translations' => $data['translations'],
+                        'details' => ['before' => $beforeDetails, 'after' => $afterDetails],
                     ]
                 ];
             }
 
-            // Insert activity log with details of all section changes
             activity()
                 ->causedBy(auth()->user())
                 ->withProperties(['changes' => $logs])
-                ->log('Memperbarui konten halaman Tentang Kami');
+                ->log('Memperbarui konten halaman Tentang Kami (multi-bahasa)');
 
             DB::commit();
-
             return redirect()->route('about-us.index')->with('success', 'Konten Tentang Kami berhasil disimpan.');
         } catch (\Throwable $e) {
             DB::rollBack();
-
             return redirect()->back()->withInput()->with('error', 'Gagal menyimpan: ' . $e->getMessage());
         }
     }
@@ -364,11 +353,23 @@ class AboutUsController extends Controller
         $keepIds = [];
 
         foreach ($details as $index => $detail) {
-            $judul = trim($detail['Judul'] ?? '');
-            $deskripsi = $detail['Deskripsi'] ?? null;
+            $translations = $detail['translations'] ?? [];
+            $idTrans = $translations['id'] ?? [];
+            $enTrans = $translations['en'] ?? [];
+
+            $judul = trim($idTrans['Judul'] ?? '');
+            $deskripsi = $idTrans['Deskripsi'] ?? null;
             $iconFa = trim($detail['IconFa'] ?? '');
 
-            if ($judul === '' && empty($deskripsi) && empty($iconFa) && !$request->hasFile("sections.{$sectionId}.details.{$index}.Gambar")) {
+            // Skip baris kosong
+            $hasAnyContent = !empty($judul) || !empty($deskripsi) || !empty($iconFa);
+            foreach ($translations as $t) {
+                if (!empty(trim($t['Judul'] ?? '')) || !empty($t['Deskripsi'] ?? '')) {
+                    $hasAnyContent = true;
+                    break;
+                }
+            }
+            if (!$hasAnyContent && !$request->hasFile("sections.{$sectionId}.details.{$index}.Gambar")) {
                 continue;
             }
 
@@ -376,9 +377,9 @@ class AboutUsController extends Controller
             $existing = $detailId ? AboutUsDetail::where('IdAbout', $about->id)->find($detailId) : null;
             $gambarPath = $existing?->Gambar;
 
-            // Icon FontAwesome disimpan di kolom Gambar sebagai string class
+            // Handle Icon FA vs upload gambar
             if ($iconFa !== '') {
-                if ($gambarPath && !str_starts_with($gambarPath, 'fa-') && !str_contains($gambarPath, 'fa-') && Storage::disk('public')->exists($gambarPath)) {
+                if ($gambarPath && !str_starts_with((string) $gambarPath, 'fa') && Storage::disk('public')->exists($gambarPath)) {
                     Storage::disk('public')->delete($gambarPath);
                 }
                 $gambarPath = $iconFa;
@@ -403,13 +404,25 @@ class AboutUsController extends Controller
                     'Deskripsi' => $deskripsi,
                     'Gambar' => $gambarPath,
                 ]);
+                $existing = $created;
                 $keepIds[] = $created->id;
+            }
+
+            // Simpan translations untuk setiap locale
+            foreach ($translations as $locale => $trans) {
+                AboutUsDetailTranslation::updateOrCreate(
+                    ['IdAboutUsDetail' => $existing->id, 'Locale' => $locale],
+                    [
+                        'Judul' => $trans['Judul'] ?? null,
+                        'Deskripsi' => $trans['Deskripsi'] ?? null,
+                    ]
+                );
             }
         }
 
+        // Hapus detail yang tidak lagi ada di form
         $toDelete = AboutUsDetail::where('IdAbout', $about->id)
             ->when(count($keepIds), fn($q) => $q->whereNotIn('id', $keepIds))
-            ->when(!count($keepIds), fn($q) => $q)
             ->get();
 
         foreach ($toDelete as $row) {

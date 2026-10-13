@@ -1,19 +1,23 @@
 @extends('frontend.index')
 
 @section('content-frontend')
-
     <!-- Hero Section -->
     <section class="relative pt-32 pb-20 bg-gradient-to-br from-brand-900 via-brand-800 to-brand-900 overflow-hidden">
         <div class="absolute inset-0 opacity-10">
             <img src="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?q=80&w=2070&auto=format&fit=crop"
                 alt="{{ __('News Background') }}" class="w-full h-full object-cover">
         </div>
-        <div class="absolute top-0 right-0 w-96 h-96 bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
-        <div class="absolute bottom-0 left-0 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
+        <div
+            class="absolute top-0 right-0 w-96 h-96 bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10">
+        </div>
+        <div
+            class="absolute bottom-0 left-0 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10">
+        </div>
 
         <div class="container mx-auto px-6 relative z-10">
             <div class="max-w-4xl mx-auto text-center">
-                <span class="inline-block py-1.5 px-4 rounded-full bg-brand-500/20 text-brand-100 text-sm font-semibold tracking-wide mb-6 border border-brand-500/30 backdrop-blur-sm">
+                <span
+                    class="inline-block py-1.5 px-4 rounded-full bg-brand-500/20 text-brand-100 text-sm font-semibold tracking-wide mb-6 border border-brand-500/30 backdrop-blur-sm">
                     <i class="fa-solid fa-newspaper mr-2"></i> {{ __('FOR THIS NEWS') }}
                 </span>
                 <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight">
@@ -46,13 +50,17 @@
                     @forelse($news as $item)
                         @php
                             // Ambil terjemahan sesuai bahasa aktif, fallback ke data utama jika kosong
-                            $trans = $item->translate($locale) ?? $item->translate('id') ?? $item->translations->first();
+                            $trans =
+                                $item->translate($locale) ?? ($item->translate('id') ?? $item->translations->first());
                             $displayJudul = $trans?->Judul ?: ($item->Judul ?: 'Berita');
                             $displayRingkasan = $trans?->Ringkasan ?: ($item->Ringkasan ?: '');
-                            $thumbnailUrl = $item->PathThumbnail ? asset('storage/' . $item->PathThumbnail) : asset('img/no-image.png');
+                            $thumbnailUrl = $item->PathThumbnail
+                                ? asset('storage/' . $item->PathThumbnail)
+                                : asset('img/no-image.png');
                         @endphp
 
-                        <article class="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 mb-6 hover:shadow-md transition-shadow">
+                        <article
+                            class="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 mb-6 hover:shadow-md transition-shadow">
                             <!-- Image -->
                             <!-- ✅ PERBAIKAN 2: Gunakan route('frontend.detail') -->
                             <a href="{{ route('frontend.detail', ['slug' => $item->Slug]) }}" class="block overflow-hidden">
@@ -73,7 +81,7 @@
                                         {{ $item->TanggalPublikasi ? \Carbon\Carbon::parse($item->TanggalPublikasi)->isoFormat('D MMM, Y') : '-' }}
                                     </span>
                                     <span class="px-2 py-1 bg-brand-50 text-brand-700 text-xs font-semibold rounded">
-                                        {{ $item->Kategori }}
+                                        {{ $item->kategori->NamaKategori }}
                                     </span>
                                 </div>
 
@@ -111,7 +119,8 @@
                     <!-- Pagination (Laravel otomatis menangani locale di sini) -->
                     @if ($news->hasPages())
                         <div class="mt-8 flex justify-center">
-                            {{ $news->links() }} <!-- Atau gunakan custom pagination Anda, Laravel otomatis append locale -->
+                            {{ $news->links() }}
+                            <!-- Atau gunakan custom pagination Anda, Laravel otomatis append locale -->
                         </div>
                     @endif
                 </div>
@@ -128,7 +137,8 @@
                                 <input type="text" name="search" value="{{ request('search') }}"
                                     placeholder="{{ __('Search news...') }}"
                                     class="w-full px-4 py-2.5 pr-10 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
-                                <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand-600">
+                                <button type="submit"
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand-600">
                                     <i class="fa-solid fa-magnifying-glass"></i>
                                 </button>
                             </form>
@@ -143,8 +153,10 @@
                                         <!-- ✅ PERBAIKAN 6: Gunakan route() dengan parameter query -->
                                         <a href="{{ route('frontend.news', ['kategori' => $category]) }}"
                                             class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-slate-50 transition-colors group">
-                                            <span class="text-slate-700 group-hover:text-brand-600">{{ $category }}</span>
-                                            <i class="fa-solid fa-chevron-right text-xs text-slate-400 group-hover:text-brand-600"></i>
+                                            <span
+                                                class="text-slate-700 group-hover:text-brand-600">{{ $category }}</span>
+                                            <i
+                                                class="fa-solid fa-chevron-right text-xs text-slate-400 group-hover:text-brand-600"></i>
                                         </a>
                                     </li>
                                 @endforeach
@@ -157,21 +169,28 @@
                             <div class="space-y-4">
                                 @foreach ($recentNews as $recent)
                                     @php
-                                        $recentTrans = $recent->translate($locale) ?? $recent->translate('id') ?? $recent->translations->first();
+                                        $recentTrans =
+                                            $recent->translate($locale) ??
+                                            ($recent->translate('id') ?? $recent->translations->first());
                                         $recentJudul = $recentTrans?->Judul ?: ($recent->Judul ?: 'Berita');
-                                        $recentThumb = $recent->PathThumbnail ? asset('storage/' . $recent->PathThumbnail) : asset('img/no-image.png');
+                                        $recentThumb = $recent->PathThumbnail
+                                            ? asset('storage/' . $recent->PathThumbnail)
+                                            : asset('img/no-image.png');
                                     @endphp
                                     <div class="flex gap-3">
                                         <!-- ✅ PERBAIKAN 7: Gunakan route('frontend.detail') -->
-                                        <a href="{{ route('frontend.detail', ['slug' => $recent->Slug]) }}" class="flex-shrink-0">
-                                            <img src="{{ $recentThumb }}" alt="{{ $recentJudul }}" class="w-20 h-20 object-cover rounded-lg">
+                                        <a href="{{ route('frontend.detail', ['slug' => $recent->Slug]) }}"
+                                            class="flex-shrink-0">
+                                            <img src="{{ $recentThumb }}" alt="{{ $recentJudul }}"
+                                                class="w-20 h-20 object-cover rounded-lg">
                                         </a>
                                         <div class="flex-1 min-w-0">
                                             <p class="text-xs text-slate-500 mb-1">
                                                 <i class="fa-regular fa-calendar mr-1"></i>
                                                 {{ $recent->TanggalPublikasi ? \Carbon\Carbon::parse($recent->TanggalPublikasi)->isoFormat('D MMM, Y') : '-' }}
                                             </p>
-                                            <h4 class="text-sm font-semibold text-slate-900 hover:text-brand-600 line-clamp-2">
+                                            <h4
+                                                class="text-sm font-semibold text-slate-900 hover:text-brand-600 line-clamp-2">
                                                 <a href="{{ route('frontend.detail', ['slug' => $recent->Slug]) }}">
                                                     {{ $recentJudul }}
                                                 </a>
@@ -234,5 +253,4 @@
             </div>
         </div>
     </section>
-
 @endsection

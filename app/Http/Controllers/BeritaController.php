@@ -32,11 +32,11 @@ class BeritaController extends Controller
                 }
             ])->latest();
             if ($request->has('kategori') && !empty($request->kategori)) {
-                $query->where(function($q) use ($request) {
+                $query->where(function ($q) use ($request) {
                     $q->where('Kategori', $request->kategori)
-                      ->orWhereHas('kategori', function($kq) use ($request) {
-                          $kq->where('NamaKategori', $request->kategori);
-                      });
+                        ->orWhereHas('kategori', function ($kq) use ($request) {
+                            $kq->where('NamaKategori', $request->kategori);
+                        });
                 });
             }
             if ($request->has('status') && !empty($request->status)) {
@@ -79,7 +79,8 @@ class BeritaController extends Controller
                     return '<span class="badge badge-pill badge-secondary px-3 py-1">' . e($row->Status) . '</span>';
                 })
                 ->addColumn('Tags', function ($row) {
-                    if (!$row->Tags) return '-';
+                    if (!$row->Tags)
+                        return '-';
                     $tags = array_map('trim', explode(',', $row->Tags));
                     $html = '';
                     foreach ($tags as $t) {
@@ -592,5 +593,52 @@ class BeritaController extends Controller
             'relatedPosts',
             'locale'  // Kirim locale ke view
         ));
+    }
+    public function searchArticles(Request $request)
+    {
+        $q = trim($request->get('q', ''));
+        $locale = app()->getLocale();
+        if (strlen($q) < 2) {
+            return response()->json(['results' => [], 'query' => $q]);
+        }
+        $articles = Berita::where('Status', 'Diterbitkan')
+            ->where(function ($query) use ($q) {
+                $query->where('Judul', 'LIKE', "%{$q}%")
+                    ->orWhere('JudulEn', 'LIKE', "%{$q}%")
+                    ->orWhere('Ringkasan', 'LIKE', "%{$q}%")
+                    ->orWhere('RingkasanEn', 'LIKE', "%{$q}%")
+                    ->orWhere('Tags', 'LIKE', "%{$q}%");
+            })
+            ->with([
+                'translations' => function ($t) use ($locale) {
+                    $t->where('Locale', $locale);
+                }
+            ])
+            ->latest('TanggalPublikasi')
+            ->take(6)
+            ->get()
+            ->map(function ($article) use ($locale) {
+                $trans = $article->translations->firstWhere('Locale', $locale);
+                return [
+                    'id' => $article->id,
+                    'judul' => $trans->Judul ?? $article->Judul,
+                    'ringkasan' => $trans->Ringkasan ?? $article->Ringkasan,
+                    'slug' => $article->Slug,
+                    'kategori' => $article->Kategori,
+                    'tanggal' => $article->TanggalPublikasi
+                        ? \Carbon\Carbon::parse($article->TanggalPublikasi)->isoFormat('D MMM Y')
+                        : '-',
+                    'thumbnail' => $article->PathThumbnail
+                        ? asset('storage/' . $article->PathThumbnail)
+                        : null,
+                    'url' => route('frontend.detail', ['slug' => $article->Slug]),
+                ];
+            });
+
+        return response()->json([
+            'results' => $articles,
+            'query' => $q,
+            'count' => $articles->count(),
+        ]);
     }
 }

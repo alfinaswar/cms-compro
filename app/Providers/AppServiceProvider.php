@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\HeroSlider;
+use App\Models\Berita;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Cache;
@@ -15,7 +16,9 @@ class AppServiceProvider extends ServiceProvider
         URL::defaults(['locale' => app()->getLocale()]);
 
         try {
-            // Share data ke semua view
+            // ========================================
+            // GLOBAL DATA (View::share - semua view)
+            // ========================================
             View::share('websiteSettings', Cache::remember('website_settings', 3600, function () {
                 return \App\Models\PengaturanWebsite::first();
             }));
@@ -32,6 +35,59 @@ class AppServiceProvider extends ServiceProvider
                 return HeroSlider::where('status', 1)->get();
             }));
 
+            // ========================================
+            // VIEW COMPOSER (khusus frontend.index)
+            // ========================================
+            View::composer('frontend.index', function ($view) {
+                try {
+                    $popularKeywords = Cache::remember('popular_search_keywords', 3600, function () {
+                        // Ambil kategori unik dari berita yang diterbitkan
+                        $categories = Berita::where('Status', 'Diterbitkan')
+                            ->whereNotNull('Kategori')
+                            ->where('Kategori', '!=', '')
+                            ->distinct()
+                            ->pluck('Kategori')
+                            ->take(4)
+                            ->toArray();
+
+                        // Ambil tags unik (explode dari koma)
+                        $tags = [];
+                        $tagsRaw = Berita::where('Status', 'Diterbitkan')
+                            ->whereNotNull('Tags')
+                            ->where('Tags', '!=', '')
+                            ->pluck('Tags')
+                            ->take(20)
+                            ->toArray();
+
+                        foreach ($tagsRaw as $tagStr) {
+                            foreach (explode(',', $tagStr) as $tag) {
+                                $tag = trim($tag);
+                                if ($tag && strlen($tag) > 1) {
+                                    $tags[] = $tag;
+                                }
+                            }
+                        }
+                        $tags = array_values(array_unique($tags));
+                        $tags = array_slice($tags, 0, 4);
+
+                        // Gabungkan max 8 keyword
+                        return array_values(array_unique(array_merge($categories, $tags)));
+                    });
+                } catch (\Throwable $e) {
+                    $popularKeywords = [];
+                }
+
+                // Fallback jika kosong atau error
+                if (empty($popularKeywords)) {
+                    $locale = app()->getLocale();
+                    $popularKeywords = $locale === 'en'
+                        ? ['Identity', 'Payment', 'Security', 'Passport']
+                        : ['Identitas', 'Pembayaran', 'Keamanan', 'Paspor'];
+                }
+
+                $view->with('popularKeywords', $popularKeywords);
+            });
+
         } catch (\Throwable $e) {
             // Abaikan error database jika tabel/migrasi belum selesai atau saat cli setup
         }
@@ -39,6 +95,6 @@ class AppServiceProvider extends ServiceProvider
 
     public function register(): void
     {
-
+        //
     }
 }

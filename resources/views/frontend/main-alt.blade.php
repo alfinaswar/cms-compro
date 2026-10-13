@@ -278,7 +278,9 @@
                         <div class="absolute inset-0 z-0">
                             @if ($slider->TipeMedia == 'video' && !empty($slider->Video))
                                 <video autoplay loop muted playsinline class="hero-bg-media">
-                                    <source src="{{ asset('storage/' . $slider->Video) }}?v={{ file_exists(public_path('storage/' . $slider->Video)) ? filemtime(public_path('storage/' . $slider->Video)) : time() }}" type="video/mp4">
+                                    <source
+                                        src="{{ asset('storage/' . $slider->Video) }}?v={{ file_exists(public_path('storage/' . $slider->Video)) ? filemtime(public_path('storage/' . $slider->Video)) : time() }}"
+                                        type="video/mp4">
                                 </video>
                             @elseif($slider->TipeMedia == 'image' && !empty($slider->GambarLatar))
                                 <img src="{{ asset('storage/' . $slider->GambarLatar) }}" alt="{{ $hJudul }}"
@@ -288,7 +290,8 @@
                                     alt="Manufacturing" class="hero-bg-media">
                             @endif
                             {{-- Overlay navy agar teks terbaca --}}
-                            <div class="absolute inset-0 z-10 pointer-events-none bg-gradient-to-b from-[#0B192E] via-[#0B192E]/85 to-[#0B192E]/54">
+                            <div
+                                class="absolute inset-0 z-10 pointer-events-none bg-gradient-to-b from-[#0B192E] via-[#0B192E]/85 to-[#0B192E]/54">
                             </div>
                         </div>
 
@@ -322,7 +325,8 @@
                                 </h1>
 
                                 @if (!empty($hDeskripsi))
-                                    <p class="text-base md:text-[17px] text-[#CBD5E1] mb-8 font-light leading-relaxed max-w-2xl mx-auto">
+                                    <p
+                                        class="text-base md:text-[17px] text-[#CBD5E1] mb-8 font-light leading-relaxed max-w-2xl mx-auto">
                                         {{ $hDeskripsi }}
                                     </p>
                                 @endif
@@ -520,7 +524,7 @@
                                             d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
                                             clip-rule="evenodd" />
                                     </svg>
-                                    <span class="text-slate-700 text-sm font-semibold text-base leading-snug">
+                                    <span class="text-slate-700 text-sm font-semibold leading-snug">
                                         {{ __('E–Passport & Polycarbonate Data Pages: Standar ICAO Doc 9303.') }}
                                     </span>
                                 </li>
@@ -533,7 +537,7 @@
                                             d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
                                             clip-rule="evenodd" />
                                     </svg>
-                                    <span class="text-slate-700 font-semibold text-base leading-snug">
+                                    <span class="text-slate-700 text-sm font-semibold leading-snug">
                                         {{ __('Smart ID Card: KTP–el, Kartu Pegawai, Kredensial Terenkripsi.') }}
                                     </span>
                                 </li>
@@ -546,7 +550,7 @@
                                             d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 10-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
                                             clip-rule="evenodd" />
                                     </svg>
-                                    <span class="text-slate-700 font-semibold text-base leading-snug">
+                                    <span class="text-slate-700 text-sm font-semibold leading-snug">
                                         {{ __('Dokumen Vital: Ijazah Nasional SIVIL & PIN, Sertifikat Tanah Resmi.') }}
                                     </span>
                                 </li>
@@ -627,9 +631,10 @@
             <div class="text-center mt-12">
                 <a href="{{ route('frontend.about-us') }}"
                     class="inline-flex items-center px-7 py-2.5 bg-brand-600 hover:bg-brand-500 text-white text-sm font-normal rounded-full transition-all shadow-lg shadow-brand-600/30">
-                    {{ __('Learn Our Track Record') }} <i class="fa-light fa-arrow-right ml-6"></i>
+                    {{ __('Learn Our Track Record') }} <i class="fas fa-arrow-right ml-6"></i>
                 </a>
             </div>
+
         </div>
     </section>
 
@@ -737,141 +742,6 @@
             </div>
         </div>
     </section>
-
-    {{-- berita --}}
-    {{-- <section class="py-20 bg-[#F8FAFC] p-[60px]">
-    <div class="container mx-auto">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-
-            <!-- SIDEBAR KIRI: Card Featured Article (Dark Blue Gradient) -->
-            <div class="lg:col-span-5 bg-gradient-to-b from-[#0F2854] via-[#0e274d] to-[#0F2854] text-white p-[40px] rounded-2xl shadow-xl flex flex-col justify-between border border-slate-800">
-                <div>
-                    <!-- Badge & Tanggal -->
-                    <div class="flex items-center justify-between mb-6">
-                        <span class="inline-flex items-center gap-1.5 bg-[#0e3b66]/80 text-[#38bdf8] text-[11px] font-mono font-bold tracking-wider uppercase px-3 py-1 rounded-full border border-[#0284c7]/30">
-                            <svg class="w-3 h-3 text-amber-400 fill-current" viewBox="0 0 20 20">
-                                <path d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.381z"/>
-                            </svg>
-                            {{ __('ARTIKEL TERBARU') }}
-                        </span>
-                        <span class="text-xs font-mono text-slate-400">18 Februari 2025</span>
-                    </div>
-
-                    <!-- Tag Kategori -->
-                    <span class="text-[11px] font-mono font-bold tracking-widest text-[#38bdf8] uppercase block mb-3">
-                        {{ __('WAWASAN SEKURITI & IDENTITAS') }}
-                    </span>
-
-                    <!-- Judul Utama -->
-                    <h3 class="text-xl md:text-2xl font-bold leading-snug text-white mb-4">
-                        {{ __('Menjaga Kedaulatan Identitas di Era Digital: Integrasi Chip Kriptografi & Polikarbonat') }}
-                    </h3>
-
-                    <!-- Deskripsi Ringkas -->
-                    <p class="text-xs md:text-sm text-slate-300 leading-relaxed mb-8">
-                        {{ __('Kupas tuntas bagaimana perpaduan material polikarbonat tanpa perekat kimia dan enkripsi chip berstandar militer melindungi identitas nasional dari risiko kloning dan serangan siber.') }}
-                    </p>
-                </div>
-
-                <div>
-                    <!-- Metadata: Waktu Baca & Penulis -->
-                    <div class="flex items-center gap-2 text-xs font-mono text-slate-400 mb-6 border-t border-slate-800/80 pt-4">
-                        <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <span>5 min baca</span>
-                        <span>•</span>
-                        <span>Tim Riset & Rekayasa Sekuriti</span>
-                    </div>
-
-                    <!-- Tombol Aksi -->
-                    <div class="space-y-3">
-                        <a href="#" class="w-full flex items-center justify-center gap-2 bg-[#0284c7] hover:bg-[#0369a1] text-white font-semibold text-xs md:text-sm py-3 px-5 rounded-full transition-colors shadow-md">
-                            {{ __('Baca Artikel Selengkapnya') }}
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                        </a>
-
-                        <a href="#" class="w-full flex items-center justify-center gap-2 bg-[#0f284e] hover:bg-[#163666] text-slate-200 font-semibold text-xs md:text-sm py-3 px-5 rounded-full border border-slate-700/60 transition-colors">
-                            {{ __('Artikel Topik Serupa') }}
-                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- BAGIAN KANAN: Header & Daftar Berita Kanan -->
-            <div class="lg:col-span-7 space-y-6">
-
-                <!-- Header Section Kanan -->
-                <div class="flex items-end justify-between border-b border-slate-100 pb-2">
-                    <div>
-                        <span class="text-xs font-mono font-bold tracking-wider text-[#0284c7] uppercase block mb-1">
-                            {{ __('KABAR TERKINI') }}
-                        </span>
-                        <h2 class="text-[24px] md:text-3xl font-extrabold text-slate-900 tracking-tight">
-                            {{ __('News & Regulatory Insights') }}
-                        </h2>
-                    </div>
-                    <a href="#" class="inline-flex items-center gap-1 text-xs md:text-sm font-semibold text-[#0284c7] hover:underline shrink-0">
-                        {{ __('Lihat Semua Kabar') }}
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    </a>
-                </div>
-
-                <!-- List Berita 1 -->
-                <div class="bg-white rounded-2xl p-[20px] md:p-[24px] border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow flex flex-col sm:flex-row gap-5 items-center">
-                    <div class="w-full sm:w-48 h-32 shrink-0 rounded-xl overflow-hidden bg-slate-100">
-                        <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500&auto=format&fit=crop" alt="Pabrik Manufaktur" class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 text-xs mb-1.5">
-                            <span class="font-mono font-bold text-[#0284c7] uppercase">{{ __('MANUFAKTUR PASPOR') }}</span>
-                            <span class="text-slate-300">•</span>
-                            <span class="text-slate-400 font-mono">14 Februari 2025</span>
-                        </div>
-                        <h4 class="font-bold text-slate-900 text-sm md:text-base leading-snug mb-2 hover:text-[#0284c7] transition-colors cursor-pointer">
-                            {{ __('Ekspansi Manufaktur Data Page Paspor Polikarbonat Berstandar Global ICAO Doc 9303') }}
-                        </h4>
-                        <p class="text-xs text-slate-500 leading-relaxed line-clamp-2 mb-3">
-                            {{ __('Peningkatan kapasitas pabrik lini polikarbonat berkeamanan tertinggi guna melayani permintaan sovereign credential di pasar Asia Tenggara dan domestik.') }}
-                        </p>
-                        <a href="#" class="inline-flex items-center gap-1 text-xs font-bold text-[#0284c7] hover:underline">
-                            {{ __('Baca Selengkapnya') }}
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- List Berita 2 -->
-                <div class="bg-white rounded-2xl p-[20px] md:p-[24px] border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow flex flex-col sm:flex-row gap-5 items-center">
-                    <div class="w-full sm:w-48 h-32 shrink-0 rounded-xl overflow-hidden bg-slate-100">
-                        <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=500&auto=format&fit=crop" alt="Smart ID Card" class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 text-xs mb-1.5">
-                            <span class="font-mono font-bold text-[#0284c7] uppercase">{{ __('SMART MOBILITY') }}</span>
-                            <span class="text-slate-300">•</span>
-                            <span class="text-slate-400 font-mono">28 Januari 2025</span>
-                        </div>
-                        <h4 class="font-bold text-slate-900 text-sm md:text-base leading-snug mb-2 hover:text-[#0284c7] transition-colors cursor-pointer">
-                            {{ __('Implementasi Smart ID Terenkripsi MIFARE DESFire EV3 untuk Korporasi & Transportasi Publik') }}
-                        </h4>
-                        <p class="text-xs text-slate-500 leading-relaxed line-clamp-2 mb-3">
-                            {{ __('Solusi closed-loop payment dan akses keamanan fisik mutakhir mengadopsi standar kriptografi perangkat keras mutakhir anti-kloning.') }}
-                        </p>
-                        <a href="#" class="inline-flex items-center gap-1 text-xs font-bold text-[#0284c7] hover:underline">
-                            {{ __('Baca Selengkapnya') }}
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                        </a>
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-    </div>
-</section> --}}
-
     <!-- ========================================== -->
     <!-- 8. NEWS & REGULATORY INSIGHTS -->
     <!-- ========================================== -->
@@ -901,16 +771,16 @@
                                         class="text-xs text-slate-400">{{ \Carbon\Carbon::parse($featured->TanggalPublikasi)->isoFormat('D MMM Y') }}</span>
                                 </div>
                                 <span
-                                    class="text-[10px] font-semibold text-brand-400 uppercase tracking-widest mb-3">{{ $featured->Kategori }}</span>
+                                    class="text-[10px] font-semibold text-brand-400 uppercase tracking-widest mb-3">{{ $featured->kategori->NamaKategori }}</span>
                                 <h3 class="text-2xl font-extrabold text-white leading-snug mb-4">
                                     {{ $fTrans->Judul ?: $featured->Judul }}</h3>
                                 <p class="text-sm text-slate-400 leading-relaxed mb-6 line-clamp-3">
                                     {{ $fTrans->Ringkasan ?: $featured->Ringkasan }}</p>
-                                <div class="flex items-center gap-2 text-xs text-slate-400 mb-6">
+                                {{-- <div class="flex items-center gap-2 text-xs text-slate-400 mb-6">
                                     <i class="fa-regular fa-user"></i> {{ $featured->Penulis ?? 'Admin' }}
                                     <span class="mx-1">•</span>
                                     <i class="fa-regular fa-clock"></i> 5 min read
-                                </div>
+                                </div> --}}
                                 <div class="mt-auto space-y-3">
                                     <a href="{{ route('frontend.detail', ['slug' => $featured->Slug]) }}"
                                         class="flex items-center justify-center w-full px-6 py-3 bg-brand-600 hover:bg-brand-500 text-white text-sm font-bold rounded-lg transition-colors">
@@ -954,7 +824,7 @@
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center gap-3 text-[11px] mb-1.5">
                                             <span
-                                                class="font-bold text-brand-600 uppercase tracking-wider">{{ $n->Kategori }}</span>
+                                                class="font-bold text-brand-600 uppercase tracking-wider">{{ $n->kategori->NamaKategori }}</span>
                                             <span class="text-slate-400"><i
                                                     class="fa-regular fa-calendar mr-1"></i>{{ \Carbon\Carbon::parse($n->TanggalPublikasi)->isoFormat('D MMM Y') }}</span>
                                         </div>
@@ -984,69 +854,72 @@
     <!-- ========================================== -->
     <section id="kontak" class="py-20 p-[40px] bg-white">
         <div class="container mx-auto px-6">
-            <div
-                class="bg-[#0B192E] rounded-3xl p-8 md:p-12 grid grid-cols-1 lg:grid-cols-2 gap-10 relative overflow-hidden
-                [background:radial-gradient(circle_at_10%_20%,rgba(14,165,233,0.12),transparent_35%),radial-gradient(circle_at_90%_80%,rgba(37,99,235,0.12),transparent_40%),#0B192E]">
+            <div class="bg-[#0B192E] rounded-3xl p-8 md:p-12 grid grid-cols-1 lg:grid-cols-2 gap-10 relative overflow-hidden
+                [background:radial-gradient(circle_at_10%_20%,rgba(14,165,233,0.12),transparent_35%),radial-gradient(circle_at_90%_80%,rgba(37,99,235,0.12),transparent_40%),#0B192E]"
+                style="min-height: 100px;">
 
                 <div
                     class="absolute bottom-0 left-0 w-72 h-72 bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10">
                 </div>
 
                 {{-- Left: Info --}}
-                <div class="relative z-10 p-4 md:p-0">
-                    <span
-                        class="inline-block mb-[20px] text-[10px] font-light font-mono text-[#38BDF8] px-[10px] py-[5px] bg-[#24324B] border border-[#24324B] text-sm rounded-full">
-                        <i class="fa-solid fa-file-signature mr-1"></i> {{ __('Permintaan & Penawaran (RFQ)') }}
-                    </span>
+                <div class="relative z-10 flex flex-col h-full p-4 md:p-0">
+                    <div>
+                        <span
+                            class="inline-block mb-[20px] text-[10px] font-light font-mono text-[#38BDF8] px-[10px] py-[5px] bg-[#24324B] border border-[#24324B] text-sm rounded-full">
+                            <i class="fa-solid fa-file-signature mr-1"></i> {{ __('Permintaan & Penawaran (RFQ)') }}
+                        </span>
 
-                    <h2 class="text-[36px] md:text-4xl font-extrabold text-white leading-tight mb-4">
-                        {{ __('Interested in Our Solutions?') }}</h2>
-                    <p class="text-slate-400 text-sm leading-relaxed mb-8">
-                        {{ __('Do you have custom specifications or require enterprise-scale bidding? Fill out the Request for Quotation (RFQ) form and our team will provide the best technical consultation and field proposal for your institution.') }}
-                    </p>
+                        <h2 class="text-[36px] md:text-4xl font-extrabold text-white leading-tight mb-4">
+                            {{ __('Interested in Our Solutions?') }}</h2>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-8">
+                            {{ __('Do you have custom specifications or require enterprise-scale bidding? Fill out the Request for Quotation (RFQ) form and our team will provide the best technical consultation and field proposal for your institution.') }}
+                        </p>
 
-                    <div class="space-y-5 mb-8">
-                        <div class="flex items-start gap-4">
-                            <div
-                                class="w-9 h-9 rounded-lg bg-[#24324B] border border-[#075985]/60 text-white flex items-center justify-center flex-shrink-0">
-                                <i class="fa-solid fa-comments"></i>
+                        <div class="space-y-5 mb-8">
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="w-9 h-9 rounded-lg bg-[#24324B] border border-[#075985]/60 text-white flex items-center justify-center flex-shrink-0">
+                                    <i class="fa-solid fa-comments"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-white mb-0.5">
+                                        {{ __('Product Consultation & Customization') }}</p>
+                                    <p class="text-xs text-slate-400">
+                                        {{ __('Technical specifications, multi-layer security features, and materials can be custom-designed to meet specific requirements..') }}
+                                    </p>
+                                </div>
                             </div>
-                            <div>
-                                <p class="text-sm font-semibold text-white mb-0.5">
-                                    {{ __('Product Consultation & Customization') }}</p>
-                                <p class="text-xs text-slate-400">
-                                    {{ __('Technical specifications, multi-layer security features, and materials can be custom-designed to meet specific requirements..') }}
-                                </p>
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="w-9 h-9 rounded-lg bg-[#24324B] border border-[#075985]/60  text-white flex items-center justify-center flex-shrink-0">
+                                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-white mb-0.5">
+                                        {{ __('Competitive & Transparent Quotation') }}</p>
+                                    <p class="text-xs text-slate-400">
+                                        {{ __('Clear pricing structure and volume-based procurement terms.') }}</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="flex items-start gap-4">
-                            <div
-                                class="w-9 h-9 rounded-lg bg-[#24324B] border border-[#075985]/60  text-white flex items-center justify-center flex-shrink-0">
-                                <i class="fa-solid fa-file-invoice-dollar"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm font-semibold text-white mb-0.5">
-                                    {{ __('Competitive & Transparent Quotation') }}</p>
-                                <p class="text-xs text-slate-400">
-                                    {{ __('Clear pricing structure and volume-based procurement terms.') }}</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-4">
-                            <div
-                                class="w-9 h-9 rounded-lg bg-[#24324B] border border-[#075985]/60  text-white flex items-center justify-center flex-shrink-0">
-                                <i class="fa-solid fa-box-open"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm font-semibold text-white mb-0.5">
-                                    {{ __('Official Physical Sample Delivery') }}</p>
-                                <p class="text-xs text-slate-400">We send specimen samples of security documents for your
-                                    evaluation.</p>
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="w-9 h-9 rounded-lg bg-[#24324B] border border-[#075985]/60  text-white flex items-center justify-center flex-shrink-0">
+                                    <i class="fa-solid fa-box-open"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-white mb-0.5">
+                                        {{ __('Official Physical Sample Delivery') }}</p>
+                                    <p class="text-xs text-slate-400">We send specimen samples of security documents for
+                                        your
+                                        evaluation.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-
-                    <div class="pt-6 border-t border-brand-800 flex items-center gap-3">
+                    <div class="flex-1"></div>
+                    <div class="pt-6 border-t border-brand-800 flex items-center gap-3 mt-6">
                         <i class="fa-solid fa-headset text-brand-400"></i>
                         <p class="text-xs text-slate-400">{{ __('Prefer direct communication?') }} <a
                                 href="tel:{{ $websiteSettings->NomorTelepon ?? '+62318910919' }}"
@@ -1056,84 +929,89 @@
                 </div>
 
                 {{-- Right: Form --}}
-                <div class="relative z-10">
-                    <div class="bg-white rounded-2xl p-7 shadow-2xl">
-                        <div class="flex items-center justify-between mb-5">
-                            <h3 class="text-lg font-extrabold text-slate-900">{{ __('Quotation Form') }}</h3>
-                            <span class="text-[10px] font-bold text-green-700 bg-green-100 px-2.5 py-1 rounded-full"><i
-                                    class="fa-solid fa-bolt mr-1"></i>{{ __('Fast Response < 24 Hours') }}</span>
+                <div class="relative z-10 flex flex-col h-full">
+                    <div class="flex-1 flex flex-col">
+                        <div class="bg-white rounded-2xl p-7 shadow-2xl flex flex-col h-full">
+                            <div class="flex items-center justify-between mb-5">
+                                <h3 class="text-lg font-extrabold text-slate-900">{{ __('Quotation Form') }}</h3>
+                                <span class="text-[10px] font-bold text-green-700 bg-green-100 px-2.5 py-1 rounded-full"><i
+                                        class="fa-solid fa-bolt mr-1"></i>{{ __('Fast Response < 24 Hours') }}</span>
+                            </div>
+
+                            <form action="{{ route('frontend.contact.store') }}" method="POST" id="rfqForm"
+                                class="flex flex-col flex-1">
+                                @csrf
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <label
+                                            class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Full Name') }}
+                                            <span class="text-red-500">*</span></label>
+                                        <input type="text" name="NamaLengkap" required
+                                            placeholder="{{ __('Your full name') }}"
+                                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Company / Institution') }}
+                                            <span class="text-red-500">*</span></label>
+                                        <input type="text" name="CompanyName" required
+                                            placeholder="e.g. Bank Mandiri, BCA, PT Printek"
+                                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label
+                                        class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Product / Solution Need') }}
+                                        <span class="text-red-500">*</span></label>
+                                    <select name="ProdukYangDibutuhkan" required
+                                        class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                                        <option value="">-- {{ __('Select Product or Solution') }} --</option>
+                                        @foreach ($Solution as $s)
+                                            <option value="{{ $s->translate($locale)->Judul ?: $s->Judul }}">
+                                                {{ $s->translate($locale)->Judul ?: $s->Judul }}</option>
+                                        @endforeach
+                                        <option value="Lainnya">{{ __('Other / Custom') }}</option>
+                                    </select>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <label
+                                            class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Official Email') }}
+                                            <span class="text-red-500">*</span></label>
+                                        <input type="email" name="Email" required placeholder="nama@instansi.go.id"
+                                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Phone / WhatsApp') }}
+                                            <span class="text-red-500">*</span></label>
+                                        <input type="tel" name="NomorHandphone" required placeholder="0812-xxxx-xxxx"
+                                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                                    </div>
+                                </div>
+
+                                <div class="mb-5">
+                                    <label
+                                        class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Message / Requirement Notes') }}</label>
+                                    <textarea name="Pesan" rows="4"
+                                        placeholder="{{ __('Describe your product needs, estimated volume, or customization requirements...') }}"
+                                        class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none resize-none"></textarea>
+                                </div>
+
+                                <button type="submit"
+                                    class="w-full flex items-center justify-center px-6 py-3.5 bg-brand-600 hover:bg-brand-500 text-white text-sm font-bold rounded-lg transition-all shadow-lg shadow-brand-600/30 mt-auto">
+                                    {{ __('Send Quotation Request (RFQ)') }} <i class="fa-solid fa-arrow-right ml-2"></i>
+                                </button>
+                                <p class="text-[10px] text-slate-400 text-center mt-3 leading-relaxed">
+                                    {{ __('Your data will be processed confidentially and used only for the quotation process.') }}
+                                </p>
+                            </form>
                         </div>
-
-                        <form action="{{ route('frontend.contact.store') }}" method="POST" id="rfqForm">
-                            @csrf
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Full Name') }}
-                                        <span class="text-red-500">*</span></label>
-                                    <input type="text" name="NamaLengkap" required
-                                        placeholder="{{ __('Your full name') }}"
-                                        class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
-                                </div>
-                                <div>
-                                    <label
-                                        class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Company / Institution') }}
-                                        <span class="text-red-500">*</span></label>
-                                    <input type="text" name="CompanyName" required
-                                        placeholder="e.g. Bank Mandiri, BCA, PT Printek"
-                                        class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
-                                </div>
-                            </div>
-
-                            <div class="mb-4">
-                                <label
-                                    class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Product / Solution Need') }}
-                                    <span class="text-red-500">*</span></label>
-                                <select name="ProdukYangDibutuhkan" required
-                                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
-                                    <option value="">-- {{ __('Select Product or Solution') }} --</option>
-                                    @foreach ($Solution as $s)
-                                        <option value="{{ $s->translate($locale)->Judul ?: $s->Judul }}">
-                                            {{ $s->translate($locale)->Judul ?: $s->Judul }}</option>
-                                    @endforeach
-                                    <option value="Lainnya">{{ __('Other / Custom') }}</option>
-                                </select>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                <div>
-                                    <label
-                                        class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Official Email') }}
-                                        <span class="text-red-500">*</span></label>
-                                    <input type="email" name="Email" required placeholder="nama@instansi.go.id"
-                                        class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
-                                </div>
-                                <div>
-                                    <label
-                                        class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Phone / WhatsApp') }}
-                                        <span class="text-red-500">*</span></label>
-                                    <input type="tel" name="NomorHandphone" required placeholder="0812-xxxx-xxxx"
-                                        class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
-                                </div>
-                            </div>
-
-                            <div class="mb-5">
-                                <label
-                                    class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Message / Requirement Notes') }}</label>
-                                <textarea name="Pesan" rows="4"
-                                    placeholder="{{ __('Describe your product needs, estimated volume, or customization requirements...') }}"
-                                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none resize-none"></textarea>
-                            </div>
-
-                            <button type="submit"
-                                class="w-full flex items-center justify-center px-6 py-3.5 bg-brand-600 hover:bg-brand-500 text-white text-sm font-bold rounded-lg transition-all shadow-lg shadow-brand-600/30">
-                                {{ __('Send Quotation Request (RFQ)') }} <i class="fa-solid fa-arrow-right ml-2"></i>
-                            </button>
-                            <p class="text-[10px] text-slate-400 text-center mt-3 leading-relaxed">
-                                {{ __('Your data will be processed confidentially and used only for the quotation process.') }}
-                            </p>
-                        </form>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>

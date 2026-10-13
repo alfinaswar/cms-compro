@@ -201,8 +201,11 @@
         </style>
     @endpush
 
+    <!-- ========================================== -->
     <!-- 1. HERO + STATS -->
+    <!-- ========================================== -->
     <section class="relative pt-28 pb-16 overflow-hidden">
+        {{-- Background Image + Blue Overlay --}}
         <div class="absolute inset-0 z-0">
             <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=2069&auto=format&fit=crop"
                 alt="{{ $en ? 'About Jasuindo' : 'Tentang Jasuindo' }}" class="w-full h-full object-cover">
@@ -210,30 +213,44 @@
         </div>
 
         <div class="container mx-auto px-6 relative z-10">
-            <div class="max-w-4xl mx-auto text-center">
-                <nav
-                    class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 text-xs text-slate-200 mb-8">
-                    <a href="{{ route('frontend.main') }}" class="hover:text-white transition-colors"><i
-                            class="fa-solid fa-house mr-1"></i>{{ __('Home') }}</a>
-                    <span class="text-white/40">/</span>
-                    <span class="font-semibold text-white">{{ $en ? 'About Us' : 'Tentang Kami' }}</span>
-                </nav>
+            <div class="max-w-6xl mx-auto text-center"> {{-- lebar judul diperbesar dari max-w-4xl ke max-w-6xl --}}
 
-                <h1 class="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-6">
+                {{-- 1) NAMA / ISTILAH HALAMAN (badge kecil) --}}
+                <span
+                    class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-xs font-semibold text-white tracking-wide mb-6">
+                    <i class="fa-solid fa-building"></i>
+                    {{ $en ? 'About Us' : 'Tentang Kami' }}
+                </span>
+
+                {{-- 2) JUDUL BESAR H1 --}}
+                <h1 class="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-6 max-w-5xl mx-auto">
+                    {{-- max-w-5xl agar lebar judul lebih besar, mx-auto agar tetap center --}}
                     {{ $tr($Hero, 'Judul') ?? ($en ? 'Safeguarding Trust, Advancing' : 'Menjaga Kepercayaan, Mengembangkan') }}<br>
                     <span
                         class="text-cyan-300">{{ $tr($Hero, 'SubJudul') ?? ($en ? 'Digital Identity & Security Document Credentials' : 'Kredensial Identitas & Dokumen Sekuritas Digital') }}</span>
                 </h1>
+
+                {{-- 3) DESKRIPSI (jika ada) --}}
                 @if ($tr($Hero, 'Deskripsi'))
-                    <div class="text-slate-100/90 leading-relaxed max-w-2xl mx-auto mb-12">{!! $tr($Hero, 'Deskripsi') !!}</div>
+                    <div class="text-slate-100/90 leading-relaxed max-w-2xl mx-auto">{!! $tr($Hero, 'Deskripsi') !!}</div>
                 @else
-                    <p class="text-slate-100/90 leading-relaxed max-w-2xl mx-auto mb-12">
+                    <p class="text-slate-100/90 leading-relaxed max-w-2xl mx-auto">
                         {{ $en ? 'Pioneer manufacturer of official state security documents, EMV banking chip infrastructure, cryptographic brand authentication, and integrated smart card solutions across Southeast Asia since 1990.' : 'Pelopor manufaktur dokumen sekuritas resmi negara, infrastruktur chip perbankan EMV, autentikasi merek kriptografis, dan solusi smart card terintegrasi di kawasan Asia Tenggara sejak 1990.' }}
                     </p>
                 @endif
 
+                {{-- 4) BREADCRUMB (simple, tanpa pill — sama seperti halaman lain) --}}
+                <nav class="mt-8 flex items-center justify-center space-x-2 text-sm text-slate-300">
+                    <a href="{{ route('frontend.main') }}" class="hover:text-white transition-colors">
+                        <i class="fa-solid fa-house mr-1"></i>{{ __('Home') }}
+                    </a>
+                    <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
+                    <span class="text-white font-semibold">{{ $en ? 'About Us' : 'Tentang Kami' }}</span>
+                </nav>
+
+                {{-- 5) STATS CARDS --}}
                 @if ($heroDetails->count())
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 text-left">
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 text-left mt-10">
                         @foreach ($heroDetails as $stat)
                             @php [$statLabel, $statDesc] = $split($tr($stat, 'Deskripsi')); @endphp
                             <div
@@ -249,68 +266,28 @@
                         @endforeach
                     </div>
                 @endif
+
             </div>
         </div>
     </section>
 
     <!-- ========================================== -->
-    <!-- 2. TAB NAVIGATION (Sticky + Icon) -->
+    <!-- 2. TAB NAVIGATION (Simple Centered Pills) -->
     <!-- ========================================== -->
-    <section class="bg-white border-b border-slate-200 sticky top-20 z-40 scroll-mt-20">
+    <section class="bg-slate-50 border-b border-slate-200 sticky top-20 z-40">
         <div class="container mx-auto px-6">
-            {{-- Header mini --}}
-            <div class="py-5 flex items-end justify-between gap-4 border-b border-slate-100">
-                <div>
-                    <p class="mono-label text-[10px] font-bold text-blue-600 uppercase mb-1">
-                        {{ $en ? 'On This Page' : 'Di Halaman Ini' }}
-                    </p>
-                    <h2 class="text-xl md:text-2xl font-extrabold text-slate-900 leading-tight">
-                        {{ $en ? 'Explore About Jasuindo' : 'Jelajahi Tentang Jasuindo' }}
-                    </h2>
-                </div>
-                <a href="{{ route('frontend.contact.index') }}"
-                    class="hidden md:inline-flex items-center gap-2 text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors whitespace-nowrap">
-                    {{ $en ? 'Contact Us' : 'Hubungi Kami' }}
-                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                </a>
-            </div>
-
-            {{-- Tab Pills --}}
-            <div class="py-4 -mb-px overflow-x-auto scrollbar-hide">
-                <div class="flex gap-2 md:gap-3 min-w-max">
+            <div class="flex justify-start md:justify-center py-4 overflow-x-auto scrollbar-hide">
+                <div class="flex items-center gap-1 md:gap-4 min-w-max mx-auto">
                     @foreach ($tabs as $i => $tab)
-                        @php
-                            $icons = [
-                                'fa-solid fa-building',
-                                'fa-solid fa-gem',
-                                'fa-solid fa-hand-holding-heart',
-                                'fa-solid fa-award',
-                            ];
-                            $icon = $icons[$i] ?? 'fa-solid fa-circle';
-                            $isActive = $i === 0;
-                        @endphp
-                        <a href="{{ $tab['href'] }}" data-tab-link data-tab-index="{{ $i }}"
-                            class="tab-pill group inline-flex items-center gap-2.5 px-4 md:px-5 py-2.5 md:py-3 rounded-xl text-xs md:text-sm font-semibold border-2 transition-all duration-200 whitespace-nowrap
-                        {{ $isActive
-                            ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/20'
-                            : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50' }}">
-                            <span
-                                class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0
-                            {{ $isActive ? 'bg-white/20' : 'bg-slate-100 group-hover:bg-blue-100' }} transition-colors">
-                                <i class="{{ $icon }} text-[11px]"></i>
-                            </span>
-                            <span class="leading-tight">
-                                <span
-                                    class="mono-label text-[9px] opacity-60 block">{{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}</span>
-                                <span class="block mt-0.5">{{ $tab['label'] }}</span>
-                            </span>
+                        <a href="{{ $tab['href'] }}" data-tab-link data-target="{{ ltrim($tab['href'], '#') }}"
+                            class="px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 {{ $i === 0 ? 'bg-[#21a5f2] text-white shadow-md shadow-[#21a5f2]/30' : 'text-slate-700 hover:text-[#21a5f2] hover:bg-[#21a5f2]/10' }}">
+                            {{ $tab['label'] }}
                         </a>
                     @endforeach
                 </div>
             </div>
         </div>
     </section>
-
 
     <!-- 3. COMPANY PROFILE -->
     <section id="profil" class="py-20 bg-white scroll-mt-24">
@@ -319,33 +296,34 @@
                 <div class="space-y-6">
                     <div class="rounded-xl overflow-hidden border border-slate-200 shadow-lg group">
                         <div class="relative aspect-video bg-slate-900 overflow-hidden">
-                            @php
-                                $thumb = !empty($Media?->Gambar)
-                                    ? asset('storage/' . $Media->Gambar)
-                                    : 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2070&auto=format&fit=crop';
-                            @endphp
-                            <img src="{{ $thumb }}"
-                                alt="{{ $en ? 'Company Profile Video' : 'Video Profil Perusahaan' }}"
-                                class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700">
                             <span
-                                class="absolute top-4 left-4 mono-label text-[9px] font-bold text-white bg-slate-900/70 backdrop-blur-sm px-2.5 py-1 rounded uppercase tracking-widest">
+                                class="absolute top-4 left-4 mono-label text-[9px] font-bold text-white bg-slate-900/70 backdrop-blur-sm px-2.5 py-1 rounded uppercase tracking-widest z-10">
                                 <i class="fa-solid fa-circle-play mr-1"></i> {{ $videoBadge }}
                             </span>
-                            @if ($videoUrl)
-                                <a href="{{ $videoUrl }}" target="_blank" rel="noopener"
-                                    class="absolute inset-0 m-auto w-16 h-16 rounded-full bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center shadow-xl transition-colors"
-                                    aria-label="Play">
-                                    <i class="fa-solid fa-play ml-1"></i>
-                                </a>
+                            @if ($videoUrl && Str::contains($videoUrl, ['youtube.com', 'youtu.be']))
+                                <iframe class="w-full h-full absolute inset-0"
+                                    src="https://www.youtube.com/embed/{{ \Illuminate\Support\Str::afterLast(parse_url($videoUrl, PHP_URL_PATH), '/') }}?rel=0&showinfo=0&autoplay=0"
+                                    title="YouTube video player" frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    allowfullscreen>
+                                </iframe>
                             @else
+                                @php
+                                    $thumb = !empty($Media?->Gambar)
+                                        ? asset('storage/' . $Media->Gambar)
+                                        : 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2070&auto=format&fit=crop';
+                                @endphp
+                                <img src="{{ $thumb }}"
+                                    alt="{{ $en ? 'Company Profile Video' : 'Video Profil Perusahaan' }}"
+                                    class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700">
                                 <button
-                                    class="absolute inset-0 m-auto w-16 h-16 rounded-full bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center shadow-xl transition-colors"
+                                    class="absolute inset-0 m-auto w-16 h-16 rounded-full bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center shadow-xl transition-colors z-10"
                                     aria-label="Play">
                                     <i class="fa-solid fa-play ml-1"></i>
                                 </button>
                             @endif
                             <div
-                                class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900/90 to-transparent p-4">
+                                class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900/90 to-transparent p-4 z-10">
                                 <p class="text-white font-bold text-sm">
                                     {{ $tr($Media, 'Judul') ?? ($en ? 'Driving Business Performance' : 'Memacu Kinerja Bisnis') }}
                                 </p>
@@ -353,6 +331,7 @@
                                     {{ $videoTagline }}</p>
                             </div>
                         </div>
+
                         <div class="bg-white px-5 py-3 flex items-center justify-between gap-3">
                             <span class="flex items-center gap-2 text-sm text-slate-600 font-medium">
                                 <i class="fa-regular fa-file-pdf text-blue-600"></i>
@@ -669,18 +648,67 @@
     </section>
 
 @endsection
-
+@push('styles')
+    <style>
+        #profil,
+        #nilai,
+        #csr,
+        #sertifikasi {
+            scroll-margin-top: 150px;
+        }
+    </style>
+@endpush
 @push('scripts')
     <script>
-        document.querySelectorAll('[data-tab-link]').forEach(function(link) {
-            link.addEventListener('click', function() {
-                document.querySelectorAll('[data-tab-link]').forEach(function(b) {
-                    b.classList.remove('bg-slate-900', 'text-white', 'border-slate-900');
-                    b.classList.add('bg-white', 'text-slate-600', 'border-slate-200');
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('[data-tab-link]');
+            const sections = Array.from(tabs)
+                .map(t => document.getElementById(t.dataset.target))
+                .filter(Boolean);
+
+            const ACTIVE = ['bg-[#21a5f2]', 'text-white', 'shadow-md', 'shadow-[#21a5f2]/30'];
+            const INACTIVE = ['text-slate-700', 'hover:text-[#21a5f2]', 'hover:bg-[#21a5f2]/10'];
+
+            function setActive(tab) {
+                tabs.forEach(function(b) {
+                    ACTIVE.forEach(c => b.classList.remove(c));
+                    INACTIVE.forEach(c => b.classList.add(c));
                 });
-                this.classList.add('bg-slate-900', 'text-white', 'border-slate-900');
-                this.classList.remove('bg-white', 'text-slate-600', 'border-slate-200');
+                INACTIVE.forEach(c => tab.classList.remove(c));
+                ACTIVE.forEach(c => tab.classList.add(c));
+            }
+
+            // Klik → aktifkan tab
+            tabs.forEach(function(tab) {
+                tab.addEventListener('click', function() {
+                    setActive(tab);
+                });
             });
+
+            // Scroll-spy: tab aktif mengikuti section yang dilihat
+            function onScroll() {
+                if (!sections.length) return;
+                const pos = window.scrollY + 160;
+                let current = sections[0];
+
+                sections.forEach(function(sec) {
+                    if (sec.offsetTop <= pos) current = sec;
+                });
+
+                if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+                    current = sections[sections.length - 1];
+                }
+
+                const activeTab = document.querySelector('[data-tab-link][data-target="' + current.id + '"]');
+                if (activeTab && !activeTab.classList.contains('bg-brand-500')) {
+                    setActive(activeTab);
+                }
+            }
+
+            window.addEventListener('scroll', onScroll, {
+                passive: true
+            });
+            onScroll();
         });
     </script>
 @endpush

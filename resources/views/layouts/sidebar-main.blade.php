@@ -78,6 +78,17 @@
                                     </a>
                                 </li>
                             @endcan
+                            @can('pengaturan-form-kontak.view')
+                                <li class="nav-item">
+                                    <a href="{{ route('subjek.index') }}"
+                                        class="nav-link {{ request()->routeIs('subjek.index') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Subjek Kontak</p>
+                                    </a>
+                                </li>
+                            @endcan
+
+
                         </ul>
                     </li>
                 @endcanany

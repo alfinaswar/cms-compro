@@ -2,6 +2,11 @@
 
 @section('content-frontend')
 
+    @php
+        $locale = app()->getLocale();
+        $en = $locale === 'en';
+    @endphp
+
     <style>
         .contact-item {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -36,30 +41,12 @@
             box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.1);
         }
 
-        .btn-loading .btn-text,
-        .btn-loading .btn-icon {
+        .btn-loading .btn-text {
             display: none;
         }
 
         .btn-loading .btn-loader {
             display: inline-flex !important;
-        }
-
-        .map-container {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .map-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 100px;
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8), transparent);
-            z-index: 1;
-            pointer-events: none;
         }
 
         .input-group-custom {
@@ -71,8 +58,36 @@
         }
 
         .input-group-custom input:focus~.input-icon,
-        .input-group-custom textarea:focus~.input-icon {
+        .input-group-custom textarea:focus~.input-icon,
+        .input-group-custom select:focus~.input-icon {
             color: #0284c7;
+        }
+
+        .office-tab {
+            transition: all 0.25s ease;
+        }
+
+        .office-tab.active {
+            background-color: #0284c7;
+            color: white;
+            border-color: #0284c7;
+        }
+
+        .office-tab:not(.active):hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .map-iframe {
+            transition: opacity 0.3s ease;
+        }
+
+        .map-embed iframe {
+            width: 100% !important;
+            height: 100% !important;
+            min-height: 500px;
+            border: 0 !important;
+            display: block;
         }
     </style>
 
@@ -103,7 +118,7 @@
                 </p>
 
                 <nav class="mt-8 flex items-center justify-center space-x-2 text-sm text-slate-300">
-                    <a href="{{ url('/') }}" class="hover:text-white transition-colors">
+                    <a href="{{ route('frontend.main') }}" class="hover:text-white transition-colors">
                         <i class="fa-solid fa-house mr-1"></i> {{ __('Home') }}
                     </a>
                     <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
@@ -113,71 +128,74 @@
         </div>
     </section>
 
-    <!-- QUICK CONTACT CARDS -->
-    <section class="relative -mt-12 z-20">
-        <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-                <div
-                    class="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 hover:shadow-2xl transition-all group">
-                    <div class="flex items-center">
-                        <div
-                            class="flex-shrink-0 w-14 h-14 bg-brand-100 rounded-xl flex items-center justify-center mr-4 group-hover:bg-brand-600 transition-colors">
-                            <i
-                                class="fa-solid fa-headphones-simple text-brand-600 text-xl group-hover:text-white transition-colors"></i>
+    <!-- QUICK CONTACT CARDS (pakai data kantor utama) -->
+    @if ($kantorUtama)
+        <section class="relative -mt-12 z-20">
+            <div class="container mx-auto px-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {{-- Call --}}
+                    <div
+                        class="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 hover:shadow-2xl transition-all group">
+                        <div class="flex items-center">
+                            <div
+                                class="flex-shrink-0 w-14 h-14 bg-brand-100 rounded-xl flex items-center justify-center mr-4 group-hover:bg-brand-600 transition-colors">
+                                <i
+                                    class="fa-solid fa-headphones-simple text-brand-600 text-xl group-hover:text-white transition-colors"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">
+                                    {{ __('Call Us') }}</p>
+                                <a href="tel:{{ preg_replace('/[^0-9+]/', '', $kantorUtama->NomorTelepon ?? '+62318910919') }}"
+                                    class="text-lg font-bold text-slate-900 hover:text-brand-600 transition-colors block truncate">
+                                    {{ $kantorUtama->NomorTelepon ?? '+62 31 8910919' }}
+                                </a>
+                            </div>
                         </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">
-                                {{ __('Call Us') }}</p>
-                            <a href="tel:{{ isset($websiteSettings) && $websiteSettings->NomorTelepon ? preg_replace('/[^0-9+]/', '', $websiteSettings->NomorTelepon) : '+62318910919' }}"
-                                class="text-lg font-bold text-slate-900 hover:text-brand-600 transition-colors block truncate">
-                                {{ $websiteSettings->NomorTelepon ?? '+62 31 8910919' }}
-                            </a>
+                    </div>
+
+                    {{-- Email --}}
+                    <div
+                        class="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 hover:shadow-2xl transition-all group">
+                        <div class="flex items-center">
+                            <div
+                                class="flex-shrink-0 w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center mr-4 group-hover:bg-green-600 transition-colors">
+                                <i
+                                    class="fa-solid fa-envelope text-green-600 text-xl group-hover:text-white transition-colors"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">
+                                    {{ __('Email Us') }}</p>
+                                <a href="mailto:{{ $kantorUtama->AlamatEmail ?? 'info@jasuindo.co.id' }}"
+                                    class="text-lg font-bold text-slate-900 hover:text-green-600 transition-colors block truncate">
+                                    {{ $kantorUtama->AlamatEmail ?? 'info@jasuindo.co.id' }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- WhatsApp --}}
+                    <div
+                        class="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 hover:shadow-2xl transition-all group">
+                        <div class="flex items-center">
+                            <div
+                                class="flex-shrink-0 w-14 h-14 bg-emerald-100 rounded-xl flex items-center justify-center mr-4 group-hover:bg-emerald-600 transition-colors">
+                                <i
+                                    class="fa-brands fa-whatsapp text-emerald-600 text-xl group-hover:text-white transition-colors"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">WhatsApp</p>
+                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $kantorUtama->NomorWhatsApp ?? '6281234567890') }}"
+                                    target="_blank"
+                                    class="text-lg font-bold text-slate-900 hover:text-emerald-600 transition-colors block truncate">
+                                    {{ $kantorUtama->NomorWhatsApp ?? '+62 812-3456-7890' }}
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <div
-                    class="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 hover:shadow-2xl transition-all group">
-                    <div class="flex items-center">
-                        <div
-                            class="flex-shrink-0 w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center mr-4 group-hover:bg-green-600 transition-colors">
-                            <i
-                                class="fa-solid fa-envelope text-green-600 text-xl group-hover:text-white transition-colors"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">
-                                {{ __('Email Us') }}</p>
-                            <a href="mailto:{{ $websiteSettings->AlamatEmail ?? 'info@jasuindo.co.id' }}"
-                                class="text-lg font-bold text-slate-900 hover:text-green-600 transition-colors block truncate">
-                                {{ $websiteSettings->AlamatEmail ?? 'info@jasuindo.co.id' }}
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <div
-                    class="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 hover:shadow-2xl transition-all group">
-                    <div class="flex items-center">
-                        <div
-                            class="flex-shrink-0 w-14 h-14 bg-emerald-100 rounded-xl flex items-center justify-center mr-4 group-hover:bg-emerald-600 transition-colors">
-                            <i
-                                class="fa-brands fa-whatsapp text-emerald-600 text-xl group-hover:text-white transition-colors"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">WhatsApp</p>
-                            <a href="https://wa.me/{{ isset($websiteSettings) && $websiteSettings->NomorWhatsApp ? preg_replace('/[^0-9]/', '', $websiteSettings->NomorWhatsApp) : '6281234567890' }}"
-                                target="_blank"
-                                class="text-lg font-bold text-slate-900 hover:text-emerald-600 transition-colors block truncate">
-                                {{ $websiteSettings->NomorWhatsApp ?? '+62 812-3456-7890' }}
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
             </div>
-        </div>
-    </section>
+        </section>
+    @endif
 
     <!-- MAIN CONTENT -->
     <section class="py-20 bg-white">
@@ -196,102 +214,143 @@
                         </div>
 
                         <div class="relative z-10">
-                            <div class="mb-8">
+                            <div class="mb-6">
                                 <span
                                     class="inline-block py-1 px-3 rounded-full bg-brand-500/20 text-brand-100 text-xs font-semibold tracking-wide mb-4 border border-brand-500/30">
                                     {{ __('WORK WITH US') }}
                                 </span>
                                 <h2 class="text-3xl font-extrabold mb-4">{{ __('Contact Information') }}</h2>
-                                <p class="text-slate-300 leading-relaxed">
-                                    {{ $websiteSettings->DeskripsiSingkat ?? __('Thank you for your interest in Jasuindo. We are excited to hear from you and discuss how we can help your organization\'s digital transformation.') }}
+                                <p class="text-slate-300 leading-relaxed text-sm">
+                                    {{ __('Thank you for your interest in Jasuindo. We are excited to hear from you and discuss how we can help your organization\'s digital transformation.') }}
                                 </p>
                             </div>
 
-                            <div class="space-y-5">
-                                <div class="contact-item flex items-start group cursor-pointer">
-                                    <div
-                                        class="contact-icon-wrapper flex-shrink-0 w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center mr-4 transition-all">
-                                        <i
-                                            class="fa-solid fa-headphones-simple text-brand-400 text-lg transition-colors"></i>
-                                    </div>
-                                    <div class="flex-1 min-w-0">
-                                        <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-1">
-                                            {{ __('Call Us For Query') }}</p>
-                                        <a href="tel:{{ isset($websiteSettings) && $websiteSettings->NomorTelepon ? preg_replace('/[^0-9+]/', '', $websiteSettings->NomorTelepon) : '+62318910919' }}"
-                                            class="text-white font-semibold hover:text-brand-400 transition-colors block">
-                                            {{ $websiteSettings->NomorTelepon ?? '+62 31 8910919 (Hunting)' }}
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <div class="contact-item flex items-start group cursor-pointer">
-                                    <div
-                                        class="contact-icon-wrapper flex-shrink-0 w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center mr-4 transition-all">
-                                        <i class="fa-brands fa-whatsapp text-emerald-400 text-lg transition-colors"></i>
-                                    </div>
-                                    <div class="flex-1 min-w-0">
-                                        <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-1">
-                                            WhatsApp</p>
-                                        <a href="https://wa.me/{{ isset($websiteSettings) && $websiteSettings->NomorWhatsApp ? preg_replace('/[^0-9]/', '', $websiteSettings->NomorWhatsApp) : '6281234567890' }}"
-                                            target="_blank"
-                                            class="text-white font-semibold hover:text-emerald-400 transition-colors block">
-                                            {{ $websiteSettings->NomorWhatsApp ?? '+62 812-3456-7890' }}
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <div class="contact-item flex items-start group cursor-pointer">
-                                    <div
-                                        class="contact-icon-wrapper flex-shrink-0 w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center mr-4 transition-all">
-                                        <i class="fa-solid fa-envelope text-brand-400 text-lg transition-colors"></i>
-                                    </div>
-                                    <div class="flex-1 min-w-0">
-                                        <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-1">
-                                            {{ __('Email Us Anytime') }}</p>
-                                        <a href="mailto:{{ $websiteSettings->AlamatEmail ?? 'info@jasuindo.co.id' }}"
-                                            class="text-white font-semibold hover:text-brand-400 transition-colors block break-all">
-                                            {{ $websiteSettings->AlamatEmail ?? 'info@jasuindo.co.id' }}
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <div class="contact-item flex items-start group cursor-pointer">
-                                    <div
-                                        class="contact-icon-wrapper flex-shrink-0 w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center mr-4 transition-all">
-                                        <i class="fa-solid fa-location-dot text-brand-400 text-lg transition-colors"></i>
-                                    </div>
-                                    <div class="flex-1 min-w-0">
-                                        <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-1">
-                                            {{ __('Office Location') }}</p>
-                                        <a href="{{ $websiteSettings->TautanGoogleMaps ?? '#' }}" target="_blank"
-                                            class="text-white font-semibold hover:text-brand-400 transition-colors block leading-relaxed">
-                                            @if (isset($websiteSettings) && $websiteSettings->AlamatKantor)
-                                                {{ $websiteSettings->AlamatKantor }}
-                                                @if ($websiteSettings->Kota || $websiteSettings->Provinsi)
-                                                    ,
-                                                    {{ $websiteSettings->Kota }}{{ $websiteSettings->Provinsi ? ', ' . $websiteSettings->Provinsi : '' }}
+                            {{-- Office Tabs (kalau lebih dari 1 kantor) --}}
+                            @if ($kantor->count() > 1)
+                                <div class="mb-6">
+                                    <p
+                                        class="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-3 flex items-center">
+                                        <i class="fa-solid fa-building mr-2"></i>
+                                        {{ $en ? 'Select Office' : 'Pilih Kantor' }}
+                                    </p>
+                                    <div class="flex flex-wrap gap-2" id="officeTabs">
+                                        @foreach ($kantor as $index => $k)
+                                            <button type="button"
+                                                class="office-tab px-3.5 py-2 rounded-lg text-xs font-semibold border border-white/20 transition-all flex items-center gap-2 {{ $index === 0 ? 'active' : 'text-slate-200' }}"
+                                                data-office-index="{{ $index }}" data-nama="{{ $k->NamaKantor }}"
+                                                data-tipe="{{ $k->TipeKantor }}" data-alamat="{{ $k->AlamatLengkap }}"
+                                                data-kota="{{ $k->Kota }}" data-provinsi="{{ $k->Provinsi }}"
+                                                data-kodepos="{{ $k->KodePos }}" data-maps="{{ $k->TautanGoogleMaps }}"
+                                                data-embed="{{ $k->EmbedGoogleMaps }}" data-telp="{{ $k->NomorTelepon }}"
+                                                data-telp-clean="{{ preg_replace('/[^0-9+]/', '', $k->NomorTelepon ?? '') }}"
+                                                data-wa="{{ $k->NomorWhatsApp }}"
+                                                data-wa-clean="{{ preg_replace('/[^0-9]/', '', $k->NomorWhatsApp ?? '') }}"
+                                                data-email="{{ $k->AlamatEmail }}">
+                                                <i class="fa-solid fa-location-dot text-[10px]"></i>
+                                                {{ $k->NamaKantor }}
+                                                @if ($k->TipeKantor === 'Pusat')
+                                                    <span
+                                                        class="text-[9px] px-1.5 py-0.5 bg-brand-500/30 rounded-full">{{ $en ? 'HQ' : 'Pusat' }}</span>
                                                 @endif
-                                                @if ($websiteSettings->Negara)
-                                                    , {{ $websiteSettings->Negara }}
-                                                @endif
-                                                @if ($websiteSettings->KodePos)
-                                                    {{ $websiteSettings->KodePos }}
-                                                @endif
-                                            @else
-                                                Jalan Raya Betro No. 21, Sedati, Sidoarjo 61253, Indonesia
-                                            @endif
-                                        </a>
+                                            </button>
+                                        @endforeach
                                     </div>
                                 </div>
+                            @endif
+
+                            <div class="space-y-5" id="officeDetails">
+                                @if ($kantor->count() > 0)
+                                    @php $active = $kantor->first(); @endphp
+
+                                    {{-- Phone --}}
+                                    <div class="contact-item flex items-start group cursor-pointer">
+                                        <div
+                                            class="contact-icon-wrapper flex-shrink-0 w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center mr-4 transition-all">
+                                            <i
+                                                class="fa-solid fa-headphones-simple text-brand-400 text-lg transition-colors"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-1">
+                                                {{ __('Call Us For Query') }}</p>
+                                            <a id="detailTelp"
+                                                href="tel:{{ preg_replace('/[^0-9+]/', '', $active->NomorTelepon ?? '+62318910919') }}"
+                                                class="text-white font-semibold hover:text-brand-400 transition-colors block">
+                                                {{ $active->NomorTelepon ?? '+62 31 8910919 (Hunting)' }}
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    {{-- WhatsApp --}}
+                                    <div class="contact-item flex items-start group cursor-pointer">
+                                        <div
+                                            class="contact-icon-wrapper flex-shrink-0 w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center mr-4 transition-all">
+                                            <i class="fa-brands fa-whatsapp text-emerald-400 text-lg transition-colors"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-1">
+                                                WhatsApp</p>
+                                            <a id="detailWa"
+                                                href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $active->NomorWhatsApp ?? '6281234567890') }}"
+                                                target="_blank"
+                                                class="text-white font-semibold hover:text-emerald-400 transition-colors block">
+                                                {{ $active->NomorWhatsApp ?? '+62 812-3456-7890' }}
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    {{-- Email --}}
+                                    <div class="contact-item flex items-start group cursor-pointer">
+                                        <div
+                                            class="contact-icon-wrapper flex-shrink-0 w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center mr-4 transition-all">
+                                            <i class="fa-solid fa-envelope text-brand-400 text-lg transition-colors"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-1">
+                                                {{ __('Email Us Anytime') }}</p>
+                                            <a id="detailEmail"
+                                                href="mailto:{{ $active->AlamatEmail ?? 'info@jasuindo.co.id' }}"
+                                                class="text-white font-semibold hover:text-brand-400 transition-colors block break-all">
+                                                {{ $active->AlamatEmail ?? 'info@jasuindo.co.id' }}
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    {{-- Address --}}
+                                    <div class="contact-item flex items-start group cursor-pointer">
+                                        <div
+                                            class="contact-icon-wrapper flex-shrink-0 w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center mr-4 transition-all">
+                                            <i
+                                                class="fa-solid fa-location-dot text-brand-400 text-lg transition-colors"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-1">
+                                                <span
+                                                    id="detailTipe">{{ $active->TipeKantor === 'Pusat' ? ($en ? 'Head Office' : 'Kantor Pusat') : ($en ? 'Branch Office' : 'Kantor Cabang') }}</span>
+                                            </p>
+                                            <a id="detailMaps" href="{{ $active->TautanGoogleMaps ?? '#' }}"
+                                                target="_blank"
+                                                class="text-white font-semibold hover:text-brand-400 transition-colors block leading-relaxed">
+                                                <span id="detailAlamat">
+                                                    {{ $active->AlamatLengkap ?? 'Jalan Raya Betro No. 21' }}
+                                                    @if ($active->Kota || $active->Provinsi)
+                                                        ,
+                                                        {{ $active->Kota }}{{ $active->Provinsi ? ', ' . $active->Provinsi : '' }}
+                                                    @endif
+                                                    {{ $active->KodePos ? $active->KodePos . ',' : '' }} Indonesia
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
 
                             <div class="my-8 border-t border-white/10"></div>
 
+                            {{-- Social Media --}}
                             <div>
                                 <p
                                     class="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-4 flex items-center">
-                                    <i class="fa-solid fa-share-nodes mr-2"></i>
-                                    {{ __('Follow Us') }}
+                                    <i class="fa-solid fa-share-nodes mr-2"></i> {{ __('Follow Us') }}
                                 </p>
                                 <div class="flex flex-wrap gap-3">
                                     @if (!empty($websiteSettings->SosialFacebook))
@@ -345,7 +404,6 @@
                 <!-- RIGHT: CONTACT FORM -->
                 <div class="lg:col-span-3">
                     <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-8 md:p-10">
-
                         <div class="mb-8">
                             <div class="flex items-center mb-4">
                                 <div class="w-12 h-12 bg-brand-100 rounded-xl flex items-center justify-center mr-4">
@@ -365,9 +423,8 @@
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
                                 <div class="input-group-custom">
-                                    <label class="block text-sm font-semibold text-slate-700 mb-2">
-                                        {{ __('Full Name') }} <span class="text-red-500">*</span>
-                                    </label>
+                                    <label class="block text-sm font-semibold text-slate-700 mb-2">{{ __('Full Name') }}
+                                        <span class="text-red-500">*</span></label>
                                     <div class="relative">
                                         <input type="text" name="NamaLengkap" id="namaLengkap" required
                                             placeholder="John Doe"
@@ -380,9 +437,9 @@
                                 </div>
 
                                 <div class="input-group-custom">
-                                    <label class="block text-sm font-semibold text-slate-700 mb-2">
-                                        {{ __('Email Address') }} <span class="text-red-500">*</span>
-                                    </label>
+                                    <label
+                                        class="block text-sm font-semibold text-slate-700 mb-2">{{ __('Email Address') }}
+                                        <span class="text-red-500">*</span></label>
                                     <div class="relative">
                                         <input type="email" name="Email" id="email" required
                                             placeholder="john@example.com"
@@ -395,11 +452,37 @@
                                 </div>
                             </div>
 
+                            <div class="input-group-custom mb-5">
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">{{ __('Subject') }} <span
+                                        class="text-red-500">*</span></label>
+                                <div class="relative">
+                                    <select name="SubjectId" id="subject" required
+                                        class="form-input w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:bg-white outline-none transition-all appearance-none">
+                                        <option value="" disabled selected>{{ __('Select Subject') }}</option>
+                                        @if (isset($subject) && count($subject) > 0)
+                                            @foreach ($subject as $row)
+                                                <option value="{{ $row->id }}">
+                                                    @if ($en && !empty($row->NamaTranslate))
+                                                        {{ $row->NamaTranslate }}
+                                                    @else
+                                                        {{ $row->Nama }}
+                                                    @endif
+                                                </option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                    <div
+                                        class="input-icon absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <i class="fa-solid fa-list text-slate-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
                                 <div class="input-group-custom">
-                                    <label class="block text-sm font-semibold text-slate-700 mb-2">
-                                        {{ __('Phone Number') }} <span class="text-red-500">*</span>
-                                    </label>
+                                    <label
+                                        class="block text-sm font-semibold text-slate-700 mb-2">{{ __('Phone Number') }}
+                                        <span class="text-red-500">*</span></label>
                                     <div class="relative">
                                         <input type="tel" name="NomorHandphone" id="nomorHandphone" required
                                             placeholder="08xxxxxxxxxx"
@@ -412,10 +495,10 @@
                                 </div>
 
                                 <div class="input-group-custom">
-                                    <label class="block text-sm font-semibold text-slate-700 mb-2">
-                                        {{ __('Company Name') }} <span
-                                            class="text-slate-400 text-xs font-normal">{{ __('(Optional)') }}</span>
-                                    </label>
+                                    <label
+                                        class="block text-sm font-semibold text-slate-700 mb-2">{{ __('Company Name') }}
+                                        <span
+                                            class="text-slate-400 text-xs font-normal">{{ __('(Optional)') }}</span></label>
                                     <div class="relative">
                                         <input type="text" name="CompanyName" id="companyName"
                                             placeholder="PT Example Tbk"
@@ -430,10 +513,10 @@
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
                                 <div class="input-group-custom">
-                                    <label class="block text-sm font-semibold text-slate-700 mb-2">
-                                        {{ __('Company Location') }} <span
-                                            class="text-slate-400 text-xs font-normal">{{ __('(Optional)') }}</span>
-                                    </label>
+                                    <label
+                                        class="block text-sm font-semibold text-slate-700 mb-2">{{ __('Company Location') }}
+                                        <span
+                                            class="text-slate-400 text-xs font-normal">{{ __('(Optional)') }}</span></label>
                                     <div class="relative">
                                         <input type="text" name="LokasiPerusahaan" id="lokasiPerusahaan"
                                             placeholder="Jakarta, Indonesia"
@@ -446,10 +529,10 @@
                                 </div>
 
                                 <div class="input-group-custom">
-                                    <label class="block text-sm font-semibold text-slate-700 mb-2">
-                                        {{ __('Product/Service Needed') }} <span
-                                            class="text-slate-400 text-xs font-normal">{{ __('(Optional)') }}</span>
-                                    </label>
+                                    <label
+                                        class="block text-sm font-semibold text-slate-700 mb-2">{{ __('Product/Service Needed') }}
+                                        <span
+                                            class="text-slate-400 text-xs font-normal">{{ __('(Optional)') }}</span></label>
                                     <div class="relative">
                                         <input type="text" name="ProdukYangDibutuhkan" id="produkYangDibutuhkan"
                                             placeholder="Digital Identity Solution"
@@ -463,9 +546,8 @@
                             </div>
 
                             <div class="input-group-custom mb-6">
-                                <label class="block text-sm font-semibold text-slate-700 mb-2">
-                                    {{ __('Your Message') }} <span class="text-red-500">*</span>
-                                </label>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">{{ __('Your Message') }}
+                                    <span class="text-red-500">*</span></label>
                                 <div class="relative">
                                     <textarea name="Pesan" id="pesan" rows="5" required
                                         placeholder="{{ __('Write your message or question here...') }}"
@@ -480,8 +562,7 @@
                                 <button type="submit" id="btnSubmit"
                                     class="flex-1 inline-flex items-center justify-center px-8 py-4 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
                                     <span class="btn-text inline-flex items-center">
-                                        <i class="fa-regular fa-paper-plane mr-2"></i>
-                                        {{ __('Send Message') }}
+                                        <i class="fa-regular fa-paper-plane mr-2"></i> {{ __('Send Message') }}
                                     </span>
                                     <span class="btn-loader hidden items-center">
                                         <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
@@ -495,10 +576,9 @@
                                         {{ __('Sending...') }}
                                     </span>
                                 </button>
-                                <a href="{{ url('/') }}"
+                                <a href="{{ route('frontend.main') }}"
                                     class="inline-flex items-center justify-center px-8 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all">
-                                    <i class="fa-solid fa-arrow-left mr-2"></i>
-                                    {{ __('Back') }}
+                                    <i class="fa-solid fa-arrow-left mr-2"></i> {{ __('Back') }}
                                 </a>
                             </div>
 
@@ -524,45 +604,136 @@
         </div>
     </section>
 
-    <!-- GOOGLE MAPS SECTION -->
+    <!-- GOOGLE MAPS + BRANCHES SECTION -->
     <section class="py-12 bg-slate-50">
         <div class="container mx-auto px-6">
-
             <div class="text-center max-w-3xl mx-auto mb-10">
                 <span class="text-brand-600 font-bold tracking-wider uppercase text-sm">{{ __('Find Us') }}</span>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-2 mb-4">{{ __('Our Office Location') }}
+                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-2 mb-4">
+                    {{ __('Our Office Locations') }}
                 </h2>
-                <p class="text-slate-600">{{ __('Visit our office or see our location on the map') }}</p>
+                <p class="text-slate-600">
+                    {{ $en
+                        ? 'Visit any of our offices across Indonesia or see our locations on the map.'
+                        : 'Kunjungi salah satu kantor kami di seluruh Indonesia atau lihat lokasi kami di peta.' }}
+                </p>
             </div>
 
-            <div class="map-container rounded-3xl overflow-hidden shadow-2xl border border-slate-200 relative">
-                <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6884.752860529671!2d112.73386551003723!3d-7.4182974915552915!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd7e5a826db497d%3A0x9f2f2fe8700ab414!2sPT.%20Jasuindo%20Informatika%20Pratama!5e1!3m2!1sid!2sid!4v1781381089029!5m2!1sid!2sid"
-                    width="100%" height="500" style="border:0;" allowfullscreen="" loading="lazy"
-                    referrerpolicy="no-referrer-when-downgrade" class="w-full">
-                </iframe>
-
-                <div
-                    class="absolute bottom-6 left-6 right-6 md:left-6 md:right-auto md:max-w-sm bg-white rounded-2xl shadow-2xl p-6 z-10 border border-slate-100">
-                    <div class="flex items-start">
-                        <div class="flex-shrink-0 w-12 h-12 bg-brand-100 rounded-xl flex items-center justify-center mr-4">
-                            <i class="fa-solid fa-location-dot text-brand-600 text-xl"></i>
+            {{-- Main Map (kantor utama) --}}
+            @if ($kantorUtama)
+                <div class="rounded-3xl overflow-hidden shadow-2xl border border-slate-200 relative mb-8">
+                    @if ($kantorUtama->EmbedGoogleMaps)
+                        <div class="w-full h-[500px] map-embed relative" id="mainMapContainer">
+                            {!! $kantorUtama->EmbedGoogleMaps !!}
                         </div>
-                        <div class="flex-1">
-                            <h3 class="font-bold text-slate-900 mb-1">PT Jasuindo Informatika Pratama</h3>
-                            <p class="text-sm text-slate-600 leading-relaxed mb-3">
-                                Jalan Raya Betro No. 21, Sedati, Sidoarjo 61253, Jawa Timur, Indonesia
-                            </p>
-                            <a href="https://maps.google.com/?q=PT+Jasuindo+Informatika+Pratama" target="_blank"
-                                class="inline-flex items-center text-sm font-semibold text-brand-600 hover:text-brand-700 transition-colors">
-                                {{ __('Get Directions') }}
-                                <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
-                            </a>
+                    @else
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6884.752860529671!2d112.73386551003723!3d-7.4182974915552915!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd7e5a826db497d%3A0x9f2f2fe8700ab414!2sPT.%20Jasuindo%20Informatika%20Pratama!5e1!3m2!1sid!2sid!4v1781381089029!5m2!1sid!2sid"
+                            width="100%" height="500" style="border:0;" allowfullscreen="" loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade" class="w-full">
+                        </iframe>
+                    @endif
+
+                    <div
+                        class="absolute bottom-6 left-6 right-6 md:left-6 md:right-auto md:max-w-sm bg-white rounded-2xl shadow-2xl p-6 z-10 border border-slate-100">
+                        <div class="flex items-start">
+                            <div
+                                class="flex-shrink-0 w-12 h-12 bg-brand-100 rounded-xl flex items-center justify-center mr-4">
+                                <i class="fa-solid fa-location-dot text-brand-600 text-xl"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-slate-900 mb-1">{{ $kantorUtama->NamaKantor }}</h3>
+                                <p class="text-sm text-slate-600 leading-relaxed mb-3">
+                                    {{ $kantorUtama->AlamatLengkap }}
+                                    @if ($kantorUtama->Kota || $kantorUtama->Provinsi)
+                                        ,
+                                        {{ $kantorUtama->Kota }}{{ $kantorUtama->Provinsi ? ', ' . $kantorUtama->Provinsi : '' }}
+                                    @endif
+                                    {{ $kantorUtama->KodePos ? $kantorUtama->KodePos . ',' : '' }} Indonesia
+                                </p>
+                                @if ($kantorUtama->TautanGoogleMaps)
+                                    <a href="{{ $kantorUtama->TautanGoogleMaps }}" target="_blank"
+                                        class="inline-flex items-center text-sm font-semibold text-brand-600 hover:text-brand-700 transition-colors">
+                                        {{ __('Get Directions') }}
+                                        <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                                    </a>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            @endif
 
+            {{-- Grid Kantor Cabang --}}
+            @if ($kantorCabang->count() > 0)
+                <div class="mb-6">
+                    <h3 class="text-lg font-extrabold text-slate-900 mb-1">
+                        {{ $en ? 'Other Branch Offices' : 'Kantor Cabang Lainnya' }}
+                    </h3>
+                    <p class="text-sm text-slate-500">
+                        {{ $en ? 'Click any office to view it on the map above.' : 'Klik kantor mana pun untuk menampilkannya di peta di atas.' }}
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    @foreach ($kantorCabang as $cabang)
+                        <div class="branch-card bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-xl hover:border-brand-300 transition-all cursor-pointer group"
+                            data-nama="{{ $cabang->NamaKantor }}" data-alamat="{{ $cabang->AlamatLengkap }}"
+                            data-kota="{{ $cabang->Kota }}" data-provinsi="{{ $cabang->Provinsi }}"
+                            data-kodepos="{{ $cabang->KodePos }}" data-maps="{{ $cabang->TautanGoogleMaps }}"
+                            data-embed="{{ $cabang->EmbedGoogleMaps }}">
+                            <div class="flex items-start gap-4">
+                                <div
+                                    class="flex-shrink-0 w-11 h-11 bg-brand-50 group-hover:bg-brand-600 rounded-xl flex items-center justify-center transition-colors">
+                                    <i
+                                        class="fa-solid fa-building text-brand-600 group-hover:text-white transition-colors"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h4
+                                        class="font-extrabold text-slate-900 mb-1 group-hover:text-brand-600 transition-colors">
+                                        {{ $cabang->NamaKantor }}
+                                    </h4>
+                                    <p class="text-xs text-slate-500 leading-relaxed line-clamp-2 mb-3">
+                                        {{ $cabang->AlamatLengkap }}
+                                        @if ($cabang->Kota || $cabang->Provinsi)
+                                            , {{ $cabang->Kota }}{{ $cabang->Provinsi ? ', ' . $cabang->Provinsi : '' }}
+                                        @endif
+                                        {{ $cabang->KodePos }}
+                                    </p>
+                                    <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600">
+                                        @if ($cabang->NomorTelepon)
+                                            <a href="tel:{{ preg_replace('/[^0-9+]/', '', $cabang->NomorTelepon) }}"
+                                                class="flex items-center gap-1.5 hover:text-brand-600">
+                                                <i class="fa-solid fa-phone text-[10px]"></i> {{ $cabang->NomorTelepon }}
+                                            </a>
+                                        @endif
+                                        @if ($cabang->NomorWhatsApp)
+                                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $cabang->NomorWhatsApp) }}"
+                                                target="_blank" class="flex items-center gap-1.5 hover:text-emerald-600">
+                                                <i class="fa-brands fa-whatsapp text-[10px]"></i> WA
+                                            </a>
+                                        @endif
+                                        @if ($cabang->AlamatEmail)
+                                            <a href="mailto:{{ $cabang->AlamatEmail }}"
+                                                class="flex items-center gap-1.5 hover:text-brand-600 truncate max-w-[140px]">
+                                                <i class="fa-solid fa-envelope text-[10px]"></i>
+                                                <span class="truncate">{{ $cabang->AlamatEmail }}</span>
+                                            </a>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="flex-shrink-0 self-center">
+                                    <div
+                                        class="w-9 h-9 rounded-lg bg-slate-100 group-hover:bg-brand-50 flex items-center justify-center transition-colors">
+                                        <i
+                                            class="fa-solid fa-map-location-dot text-slate-500 group-hover:text-brand-600 text-sm"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
         </div>
     </section>
 
@@ -572,6 +743,86 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // ===== OFFICE TAB SWITCHER =====
+            const officeTabs = document.querySelectorAll('#officeTabs .office-tab');
+            const detailTelp = document.getElementById('detailTelp');
+            const detailWa = document.getElementById('detailWa');
+            const detailEmail = document.getElementById('detailEmail');
+            const detailMaps = document.getElementById('detailMaps');
+            const detailAlamat = document.getElementById('detailAlamat');
+            const detailTipe = document.getElementById('detailTipe');
+
+            const en = {{ $en ? 'true' : 'false' }};
+
+            officeTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Update active state
+                    officeTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Update detail
+                    const tipe = this.dataset.tipe;
+                    const alamat = this.dataset.alamat || '';
+                    const kota = this.dataset.kota || '';
+                    const provinsi = this.dataset.provinsi || '';
+                    const kodepos = this.dataset.kodepos || '';
+
+                    let alamatText = alamat;
+                    if (kota || provinsi) alamatText += ', ' + kota + (provinsi ? ', ' + provinsi :
+                        '');
+                    if (kodepos) alamatText += ' ' + kodepos;
+                    alamatText += ', Indonesia';
+
+                    if (detailTelp) {
+                        detailTelp.href = 'tel:' + (this.dataset.telpClean || this.dataset.telp);
+                        detailTelp.textContent = this.dataset.telp || '-';
+                    }
+                    if (detailWa) {
+                        detailWa.href = 'https://wa.me/' + (this.dataset.waClean || this.dataset
+                            .wa);
+                        detailWa.textContent = this.dataset.wa || '-';
+                    }
+                    if (detailEmail) {
+                        detailEmail.href = 'mailto:' + this.dataset.email;
+                        detailEmail.textContent = this.dataset.email || '-';
+                    }
+                    if (detailMaps && this.dataset.maps) {
+                        detailMaps.href = this.dataset.maps;
+                    }
+                    if (detailAlamat) {
+                        detailAlamat.textContent = alamatText;
+                    }
+                    if (detailTipe) {
+                        detailTipe.textContent = tipe === 'Pusat' ?
+                            (en ? 'Head Office' : 'Kantor Pusat') :
+                            (en ? 'Branch Office' : 'Kantor Cabang');
+                    }
+
+                    // Scroll to map section if embed available
+                    const mainMap = document.getElementById('mainMapContainer');
+                    if (mainMap && this.dataset.embed) {
+                        mainMap.innerHTML = this.dataset.embed;
+                    }
+                });
+            });
+
+            // ===== BRANCH CARD CLICK → UPDATE MAIN MAP =====
+            document.querySelectorAll('.branch-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const mainMap = document.getElementById('mainMapContainer');
+                    if (mainMap && this.dataset.embed) {
+                        mainMap.innerHTML = this.dataset.embed;
+                        mainMap.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center'
+                        });
+                    } else if (this.dataset.maps) {
+                        window.open(this.dataset.maps, '_blank');
+                    }
+                });
+            });
+
+            // ===== CONTACT FORM SUBMIT =====
             const contactForm = document.getElementById('contactForm');
             const btnSubmit = document.getElementById('btnSubmit');
 
@@ -579,7 +830,6 @@
 
             contactForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-
                 const form = this;
                 const formData = new FormData(form);
 
@@ -621,13 +871,7 @@
                             confirmButtonColor: '#0284c7',
                             confirmButtonText: "{{ __('OK') }}",
                             timer: 4000,
-                            timerProgressBar: true,
-                            showClass: {
-                                popup: 'animate__animated animate__fadeInDown'
-                            },
-                            hideClass: {
-                                popup: 'animate__animated animate__fadeOutUp'
-                            }
+                            timerProgressBar: true
                         });
                     })
                     .catch(error => {
@@ -637,32 +881,28 @@
                         if (error.status === 422 && error.data.errors) {
                             const errors = error.data.errors;
                             let errorMessages = '';
-
                             Object.keys(errors).forEach(key => {
                                 errorMessages += errors[key][0] + '<br>';
                                 const input = form.querySelector('[name="' + key + '"]');
                                 if (input) {
                                     input.classList.add('is-invalid');
                                     input.style.borderColor = '#ef4444';
-
                                     const errorDiv = document.createElement('div');
                                     errorDiv.className =
                                         'invalid-feedback text-red-500 text-sm mt-1';
                                     errorDiv.textContent = errors[key][0];
                                     input.parentElement.appendChild(errorDiv);
-
                                     input.addEventListener('input', function() {
                                         this.classList.remove('is-invalid');
                                         this.style.borderColor = '';
-                                        const feedback = this.parentElement
-                                            .querySelector('.invalid-feedback');
-                                        if (feedback) feedback.remove();
+                                        const fb = this.parentElement.querySelector(
+                                            '.invalid-feedback');
+                                        if (fb) fb.remove();
                                     }, {
                                         once: true
                                     });
                                 }
                             });
-
                             Swal.fire({
                                 icon: 'error',
                                 title: "{{ __('Validation Failed') }}",

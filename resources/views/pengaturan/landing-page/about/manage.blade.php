@@ -14,13 +14,50 @@
                 overflow: hidden;
                 background: #fafafa;
             }
+
             .detail-preview img {
                 max-width: 100%;
                 max-height: 100%;
             }
+
             .section-hint {
                 font-size: 12px;
                 color: #6c757d;
+            }
+
+            /* Language Toggle */
+            .lang-toggle {
+                display: inline-flex;
+                background: #f1f3f5;
+                border-radius: 8px;
+                padding: 3px;
+                gap: 2px;
+            }
+
+            .lang-toggle button {
+                border: none;
+                background: transparent;
+                padding: 6px 14px;
+                font-size: 13px;
+                font-weight: 600;
+                border-radius: 6px;
+                cursor: pointer;
+                color: #6c757d;
+                transition: all 0.2s;
+            }
+
+            .lang-toggle button.active {
+                background: #fff;
+                color: #007bff;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            }
+
+            .lang-field {
+                display: none;
+            }
+
+            .lang-field.active {
+                display: block;
             }
         </style>
     @endpush
@@ -29,7 +66,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Tentang Kami</h1>
+                    <h1>Tentang Kami <small class="text-muted">(Multi-Bahasa)</small></h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -47,25 +84,29 @@
             @method('PUT')
 
             <div class="card card-primary card-outline">
-                <div class="card-header">
-                    <h3 class="card-title">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title mb-0">
                         <i class="fas fa-building mr-2"></i>
                         Kelola Konten Halaman Tentang Kami
                     </h3>
+                    {{-- ✅ GLOBAL LANGUAGE TOGGLE --}}
+                    <div class="lang-toggle d-flex justify-content-end" id="globalLangToggle">
+                        <button type="button" class="active" data-lang="id">🇮🇩 ID</button>
+                        <button type="button" data-lang="en">🇬🇧 EN</button>
+                    </div>
+
+
                 </div>
                 <div class="card-body">
                     <p class="text-muted mb-3">
-                        Semua section halaman About dikelola di sini. Simpan sekali untuk memperbarui seluruh konten.
+                        Semua section dikelola di sini. Gunakan toggle bahasa di kanan atas untuk mengisi versi ID / EN.
                     </p>
 
                     <ul class="nav nav-tabs" id="about-tabs" role="tablist">
                         @foreach ($sectionConfig as $id => $config)
                             <li class="nav-item">
-                                <a class="nav-link {{ $loop->first ? 'active' : '' }}"
-                                    id="tab-{{ $config['key'] }}-tab"
-                                    data-toggle="tab"
-                                    href="#tab-{{ $config['key'] }}"
-                                    role="tab">
+                                <a class="nav-link {{ $loop->first ? 'active' : '' }}" id="tab-{{ $config['key'] }}-tab"
+                                    data-toggle="tab" href="#tab-{{ $config['key'] }}" role="tab">
                                     {{ $config['label'] }}
                                 </a>
                             </li>
@@ -76,73 +117,101 @@
                         @foreach ($sectionConfig as $id => $config)
                             @php
                                 $about = $sections[$id] ?? null;
-                                $details = collect($about?->getDetail ?? []);
-                                if (!empty($config['meta_keys'])) {
+                                $details = $about ? $about->getDetail : collect();
+
+                                // Ambil data translations per locale
+                                $transId = $about ? $about->translations->firstWhere('Locale', 'id') : null;
+                                $transEn = $about ? $about->translations->firstWhere('Locale', 'en') : null;
+
+                                $isMeta = !empty($config['meta_keys']);
+                                if ($isMeta) {
                                     $meta = [];
                                     foreach ($config['meta_keys'] as $key => $label) {
                                         $meta[$key] = optional($details->firstWhere('Judul', $key))->Deskripsi;
                                     }
-                                    $details = collect(); // meta pakai form khusus
                                 }
                             @endphp
 
-                            <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}"
-                                id="tab-{{ $config['key'] }}" role="tabpanel">
+                            <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="tab-{{ $config['key'] }}"
+                                role="tabpanel">
 
                                 <p class="section-hint mb-3">
                                     <i class="fa fa-info-circle"></i> {{ $config['hint'] }}
                                 </p>
 
+                                {{-- SUB JUDUL (2 bahasa) --}}
+                                <div class="form-group">
+                                    <label>Sub Judul</label>
+                                    <div class="lang-field active" data-lang="id">
+                                        <input type="text"
+                                            name="sections[{{ $id }}][translations][id][SubJudul]"
+                                            class="form-control"
+                                            value="{{ old("sections.$id.translations.id.SubJudul", $transId->SubJudul ?? ($about->SubJudul ?? '')) }}"
+                                            placeholder="Sub judul section (ID)">
+                                    </div>
+                                    <div class="lang-field" data-lang="en">
+                                        <input type="text"
+                                            name="sections[{{ $id }}][translations][en][SubJudul]"
+                                            class="form-control"
+                                            value="{{ old("sections.$id.translations.en.SubJudul", $transEn->SubJudul ?? '') }}"
+                                            placeholder="Section subtitle (EN)">
+                                    </div>
+                                </div>
+
+                                {{-- JUDUL (2 bahasa) --}}
+                                <div class="form-group">
+                                    <label>Judul</label>
+                                    <div class="lang-field active" data-lang="id">
+                                        <input type="text" name="sections[{{ $id }}][translations][id][Judul]"
+                                            class="form-control"
+                                            value="{{ old("sections.$id.translations.id.Judul", $transId->Judul ?? ($about->Judul ?? '')) }}"
+                                            placeholder="Judul section (ID)">
+                                    </div>
+                                    <div class="lang-field" data-lang="en">
+                                        <input type="text" name="sections[{{ $id }}][translations][en][Judul]"
+                                            class="form-control"
+                                            value="{{ old("sections.$id.translations.en.Judul", $transEn->Judul ?? '') }}"
+                                            placeholder="Section title (EN)">
+                                    </div>
+                                </div>
+
+                                {{-- DESKRIPSI (2 bahasa dengan Summernote) --}}
+                                <div class="form-group">
+                                    <label>Deskripsi</label>
+                                    <div class="lang-field active" data-lang="id">
+                                        <textarea name="sections[{{ $id }}][translations][id][Deskripsi]" class="form-control summernote-about"
+                                            rows="5" placeholder="Deskripsi (ID)">{{ old("sections.$id.translations.id.Deskripsi", $transId->Deskripsi ?? ($about->Deskripsi ?? '')) }}</textarea>
+                                    </div>
+                                    <div class="lang-field" data-lang="en">
+                                        <textarea name="sections[{{ $id }}][translations][en][Deskripsi]" class="form-control summernote-about"
+                                            rows="5" placeholder="Description (EN)">{{ old("sections.$id.translations.en.Deskripsi", $transEn->Deskripsi ?? '') }}</textarea>
+                                    </div>
+                                </div>
+
+                                {{-- GAMBAR (TIDAK di-translate, single file) --}}
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label>Sub Judul</label>
-                                            <input type="text"
-                                                name="sections[{{ $id }}][SubJudul]"
-                                                class="form-control"
-                                                value="{{ old("sections.$id.SubJudul", $about->SubJudul ?? '') }}"
-                                                placeholder="Sub judul section">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Judul</label>
-                                            <input type="text"
-                                                name="sections[{{ $id }}][Judul]"
-                                                class="form-control"
-                                                value="{{ old("sections.$id.Judul", $about->Judul ?? '') }}"
-                                                placeholder="Judul section">
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <label>Deskripsi</label>
-                                            <textarea name="sections[{{ $id }}][Deskripsi]"
-                                                class="form-control summernote-about"
-                                                rows="5"
-                                                placeholder="Deskripsi">{{ old("sections.$id.Deskripsi", $about->Deskripsi ?? '') }}</textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
                                             <label>Gambar</label>
-                                            <input type="file"
-                                                name="sections[{{ $id }}][Gambar]"
-                                                class="form-control-file"
-                                                accept="image/*">
-                                            <small class="text-muted">Opsional. Maks. 2MB.</small>
-                                            @if (!empty($about->Gambar) && !str_contains($about->Gambar, 'fa-') && \Illuminate\Support\Facades\Storage::disk('public')->exists($about->Gambar))
+                                            <input type="file" name="sections[{{ $id }}][Gambar]"
+                                                class="form-control-file" accept="image/*">
+                                            <small class="text-muted">Opsional. Maks. 2MB. (Gambar sama untuk semua
+                                                bahasa)</small>
+                                            @if (
+                                                !empty($about->Gambar) &&
+                                                    !str_contains($about->Gambar, 'fa-') &&
+                                                    \Illuminate\Support\Facades\Storage::disk('public')->exists($about->Gambar))
                                                 <div class="mt-2">
                                                     <img src="{{ asset('storage/' . $about->Gambar) }}"
-                                                        class="img-thumbnail" style="max-height: 120px;" alt="Preview" onerror="this.parentElement.style.display='none';">
+                                                        class="img-thumbnail" style="max-height: 120px;" alt="Preview">
                                                 </div>
                                             @endif
                                         </div>
                                     </div>
                                 </div>
 
-                                {{-- Meta fields (Video & Quote) --}}
-                                @if (!empty($config['meta_keys']))
+                                {{-- META fields (Video & Quote) --}}
+                                @if ($isMeta)
                                     <hr>
                                     <h5 class="mb-3">Pengaturan Tambahan</h5>
                                     <div class="row">
@@ -161,7 +230,7 @@
                                     </div>
                                 @endif
 
-                                {{-- Detail repeater --}}
+                                {{-- DETAIL REPEATER (dengan support multi-bahasa) --}}
                                 @if (!empty($config['detail_labels']))
                                     @php
                                         $dl = $config['detail_labels'];
@@ -170,8 +239,7 @@
                                     <hr>
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <h5 class="mb-0">Item Detail</h5>
-                                        <button type="button"
-                                            class="btn btn-sm btn-primary btn-tambah-detail"
+                                        <button type="button" class="btn btn-sm btn-primary btn-tambah-detail"
                                             data-section="{{ $id }}"
                                             data-has-icon="{{ $hasIcon ? '1' : '0' }}"
                                             data-label-judul="{{ $dl['Judul'] }}"
@@ -193,7 +261,11 @@
                                             <tbody class="detail-container" data-section="{{ $id }}">
                                                 @foreach ($details as $idx => $detail)
                                                     @php
-                                                        $isFa = $detail->Gambar && (str_starts_with($detail->Gambar, 'fa-') || str_contains($detail->Gambar, ' fa-') || str_starts_with($detail->Gambar, 'fa '));
+                                                        $isFa =
+                                                            $detail->Gambar &&
+                                                            str_contains((string) $detail->Gambar, 'fa-');
+                                                        $dtId = $detail->translations->firstWhere('Locale', 'id');
+                                                        $dtEn = $detail->translations->firstWhere('Locale', 'en');
                                                     @endphp
                                                     <tr class="detail-row">
                                                         <td class="text-center row-number">{{ $idx + 1 }}</td>
@@ -205,11 +277,14 @@
                                                                 <div class="detail-preview mr-2">
                                                                     @if ($detail->Gambar && !$isFa && \Illuminate\Support\Facades\Storage::disk('public')->exists($detail->Gambar))
                                                                         <img src="{{ asset('storage/' . $detail->Gambar) }}"
-                                                                            class="img-preview" alt="" onerror="this.style.display='none'; $(this).siblings('.preview-placeholder').show();">
-                                                                        <i class="fa fa-image text-muted preview-placeholder" style="display:none;"></i>
+                                                                            class="img-preview" alt="">
+                                                                        <i class="fa fa-image text-muted preview-placeholder"
+                                                                            style="display:none;"></i>
                                                                     @else
-                                                                        <img class="img-preview" style="display:none" alt="">
-                                                                        <i class="fa fa-image text-muted preview-placeholder"></i>
+                                                                        <img class="img-preview" style="display:none"
+                                                                            alt="">
+                                                                        <i
+                                                                            class="fa fa-image text-muted preview-placeholder"></i>
                                                                     @endif
                                                                 </div>
                                                                 <div class="flex-grow-1">
@@ -223,25 +298,41 @@
                                                                             class="form-control form-control-sm"
                                                                             placeholder="fa-solid fa-gem"
                                                                             value="{{ $isFa ? $detail->Gambar : '' }}">
-                                                                        <small class="text-muted">Isi class FA ATAU upload gambar</small>
+                                                                        <small class="text-muted">Isi class FA ATAU upload
+                                                                            gambar</small>
                                                                     @endif
                                                                 </div>
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <input type="text"
-                                                                name="sections[{{ $id }}][details][{{ $idx }}][Judul]"
-                                                                class="form-control form-control-sm"
-                                                                value="{{ $detail->Judul }}"
-                                                                placeholder="{{ $dl['Judul'] }}">
+                                                            <div class="lang-field active" data-lang="id">
+                                                                <input type="text"
+                                                                    name="sections[{{ $id }}][details][{{ $idx }}][translations][id][Judul]"
+                                                                    class="form-control form-control-sm"
+                                                                    value="{{ $dtId->Judul ?? ($detail->Judul ?? '') }}"
+                                                                    placeholder="{{ $dl['Judul'] }} (ID)">
+                                                            </div>
+                                                            <div class="lang-field" data-lang="en">
+                                                                <input type="text"
+                                                                    name="sections[{{ $id }}][details][{{ $idx }}][translations][en][Judul]"
+                                                                    class="form-control form-control-sm"
+                                                                    value="{{ $dtEn->Judul ?? '' }}"
+                                                                    placeholder="{{ $dl['Judul'] }} (EN)">
+                                                            </div>
                                                         </td>
                                                         <td>
-                                                            <textarea name="sections[{{ $id }}][details][{{ $idx }}][Deskripsi]"
-                                                                class="form-control form-control-sm" rows="3"
-                                                                placeholder="{{ $dl['Deskripsi'] }}">{{ $detail->Deskripsi }}</textarea>
+                                                            <div class="lang-field active" data-lang="id">
+                                                                <textarea name="sections[{{ $id }}][details][{{ $idx }}][translations][id][Deskripsi]"
+                                                                    class="form-control form-control-sm" rows="3" placeholder="{{ $dl['Deskripsi'] }} (ID)">{{ $dtId->Deskripsi ?? ($detail->Deskripsi ?? '') }}</textarea>
+                                                            </div>
+                                                            <div class="lang-field" data-lang="en">
+                                                                <textarea name="sections[{{ $id }}][details][{{ $idx }}][translations][en][Deskripsi]"
+                                                                    class="form-control form-control-sm" rows="3" placeholder="{{ $dl['Deskripsi'] }} (EN)">{{ $dtEn->Deskripsi ?? '' }}</textarea>
+                                                            </div>
                                                         </td>
                                                         <td class="text-center">
-                                                            <button type="button" class="btn btn-danger btn-sm btn-hapus-detail">
+                                                            <button type="button"
+                                                                class="btn btn-danger btn-sm btn-hapus-detail">
                                                                 <i class="fa fa-trash"></i>
                                                             </button>
                                                         </td>
@@ -280,7 +371,6 @@
                     showConfirmButton: false
                 });
             @endif
-
             @if (session('error'))
                 Swal.fire({
                     icon: 'error',
@@ -291,6 +381,7 @@
                 });
             @endif
 
+            // Summernote untuk semua textarea (termasuk EN yang hidden)
             $('.summernote-about').summernote({
                 height: 180,
                 toolbar: [
@@ -301,10 +392,34 @@
                 ]
             });
 
+            // ============================================
+            // ✅ GLOBAL LANGUAGE TOGGLE
+            // ============================================
+            $('#globalLangToggle button').on('click', function() {
+                const lang = $(this).data('lang');
+                $('#globalLangToggle button').removeClass('active');
+                $(this).addClass('active');
+
+                // Toggle semua lang-field di semua section
+                $('.lang-field').removeClass('active');
+                $(`.lang-field[data-lang="${lang}"]`).addClass('active');
+
+                // Re-sync Summernote karena textarea yang di-toggle butuh refresh
+                setTimeout(() => {
+                    $('.summernote-about').each(function() {
+                        if ($(this).closest('.lang-field').hasClass('active')) {
+                            $(this).summernote('code', $(this).val());
+                        }
+                    });
+                }, 50);
+            });
+
+            // ============================================
+            // DETAIL REPEATER
+            // ============================================
             const rowCounters = {};
             $('.detail-container').each(function() {
-                const sid = $(this).data('section');
-                rowCounters[sid] = $(this).find('tr').length;
+                rowCounters[$(this).data('section')] = $(this).find('tr').length;
             });
 
             function updateRowNumbers(sectionId) {
@@ -321,11 +436,12 @@
                 const idx = rowCounters[sectionId] || 0;
                 rowCounters[sectionId] = idx + 1;
 
+                const currentLang = $('#globalLangToggle button.active').data('lang');
+
                 let iconField = '';
                 if (hasIcon) {
-                    iconField = `
-                        <input type="text" name="sections[${sectionId}][details][${idx}][IconFa]"
-                            class="form-control form-control-sm" placeholder="fa-solid fa-gem">
+                    iconField = `<input type="text" name="sections[${sectionId}][details][${idx}][IconFa]"
+                        class="form-control form-control-sm" placeholder="fa-solid fa-gem">
                         <small class="text-muted">Isi class FA ATAU upload gambar</small>`;
                 }
 
@@ -346,13 +462,26 @@
                             </div>
                         </td>
                         <td>
-                            <input type="text" name="sections[${sectionId}][details][${idx}][Judul]"
-                                class="form-control form-control-sm" placeholder="${labelJudul}">
+                            <div class="lang-field ${currentLang === 'id' ? 'active' : ''}" data-lang="id">
+                                <input type="text" name="sections[${sectionId}][details][${idx}][translations][id][Judul]"
+                                    class="form-control form-control-sm" placeholder="${labelJudul} (ID)">
+                            </div>
+                            <div class="lang-field ${currentLang === 'en' ? 'active' : ''}" data-lang="en">
+                                <input type="text" name="sections[${sectionId}][details][${idx}][translations][en][Judul]"
+                                    class="form-control form-control-sm" placeholder="${labelJudul} (EN)">
+                            </div>
                         </td>
                         <td>
-                            <textarea name="sections[${sectionId}][details][${idx}][Deskripsi]"
-                                class="form-control form-control-sm" rows="3"
-                                placeholder="${labelDeskripsi}"></textarea>
+                            <div class="lang-field ${currentLang === 'id' ? 'active' : ''}" data-lang="id">
+                                <textarea name="sections[${sectionId}][details][${idx}][translations][id][Deskripsi]"
+                                    class="form-control form-control-sm" rows="3"
+                                    placeholder="${labelDeskripsi} (ID)"></textarea>
+                            </div>
+                            <div class="lang-field ${currentLang === 'en' ? 'active' : ''}" data-lang="en">
+                                <textarea name="sections[${sectionId}][details][${idx}][translations][en][Deskripsi]"
+                                    class="form-control form-control-sm" rows="3"
+                                    placeholder="${labelDeskripsi} (EN)"></textarea>
+                            </div>
                         </td>
                         <td class="text-center">
                             <button type="button" class="btn btn-danger btn-sm btn-hapus-detail">
@@ -366,9 +495,8 @@
 
             $('body').on('click', '.btn-hapus-detail', function() {
                 const container = $(this).closest('tbody');
-                const sectionId = container.data('section');
                 $(this).closest('tr').remove();
-                updateRowNumbers(sectionId);
+                updateRowNumbers(container.data('section'));
             });
 
             $('body').on('change', '.input-gambar', function() {
@@ -376,7 +504,6 @@
                 const cell = $(this).closest('td');
                 const preview = cell.find('.img-preview');
                 const placeholder = cell.find('.preview-placeholder');
-
                 if (!file) {
                     preview.hide();
                     placeholder.show();
@@ -388,7 +515,7 @@
                     return;
                 }
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = e => {
                     preview.attr('src', e.target.result).show();
                     placeholder.hide();
                 };

@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Exports\ContactUsExport;
 use App\Models\ContactUs;
+use App\Models\MasterKantor;
+use App\Models\MasterSubject;
+use App\Models\NotificationEmailRecipient;
 use App\Models\PengaturanWebsite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -23,7 +26,14 @@ class ContactUsController extends Controller
      */
     public function index()
     {
-        return view('frontend.contact-us');
+        $subject = MasterSubject::get();
+        $kantor = MasterKantor::where('Status', 'Aktif')
+            ->orderBy('Urutan', 'asc')
+            ->get();
+        $kantorUtama = $kantor->firstWhere('TipeKantor', 'Pusat') ?? $kantor->first();
+        $kantorCabang = $kantor->filter(fn($k) => $k->id !== optional($kantorUtama)->id)->values();
+
+        return view('frontend.contact-us', compact('subject', 'kantor', 'kantorUtama', 'kantorCabang'));
     }
 
     public function list(Request $request)
@@ -116,6 +126,7 @@ class ContactUsController extends Controller
             'CompanyName' => 'nullable|string|max:255',
             'LokasiPerusahaan' => 'nullable|string|max:255',
             'ProdukYangDibutuhkan' => 'nullable|string|max:255',
+            'Subjek' => 'required|string|max:255',
             'Pesan' => 'nullable|string|max:2000',
         ]);
 
@@ -129,17 +140,22 @@ class ContactUsController extends Controller
             ->withProperties(['attributes' => $validatedData])
             ->log('Menambahkan kontak baru: ' . $validatedData['NamaLengkap']);
 
-        // Ambil email tujuan dari pengaturan website
         $websiteSettings = PengaturanWebsite::first();
-        $toEmail = $websiteSettings?->Email;
-
-        // Kirim email dengan template
-        if ($toEmail) {
-            Mail::send('emails.contact-us', ['data' => $validatedData], function ($message) use ($toEmail, $validatedData) {
+        $penerima = NotificationEmailRecipient::where('StatusAktif', 1)->where('TerimaEmail', 1)->pluck('Email')->filter()->all();
+        // dd($penerima);
+        if (empty($penerima)) {
+            if ($websiteSettings?->Email) {
+                $penerima = [$websiteSettings->Email];
+            } else {
+                $penerima = [];
+            }
+        }
+        if (!empty($penerima)) {
+            Mail::send('emails.contact-us', ['data' => $validatedData], function ($message) use ($penerima, $validatedData) {
                 $message
-                    ->to($toEmail)
+                    ->to($penerima)
                     ->replyTo($validatedData['Email'], $validatedData['NamaLengkap'])
-                    ->subject('📩 Pesan Baru dari ' . $validatedData['NamaLengkap'] . ' — Contact Us');
+                    ->subject('📩 Pesan Baru dari ' . $validatedData['NamaLengkap'] . ' — ' . $validatedData['Subjek']);
             });
         }
         return response()->json([

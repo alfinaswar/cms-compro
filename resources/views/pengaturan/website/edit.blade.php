@@ -227,6 +227,31 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
+                                                <label>Upload Logo Kedua</label>
+                                                <div class="custom-file">
+                                                    <input type="file" name="PathLogoGelap"
+                                                        class="custom-file-input @error('PathLogoGelap') is-invalid @enderror"
+                                                        id="logoGelapInput" placeholder="Pilih Logo Gelap">
+                                                    <label class="custom-file-label" for="logoGelapInput">Pilih
+                                                        file...</label>
+                                                </div>
+                                                @error('PathLogoGelap')
+                                                    <span class="error invalid-feedback">{{ $message }}</span>
+                                                @enderror
+                                                {{-- Preview Logo Gelap --}}
+                                                @if ($pengaturan->PathLogoGelap)
+                                                    <div class="mt-2">
+                                                        <small class="text-muted">Preview logo kedua:</small><br>
+                                                        <img id="previewLogoGelap"
+                                                            src="{{ Storage::url($pengaturan->PathLogoGelap) }}"
+                                                            alt="Logo Gelap" style="max-height: 50px;">
+                                                    </div>
+                                                @endif
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
                                                 <label>Upload Favicon (.ico / .png)</label>
                                                 <input type="file" name="PathFavicon"
                                                     class="form-control @error('PathFavicon') is-invalid @enderror"
@@ -277,6 +302,7 @@
                                         </div>
                                     </div>
                                 </div>
+
 
                                 <!-- TAB 4: LEGAL & SEO -->
                                 <div class="tab-pane fade" id="tab-legal" role="tabpanel">
@@ -434,6 +460,17 @@
                     const reader = new FileReader();
                     reader.onload = function(e) {
                         $('#previewLogo').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(e.target.files[0]);
+                }
+            });
+
+            // Preview Logo Gelap Upload
+            $('#logoGelapInput').on('change', function(e) {
+                if (e.target.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#previewLogoGelap').attr('src', e.target.result);
                     }
                     reader.readAsDataURL(e.target.files[0]);
                 }
