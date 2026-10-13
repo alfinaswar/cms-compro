@@ -318,14 +318,28 @@
                                                     ? $childTranslation->NamaMenu
                                                     : $child->NamaMenu;
 
+                                                // Generate the child URL properly
                                                 if ($child->JenisLink === 'route' && !empty($child->RouteName)) {
                                                     try {
                                                         $childUrl = route($child->RouteName);
+                                                        // Prefix locale segment if not already present
+                                                        $parsed = parse_url($childUrl);
+                                                        // If using route() and in multi-locale,
+                                                        // pastikan linknya sudah mengandung /en atau /id sesuai $currentLocale.
+                                                        // Biasanya Laravel route() dengan url localization, jadi pastikan route diweb.php sudah ada prefix localization-nya.
+                                                        // Tidak perlu concat manual $currentLocale.
                                                     } catch (\Exception $e) {
                                                         $childUrl = route('frontend.main');
                                                     }
                                                 } elseif (!empty($child->Url) && $child->Url !== '#') {
-                                                    $childUrl = url($currentLocale . '/' . trim($child->Url, '/'));
+                                                    // Untuk link manual (Url), pastikan JANGAN tambahkan base url dua kali
+                                                    // Cek apakah $child->Url sudah berupa URL absolut
+                                                    if (preg_match('/^https?:\/\//', $child->Url)) {
+                                                        $childUrl = $child->Url;
+                                                    } else {
+                                                        // Untuk path relatif, tambahkan locale di depan (pastikan tidak double-slash)
+                                                        $childUrl = url($currentLocale . '/' . ltrim($child->Url, '/'));
+                                                    }
                                                 } else {
                                                     $childUrl = '#';
                                                 }
@@ -347,6 +361,9 @@
                                                 <span>{{ $childName }}</span>
                                             </a>
                                         @endforeach
+
+
+
                                     </div>
                                 </div>
                             </div>
@@ -1060,10 +1077,10 @@
                                 ${highlightText(article.judul, query)}
                             </h4>
                             ${article.ringkasan ? `
-                                    <p class="text-xs text-slate-500 line-clamp-1 mt-0.5">
-                                        ${highlightText(article.ringkasan, query)}
-                                    </p>
-                                ` : ''}
+                                                <p class="text-xs text-slate-500 line-clamp-1 mt-0.5">
+                                                    ${highlightText(article.ringkasan, query)}
+                                                </p>
+                                            ` : ''}
                         </div>
                         <div class="flex-shrink-0 self-center">
                             <i class="fa-solid fa-arrow-right text-slate-400 text-xs"></i>

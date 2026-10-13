@@ -14,11 +14,10 @@
                 <!-- LEFT STICKY SIDEBAR -->
                 <!-- ========================================== -->
                 <div class="lg:col-span-4 xl:col-span-3 space-y-6">
-                    <!-- Sticky Navigation Card -->
                     <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 p-5 sticky top-36">
                         <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
                             <span class="text-[11px] font-bold text-slate-500 tracking-wider uppercase">
-                                Pada Halaman Ini
+                                {{ __('investor.on_this_page') }}
                             </span>
                             <i class="fa-solid fa-bars-staggered text-slate-400 text-xs"></i>
                         </div>
@@ -29,8 +28,8 @@
                                 data-target="bagan-manajemen">
                                 <span class="text-xs font-bold w-5">01</span>
                                 <div>
-                                    <p class="text-xs font-bold leading-tight">Bagan &amp; Manajemen</p>
-                                    <p class="text-[11px] font-normal text-slate-500 mt-0.5">Hierarki korporasi &amp; dewan
+                                    <p class="text-xs font-bold leading-tight">{{ __('gcg.nav_chart') }}</p>
+                                    <p class="text-[11px] font-normal text-slate-500 mt-0.5">{{ __('gcg.nav_chart_desc') }}
                                     </p>
                                 </div>
                             </a>
@@ -40,8 +39,8 @@
                                 data-target="dokumen-gcg">
                                 <span class="text-xs font-bold text-slate-400 w-5">02</span>
                                 <div>
-                                    <p class="text-xs font-semibold leading-tight">Piagam, Kebijakan &amp; Regulasi</p>
-                                    <p class="text-[11px] font-normal text-slate-500 mt-0.5">Pedoman GCG &amp; operasional
+                                    <p class="text-xs font-semibold leading-tight">{{ __('gcg.nav_docs') }}</p>
+                                    <p class="text-[11px] font-normal text-slate-500 mt-0.5">{{ __('gcg.nav_docs_desc') }}
                                     </p>
                                 </div>
                             </a>
@@ -51,8 +50,9 @@
                                 data-target="rups">
                                 <span class="text-xs font-bold text-slate-400 w-5">03</span>
                                 <div>
-                                    <p class="text-xs font-semibold leading-tight">RUPS &amp; Risalah</p>
-                                    <p class="text-[11px] font-normal text-slate-500 mt-0.5">Keterbukaan rapat tahunan</p>
+                                    <p class="text-xs font-semibold leading-tight">{{ __('gcg.nav_rups') }}</p>
+                                    <p class="text-[11px] font-normal text-slate-500 mt-0.5">{{ __('gcg.nav_rups_desc') }}
+                                    </p>
                                 </div>
                             </a>
 
@@ -61,8 +61,9 @@
                                 data-target="komite-wbs">
                                 <span class="text-xs font-bold text-slate-400 w-5">04</span>
                                 <div>
-                                    <p class="text-xs font-semibold leading-tight">Komite Audit &amp; WBS</p>
-                                    <p class="text-[11px] font-normal text-slate-500 mt-0.5">Pengawasan &amp; pengaduan</p>
+                                    <p class="text-xs font-semibold leading-tight">{{ __('gcg.nav_audit') }}</p>
+                                    <p class="text-[11px] font-normal text-slate-500 mt-0.5">{{ __('gcg.nav_audit_desc') }}
+                                    </p>
                                 </div>
                             </a>
                         </nav>
@@ -71,10 +72,10 @@
                         <div
                             class="mt-6 pt-4 border-t border-slate-100 bg-slate-50 rounded-xl p-3.5 text-xs text-slate-700">
                             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
-                                Sekretariat Perusahaan
+                                {{ __('gcg.corp_sec_label') }}
                             </span>
                             <p class="text-[11px] text-slate-500 mb-2 leading-relaxed">
-                                Hubungi Corporate Secretary untuk informasi GCG dan relasi investor:
+                                {{ __('gcg.corp_sec_desc') }}
                             </p>
                             <div class="space-y-1.5 text-xs">
                                 <a href="mailto:{{ $bagan->EmailSekretariat }}"
@@ -95,35 +96,33 @@
                 <!-- ========================================== -->
                 <div class="lg:col-span-8 xl:col-span-9 space-y-12">
 
-                    <!-- ------------------------------------------ -->
-                    <!-- SECTION 01: BAGAN & MANAJEMEN PERSEROAN -->
-                    <!-- ------------------------------------------ -->
+                    <!-- SECTION 01: BAGAN & MANAJEMEN -->
                     <section id="bagan-manajemen" class="scroll-mt-32">
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                             <div>
                                 <span
                                     class="text-[10px] font-bold tracking-wider uppercase text-[#0051d5] bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
-                                    Hierarki Korporasi
+                                    {{ __('gcg.s1_badge') }}
                                 </span>
                                 <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-2">
-                                    Bagan Struktur Organisasi
+                                    {{ __('gcg.s1_title') }}
                                 </h2>
                                 <p class="text-xs md:text-sm text-slate-500 mt-1 max-w-2xl">
-                                    {{ $bagan->Keterangan ?? 'Memastikan efektivitas pembagian tugas yang terarah, akuntabilitas yang jelas, serta pemisahan independen antara fungsi pengawasan dan fungsi eksekutif.' }}
+                                    {{ $bagan->Keterangan ?? __('gcg.s1_desc_default') }}
                                 </p>
                             </div>
                             <div class="flex items-center gap-2 self-start">
                                 @if ($bagan->TanggalDiperbarui)
                                     <span
                                         class="text-[11px] font-medium text-slate-500 bg-slate-100 px-3 py-1.5 rounded-lg whitespace-nowrap">
-                                        <i class="fa-regular fa-calendar mr-1"></i> Diperbarui:
-                                        {{ $bagan->TanggalDiperbarui->format('d M Y') }}
+                                        <i class="fa-regular fa-calendar mr-1"></i> {{ __('gcg.updated_label') }}
+                                        {{ $bagan->TanggalDiperbarui->isoFormat('D MMM YYYY') }}
                                     </span>
                                 @endif
                                 @if ($bagan->PathFilePdf)
                                     <a href="{{ asset('storage/' . $bagan->PathFilePdf) }}" target="_blank"
                                         class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 text-[#0051d5] font-semibold text-xs rounded-lg border border-slate-200 shadow-sm transition-colors whitespace-nowrap">
-                                        <i class="fa-solid fa-download text-xs"></i> Unduh PDF
+                                        <i class="fa-solid fa-download text-xs"></i> {{ __('gcg.download_pdf') }}
                                     </a>
                                 @endif
                             </div>
@@ -133,52 +132,47 @@
                         <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 mb-8">
                             @if ($bagan->PathGambar)
                                 <div class="w-full rounded-xl overflow-hidden border border-slate-100">
-                                    <img src="{{ asset('storage/' . $bagan->PathGambar) }}" alt="Bagan Struktur Organisasi"
+                                    <img src="{{ asset('storage/' . $bagan->PathGambar) }}" alt="{{ __('gcg.s1_title') }}"
                                         class="w-full h-auto object-contain max-h-[500px] mx-auto">
                                 </div>
                             @else
-                                <!-- Default Aesthetic Structure Diagram -->
                                 <div class="p-6 bg-slate-50/60 rounded-xl border border-slate-100 text-center">
-                                    <!-- Top: RUPS -->
                                     <div class="max-w-xs mx-auto bg-[#0a557a] text-white p-3.5 rounded-xl shadow-sm mb-4">
                                         <span
-                                            class="text-[10px] uppercase tracking-widest text-sky-200 block font-bold">Kekuasaan
-                                            Tertinggi</span>
-                                        <h4 class="font-bold text-sm">RAPAT UMUM PEMEGANG SAHAM (RUPS)</h4>
+                                            class="text-[10px] uppercase tracking-widest text-sky-200 block font-bold">{{ __('gcg.diag_top_label') }}</span>
+                                        <h4 class="font-bold text-sm">{{ __('gcg.diag_rups') }}</h4>
                                     </div>
                                     <div class="w-0.5 h-6 bg-slate-300 mx-auto"></div>
 
-                                    <!-- Dual Pillars: Dewan Komisaris & Direksi -->
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto my-2">
-                                        <!-- Pengawasan -->
                                         <div class="bg-sky-50 border border-sky-200 p-4 rounded-xl text-left">
                                             <div class="flex items-center justify-between mb-1">
-                                                <span class="text-[10px] font-bold text-sky-700 uppercase">Fungsi
-                                                    Pengawasan</span>
                                                 <span
-                                                    class="text-[10px] bg-sky-200 text-sky-900 px-2 py-0.5 rounded font-bold">Independen</span>
+                                                    class="text-[10px] font-bold text-sky-700 uppercase">{{ __('gcg.diag_supervision') }}</span>
+                                                <span
+                                                    class="text-[10px] bg-sky-200 text-sky-900 px-2 py-0.5 rounded font-bold">{{ __('gcg.diag_independent') }}</span>
                                             </div>
-                                            <h4 class="font-bold text-slate-900 text-sm">DEWAN KOMISARIS</h4>
-                                            <p class="text-[11px] text-slate-500 mt-1">Komisaris Utama &amp; Komisaris
-                                                Independen</p>
+                                            <h4 class="font-bold text-slate-900 text-sm">{{ __('gcg.diag_commissioners') }}
+                                            </h4>
+                                            <p class="text-[11px] text-slate-500 mt-1">
+                                                {{ __('gcg.diag_commissioners_desc') }}</p>
                                             <div class="mt-2 pt-2 border-t border-sky-100 text-[11px] text-sky-800">
-                                                &bull; Komite Audit &bull; Nominasi &amp; Remunerasi
+                                                {{ __('gcg.diag_committees') }}
                                             </div>
                                         </div>
 
-                                        <!-- Eksekutif -->
                                         <div class="bg-[#0b1c30] text-white p-4 rounded-xl text-left">
                                             <div class="flex items-center justify-between mb-1">
-                                                <span class="text-[10px] font-bold text-sky-300 uppercase">Fungsi
-                                                    Eksekutif</span>
                                                 <span
-                                                    class="text-[10px] bg-slate-800 text-slate-200 px-2 py-0.5 rounded font-bold">Operasional</span>
+                                                    class="text-[10px] font-bold text-sky-300 uppercase">{{ __('gcg.diag_executive') }}</span>
+                                                <span
+                                                    class="text-[10px] bg-slate-800 text-slate-200 px-2 py-0.5 rounded font-bold">{{ __('gcg.diag_operational') }}</span>
                                             </div>
-                                            <h4 class="font-bold text-white text-sm">DIREKSI PERSEROAN</h4>
-                                            <p class="text-[11px] text-slate-300 mt-1">Direktur Utama &amp; Jajaran Direktur
+                                            <h4 class="font-bold text-white text-sm">{{ __('gcg.diag_directors') }}</h4>
+                                            <p class="text-[11px] text-slate-300 mt-1">{{ __('gcg.diag_directors_desc') }}
                                             </p>
                                             <div class="mt-2 pt-2 border-t border-slate-700 text-[11px] text-slate-300">
-                                                &bull; Satuan Audit Internal &bull; Sekretaris Perusahaan
+                                                {{ __('gcg.diag_directors_units') }}
                                             </div>
                                         </div>
                                     </div>
@@ -186,30 +180,27 @@
                             @endif
                         </div>
 
-                        <!-- -------------------------------------- -->
                         <!-- SUB-SECTION: MANAJEMEN PERSEROAN -->
-                        <!-- -------------------------------------- -->
                         <div>
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                                 <div>
                                     <span
                                         class="text-[10px] font-bold tracking-wider uppercase text-[#0051d5] bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
-                                        Struktur Kepemimpinan
+                                        {{ __('gcg.leadership_badge') }}
                                     </span>
                                     <h3 class="text-xl font-bold text-slate-900 mt-1">
-                                        Manajemen Perseroan
+                                        {{ __('gcg.leadership_title') }}
                                     </h3>
                                 </div>
 
-                                <!-- Tabs Toggle: Dewan Komisaris vs Direksi -->
                                 <div class="flex gap-1.5 bg-slate-100 p-1 rounded-xl self-start">
                                     <button type="button" id="tab-komisaris-btn"
                                         class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-white text-[#0051d5] shadow-sm transition-all">
-                                        Dewan Komisaris ({{ $komisaris->count() }})
+                                        {{ __('gcg.tab_commissioners') }} ({{ $komisaris->count() }})
                                     </button>
                                     <button type="button" id="tab-direksi-btn"
                                         class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all">
-                                        Direksi Perseroan ({{ $direksi->count() }})
+                                        {{ __('gcg.tab_directors') }} ({{ $direksi->count() }})
                                     </button>
                                 </div>
                             </div>
@@ -247,16 +238,17 @@
                                         <button type="button"
                                             class="btn-profil-modal inline-flex items-center gap-1.5 text-xs font-bold text-[#0051d5] hover:underline pt-3 border-t border-slate-100"
                                             data-nama="{{ $person->Nama }}" data-jabatan="{{ $person->Jabatan }}"
-                                            data-kategori="{{ $person->Kategori }}"
+                                            data-kategori="{{ __($person->Kategori) }}"
                                             data-foto="{{ $person->Foto ? asset('storage/' . $person->Foto) : '' }}"
                                             data-bio="{{ $person->ProfilLengkap ?? $person->DeskripsiSingkat }}">
-                                            Baca Profil Lengkap <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                                            {{ __('gcg.read_full_profile') }} <i
+                                                class="fa-solid fa-chevron-right text-[10px]"></i>
                                         </button>
                                     </div>
                                 @endforeach
                             </div>
 
-                            <!-- Direksi Perseroan Grid (Hidden by default, shown on tab click) -->
+                            <!-- Direksi Grid -->
                             <div id="grid-direksi" class="grid grid-cols-1 md:grid-cols-3 gap-4 hidden">
                                 @foreach ($direksi as $person)
                                     <div
@@ -289,10 +281,11 @@
                                         <button type="button"
                                             class="btn-profil-modal inline-flex items-center gap-1.5 text-xs font-bold text-[#0051d5] hover:underline pt-3 border-t border-slate-100"
                                             data-nama="{{ $person->Nama }}" data-jabatan="{{ $person->Jabatan }}"
-                                            data-kategori="{{ $person->Kategori }}"
+                                            data-kategori="{{ __($person->Kategori) }}"
                                             data-foto="{{ $person->Foto ? asset('storage/' . $person->Foto) : '' }}"
                                             data-bio="{{ $person->ProfilLengkap ?? $person->DeskripsiSingkat }}">
-                                            Baca Profil Lengkap <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                                            {{ __('gcg.read_full_profile') }} <i
+                                                class="fa-solid fa-chevron-right text-[10px]"></i>
                                         </button>
                                     </div>
                                 @endforeach
@@ -300,25 +293,21 @@
                         </div>
                     </section>
 
-                    <!-- ------------------------------------------ -->
-                    <!-- SECTION 02: DOKUMEN TATA KELOLA & REGULASI -->
-                    <!-- ------------------------------------------ -->
+                    <!-- SECTION 02: DOKUMEN TATA KELOLA -->
                     <section id="dokumen-gcg" class="scroll-mt-32">
                         <div class="mb-4">
                             <span
                                 class="text-[10px] font-bold tracking-wider uppercase text-[#0051d5] bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
-                                Regulasi &amp; Piagam Tata Kelola
+                                {{ __('gcg.s2_badge') }}
                             </span>
                             <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-2">
-                                Dokumen Tata Kelola Perusahaan
+                                {{ __('gcg.s2_title') }}
                             </h2>
                             <p class="text-xs md:text-sm text-slate-500 mt-1">
-                                Mendorong pola hubungan, sistem, dan mekanisme kerja korporat yang transparan, akuntabel,
-                                dan sesuai undang-undang pasar modal serta standar OJK.
+                                {{ __('gcg.s2_desc') }}
                             </p>
                         </div>
 
-                        <!-- Dokumen GCG Grid -->
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
                             @foreach ($dokumenGcg as $doc)
                                 <div
@@ -336,33 +325,30 @@
                                                 </span>
                                             @endif
                                         </div>
-                                        <h4 class="font-bold text-slate-900 text-sm leading-snug mb-1">
-                                            {{ $doc->Judul }}
+                                        <h4 class="font-bold text-slate-900 text-sm leading-snug mb-1">{{ $doc->Judul }}
                                         </h4>
                                         @if ($doc->Deskripsi)
-                                            <p class="text-xs text-slate-500 mb-4 line-clamp-2">
-                                                {{ $doc->Deskripsi }}
-                                            </p>
+                                            <p class="text-xs text-slate-500 mb-4 line-clamp-2">{{ $doc->Deskripsi }}</p>
                                         @endif
                                     </div>
                                     <div class="pt-3 border-t border-slate-100 flex items-center justify-end">
                                         @if ($doc->PathFile)
                                             <a href="{{ asset('storage/' . $doc->PathFile) }}" target="_blank"
                                                 class="inline-flex items-center gap-1.5 text-xs font-bold text-[#0051d5] hover:text-blue-800 transition-colors">
-                                                <i class="fa-solid fa-download text-xs"></i> Unduh
+                                                <i class="fa-solid fa-download text-xs"></i> {{ __('gcg.download') }}
                                             </a>
                                         @else
-                                            <span class="text-[11px] text-slate-400 italic">Segera Hadir</span>
+                                            <span
+                                                class="text-[11px] text-slate-400 italic">{{ __('gcg.coming_soon') }}</span>
                                         @endif
                                     </div>
                                 </div>
                             @endforeach
                         </div>
 
-                        <!-- Kebijakan Operasional Accordion Cards -->
                         <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
                             <h3 class="text-base font-bold text-slate-900 mb-4">
-                                Kebijakan Operasional, Risiko &amp; Mitra Usaha
+                                {{ __('gcg.s2_ops_title') }}
                             </h3>
 
                             <div class="space-y-3">
@@ -380,12 +366,13 @@
                                         <div
                                             class="accordion-content px-4 pb-4 text-xs text-slate-600 border-t border-slate-100 pt-3 hidden">
                                             <p class="leading-relaxed mb-3">
-                                                {{ $keb->Deskripsi ?? 'Pedoman dan standar tata kelola operasional perseroan diterapkan secara ketat guna memitigasi risiko finansial maupun reputasional.' }}
+                                                {{ $keb->Deskripsi ?? __('gcg.s2_ops_desc_default') }}
                                             </p>
                                             @if ($keb->PathFile)
                                                 <a href="{{ asset('storage/' . $keb->PathFile) }}" target="_blank"
                                                     class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-[#0051d5] font-semibold text-xs hover:bg-blue-100 transition-colors">
-                                                    <i class="fa-solid fa-file-pdf"></i> Lihat Pedoman Lengkap (PDF)
+                                                    <i class="fa-solid fa-file-pdf"></i>
+                                                    {{ __('gcg.view_full_guideline') }}
                                                 </a>
                                             @endif
                                         </div>
@@ -395,27 +382,24 @@
                         </div>
                     </section>
 
-                    <!-- ------------------------------------------ -->
                     <!-- SECTION 03: RUPS & RISALAH -->
-                    <!-- ------------------------------------------ -->
                     <section id="rups" class="scroll-mt-32">
                         <div class="mb-4">
                             <span
                                 class="text-[10px] font-bold tracking-wider uppercase text-[#0051d5] bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
-                                Keterbukaan RUPS
+                                {{ __('gcg.s3_badge') }}
                             </span>
                             <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-2">
-                                Rapat Umum Pemegang Saham (RUPS)
+                                {{ __('gcg.s3_title') }}
                             </h2>
                         </div>
 
-                        <!-- Year Tabs Navigation -->
                         <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
                             <div
                                 class="flex items-center gap-2 overflow-x-auto pb-3 border-b border-slate-100 mb-6 no-scrollbar">
                                 <span
                                     class="text-xs font-bold text-slate-400 mr-2 uppercase tracking-wider whitespace-nowrap">
-                                    PILIH TAHUN BUKU:
+                                    {{ __('gcg.s3_pick_year') }}
                                 </span>
                                 @foreach ($rupsTahun as $th)
                                     <a href="?tahun_rups={{ $th }}#rups"
@@ -425,14 +409,13 @@
                                 @endforeach
                             </div>
 
-                            <!-- Documents List for Selected Year -->
                             <div class="space-y-3">
                                 <div
                                     class="flex items-center justify-between text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-                                    <span>Berkas Dokumen RUPS Tahun {{ $selectedTahun }}</span>
+                                    <span>{{ __('gcg.s3_docs_label') }} {{ $selectedTahun }}</span>
                                     <span
                                         class="bg-emerald-50 text-emerald-700 px-2.5 py-0.5 rounded-full border border-emerald-200 text-[10px]">
-                                        Terjadwal / Selesai
+                                        {{ __('gcg.s3_status') }}
                                     </span>
                                 </div>
 
@@ -446,8 +429,7 @@
                                             </div>
                                             <div>
                                                 <h4 class="font-bold text-slate-900 text-xs md:text-sm leading-tight">
-                                                    {{ $item->Judul }}
-                                                </h4>
+                                                    {{ $item->Judul }}</h4>
                                                 @if ($item->KategoriDokumen)
                                                     <span
                                                         class="text-[11px] text-slate-400">{{ $item->KategoriDokumen }}</span>
@@ -458,55 +440,50 @@
                                             @if ($item->PathFile)
                                                 <a href="{{ asset('storage/' . $item->PathFile) }}" target="_blank"
                                                     class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-50 hover:bg-[#0099ff] text-slate-700 hover:text-white font-semibold text-xs border border-slate-200 transition-colors">
-                                                    <i class="fa-solid fa-download text-xs"></i> Unduh
+                                                    <i class="fa-solid fa-download text-xs"></i> {{ __('gcg.download') }}
                                                 </a>
                                             @else
-                                                <span class="text-xs text-slate-400 italic">Dokumen belum diunggah</span>
+                                                <span
+                                                    class="text-xs text-slate-400 italic">{{ __('gcg.s3_not_uploaded') }}</span>
                                             @endif
                                         </div>
                                     </div>
                                 @empty
                                     <div class="p-8 text-center bg-slate-50 rounded-xl text-slate-500 text-xs">
-                                        Belum ada arsip RUPS untuk tahun {{ $selectedTahun }}.
+                                        {{ __('gcg.s3_empty') }} {{ $selectedTahun }}.
                                     </div>
                                 @endforelse
                             </div>
                         </div>
                     </section>
 
-                    <!-- ------------------------------------------ -->
                     <!-- SECTION 04: KOMITE AUDIT & WBS -->
-                    <!-- ------------------------------------------ -->
                     <section id="komite-wbs" class="scroll-mt-32">
                         <div class="mb-4">
                             <span
                                 class="text-[10px] font-bold tracking-wider uppercase text-[#0051d5] bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
-                                Pengawasan Independen
+                                {{ __('gcg.s4_badge') }}
                             </span>
                             <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-2">
-                                Komite Audit &amp; Whistleblowing System
+                                {{ __('gcg.s4_title') }}
                             </h2>
                         </div>
 
-                        <!-- Audit Cards Grid -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                             <div class="bg-white rounded-xl p-5 shadow-sm border border-slate-200/80">
                                 <div
                                     class="w-10 h-10 rounded-lg bg-blue-50 text-[#0051d5] flex items-center justify-center text-base mb-3">
                                     <i class="fa-solid fa-clipboard-check"></i>
                                 </div>
-                                <h3 class="font-bold text-slate-900 text-sm mb-1">Satuan Audit Internal</h3>
+                                <h3 class="font-bold text-slate-900 text-sm mb-1">{{ __('gcg.s4_internal_audit') }}</h3>
                                 <p class="text-xs text-slate-500 leading-relaxed mb-4">
-                                    Berkedudukan untuk membantu Direksi mengevaluasi efektivitas manajemen risiko,
-                                    pengendalian internal, serta integritas proses tata kelola perseroan.
+                                    {{ __('gcg.s4_internal_audit_desc') }}
                                 </p>
-                                @php
-                                    $piagamInternal = $komiteAudit->firstWhere('Kategori', 'Satuan Audit Internal');
-                                @endphp
+                                @php $piagamInternal = $komiteAudit->firstWhere('Kategori', 'Satuan Audit Internal'); @endphp
                                 @if ($piagamInternal && $piagamInternal->PathFile)
                                     <a href="{{ asset('storage/' . $piagamInternal->PathFile) }}" target="_blank"
                                         class="inline-flex items-center gap-1.5 text-xs font-bold text-[#0051d5] hover:underline">
-                                        <i class="fa-solid fa-file-pdf"></i> Piagam Satuan Audit Internal (PDF)
+                                        <i class="fa-solid fa-file-pdf"></i> {{ __('gcg.s4_internal_audit_charter') }}
                                     </a>
                                 @endif
                             </div>
@@ -516,26 +493,22 @@
                                     class="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center text-base mb-3">
                                     <i class="fa-solid fa-user-check"></i>
                                 </div>
-                                <h3 class="font-bold text-slate-900 text-sm mb-1">Komite Audit</h3>
+                                <h3 class="font-bold text-slate-900 text-sm mb-1">{{ __('gcg.s4_audit_committee') }}</h3>
                                 <p class="text-xs text-slate-500 leading-relaxed mb-4">
-                                    Membantu dan meningkatkan peran Komisaris dalam mengawasi laporan keuangan, efektivitas
-                                    audit, dan kepatuhan terhadap regulasi pasar modal.
+                                    {{ __('gcg.s4_audit_committee_desc') }}
                                 </p>
-                                @php
-                                    $piagamKomite = $komiteAudit->firstWhere('Kategori', 'Komite Audit');
-                                @endphp
+                                @php $piagamKomite = $komiteAudit->firstWhere('Kategori', 'Komite Audit'); @endphp
                                 @if ($piagamKomite && $piagamKomite->PathFile)
                                     <a href="{{ asset('storage/' . $piagamKomite->PathFile) }}" target="_blank"
                                         class="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-700 hover:underline">
-                                        <i class="fa-solid fa-file-pdf"></i> Piagam Komite Audit (PDF)
+                                        <i class="fa-solid fa-file-pdf"></i> {{ __('gcg.s4_audit_committee_charter') }}
                                     </a>
                                 @endif
                             </div>
                         </div>
 
-                        <!-- Whistleblowing System (WBS) Card -->
+                        <!-- WBS Card -->
                         <div class="bg-[#032b43] text-white rounded-2xl p-6 md:p-8 shadow-md border border-[#004f7c]/40">
-                            <!-- Header Section -->
                             <div
                                 class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-cyan-800/40">
                                 <div>
@@ -545,43 +518,35 @@
                                             <i class="fa-solid fa-lock"></i>
                                         </div>
                                         <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-wider">
-                                            SALURAN PELAPORAN AMAN &amp; RAHASIA
+                                            {{ __('gcg.wbs_channel') }}
                                         </span>
                                     </div>
-                                    <h3 class="text-2xl font-bold text-white">
-                                        Whistleblowing System (WBS)
-                                    </h3>
+                                    <h3 class="text-2xl font-bold text-white">{{ __('gcg.wbs_title') }}</h3>
                                 </div>
                                 <div>
                                     <span
                                         class="inline-block px-3 py-1 rounded-full text-[10px] font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-500/40">
-                                        Perlindungan Pelapor
+                                        {{ __('gcg.wbs_protection') }}
                                     </span>
                                 </div>
                             </div>
 
-                            <!-- Deskripsi -->
                             <p class="text-xs text-slate-300 leading-relaxed mb-6">
-                                Penyampaian dugaan pelanggaran akuntansi, audit, kecurangan, gratifikasi atau kode etik.
-                                Perseroan menjamin kerahasiaan identitas dan perlindungan penuh dari intimidasi bagi
-                                pelapor.
+                                {{ __('gcg.wbs_desc') }}
                             </p>
 
-                            <!-- Information Box Grid -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs mb-6">
                                 <div class="bg-[#063d5e]/50 p-4 rounded-xl border border-cyan-700/30">
                                     <span
-                                        class="text-[10px] text-cyan-300/80 font-bold block uppercase tracking-wider mb-1">SURAT
-                                        FISIK TERTUTUP:</span>
-                                    <p class="font-bold text-white mt-0.5">Komite Audit PT Jasuindo Tiga Perkasa Tbk</p>
+                                        class="text-[10px] text-cyan-300/80 font-bold block uppercase tracking-wider mb-1">{{ __('gcg.wbs_physical') }}</span>
+                                    <p class="font-bold text-white mt-0.5">{{ __('gcg.wbs_physical_org') }}</p>
                                     <p class="text-[11px] text-slate-300 mt-1">Jl. Raya Betro No. 21, Sedati, Sidoarjo
                                         61253</p>
                                 </div>
                                 <div class="bg-[#063d5e]/50 p-4 rounded-xl border border-cyan-700/30">
                                     <span
-                                        class="text-[10px] text-cyan-300/80 font-bold block uppercase tracking-wider mb-1">EMAIL
-                                        RESMI FKAP:</span>
-                                    <p class="text-[11px] text-slate-300 mt-0.5">Fungsi Kepatuhan Anti Penyuapan</p>
+                                        class="text-[10px] text-cyan-300/80 font-bold block uppercase tracking-wider mb-1">{{ __('gcg.wbs_email_label') }}</span>
+                                    <p class="text-[11px] text-slate-300 mt-0.5">{{ __('gcg.wbs_email_desc') }}</p>
                                     <a href="mailto:smap@jasuindo.com"
                                         class="font-bold text-cyan-400 hover:underline block mt-1">
                                         smap@jasuindo.com
@@ -589,15 +554,12 @@
                                 </div>
                             </div>
 
-                            <!-- Footer Section -->
                             <div
                                 class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-cyan-800/40">
-                                <p class="text-[11px] text-slate-300">
-                                    Semua laporan diproses secara objektif dan rahasia.
-                                </p>
+                                <p class="text-[11px] text-slate-300">{{ __('gcg.wbs_footer_note') }}</p>
                                 <button type="button" id="btn-open-wbs"
                                     class="w-full sm:w-auto py-2.5 px-6 bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold text-xs rounded-full transition-colors shadow-sm text-center">
-                                    Kirim Laporan Pelanggaran (WBS)
+                                    {{ __('gcg.wbs_submit_btn') }}
                                 </button>
                             </div>
                         </div>
@@ -608,9 +570,7 @@
         </div>
     </section>
 
-    <!-- ========================================== -->
-    <!-- MODAL 1: PROFIL LENGKAP MANAJEMEN POPUP -->
-    <!-- ========================================== -->
+    <!-- MODAL 1: PROFIL LENGKAP -->
     <div id="modal-profil"
         class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div
@@ -633,22 +593,18 @@
                 </div>
             </div>
 
-            <div class="text-xs text-slate-700 leading-relaxed max-h-72 overflow-y-auto pr-2" id="modal-profil-bio">
-                <!-- Full bio populated via JS -->
-            </div>
+            <div class="text-xs text-slate-700 leading-relaxed max-h-72 overflow-y-auto pr-2" id="modal-profil-bio"></div>
 
             <div class="mt-6 pt-4 border-t border-slate-100 text-right">
                 <button type="button" id="close-profil-modal-btn"
                     class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold text-xs transition-colors">
-                    Tutup
+                    {{ __('gcg.close') }}
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- MODAL 2: FORM LAPORAN WHISTLEBLOWING SYSTEM (WBS) -->
-    <!-- ========================================== -->
+    <!-- MODAL 2: FORM WBS -->
     <div id="modal-wbs"
         class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div
@@ -661,78 +617,69 @@
             <div class="mb-4 pb-3 border-b border-slate-100">
                 <span
                     class="text-[10px] font-bold uppercase tracking-wider text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-100">
-                    Formulir Pengaduan Rahasia
+                    {{ __('gcg.wbs_form_badge') }}
                 </span>
-                <h3 class="text-xl font-bold text-slate-900 mt-1">
-                    Laporan Whistleblowing System (WBS)
-                </h3>
-                <p class="text-xs text-slate-500 mt-0.5">
-                    Kerahasiaan data pelapor dilindungi sepenuhnya oleh Perseroan.
-                </p>
+                <h3 class="text-xl font-bold text-slate-900 mt-1">{{ __('gcg.wbs_form_title') }}</h3>
+                <p class="text-xs text-slate-500 mt-0.5">{{ __('gcg.wbs_form_desc') }}</p>
             </div>
 
             <form id="form-wbs" enctype="multipart/form-data" class="space-y-4 text-xs">
                 @csrf
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Kategori Pelanggaran *</label>
+                    <label class="block font-bold text-slate-700 mb-1">{{ __('gcg.wbs_cat_label') }} *</label>
                     <select name="KategoriPelanggaran" required
                         class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:bg-white focus:border-[#0099ff]">
-                        <option value="">Pilih Kategori Pelanggaran...</option>
-                        <option value="Korupsi / Suap / Pemerasan">Korupsi / Suap / Pemerasan</option>
-                        <option value="Kecurangan Finansial / Penggelapan Aset">Kecurangan Finansial / Penggelapan Aset
+                        <option value="">{{ __('gcg.wbs_cat_placeholder') }}</option>
+                        <option value="Korupsi / Suap / Pemerasan">{{ __('gcg.wbs_cat_1') }}</option>
+                        <option value="Kecurangan Finansial / Penggelapan Aset">{{ __('gcg.wbs_cat_2') }}</option>
+                        <option value="Benturan Kepentingan (Conflict of Interest)">{{ __('gcg.wbs_cat_3') }}</option>
+                        <option value="Pelanggaran Kerahasiaan Data / Dokumen Sekuriti">{{ __('gcg.wbs_cat_4') }}
                         </option>
-                        <option value="Benturan Kepentingan (Conflict of Interest)">Benturan Kepentingan (Conflict of
-                            Interest)</option>
-                        <option value="Pelanggaran Kerahasiaan Data / Dokumen Sekuriti">Pelanggaran Kerahasiaan Data /
-                            Dokumen Sekuriti</option>
-                        <option value="Pelecehan / Diskriminasi di Lingkungan Kerja">Pelecehan / Diskriminasi di Lingkungan
-                            Kerja</option>
-                        <option value="Lainnya">Lainnya</option>
+                        <option value="Pelecehan / Diskriminasi di Lingkungan Kerja">{{ __('gcg.wbs_cat_5') }}</option>
+                        <option value="Lainnya">{{ __('gcg.wbs_cat_6') }}</option>
                     </select>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">Pihak yang Dilaporkan (Terlapor)</label>
-                        <input type="text" name="Terlapor" placeholder="Nama / Jabatan / Divisi..."
+                        <label class="block font-bold text-slate-700 mb-1">{{ __('gcg.wbs_reported_label') }}</label>
+                        <input type="text" name="Terlapor" placeholder="{{ __('gcg.wbs_reported_ph') }}"
                             class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:bg-white focus:border-[#0099ff]">
                     </div>
                     <div>
-                        <label class="block font-bold text-slate-700 mb-1">Perkiraan Waktu Kejadian</label>
+                        <label class="block font-bold text-slate-700 mb-1">{{ __('gcg.wbs_time_label') }}</label>
                         <input type="date" name="WaktuKejadian"
                             class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:bg-white focus:border-[#0099ff]">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Lokasi Kejadian</label>
-                    <input type="text" name="LokasiKejadian"
-                        placeholder="Contoh: Pabrik Sedati / Kantor Cabang / dsb."
+                    <label class="block font-bold text-slate-700 mb-1">{{ __('gcg.wbs_location_label') }}</label>
+                    <input type="text" name="LokasiKejadian" placeholder="{{ __('gcg.wbs_location_ph') }}"
                         class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:bg-white focus:border-[#0099ff]">
                 </div>
 
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Uraian / Kronologi Kejadian *</label>
-                    <textarea name="UraianKejadian" rows="4" required
-                        placeholder="Jelaskan secara rinci apa yang terjadi, siapa saja yang terlibat, dan kronologinya..."
+                    <label class="block font-bold text-slate-700 mb-1">{{ __('gcg.wbs_narrative_label') }} *</label>
+                    <textarea name="UraianKejadian" rows="4" required placeholder="{{ __('gcg.wbs_narrative_ph') }}"
                         class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:bg-white focus:border-[#0099ff]"></textarea>
                 </div>
 
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Lampiran Dokumen Bukti (Opsional)</label>
+                    <label class="block font-bold text-slate-700 mb-1">{{ __('gcg.wbs_attachment_label') }}</label>
                     <input type="file" name="BuktiFile"
                         class="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-[#0051d5] hover:file:bg-blue-100">
-                    <p class="text-[10px] text-slate-400 mt-1">Format: PDF, JPG, PNG, DOCX, ZIP (Maks. 10MB)</p>
+                    <p class="text-[10px] text-slate-400 mt-1">{{ __('gcg.wbs_attachment_note') }}</p>
                 </div>
 
                 <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
                     <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-2">
-                        Identitas Pelapor (Boleh Dikosongkan jika ingin Anonim)
+                        {{ __('gcg.wbs_reporter_label') }}
                     </span>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <input type="text" name="NamaPelapor" placeholder="Nama Lengkap (Opsional)"
+                        <input type="text" name="NamaPelapor" placeholder="{{ __('gcg.wbs_reporter_name_ph') }}"
                             class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs outline-none">
-                        <input type="email" name="EmailPelapor" placeholder="Email untuk korespondensi (Opsional)"
+                        <input type="email" name="EmailPelapor" placeholder="{{ __('gcg.wbs_reporter_email_ph') }}"
                             class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs outline-none">
                     </div>
                 </div>
@@ -740,11 +687,11 @@
                 <div class="pt-2 flex justify-end gap-2">
                     <button type="button" id="cancel-wbs-btn"
                         class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-xs">
-                        Batal
+                        {{ __('Cancel') }}
                     </button>
                     <button type="submit" id="submit-wbs-btn"
                         class="px-5 py-2 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-xl text-xs shadow-sm">
-                        Kirim Laporan
+                        {{ __('gcg.wbs_submit') }}
                     </button>
                 </div>
             </form>
@@ -780,7 +727,7 @@
                     });
                 }
 
-                // Accordion functionality
+                // Accordion
                 document.querySelectorAll('.accordion-btn').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const content = this.nextElementSibling;
@@ -795,7 +742,7 @@
                     });
                 });
 
-                // Modal Profil Lengkap
+                // Modal Profil
                 const modalProfil = document.getElementById('modal-profil');
                 const closeProfilBtns = [document.getElementById('close-profil-modal'), document.getElementById(
                     'close-profil-modal-btn')];
@@ -824,7 +771,6 @@
                         modalProfil.classList.remove('hidden');
                     });
                 });
-
                 closeProfilBtns.forEach(b => {
                     if (b) b.addEventListener('click', () => modalProfil.classList.add('hidden'));
                 });
@@ -835,9 +781,7 @@
                 const closeWbsBtns = [document.getElementById('close-wbs-modal'), document.getElementById(
                     'cancel-wbs-btn')];
 
-                if (btnOpenWbs) {
-                    btnOpenWbs.addEventListener('click', () => modalWbs.classList.remove('hidden'));
-                }
+                if (btnOpenWbs) btnOpenWbs.addEventListener('click', () => modalWbs.classList.remove('hidden'));
                 closeWbsBtns.forEach(b => {
                     if (b) b.addEventListener('click', () => modalWbs.classList.add('hidden'));
                 });
@@ -850,7 +794,7 @@
                         const formData = new FormData(this);
                         const submitBtn = document.getElementById('submit-wbs-btn');
                         submitBtn.disabled = true;
-                        submitBtn.innerText = 'Mengirim...';
+                        submitBtn.innerText = '{{ __('gcg.wbs_sending') }}';
 
                         fetch("{{ route('frontend.investor.wbs.store', ['locale' => app()->getLocale()]) }}", {
                                 method: 'POST',
@@ -865,12 +809,12 @@
                                 formWbs.reset();
                                 modalWbs.classList.add('hidden');
                                 submitBtn.disabled = false;
-                                submitBtn.innerText = 'Kirim Laporan';
+                                submitBtn.innerText = '{{ __('gcg.wbs_submit') }}';
                             })
                             .catch(err => {
-                                alert('Terjadi kesalahan saat mengirim laporan. Silakan coba kembali.');
+                                alert('{{ __('gcg.wbs_error') }}');
                                 submitBtn.disabled = false;
-                                submitBtn.innerText = 'Kirim Laporan';
+                                submitBtn.innerText = '{{ __('gcg.wbs_submit') }}';
                             });
                     });
                 }

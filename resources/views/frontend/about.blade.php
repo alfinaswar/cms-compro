@@ -137,6 +137,7 @@
 
                     $result[] = [
                         'year' => $year,
+                        // For timeline title, use the same font as "International Strategic Partnership" → Tailwind: font-extrabold text-slate-900
                         'title' => $tTitle ?: $fallback['title'] ?? ($en ? 'Milestone' : 'Pencapaian'),
                         'desc' => $tDesc ?: $fallback['desc'] ?? '',
                     ];
@@ -164,8 +165,7 @@
                 -ms-overflow-style: none;
                 scrollbar-width: none;
             }
-        </style>
-        <style>
+
             .mono-label {
                 font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
                 letter-spacing: .18em;
@@ -198,6 +198,15 @@
             .tab-pill {
                 transition: all .2s ease;
             }
+
+            /* Add the default font for timeline titles to match 'International Strategic Partnership' */
+            .timeline-title-font {
+                font-family: inherit;
+                font-weight: 800;
+                /* font-extrabold */
+                color: #0f172a;
+                /* text-slate-900 */
+            }
         </style>
     @endpush
 
@@ -213,24 +222,20 @@
         </div>
 
         <div class="container mx-auto px-6 relative z-10">
-            <div class="max-w-6xl mx-auto text-center"> {{-- lebar judul diperbesar dari max-w-4xl ke max-w-6xl --}}
+            <div class="max-w-6xl mx-auto text-center">
 
-                {{-- 1) NAMA / ISTILAH HALAMAN (badge kecil) --}}
                 <span
                     class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-xs font-semibold text-white tracking-wide mb-6">
                     <i class="fa-solid fa-building"></i>
                     {{ $en ? 'About Us' : 'Tentang Kami' }}
                 </span>
 
-                {{-- 2) JUDUL BESAR H1 --}}
                 <h1 class="text-3xl md:text-5xl font-extrabold text-white leading-tight mb-6 max-w-5xl mx-auto">
-                    {{-- max-w-5xl agar lebar judul lebih besar, mx-auto agar tetap center --}}
                     {{ $tr($Hero, 'Judul') ?? ($en ? 'Safeguarding Trust, Advancing' : 'Menjaga Kepercayaan, Mengembangkan') }}<br>
                     <span
                         class="text-cyan-300">{{ $tr($Hero, 'SubJudul') ?? ($en ? 'Digital Identity & Security Document Credentials' : 'Kredensial Identitas & Dokumen Sekuritas Digital') }}</span>
                 </h1>
 
-                {{-- 3) DESKRIPSI (jika ada) --}}
                 @if ($tr($Hero, 'Deskripsi'))
                     <div class="text-slate-100/90 leading-relaxed max-w-2xl mx-auto">{!! $tr($Hero, 'Deskripsi') !!}</div>
                 @else
@@ -239,7 +244,6 @@
                     </p>
                 @endif
 
-                {{-- 4) BREADCRUMB (simple, tanpa pill — sama seperti halaman lain) --}}
                 <nav class="mt-8 flex items-center justify-center space-x-2 text-sm text-slate-300">
                     <a href="{{ route('frontend.main') }}" class="hover:text-white transition-colors">
                         <i class="fa-solid fa-house mr-1"></i>{{ __('Home') }}
@@ -248,7 +252,6 @@
                     <span class="text-white font-semibold">{{ $en ? 'About Us' : 'Tentang Kami' }}</span>
                 </nav>
 
-                {{-- 5) STATS CARDS --}}
                 @if ($heroDetails->count())
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 text-left mt-10">
                         @foreach ($heroDetails as $stat)
@@ -381,7 +384,7 @@
                                 <div class="timeline-item">
                                     <p class="text-sm font-extrabold text-blue-600 mb-1">
                                         {{ $item['year'] }}
-                                        <span class="text-slate-900 font-bold ml-1">{{ $item['title'] }}</span>
+                                        <span class="timeline-title-font ml-1">{{ $item['title'] }}</span>
                                     </p>
                                     @if (!empty($item['desc']))
                                         <div class="text-xs text-slate-500 leading-relaxed">{!! $item['desc'] !!}</div>

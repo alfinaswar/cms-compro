@@ -80,19 +80,16 @@ class HalamanSolusiController extends Controller
             'translations.id.SEOTitle' => 'nullable|string|max:70',
             'translations.id.SEODescription' => 'nullable|string|max:255',
             'translations.id.SEOKeywords' => 'nullable|string|max:255',
-
             'translations.en.Judul' => 'nullable|string|max:255',
             'translations.en.DeskripsiSingkat' => 'nullable|string',
             'translations.en.Konten' => 'nullable|string',
             'translations.en.SEOTitle' => 'nullable|string|max:70',
             'translations.en.SEODescription' => 'nullable|string|max:255',
             'translations.en.SEOKeywords' => 'nullable|string|max:255',
-
             // Data Umum
             'Slug' => 'nullable|string|max:255',
             'IsPublished' => 'required|in:0,1',
             'Thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-
             // Translations Detail
             'details' => 'required|array|min:1',
             'details.*.gambar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
@@ -168,12 +165,12 @@ class HalamanSolusiController extends Controller
         return redirect()->route('halaman-solusi.index')->with('success', 'Solusi berhasil disimpan.');
     }
 
-
     /**
      * Display the specified resource.
      */
     public function show($id)
     {
+        dd($id);
         $halamanSolusi = HalamanSolusi::with('details')->where('Slug', $id)->firstOrFail();
         return view('pages.admin.halaman-solusi.show', compact('halamanSolusi'));
     }
@@ -260,7 +257,7 @@ class HalamanSolusiController extends Controller
             if ($oldDetail->Gambar && \Storage::disk('public')->exists($oldDetail->Gambar)) {
                 \Storage::disk('public')->delete($oldDetail->Gambar);
             }
-            $oldDetail->delete(); // Cascade delete akan otomatis menghapus translations-nya
+            $oldDetail->delete();  // Cascade delete akan otomatis menghapus translations-nya
         }
 
         // Buat ulang detail baru

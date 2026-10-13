@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\AboutUsController;
 use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\AdminInvestorFinansialController;
+use App\Http\Controllers\AdminInvestorInformasiLainnyaController;
+use App\Http\Controllers\AdminInvestorTataKelolaController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\BlogPostController;
 use App\Http\Controllers\ClientLogoController;
@@ -12,11 +15,8 @@ use App\Http\Controllers\HalamanSolusiController;
 use App\Http\Controllers\HeroSliderController;
 use App\Http\Controllers\HistoryPerusahaanController;
 use App\Http\Controllers\HomepageController;
-use App\Http\Controllers\JenisLaporanKeuanganController;
 use App\Http\Controllers\InvestorFrontendController;
-use App\Http\Controllers\AdminInvestorFinansialController;
-use App\Http\Controllers\AdminInvestorTataKelolaController;
-use App\Http\Controllers\AdminInvestorInformasiLainnyaController;
+use App\Http\Controllers\JenisLaporanKeuanganController;
 use App\Http\Controllers\KategoriBeritaController;
 use App\Http\Controllers\KeyFiguresController;
 use App\Http\Controllers\LandingPageController;
@@ -52,25 +52,25 @@ Route::get('/', function () {
 Auth::routes();
 Route::get('/admin/home/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-// 3. GROUP ROUTE: Semua route di dalam sini otomatis mendapat prefix /id/ atau /en/
 Route::group(['prefix' => '{locale}', 'where' => ['locale' => 'id|en']], function () {
     Route::get('/', [LandingPageController::class, 'index'])->name('frontend.main');
     Route::get('/news/', [BeritaController::class, 'news'])->name('frontend.news');
     Route::get('/news/{slug}/', [BeritaController::class, 'newsDetail'])->name('frontend.detail');
     Route::get('/halaman/{slug}/', [CustomPagesController::class, 'show'])->name('frontend.halaman-custom');
     // === INVESTOR RELATIONS (4 TABS) ===
-    Route::get('/laporan-keuangan/', [InvestorFrontendController::class, 'laporanKeuangan'])->name('frontend.laporan-keuangan');
-    Route::get('/laporan-keuangan/informasi-finansial/', [InvestorFrontendController::class, 'informasiFinansial'])->name('frontend.investor.informasi-finansial');
-    Route::get('/laporan-keuangan/tata-kelola-perusahaan/', [InvestorFrontendController::class, 'tataKelola'])->name('frontend.investor.tata-kelola');
-    Route::get('/laporan-keuangan/informasi-lainnya/', [InvestorFrontendController::class, 'informasiLainnya'])->name('frontend.investor.informasi-lainnya');
-    Route::post('/laporan-keuangan/kirim-wbs/', [InvestorFrontendController::class, 'submitWbs'])->name('frontend.investor.wbs.store');
-    Route::post('/laporan-keuangan/permintaan-dokumen/', [InvestorFrontendController::class, 'submitPermintaanDokumen'])->name('frontend.investor.permintaan-dokumen.store');
+    Route::get('/laporan-investor/', [InvestorFrontendController::class, 'laporanKeuangan'])->name('frontend.laporan-keuangan');
+    Route::get('/laporan-investor/informasi-finansial/', [InvestorFrontendController::class, 'informasiFinansial'])->name('frontend.investor.informasi-finansial');
+    Route::get('/laporan-investor/tata-kelola-perusahaan/', [InvestorFrontendController::class, 'tataKelola'])->name('frontend.investor.tata-kelola');
+    Route::get('/laporan-investor/informasi-lainnya/', [InvestorFrontendController::class, 'informasiLainnya'])->name('frontend.investor.informasi-lainnya');
+    Route::post('/laporan-investor/kirim-wbs/', [InvestorFrontendController::class, 'submitWbs'])->name('frontend.investor.wbs.store');
+    Route::post('/laporan-investor/permintaan-dokumen/', [InvestorFrontendController::class, 'submitPermintaanDokumen'])->name('frontend.investor.permintaan-dokumen.store');
     Route::get('/about-us/', [AboutUsController::class, 'show'])->name('frontend.about-us');
     Route::get('/career/', [LowonganKerjaController::class, 'career'])->name('frontend.career');
     Route::get('/career/{id}-{slug}/', [LowonganKerjaController::class, 'careerDetail'])->name('frontend.career.detail');
     Route::post('/career/{id}/apply/', [LowonganKerjaController::class, 'apply'])->name('frontend.career.apply');
     Route::get('/contact-us/', [ContactUsController::class, 'index'])->name('frontend.contact.index');
     Route::post('/store-contact-us/', [ContactUsController::class, 'store'])->name('frontend.contact.store');
+    Route::get('/solusi/{id}/', [HalamanSolusiController::class, 'show'])->name('halaman-solusi.show');
     Route::get('/{slug}/', [StaticPageController::class, 'show'])
         ->name('static-pages.show')
         ->where('slug', 'kebijakan-privasi|syarat-ketentuan|tentang-kami|faq');
@@ -139,7 +139,6 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         Route::post('/landing-page/solusi/store/', [HalamanSolusiController::class, 'store'])->name('halaman-solusi.store');
         Route::get('/landing-page/solusi/edit/{id}/', [HalamanSolusiController::class, 'edit'])->name('halaman-solusi.edit');
         Route::put('/landing-page/solusi/update/{id}/', [HalamanSolusiController::class, 'update'])->name('halaman-solusi.update');
-        Route::get('/landing-page/solusi/show/{id}/', [HalamanSolusiController::class, 'show'])->name('halaman-solusi.show');
         Route::delete('/landing-page/solusi/delete/{id}/', [HalamanSolusiController::class, 'destroy'])->name('halaman-solusi.destroy');
 
         // Routes Slider
@@ -239,7 +238,6 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         Route::post('/{id}/mark-read/', [ContactUsController::class, 'markAsRead'])->name('contact.mark-read');
         Route::post('/{id}/mark-unread/', [ContactUsController::class, 'markAsUnread'])->name('contact.mark-unread');
         Route::post('/mark-all-read/', [ContactUsController::class, 'markAllAsRead'])->name('contact.mark-all-read');
-
 
         Route::get('subjek-kontak/', [MasterSubjectController::class, 'index'])->name('subjek.index');
         Route::get('subjek-kontak/create', [MasterSubjectController::class, 'create'])->name('subjek.create');

@@ -4,22 +4,16 @@
 
 @include('frontend.investor.partials.hero-tabs')
 
-<!-- ========================================== -->
-<!-- MAIN CONTENT SECTION -->
-<!-- ========================================== -->
 <section class="py-12 bg-[#f8f9ff]">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
-            <!-- ========================================== -->
-            <!-- LEFT STICKY SIDEBAR -->
-            <!-- ========================================== -->
+            <!-- LEFT SIDEBAR -->
             <div class="lg:col-span-4 xl:col-span-3 space-y-6">
-                <!-- Sticky Navigation Card -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 p-5 sticky top-36">
                     <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
                         <span class="text-[11px] font-bold text-slate-500 tracking-wider uppercase">
-                            Pada Halaman Ini
+                            {{ __('investor.on_this_page') }}
                         </span>
                         <i class="fa-solid fa-bars-staggered text-slate-400 text-xs"></i>
                     </div>
@@ -30,81 +24,72 @@
                            data-target="lembaga-penunjang">
                             <span class="text-xs font-bold w-5">01</span>
                             <div>
-                                <p class="text-xs font-bold leading-tight">Lembaga Penunjang Pasar Modal</p>
-                                <p class="text-[11px] font-normal text-slate-500 mt-0.5">Kantor Akuntan Publik &amp; BAE</p>
+                                <p class="text-xs font-bold leading-tight">{{ __('investor.other_nav_capital_market') }}</p>
+                                <p class="text-[11px] font-normal text-slate-500 mt-0.5">{{ __('investor.other_nav_capital_market_desc') }}</p>
                             </div>
                         </a>
-
                         <a href="#keterbukaan-informasi"
                            class="flex items-start gap-3 p-2.5 rounded-lg text-slate-700 hover:bg-slate-50 text-xs transition-colors sidebar-nav-link"
                            data-target="keterbukaan-informasi">
                             <span class="text-xs font-bold text-slate-400 w-5">02</span>
                             <div>
-                                <p class="text-xs font-semibold leading-tight">Keterbukaan Informasi &amp; Pengumuman</p>
-                                <p class="text-[11px] font-normal text-slate-500 mt-0.5">Fakta material, buyback &amp; dividen</p>
+                                <p class="text-xs font-semibold leading-tight">{{ __('investor.other_nav_disclosure') }}</p>
+                                <p class="text-[11px] font-normal text-slate-500 mt-0.5">{{ __('investor.other_nav_disclosure_desc') }}</p>
                             </div>
                         </a>
-
                         <a href="#hubungi-investor"
                            class="flex items-start gap-3 p-2.5 rounded-lg text-slate-700 hover:bg-slate-50 text-xs transition-colors sidebar-nav-link"
                            data-target="hubungi-investor">
                             <span class="text-xs font-bold text-slate-400 w-5">03</span>
                             <div>
-                                <p class="text-xs font-semibold leading-tight">Hubungi Hubungan Investor</p>
-                                <p class="text-[11px] font-normal text-slate-500 mt-0.5">Hotline &amp; permohonan dokumen</p>
+                                <p class="text-xs font-semibold leading-tight">{{ __('investor.other_nav_ir') }}</p>
+                                <p class="text-[11px] font-normal text-slate-500 mt-0.5">{{ __('investor.other_nav_ir_desc') }}</p>
                             </div>
                         </a>
                     </nav>
 
-                    <!-- Transparansi Wajib Card -->
                     <div class="mt-6 pt-4 border-t border-slate-100 bg-sky-50/60 rounded-xl p-3.5 text-xs text-sky-950 border border-sky-100">
                         <div class="flex items-center gap-2 font-bold mb-1 text-sky-800">
                             <i class="fa-solid fa-file-circle-check text-sky-600"></i>
-                            Transparansi Wajib
+                            {{ __('investor.mandatory_title') }}
                         </div>
                         <p class="text-[11px] text-sky-700 leading-relaxed">
-                            Keterbukaan informasi disampaikan secara serentak ke <strong>PT Bursa Efek Indonesia (IDXNet)</strong> dan <strong>Otoritas Jasa Keuangan (SPE-OJK)</strong>.
+                            {!! __('investor.mandatory_desc') !!}
                         </p>
                     </div>
 
-                    <!-- Komitmen Investor Card -->
                     <div class="bg-[#0b1c30] text-white rounded-xl p-4 shadow-sm">
                         <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
-                            KOMITMEN INVESTOR
+                            {{ __('investor.commitment_label') }}
                         </span>
                         <div class="flex items-baseline gap-2 mb-1">
                             <span class="text-3xl font-extrabold text-white">100%</span>
-                            <span class="text-xs font-medium text-emerald-400">Kepatuhan Pelaporan</span>
+                            <span class="text-xs font-medium text-emerald-400">{{ __('investor.commitment_stat') }}</span>
                         </div>
                         <p class="text-[11px] text-slate-300 leading-relaxed">
-                            Jasuindo menerapkan tata kelola pelaporan keuangan yang tepat waktu sesuai standar IFRS dan Standar Akuntansi Keuangan (SAK).
+                            {{ __('investor.commitment_desc') }}
                         </p>
                     </div>
                 </div>
             </div>
 
-            <!-- ========================================== -->
-            <!-- RIGHT CONTENT AREA -->
-            <!-- ========================================== -->
+            <!-- RIGHT CONTENT -->
             <div class="lg:col-span-8 xl:col-span-9 space-y-12">
 
-                <!-- ------------------------------------------ -->
-                <!-- SECTION 01: LEMBAGA PENUNJANG PASAR MODAL -->
-                <!-- ------------------------------------------ -->
+                <!-- SECTION 01: LEMBAGA PENUNJANG -->
                 <section id="lembaga-penunjang" class="scroll-mt-32">
                     <div class="mb-4">
                         <span class="text-[10px] font-bold tracking-wider uppercase text-[#0051d5] bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
-                            Profesi Independen
+                            {{ __('investor.other_s1_badge') }}
                         </span>
                         <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-2 font-serif" style="font-family: 'Noto Serif', serif, system-ui;">
-                            Lembaga Penunjang Pasar Modal
+                            {{ __('investor.other_s1_title') }}
                         </h2>
                         <p class="text-xs md:text-sm text-slate-500 mt-1 max-w-2xl">
-                            Institusi dan profesi penunjang pasar modal yang ditunjuk secara resmi oleh Perseroan untuk menjaga independensi, akuntabilitas, serta kepatuhan tata kelola publik.
+                            {{ __('investor.other_s1_desc') }}
                         </p>
                     </div>
 
-                    <!-- Cards of Lembaga Penunjang -->
                     <div class="space-y-4">
                         @foreach($lembagaList as $lembaga)
                             <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 hover:border-[#0099ff] transition-all">
@@ -115,11 +100,9 @@
                                         </div>
                                         <div>
                                             <span class="text-[10px] font-bold uppercase tracking-wider text-[#0051d5] block mb-0.5">
-                                                {{ $lembaga->Kategori }}
+                                                {{ $lembaga->Kategori === 'Biro Administrasi Efek (BAE)' ? __('investor.other_cat_bae') : __('investor.other_cat_auditor') }}
                                             </span>
-                                            <h3 class="font-bold text-slate-900 text-base md:text-lg leading-snug">
-                                                {{ $lembaga->NamaInstitusi }}
-                                            </h3>
+                                            <h3 class="font-bold text-slate-900 text-base md:text-lg leading-snug">{{ $lembaga->NamaInstitusi }}</h3>
                                             @if($lembaga->Afiliasi)
                                                 <p class="text-xs text-slate-500 mt-0.5">{{ $lembaga->Afiliasi }}</p>
                                             @endif
@@ -139,27 +122,21 @@
                                     @if($lembaga->KantorPusat)
                                         <div class="bg-slate-50/70 p-3.5 rounded-xl border border-slate-100">
                                             <span class="font-bold text-slate-800 block mb-1">
-                                                {{ $lembaga->Kategori === 'Biro Administrasi Efek (BAE)' ? 'Alamat Operasional:' : 'Kantor Pusat:' }}
+                                                {{ $lembaga->Kategori === 'Biro Administrasi Efek (BAE)' ? __('investor.other_address_operational') : __('investor.other_address_hq') }}
                                             </span>
-                                            <p class="whitespace-pre-line leading-relaxed text-slate-600 text-[11px]">
-                                                {{ $lembaga->KantorPusat }}
-                                            </p>
+                                            <p class="whitespace-pre-line leading-relaxed text-slate-600 text-[11px]">{{ $lembaga->KantorPusat }}</p>
                                         </div>
                                     @endif
 
                                     @if($lembaga->Cabang)
                                         <div class="bg-slate-50/70 p-3.5 rounded-xl border border-slate-100">
-                                            <span class="font-bold text-slate-800 block mb-1">Cabang Surabaya:</span>
-                                            <p class="whitespace-pre-line leading-relaxed text-slate-600 text-[11px]">
-                                                {{ $lembaga->Cabang }}
-                                            </p>
+                                            <span class="font-bold text-slate-800 block mb-1">{{ __('investor.other_address_branch') }}:</span>
+                                            <p class="whitespace-pre-line leading-relaxed text-slate-600 text-[11px]">{{ $lembaga->Cabang }}</p>
                                         </div>
                                     @elseif($lembaga->Layanan)
                                         <div class="bg-slate-50/70 p-3.5 rounded-xl border border-slate-100">
-                                            <span class="font-bold text-slate-800 block mb-1">Ruang Lingkup Layanan:</span>
-                                            <p class="text-[11px] text-slate-600 leading-relaxed">
-                                                {{ $lembaga->Layanan }}
-                                            </p>
+                                            <span class="font-bold text-slate-800 block mb-1">{{ __('investor.other_scope_label') }}:</span>
+                                            <p class="text-[11px] text-slate-600 leading-relaxed">{{ $lembaga->Layanan }}</p>
                                         </div>
                                     @endif
                                 </div>
@@ -168,62 +145,54 @@
                     </div>
                 </section>
 
-                <!-- ------------------------------------------ -->
                 <!-- SECTION 02: KETERBUKAAN INFORMASI -->
-                <!-- ------------------------------------------ -->
                 <section id="keterbukaan-informasi" class="scroll-mt-32">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                         <div>
                             <span class="text-[10px] font-bold tracking-wider uppercase text-[#0051d5] bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
-                                Arsip Regulasi
+                                {{ __('investor.other_s2_badge') }}
                             </span>
                             <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-2 font-serif" style="font-family: 'Noto Serif', serif, system-ui;">
-                                Keterbukaan Informasi &amp; Pengumuman Material
+                                {{ __('investor.other_s2_title') }}
                             </h2>
-                            <p class="text-xs md:text-sm text-slate-500 mt-1">
-                                Arsip lengkap pengumuman resmi keterbukaan informasi fakta material, dividen interim, aksi korporasi, serta buletin berkala Perseroan.
-                            </p>
+                            <p class="text-xs md:text-sm text-slate-500 mt-1">{{ __('investor.other_s2_desc') }}</p>
                         </div>
                         <span class="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-xl self-start whitespace-nowrap">
-                            <i class="fa-solid fa-box-archive mr-1.5 text-slate-400"></i> {{ $keterbukaanList->total() }} Dokumen Tersisip
+                            <i class="fa-solid fa-box-archive mr-1.5 text-slate-400"></i> {{ $keterbukaanList->total() }} {{ __('investor.other_s2_doc_count') }}
                         </span>
                     </div>
 
-                    <!-- Search and Filters Form -->
                     <form method="GET" action="{{ route('frontend.investor.informasi-lainnya', ['locale' => app()->getLocale()]) }}#keterbukaan-informasi"
                           class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 mb-6">
                         <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
                             <div class="sm:col-span-6 relative">
                                 <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                                 <input type="text" name="q" value="{{ request('q') }}"
-                                       placeholder="Cari keterbukaan informasi, dividen, buyback, dsb..."
+                                       placeholder="{{ __('investor.other_s2_search_placeholder') }}"
                                        class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:bg-white focus:border-[#0099ff] outline-none">
                             </div>
-
                             <div class="sm:col-span-3">
                                 <select name="tahun" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 outline-none">
-                                    <option value="all">Semua Tahun</option>
+                                    <option value="all">{{ __('investor.other_s2_all_years') }}</option>
                                     @foreach($tahunList as $th)
-                                        <option value="{{ $th }}" {{ request('tahun') == $th ? 'selected' : '' }}>Tahun {{ $th }}</option>
+                                        <option value="{{ $th }}" {{ request('tahun') == $th ? 'selected' : '' }}>{{ __('investor.other_s2_year_prefix') }} {{ $th }}</option>
                                     @endforeach
                                 </select>
                             </div>
-
                             <div class="sm:col-span-3 flex gap-2">
                                 <select name="kategori" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 outline-none">
-                                    <option value="all">Semua Kategori</option>
+                                    <option value="all">{{ __('investor.other_s2_all_categories') }}</option>
                                     @foreach($kategoriList as $kat)
-                                        <option value="{{ $kat }}" {{ request('kategori') == $kat ? 'selected' : '' }}>{{ $kat }}</option>
+                                        <option value="{{ $kat }}" {{ request('kategori') == $kat ? 'selected' : '' }}>{{ __($kat) }}</option>
                                     @endforeach
                                 </select>
                                 <button type="submit" class="px-4 py-2 bg-[#0099ff] hover:bg-blue-600 text-white rounded-xl text-xs font-bold transition-colors">
-                                    Filter
+                                    {{ __('Filter') }}
                                 </button>
                             </div>
                         </div>
                     </form>
 
-                    <!-- Document Cards List -->
                     <div class="space-y-3 mb-6">
                         @forelse($keterbukaanList as $item)
                             @php
@@ -243,22 +212,18 @@
                                         <div>
                                             <div class="flex flex-wrap items-center gap-2 mb-1.5">
                                                 <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border {{ $badgeColor }}">
-                                                    {{ $item->Kategori }}
+                                                    {{ __($item->Kategori) }}
                                                 </span>
                                                 <span class="text-[11px] text-slate-400 font-medium">
-                                                    {{ $item->TanggalPublikasi ? $item->TanggalPublikasi->format('d F Y') : '-' }}
+                                                    {{ $item->TanggalPublikasi ? $item->TanggalPublikasi->isoFormat('D MMMM YYYY') : '-' }}
                                                 </span>
                                                 @if($item->FileSize)
                                                     <span class="text-[10px] text-slate-400">&bull; PDF ({{ $item->FileSize }})</span>
                                                 @endif
                                             </div>
-                                            <h3 class="font-bold text-slate-900 text-sm md:text-base leading-snug">
-                                                {{ $item->Judul }}
-                                            </h3>
+                                            <h3 class="font-bold text-slate-900 text-sm md:text-base leading-snug">{{ $item->Judul }}</h3>
                                             @if($item->Deskripsi)
-                                                <p class="text-xs text-slate-500 mt-1 leading-relaxed line-clamp-2">
-                                                    {{ $item->Deskripsi }}
-                                                </p>
+                                                <p class="text-xs text-slate-500 mt-1 leading-relaxed line-clamp-2">{{ $item->Deskripsi }}</p>
                                             @endif
                                         </div>
                                     </div>
@@ -266,88 +231,66 @@
                                     @if($item->PathFile)
                                         <a href="{{ asset('storage/' . $item->PathFile) }}" target="_blank"
                                            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-50 hover:bg-[#0099ff] text-slate-700 hover:text-white font-semibold text-xs border border-slate-200 transition-colors self-end sm:self-center whitespace-nowrap shadow-sm">
-                                            <i class="fa-solid fa-download text-xs"></i> Unduh PDF
+                                            <i class="fa-solid fa-download text-xs"></i> {{ __('investor.other_s2_download') }}
                                         </a>
                                     @endif
                                 </div>
                             </div>
                         @empty
                             <div class="p-8 text-center bg-white rounded-2xl border border-slate-200 text-slate-500 text-xs">
-                                Tidak ada dokumen keterbukaan informasi yang sesuai dengan filter pencarian.
+                                {{ __('investor.other_s2_empty') }}
                             </div>
                         @endforelse
                     </div>
 
-                    <!-- Pagination -->
                     @if($keterbukaanList->hasPages())
-                        <div class="flex justify-center mt-6">
-                            {{ $keterbukaanList->links() }}
-                        </div>
+                        <div class="flex justify-center mt-6">{{ $keterbukaanList->links() }}</div>
                     @endif
                 </section>
 
-                <!-- ------------------------------------------ -->
                 <!-- SECTION 03: HUBUNGI HUBUNGAN INVESTOR -->
-                <!-- ------------------------------------------ -->
                 <section id="hubungi-investor" class="scroll-mt-32">
                     <div class="mb-4">
                         <span class="text-[10px] font-bold tracking-wider uppercase text-[#0051d5] bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
-                            Akses Korporasi
+                            {{ __('investor.other_s3_badge') }}
                         </span>
                         <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-2 font-serif" style="font-family: 'Noto Serif', serif, system-ui;">
-                            Hubungi Hubungan Investor Jasuindo
+                            {{ __('investor.other_s3_title') }}
                         </h2>
-                        <p class="text-xs md:text-sm text-slate-500 mt-1">
-                            Tim Sekretariat Perusahaan dan Hubungan Investor senantiasa siap melayani pertanyaan seputar tata kelola, hak suara saham, serta jadwal acara keterbukaan publik.
-                        </p>
+                        <p class="text-xs md:text-sm text-slate-500 mt-1">{{ __('investor.other_s3_desc') }}</p>
                     </div>
 
-                    <!-- Contact Cards -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                         <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
                             <div class="w-10 h-10 rounded-xl bg-blue-50 text-[#0051d5] flex items-center justify-center text-base mb-3">
                                 <i class="fa-regular fa-envelope"></i>
                             </div>
                             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
-                                Surat Elektronik Resmi
+                                {{ __('investor.other_s3_email_label') }}
                             </span>
-                            <a href="mailto:corsec@jasuindo.com" class="text-sm md:text-base font-bold text-[#0051d5] hover:underline block mb-2">
-                                corsec@jasuindo.com
-                            </a>
-                            <p class="text-xs text-slate-500 leading-relaxed">
-                                Gunakan email ini untuk korespondensi resmi analis pasar modal, pendaftaran RUPS, dan klarifikasi keterbukaan berita.
-                            </p>
+                            <a href="mailto:corsec@jasuindo.com" class="text-sm md:text-base font-bold text-[#0051d5] hover:underline block mb-2">corsec@jasuindo.com</a>
+                            <p class="text-xs text-slate-500 leading-relaxed">{{ __('investor.other_s3_email_desc') }}</p>
                         </div>
-
                         <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
                             <div class="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-base mb-3">
                                 <i class="fa-solid fa-phone"></i>
                             </div>
                             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
-                                Hotline Langsung Sidoarjo &amp; Jakarta
+                                {{ __('investor.other_s3_phone_label') }}
                             </span>
-                            <span class="text-sm md:text-base font-bold text-slate-900 block mb-2">
-                                +62 31 891 0619
-                            </span>
-                            <p class="text-xs text-slate-500 leading-relaxed">
-                                Layanan aktif pada hari kerja bursa: Senin – Jumat pukul 08.30 – 17.00 WIB (kecuali hari libur nasional).
-                            </p>
+                            <span class="text-sm md:text-base font-bold text-slate-900 block mb-2">+62 31 891 0619</span>
+                            <p class="text-xs text-slate-500 leading-relaxed">{{ __('investor.other_s3_phone_desc') }}</p>
                         </div>
                     </div>
 
-                    <!-- Request Physical Report CTA Banner -->
                     <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-4">
                         <div>
-                            <h4 class="font-bold text-slate-900 text-sm">
-                                Membutuhkan salinan fisik Laporan Tahunan atau Prospektus?
-                            </h4>
-                            <p class="text-xs text-slate-500 mt-0.5">
-                                Kami mengirimkan dokumen cetak resmi secara berkala kepada analis dan pemegang saham yang terverifikasi.
-                            </p>
+                            <h4 class="font-bold text-slate-900 text-sm">{{ __('investor.other_s3_physical_title') }}</h4>
+                            <p class="text-xs text-slate-500 mt-0.5">{{ __('investor.other_s3_physical_desc') }}</p>
                         </div>
                         <button type="button" id="btn-open-permintaan"
                                 class="px-5 py-2.5 rounded-xl bg-[#0b1c30] hover:bg-slate-800 text-white font-bold text-xs transition-colors shadow-sm whitespace-nowrap self-stretch sm:self-auto text-center">
-                            <i class="fa-solid fa-paper-plane mr-1.5"></i> Kirim Permintaan Dokumen
+                            <i class="fa-solid fa-paper-plane mr-1.5"></i> {{ __('investor.other_s3_physical_btn') }}
                         </button>
                     </div>
                 </section>
@@ -357,9 +300,7 @@
     </div>
 </section>
 
-<!-- ========================================== -->
-<!-- MODAL: PERMINTAAN SALINAN FISIK DOKUMEN -->
-<!-- ========================================== -->
+<!-- MODAL PERMINTAAN DOKUMEN -->
 <div id="modal-permintaan" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto relative">
         <button type="button" id="close-permintaan-modal" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-lg">
@@ -368,71 +309,61 @@
 
         <div class="mb-4 pb-3 border-b border-slate-100">
             <span class="text-[10px] font-bold uppercase tracking-wider text-[#0051d5] bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
-                Layanan Cetak Investor
+                {{ __('investor.modal_service_label') }}
             </span>
-            <h3 class="text-xl font-bold text-slate-900 mt-1">
-                Permintaan Salinan Fisik Dokumen
-            </h3>
-            <p class="text-xs text-slate-500 mt-0.5">
-                Silakan isi alamat lengkap pengiriman untuk pengiriman berkas cetak resmi.
-            </p>
+            <h3 class="text-xl font-bold text-slate-900 mt-1">{{ __('investor.modal_title') }}</h3>
+            <p class="text-xs text-slate-500 mt-0.5">{{ __('investor.modal_desc') }}</p>
         </div>
 
         <form id="form-permintaan-dokumen" class="space-y-3.5 text-xs">
             @csrf
             <div>
-                <label class="block font-bold text-slate-700 mb-1">Nama Lengkap *</label>
-                <input type="text" name="Nama" required placeholder="Nama Anda atau perwakilan institusi..."
+                <label class="block font-bold text-slate-700 mb-1">{{ __('investor.modal_name') }} *</label>
+                <input type="text" name="Nama" required placeholder="{{ __('investor.modal_name_ph') }}"
                        class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:bg-white focus:border-[#0099ff]">
             </div>
-
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Email *</label>
+                    <label class="block font-bold text-slate-700 mb-1">{{ __('investor.modal_email') }} *</label>
                     <input type="email" name="Email" required placeholder="nama@email.com"
                            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:bg-white focus:border-[#0099ff]">
                 </div>
                 <div>
-                    <label class="block font-bold text-slate-700 mb-1">Nomor Telepon / WA *</label>
+                    <label class="block font-bold text-slate-700 mb-1">{{ __('investor.modal_phone') }} *</label>
                     <input type="text" name="Telepon" required placeholder="+62 812..."
                            class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:bg-white focus:border-[#0099ff]">
                 </div>
             </div>
-
             <div>
-                <label class="block font-bold text-slate-700 mb-1">Institusi / Perusahaan (Opsional)</label>
-                <input type="text" name="Institusi" placeholder="Sekuritas, universitas, atau kantor..."
+                <label class="block font-bold text-slate-700 mb-1">{{ __('investor.modal_institution') }}</label>
+                <input type="text" name="Institusi" placeholder="{{ __('investor.modal_institution_ph') }}"
                        class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:bg-white focus:border-[#0099ff]">
             </div>
-
             <div>
-                <label class="block font-bold text-slate-700 mb-1">Jenis Dokumen yang Diminta *</label>
+                <label class="block font-bold text-slate-700 mb-1">{{ __('investor.modal_doc_type') }} *</label>
                 <select name="JenisDokumen" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:bg-white focus:border-[#0099ff]">
-                    <option value="Laporan Tahunan (Annual Report) Terbaru">Laporan Tahunan (Annual Report) Terbaru</option>
-                    <option value="Laporan Keberlanjutan (Sustainability Report)">Laporan Keberlanjutan (Sustainability Report)</option>
-                    <option value="Prospektus Ringkas Korporasi">Prospektus Ringkas Korporasi</option>
-                    <option value="Profil Perusahaan (Company Profile Book)">Profil Perusahaan (Company Profile Book)</option>
+                    <option value="Laporan Tahunan (Annual Report) Terbaru">{{ __('investor.modal_doc_type_ar') }}</option>
+                    <option value="Laporan Keberlanjutan (Sustainability Report)">{{ __('investor.modal_doc_type_sr') }}</option>
+                    <option value="Prospektus Ringkas Korporasi">{{ __('investor.modal_doc_type_prospectus') }}</option>
+                    <option value="Profil Perusahaan (Company Profile Book)">{{ __('investor.modal_doc_type_profile') }}</option>
                 </select>
             </div>
-
             <div>
-                <label class="block font-bold text-slate-700 mb-1">Alamat Lengkap Pengiriman *</label>
-                <textarea name="AlamatPengiriman" rows="3" required placeholder="Nama jalan, gedung/lantai, nomor, RT/RW, kota, provinsi, dan kode pos..."
+                <label class="block font-bold text-slate-700 mb-1">{{ __('investor.modal_address') }} *</label>
+                <textarea name="AlamatPengiriman" rows="3" required placeholder="{{ __('investor.modal_address_ph') }}"
                           class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:bg-white focus:border-[#0099ff]"></textarea>
             </div>
-
             <div>
-                <label class="block font-bold text-slate-700 mb-1">Catatan Tambahan</label>
-                <input type="text" name="Catatan" placeholder="Kebutuhan khusus atau tujuan permintaan berkas..."
+                <label class="block font-bold text-slate-700 mb-1">{{ __('investor.modal_notes') }}</label>
+                <input type="text" name="Catatan" placeholder="{{ __('investor.modal_notes_ph') }}"
                        class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:bg-white focus:border-[#0099ff]">
             </div>
-
             <div class="pt-2 flex justify-end gap-2">
                 <button type="button" id="cancel-permintaan-btn" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-xs">
-                    Batal
+                    {{ __('Cancel') }}
                 </button>
                 <button type="submit" id="submit-permintaan-btn" class="px-5 py-2 bg-[#0099ff] hover:bg-blue-600 text-white font-bold rounded-xl text-xs shadow-sm">
-                    Kirim Permintaan
+                    {{ __('investor.modal_submit') }}
                 </button>
             </div>
         </form>
@@ -442,19 +373,12 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Modal Permintaan Dokumen
         const modal = document.getElementById('modal-permintaan');
         const btnOpen = document.getElementById('btn-open-permintaan');
         const closeBtns = [document.getElementById('close-permintaan-modal'), document.getElementById('cancel-permintaan-btn')];
+        if (btnOpen) btnOpen.addEventListener('click', () => modal.classList.remove('hidden'));
+        closeBtns.forEach(b => { if (b) b.addEventListener('click', () => modal.classList.add('hidden')); });
 
-        if (btnOpen) {
-            btnOpen.addEventListener('click', () => modal.classList.remove('hidden'));
-        }
-        closeBtns.forEach(b => {
-            if (b) b.addEventListener('click', () => modal.classList.add('hidden'));
-        });
-
-        // Submit Permintaan Form via Ajax
         const form = document.getElementById('form-permintaan-dokumen');
         if (form) {
             form.addEventListener('submit', function (e) {
@@ -462,14 +386,11 @@
                 const formData = new FormData(this);
                 const submitBtn = document.getElementById('submit-permintaan-btn');
                 submitBtn.disabled = true;
-                submitBtn.innerText = 'Mengirim...';
+                submitBtn.innerText = '{{ __('investor.modal_sending') }}';
 
                 fetch("{{ route('frontend.investor.permintaan-dokumen.store', ['locale' => app()->getLocale()]) }}", {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
+                    method: 'POST', body: formData,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
                 })
                 .then(res => res.json())
                 .then(data => {
@@ -477,12 +398,12 @@
                     form.reset();
                     modal.classList.add('hidden');
                     submitBtn.disabled = false;
-                    submitBtn.innerText = 'Kirim Permintaan';
+                    submitBtn.innerText = '{{ __('investor.modal_submit') }}';
                 })
                 .catch(err => {
-                    alert('Terjadi kendala saat mengirimkan permohonan dokumen. Silakan hubungi langsung via corsec@jasuindo.com.');
+                    alert('{{ __('investor.modal_error') }}');
                     submitBtn.disabled = false;
-                    submitBtn.innerText = 'Kirim Permintaan';
+                    submitBtn.innerText = '{{ __('investor.modal_submit') }}';
                 });
             });
         }
