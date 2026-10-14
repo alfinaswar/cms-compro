@@ -157,13 +157,27 @@
 
     @push('styles')
         <style>
-            .scrollbar-hide::-webkit-scrollbar {
-                display: none;
+            html {
+                font-size: 16px !important;
             }
 
-            .scrollbar-hide {
-                -ms-overflow-style: none;
-                scrollbar-width: none;
+            body,
+            .text-base {
+                font-size: 16px !important;
+            }
+
+            .text-xs {
+                font-size: 15px !important;
+            }
+
+            .text-sm {
+                font-size: 16px !important;
+            }
+
+            .text-[10px],
+            .text-[9px],
+            .text-[11px] {
+                font-size: 13px !important;
             }
 
             .mono-label {
@@ -203,9 +217,27 @@
             .timeline-title-font {
                 font-family: inherit;
                 font-weight: 800;
-                /* font-extrabold */
                 color: #0f172a;
-                /* text-slate-900 */
+            }
+
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+
+            .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+
+            /* Responsive size adjustment for headings and subheadlines */
+            h1,
+            .text-3xl,
+            .text-4xl,
+            .md\:text-4xl,
+            .md\:text-5xl,
+            .text-2xl,
+            .md\:text-3xl {
+                /* these will still use tailwind's font-size so don't override */
             }
         </style>
     @endpush

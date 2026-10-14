@@ -274,7 +274,8 @@
                                                     </span>
                                                     @if ($item->FileSize)
                                                         <span class="text-[10px] text-slate-400">&bull; PDF
-                                                            ({{ $item->FileSize }})</span>
+                                                            ({{ $item->FileSize }})
+                                                        </span>
                                                     @endif
                                                 </div>
                                                 <h3 class="font-bold text-slate-900 text-sm md:text-base leading-snug">
@@ -319,7 +320,6 @@
                                 class="text-[10px] font-bold tracking-wider uppercase text-[#0051d5] bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
                                 {{ __('investor.other_s3_badge') }}
                             </span>
-                            <!-- FONT DIUBAH: Menghapus font-serif dan inline style -->
                             <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-2">
                                 {{ __('investor.other_s3_title') }}
                             </h2>
@@ -335,9 +335,9 @@
                                 <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
                                     {{ __('investor.other_s3_email_label') }}
                                 </span>
-                                <a href="mailto:corsec@jasuindo.com"
+                                <a href="mailto:{{ $kantor->HubunganInvestorEmail ?? 'corporate@jasuindo.com' }}"
                                     class="text-sm md:text-base font-bold text-[#0051d5] hover:underline block mb-2">
-                                    corsec@jasuindo.com
+                                    {{ $kantor?->Email ?? 'corporate@jasuindo.com' }}
                                 </a>
                                 <p class="text-xs text-slate-500 leading-relaxed">{{ __('investor.other_s3_email_desc') }}
                                 </p>
@@ -351,8 +351,9 @@
                                 <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
                                     {{ __('investor.other_s3_phone_label') }}
                                 </span>
-                                <span class="text-sm md:text-base font-bold text-slate-900 block mb-2">+62 31 891
-                                    0619</span>
+                                <span class="text-sm md:text-base font-bold text-slate-900 block mb-2">
+                                    {{ $kantor?->NomorTelepon ?? '+62 31 891 0619' }}
+                                </span>
                                 <p class="text-xs text-slate-500 leading-relaxed">{{ __('investor.other_s3_phone_desc') }}
                                 </p>
                             </div>
@@ -364,6 +365,12 @@
                                 <h4 class="font-bold text-slate-900 text-sm">{{ __('investor.other_s3_physical_title') }}
                                 </h4>
                                 <p class="text-xs text-slate-500 mt-0.5">{{ __('investor.other_s3_physical_desc') }}</p>
+                                @if ($kantor->AlamatLengkap)
+                                    <div class="mt-2 text-xs text-slate-700">
+                                        <i class="fa-solid fa-location-dot mr-1 text-[13px] text-[#0051d5]"></i>
+                                        {{ $kantor->AlamatLengkap }}
+                                    </div>
+                                @endif
                             </div>
                             <button type="button" id="btn-open-permintaan"
                                 class="px-5 py-2.5 rounded-xl bg-[#0b1c30] hover:bg-slate-800 text-white font-bold text-xs transition-colors shadow-sm whitespace-nowrap self-stretch sm:self-auto text-center">
@@ -371,6 +378,7 @@
                             </button>
                         </div>
                     </section>
+
 
                 </div>
             </div>

@@ -140,41 +140,49 @@
                         </div>
 
                         {{-- Support Box: Butuh Bantuan? --}}
-                        <div
-                            class="bg-gradient-to-br from-[#f0f7ff] to-[#f8fbff] rounded-2xl border border-[#d6e8ff] p-5 shadow-sm">
-                            <div class="flex items-start gap-3 mb-2.5">
-                                <div
-                                    class="w-9 h-9 rounded-xl bg-[#0099ff] text-white flex items-center justify-center flex-shrink-0 shadow-sm shadow-[#0099ff]/30">
-                                    <i class="fa-solid fa-headset text-sm"></i>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-slate-900 text-sm">
-                                        {{ $currentLocale === 'en' ? 'Need Assistance?' : 'Butuh Bantuan?' }}
-                                    </h4>
-                                    <p class="text-xs text-slate-500 mt-0.5 leading-relaxed">
-                                        {{ $currentLocale === 'en' ? 'Contact our Investor Relations team for inquiries.' : 'Hubungi Tim Hubungan Investor kami untuk pertanyaan lebih lanjut.' }}
-                                    </p>
-                                </div>
-                            </div>
-
+                        @if ($kantor)
                             <div
-                                class="mt-3.5 pt-3 border-t border-[#d6e8ff]/80 text-xs text-slate-600 space-y-1.5 font-medium">
-                                <div class="flex items-center gap-2">
-                                    <i class="fa-regular fa-envelope text-[#0099ff] w-3.5"></i>
-                                    <a href="mailto:corsec@jasuindo.com"
-                                        class="hover:text-[#0099ff] transition-colors">corsec@jasuindo.com</a>
+                                class="bg-gradient-to-br from-[#f0f7ff] to-[#f8fbff] rounded-2xl border border-[#d6e8ff] p-5 shadow-sm">
+                                <div class="flex items-start gap-3 mb-2.5">
+                                    <div
+                                        class="w-9 h-9 rounded-xl bg-[#0099ff] text-white flex items-center justify-center flex-shrink-0 shadow-sm shadow-[#0099ff]/30">
+                                        <i class="fa-solid fa-building-user text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-slate-900 text-sm">
+                                            {{ $currentLocale === 'en' ? 'Investor Relations Office' : 'Kantor Hubungan Investor' }}
+                                        </h4>
+                                        <p class="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                                            {!! nl2br(e($kantor->AlamatLengkap ?? '-')) !!}
+                                        </p>
+                                    </div>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <i class="fa-solid fa-phone text-[#0099ff] w-3.5"></i>
-                                    <span>(031) 891 0619</span>
-                                </div>
-                            </div>
 
-                            <a href="{{ route('frontend.investor.informasi-lainnya', ['locale' => $currentLocale]) }}#hubungi-investor"
-                                class="mt-4 block w-full py-2 bg-white hover:bg-slate-50 text-[#0099ff] border border-[#0099ff]/30 text-center font-semibold text-xs rounded-xl transition-all shadow-sm">
-                                {{ $currentLocale === 'en' ? 'Request Physical Copy' : 'Permintaan Dokumen Fisik' }} &rarr;
-                            </a>
-                        </div>
+                                <div
+                                    class="mt-3.5 pt-3 border-t border-[#d6e8ff]/80 text-xs text-slate-600 space-y-1.5 font-medium">
+                                    @if (!empty($kantor->HubunganInvestorEmail))
+                                        <div class="flex items-center gap-2">
+                                            <i class="fa-regular fa-envelope text-[#0099ff] w-3.5"></i>
+                                            <a href="mailto:{{ $kantor->HubunganInvestorEmail }}"
+                                                class="hover:text-[#0099ff] transition-colors">{{ $kantor->HubunganInvestorEmail }}</a>
+                                        </div>
+                                    @endif
+                                    @if (!empty($kantor->Telepon))
+                                        <div class="flex items-center gap-2">
+                                            <i class="fa-solid fa-phone text-[#0099ff] w-3.5"></i>
+                                            <span>{{ $kantor->Telepon }}</span>
+                                        </div>
+                                    @endif
+                                </div>
+
+                                <a href="{{ route('frontend.investor.informasi-lainnya', ['locale' => $currentLocale]) }}#hubungi-investor"
+                                    class="mt-4 block w-full py-2 bg-white hover:bg-slate-50 text-[#0099ff] border border-[#0099ff]/30 text-center font-semibold text-xs rounded-xl transition-all shadow-sm">
+                                    {{ $currentLocale === 'en' ? 'Request Physical Copy' : 'Permintaan Dokumen Fisik' }}
+                                    &rarr;
+                                </a>
+                            </div>
+                        @endif
+
 
                     </div>
                 </div>

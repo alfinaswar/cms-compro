@@ -225,7 +225,7 @@
                                 </p>
                             </div>
 
-                            {{-- Office Tabs (kalau lebih dari 1 kantor) --}}
+                            {{-- Office Tabs --}}
                             @if ($kantor->count() > 1)
                                 <div class="mb-6">
                                     <p
@@ -245,7 +245,14 @@
                                                 data-telp-clean="{{ preg_replace('/[^0-9+]/', '', $k->NomorTelepon ?? '') }}"
                                                 data-wa="{{ $k->NomorWhatsApp }}"
                                                 data-wa-clean="{{ preg_replace('/[^0-9]/', '', $k->NomorWhatsApp ?? '') }}"
-                                                data-email="{{ $k->AlamatEmail }}">
+                                                data-email="{{ $k->AlamatEmail }}" {{-- TAMBAHAN DATA BARU DI SINI --}}
+                                                data-ir-nama="{{ $k->HubunganInvestorNama }}"
+                                                data-ir-jabatan="{{ $k->HubunganInvestorJabatan }}"
+                                                data-ir-email="{{ $k->HubunganInvestorEmail }}"
+                                                data-ekspor-nama="{{ $k->PasarEksporNama }}"
+                                                data-ekspor-jabatan="{{ $k->PasarEksporJabatan }}"
+                                                data-ekspor-email="{{ $k->PasarEksporEmail }}">
+
                                                 <i class="fa-solid fa-location-dot text-[10px]"></i>
                                                 {{ $k->NamaKantor }}
                                                 @if ($k->TipeKantor === 'Pusat')
@@ -284,7 +291,8 @@
                                     <div class="contact-item flex items-start group cursor-pointer">
                                         <div
                                             class="contact-icon-wrapper flex-shrink-0 w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center mr-4 transition-all">
-                                            <i class="fa-brands fa-whatsapp text-emerald-400 text-lg transition-colors"></i>
+                                            <i
+                                                class="fa-brands fa-whatsapp text-emerald-400 text-lg transition-colors"></i>
                                         </div>
                                         <div class="flex-1 min-w-0">
                                             <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-1">
@@ -340,6 +348,51 @@
                                                 </span>
                                             </a>
                                         </div>
+                                    </div>
+                                    <div class="mt-6 pt-6 border-t border-white/10 space-y-6">
+
+                                        {{-- Hubungan Investor --}}
+                                        <div id="ir-container"
+                                            class="{{ !$active->HubunganInvestorNama ? 'hidden' : '' }}">
+                                            <p
+                                                class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                                                <i class="fa-solid fa-briefcase text-brand-400"></i>
+                                                {{ $en ? 'Investor Relations' : 'Hubungan Investor' }}
+                                            </p>
+                                            <div class="bg-white/5 rounded-lg p-3 border border-white/10">
+                                                <p class="text-sm font-bold text-white" id="ir-nama">
+                                                    {{ $active->HubunganInvestorNama }}</p>
+                                                <p class="text-xs text-brand-300 mb-2" id="ir-jabatan">
+                                                    {{ $active->HubunganInvestorJabatan }}</p>
+                                                <a href="mailto:" id="ir-email"
+                                                    class="text-xs text-slate-300 hover:text-white flex items-center gap-2 transition-colors">
+                                                    <i class="fa-regular fa-envelope"></i>
+                                                    <span>{{ $active->HubunganInvestorEmail }}</span>
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        {{-- Pasar Ekspor --}}
+                                        <div id="ekspor-container"
+                                            class="{{ !$active->PasarEksporNama ? 'hidden' : '' }}">
+                                            <p
+                                                class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                                                <i class="fa-solid fa-globe text-emerald-400"></i>
+                                                {{ $en ? 'Export Market Contact' : 'Kontak Pasar Ekspor' }}
+                                            </p>
+                                            <div class="bg-white/5 rounded-lg p-3 border border-white/10">
+                                                <p class="text-sm font-bold text-white" id="ekspor-nama">
+                                                    {{ $active->PasarEksporNama }}</p>
+                                                <p class="text-xs text-emerald-300 mb-2" id="ekspor-jabatan">
+                                                    {{ $active->PasarEksporJabatan }}</p>
+                                                <a href="mailto:" id="ekspor-email"
+                                                    class="text-xs text-slate-300 hover:text-white flex items-center gap-2 transition-colors">
+                                                    <i class="fa-regular fa-envelope"></i>
+                                                    <span>{{ $active->PasarEksporEmail }}</span>
+                                                </a>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 @endif
                             </div>

@@ -167,6 +167,86 @@
                                 </div>
                             </div>
 
+                            {{-- ROW TAMBAHAN: Hubungan Investor & Pasar Ekspor --}}
+                            <hr class="my-4">
+                            <h5 class="text-primary mb-3"><i class="fa fa-handshake mr-2"></i>Kontak Hubungan Investor
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label><strong>Nama Kontak</strong></label>
+                                        <input type="text" name="HubunganInvestorNama"
+                                            class="form-control @error('HubunganInvestorNama') is-invalid @enderror"
+                                            placeholder="Nama kontak hubungan investor"
+                                            value="{{ old('HubunganInvestorNama') }}">
+                                        @error('HubunganInvestorNama')
+                                            <span class="invalid-feedback">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label><strong>Jabatan</strong></label>
+                                        <input type="text" name="HubunganInvestorJabatan"
+                                            class="form-control @error('HubunganInvestorJabatan') is-invalid @enderror"
+                                            placeholder="Jabatan kontak" value="{{ old('HubunganInvestorJabatan') }}">
+                                        @error('HubunganInvestorJabatan')
+                                            <span class="invalid-feedback">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label><strong>Email</strong></label>
+                                        <input type="email" name="HubunganInvestorEmail"
+                                            class="form-control @error('HubunganInvestorEmail') is-invalid @enderror"
+                                            placeholder="Email kontak" value="{{ old('HubunganInvestorEmail') }}">
+                                        @error('HubunganInvestorEmail')
+                                            <span class="invalid-feedback">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+                            <h5 class="text-primary mb-3"><i class="fa fa-globe mr-2"></i>Kontak Pasar Ekspor</h5>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label><strong>Nama Kontak</strong></label>
+                                        <input type="text" name="PasarEksporNama"
+                                            class="form-control @error('PasarEksporNama') is-invalid @enderror"
+                                            placeholder="Nama kontak pasar ekspor" value="{{ old('PasarEksporNama') }}">
+                                        @error('PasarEksporNama')
+                                            <span class="invalid-feedback">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label><strong>Jabatan</strong></label>
+                                        <input type="text" name="PasarEksporJabatan"
+                                            class="form-control @error('PasarEksporJabatan') is-invalid @enderror"
+                                            placeholder="Jabatan kontak" value="{{ old('PasarEksporJabatan') }}">
+                                        @error('PasarEksporJabatan')
+                                            <span class="invalid-feedback">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label><strong>Email</strong></label>
+                                        <input type="email" name="PasarEksporEmail"
+                                            class="form-control @error('PasarEksporEmail') is-invalid @enderror"
+                                            placeholder="Email kontak" value="{{ old('PasarEksporEmail') }}">
+                                        @error('PasarEksporEmail')
+                                            <span class="invalid-feedback">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- END ROW TAMBAHAN --}}
+
                             <hr class="my-4">
                             <h5 class="text-primary mb-3"><i class="fa fa-cog mr-2"></i>Pengaturan Tampilan</h5>
 

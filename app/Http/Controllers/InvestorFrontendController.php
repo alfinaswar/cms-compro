@@ -15,6 +15,7 @@ use App\Models\RupsDokumen;
 use App\Models\WbsLaporan;
 use App\Models\LembagaPenunjang;
 use App\Models\KeterbukaanInformasi;
+use App\Models\MasterKantor;
 use App\Models\PermintaanDokumenInvestor;
 use App\Models\RingkasanKinerjaPos;
 use App\Models\RingkasanKinerjaNilai;
@@ -91,6 +92,8 @@ class InvestorFrontendController extends Controller
             $rawProf = $profitPos ? (float) $profitPos->nilaiAngkaTahun($yr) : 0;
             $chartProfit[] = $rawProf > 10000 ? round($rawProf / 1000, 1) : $rawProf;
         }
+        $kantor = MasterKantor::orderByRaw("FIELD(TipeKantor, 'Pusat') DESC")->first();
+
 
         return view('frontend.laporan-keuangan', compact(
             'categories',
@@ -107,7 +110,8 @@ class InvestorFrontendController extends Controller
             'labaRugi',
             'posisiKeuangan',
             'rasioKeuangan',
-            'sahamDividen'
+            'sahamDividen',
+            'kantor'
         ));
     }
 
@@ -259,7 +263,7 @@ class InvestorFrontendController extends Controller
         if (request()->filled('q')) {
             $keterbukaanQuery->where(function ($q) {
                 $q->where('Judul', 'like', '%' . request('q') . '%')
-                  ->orWhere('Deskripsi', 'like', '%' . request('q') . '%');
+                    ->orWhere('Deskripsi', 'like', '%' . request('q') . '%');
             });
         }
 
@@ -286,12 +290,14 @@ class InvestorFrontendController extends Controller
 
         $activeTab = 'informasi-lainnya';
 
+        $kantor = MasterKantor::orderByRaw("FIELD(TipeKantor, 'Pusat') DESC")->first();
         return view('frontend.investor.informasi-lainnya', compact(
             'lembagaList',
             'keterbukaanList',
             'kategoriList',
             'tahunList',
-            'activeTab'
+            'activeTab',
+            'kantor'
         ));
     }
 
