@@ -138,6 +138,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         Route::get('/landing-page/solusi/create/', [HalamanSolusiController::class, 'create'])->name('halaman-solusi.create');
         Route::post('/landing-page/solusi/store/', [HalamanSolusiController::class, 'store'])->name('halaman-solusi.store');
         Route::get('/landing-page/solusi/edit/{id}/', [HalamanSolusiController::class, 'edit'])->name('halaman-solusi.edit');
+        Route::get('/landing-page/solusi/show/{id}/', [HalamanSolusiController::class, 'show'])->name('halaman-solusi.admin.show');
         Route::put('/landing-page/solusi/update/{id}/', [HalamanSolusiController::class, 'update'])->name('halaman-solusi.update');
         Route::delete('/landing-page/solusi/delete/{id}/', [HalamanSolusiController::class, 'destroy'])->name('halaman-solusi.destroy');
 

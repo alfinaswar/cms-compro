@@ -34,104 +34,217 @@
             </div>
         </div>
 
+@php
+    $years = $details->map(function($item) {
+        return $item->TahunPeriode ? $item->TahunPeriode->format('Y') : null;
+    })->filter()->unique()->sortDesc();
+@endphp
+
         <div class="row">
             <div class="col-12">
-                <div class="card card-outline card-info shadow-sm">
-                    <!-- ✅ HEADER DENGAN FITUR PENCARIAN -->
-                    <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap">
-                        <h3 class="card-title mb-2 mb-md-0">
-                            <span class="badge badge-{{ $jenis->WarnaBadge }} mr-2">
-                                <i class="fa {{ $jenis->IconKategori }}"></i> {{ $jenis->NamaJenis }}
-                            </span>
-                            <small class="text-muted ml-2">{{ $jenis->Deskripsi }}</small>
-                        </h3>
-                        <div class="card-tools ml-auto" style="min-width: 250px;">
-                            <div class="input-group input-group-sm justify-content-end">
-                                <input type="text" id="searchDokumen" class="form-control" placeholder="Cari judul atau deskripsi...">
-                                <div class="input-group-append">
-                                    <span class="input-group-text"><i class="fa fa-search"></i></span>
+                <div class="card card-primary card-outline card-outline-tabs shadow-sm">
+                    <!-- HEADER INFO & PENCARIAN -->
+                    <div class="card-header p-0 border-bottom-0">
+                        <div class="d-flex justify-content-between align-items-center p-3 bg-white border-bottom flex-wrap">
+                            <h3 class="card-title my-1">
+                                <span class="badge badge-{{ $jenis->WarnaBadge }} mr-2">
+                                    <i class="fa {{ $jenis->IconKategori }}"></i> {{ $jenis->NamaJenis }}
+                                </span>
+                                <small class="text-muted ml-1">{{ $jenis->Deskripsi }}</small>
+                            </h3>
+                            <div class="card-tools ml-auto my-1" style="min-width: 250px;">
+                                <div class="input-group input-group-sm">
+                                    <input type="text" id="searchDokumen" class="form-control" placeholder="Cari judul atau deskripsi...">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-search"></i></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-
+                        <!-- NAVIGATION TABS TAHUN -->
+                        <ul class="nav nav-tabs px-3 pt-2" id="yearTabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active font-weight-bold" id="tab-all-link" data-toggle="pill" href="#tab-all" role="tab">
+                                    <i class="fa fa-layer-group mr-1"></i> Semua Tahun
+                                    <span class="badge badge-secondary ml-1">{{ $details->count() }}</span>
+                                </a>
+                            </li>
+                            @foreach($years as $yr)
+                                <li class="nav-item">
+                                    <a class="nav-link font-weight-bold" id="tab-{{ $yr }}-link" data-toggle="pill" href="#tab-{{ $yr }}" role="tab">
+                                        <i class="fa fa-calendar-alt mr-1"></i> {{ $yr }}
+                                        <span class="badge badge-info ml-1">{{ $details->filter(fn($d) => $d->TahunPeriode && $d->TahunPeriode->format('Y') == $yr)->count() }}</span>
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
                     </div>
 
                     <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-hover mb-0" style="width: 100%;">
-                                <thead class="bg-light">
-                                    <tr>
-                                        <th style="width: 5%" class="text-center">#</th>
-                                        <th style="width: 30%">Judul Dokumen</th>
-                                        <th style="width: 12%" class="text-center">Tahun</th>
-                                        <th style="width: 8%" class="text-center">Bahasa</th>
-                                        <th style="width: 10%" class="text-center">File Size</th>
-                                        <th style="width: 10%" class="text-center">Download</th>
-                                        <th style="width: 8%" class="text-center">Status</th>
-                                        <th style="width: 17%" class="text-center">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($details as $i => $item)
-                                    <tr>
-                                        <td class="text-center">{{ $i + 1 }}</td>
-                                        <td>
-                                            <strong>{{ $item->Judul }}</strong>
-                                            @if($item->Deskripsi)
-                                                <br><small class="text-muted">{{ Str::limit($item->Deskripsi, 60) }}</small>
-                                            @endif
-                                        </td>
-                                        <td class="text-center">{{ $item->TahunPeriode->format('Y') }}</td>
-                                        <td class="text-center"><span class="badge badge-secondary">{{ $item->Bahasa }}</span></td>
-                                        <td class="text-center"><small>{{ $item->FileSize }} MB</small></td>
-                                        <td class="text-center"><i class="fa fa-download text-muted"></i> {{ $item->JumlahDownload }}</td>
-                                        <td class="text-center">
-                                            @if($item->Status == 'Aktif')
-                                                <span class="badge badge-success">Aktif</span>
-                                            @else
-                                                <span class="badge badge-danger">Nonaktif</span>
-                                            @endif
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="btn-group btn-group-sm">
-                                                @can('investor.edit')
-                                                    <button class="btn btn-warning btn-edit-detail"
-                                                            data-id="{{ $item->id }}"
-                                                            data-judul="{{ $item->Judul }}"
-                                                            data-deskripsi="{{ $item->Deskripsi }}"
-                                                            data-tahun="{{ $item->TahunPeriode->format('Y-m-d') }}"
-                                                            data-bahasa="{{ $item->Bahasa }}"
-                                                            data-urutan="{{ $item->Urutan }}"
-                                                            data-status="{{ $item->Status }}"
-                                                            title="Edit">
-                                                        <i class="fa fa-edit"></i>
-                                                    </button>
-                                                @endcan
-                                                <a href="{{ route('laporan.download', $item->id) }}" class="btn btn-info" title="Download">
-                                                    <i class="fa fa-download"></i>
-                                                </a>
-                                                @can('investor.delete')
-                                                    <button class="btn btn-danger btn-delete-detail"
-                                                            data-id="{{ $item->id }}"
-                                                            data-judul="{{ $item->Judul }}"
-                                                            title="Hapus">
-                                                        <i class="fa fa-trash"></i>
-                                                    </button>
-                                                @endcan
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    @empty
-                                    <tr>
-                                        <td colspan="8" class="text-center text-muted py-4">
-                                            <i class="fa fa-folder-open fa-2x mb-2"></i><br>
-                                            Belum ada dokumen dalam kategori ini.
-                                        </td>
-                                    </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
+                        <div class="tab-content" id="yearTabsContent">
+                            <!-- TAB SEMUA TAHUN -->
+                            <div class="tab-pane fade show active" id="tab-all" role="tabpanel">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover mb-0" style="width: 100%;">
+                                        <thead class="bg-light">
+                                            <tr>
+                                                <th style="width: 5%" class="text-center">#</th>
+                                                <th style="width: 30%">Judul Dokumen</th>
+                                                <th style="width: 12%" class="text-center">Tahun</th>
+                                                <th style="width: 8%" class="text-center">Bahasa</th>
+                                                <th style="width: 10%" class="text-center">File Size</th>
+                                                <th style="width: 10%" class="text-center">Download</th>
+                                                <th style="width: 8%" class="text-center">Status</th>
+                                                <th style="width: 17%" class="text-center">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse($details as $i => $item)
+                                            <tr>
+                                                <td class="text-center">{{ $i + 1 }}</td>
+                                                <td>
+                                                    <strong>{{ $item->Judul }}</strong>
+                                                    @if($item->Deskripsi)
+                                                        <br><small class="text-muted">{{ Str::limit($item->Deskripsi, 60) }}</small>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">{{ $item->TahunPeriode ? $item->TahunPeriode->format('Y') : '-' }}</td>
+                                                <td class="text-center"><span class="badge badge-secondary">{{ $item->Bahasa }}</span></td>
+                                                <td class="text-center"><small>{{ $item->FileSize }} MB</small></td>
+                                                <td class="text-center"><i class="fa fa-download text-muted"></i> {{ $item->JumlahDownload }}</td>
+                                                <td class="text-center">
+                                                    @if($item->Status == 'Aktif')
+                                                        <span class="badge badge-success">Aktif</span>
+                                                    @else
+                                                        <span class="badge badge-danger">Nonaktif</span>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">
+                                                    <div class="btn-group btn-group-sm">
+                                                        @can('investor.edit')
+                                                            <button class="btn btn-warning btn-edit-detail"
+                                                                    data-id="{{ $item->id }}"
+                                                                    data-judul="{{ $item->Judul }}"
+                                                                    data-deskripsi="{{ $item->Deskripsi }}"
+                                                                    data-tahun="{{ $item->TahunPeriode ? $item->TahunPeriode->format('Y-m-d') : '' }}"
+                                                                    data-bahasa="{{ $item->Bahasa }}"
+                                                                    data-urutan="{{ $item->Urutan }}"
+                                                                    data-status="{{ $item->Status }}"
+                                                                    title="Edit">
+                                                                <i class="fa fa-edit"></i>
+                                                            </button>
+                                                        @endcan
+                                                        <a href="{{ route('laporan.download', $item->id) }}" class="btn btn-info" title="Download">
+                                                            <i class="fa fa-download"></i>
+                                                        </a>
+                                                        @can('investor.delete')
+                                                            <button class="btn btn-danger btn-delete-detail"
+                                                                    data-id="{{ $item->id }}"
+                                                                    data-judul="{{ $item->Judul }}"
+                                                                    title="Hapus">
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
+                                                        @endcan
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            @empty
+                                            <tr>
+                                                <td colspan="8" class="text-center text-muted py-4">
+                                                    <i class="fa fa-folder-open fa-2x mb-2"></i><br>
+                                                    Belum ada dokumen dalam kategori ini.
+                                                </td>
+                                            </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- TAB PER TAHUN -->
+                            @foreach($years as $yr)
+                                @php
+                                    $yearDetails = $details->filter(fn($d) => $d->TahunPeriode && $d->TahunPeriode->format('Y') == $yr);
+                                @endphp
+                                <div class="tab-pane fade" id="tab-{{ $yr }}" role="tabpanel">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover mb-0" style="width: 100%;">
+                                            <thead class="bg-light">
+                                                <tr>
+                                                    <th style="width: 5%" class="text-center">#</th>
+                                                    <th style="width: 30%">Judul Dokumen</th>
+                                                    <th style="width: 12%" class="text-center">Tahun</th>
+                                                    <th style="width: 8%" class="text-center">Bahasa</th>
+                                                    <th style="width: 10%" class="text-center">File Size</th>
+                                                    <th style="width: 10%" class="text-center">Download</th>
+                                                    <th style="width: 8%" class="text-center">Status</th>
+                                                    <th style="width: 17%" class="text-center">Aksi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @forelse($yearDetails as $idx => $item)
+                                                <tr>
+                                                    <td class="text-center">{{ $loop->iteration }}</td>
+                                                    <td>
+                                                        <strong>{{ $item->Judul }}</strong>
+                                                        @if($item->Deskripsi)
+                                                            <br><small class="text-muted">{{ Str::limit($item->Deskripsi, 60) }}</small>
+                                                        @endif
+                                                    </td>
+                                                    <td class="text-center">{{ $yr }}</td>
+                                                    <td class="text-center"><span class="badge badge-secondary">{{ $item->Bahasa }}</span></td>
+                                                    <td class="text-center"><small>{{ $item->FileSize }} MB</small></td>
+                                                    <td class="text-center"><i class="fa fa-download text-muted"></i> {{ $item->JumlahDownload }}</td>
+                                                    <td class="text-center">
+                                                        @if($item->Status == 'Aktif')
+                                                            <span class="badge badge-success">Aktif</span>
+                                                        @else
+                                                            <span class="badge badge-danger">Nonaktif</span>
+                                                        @endif
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="btn-group btn-group-sm">
+                                                            @can('investor.edit')
+                                                                <button class="btn btn-warning btn-edit-detail"
+                                                                        data-id="{{ $item->id }}"
+                                                                        data-judul="{{ $item->Judul }}"
+                                                                        data-deskripsi="{{ $item->Deskripsi }}"
+                                                                        data-tahun="{{ $item->TahunPeriode ? $item->TahunPeriode->format('Y-m-d') : '' }}"
+                                                                        data-bahasa="{{ $item->Bahasa }}"
+                                                                        data-urutan="{{ $item->Urutan }}"
+                                                                        data-status="{{ $item->Status }}"
+                                                                        title="Edit">
+                                                                    <i class="fa fa-edit"></i>
+                                                                </button>
+                                                            @endcan
+                                                            <a href="{{ route('laporan.download', $item->id) }}" class="btn btn-info" title="Download">
+                                                                <i class="fa fa-download"></i>
+                                                            </a>
+                                                            @can('investor.delete')
+                                                                <button class="btn btn-danger btn-delete-detail"
+                                                                        data-id="{{ $item->id }}"
+                                                                        data-judul="{{ $item->Judul }}"
+                                                                        title="Hapus">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            @endcan
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                @empty
+                                                <tr>
+                                                    <td colspan="8" class="text-center text-muted py-4">
+                                                        <i class="fa fa-folder-open fa-2x mb-2"></i><br>
+                                                        Belum ada dokumen untuk tahun {{ $yr }}.
+                                                    </td>
+                                                </tr>
+                                                @endforelse
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>

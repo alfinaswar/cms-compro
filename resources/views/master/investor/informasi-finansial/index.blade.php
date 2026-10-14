@@ -26,12 +26,7 @@
             <div class="card-header p-0 border-bottom-0">
                 <ul class="nav nav-tabs" id="finansialTab" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active font-weight-bold" id="saham-tab" data-toggle="pill" href="#tab-saham" role="tab">
-                            <i class="fas fa-coins mr-1"></i> Informasi Saham JTPE
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link font-weight-bold" id="struktur-tab" data-toggle="pill" href="#tab-struktur" role="tab">
+                        <a class="nav-link active font-weight-bold" id="struktur-tab" data-toggle="pill" href="#tab-struktur" role="tab">
                             <i class="fas fa-chart-pie mr-1"></i> Struktur Kepemilikan
                         </a>
                     </li>
@@ -52,119 +47,9 @@
                 <div class="tab-content" id="finansialTabContent">
 
                     <!-- ============================================ -->
-                    <!-- TAB 1: INFORMASI SAHAM JTPE -->
+                    <!-- TAB 1: STRUKTUR KEPEMILIKAN SAHAM -->
                     <!-- ============================================ -->
-                    <div class="tab-pane fade show active" id="tab-saham" role="tabpanel">
-                        <form action="{{ route('admin.investor.finansial.update-saham') }}" method="POST">
-                            @csrf
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Kode Saham <span class="text-danger">*</span></label>
-                                        <input type="text" name="KodeSaham" class="form-control" value="{{ old('KodeSaham', $saham->KodeSaham ?? 'JTPE') }}" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Harga Terakhir (Rp) <span class="text-danger">*</span></label>
-                                        <input type="number" step="any" name="HargaTerakhir" class="form-control" value="{{ old('HargaTerakhir', $saham->HargaTerakhir ?? 595) }}" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Perubahan (Rp) <span class="text-danger">*</span></label>
-                                        <input type="number" step="any" name="Perubahan" class="form-control" value="{{ old('Perubahan', $saham->Perubahan ?? 16) }}" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Persentase Perubahan (%) <span class="text-danger">*</span></label>
-                                        <input type="number" step="any" name="PersentasePerubahan" class="form-control" value="{{ old('PersentasePerubahan', $saham->PersentasePerubahan ?? 2.77) }}" required>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Status Pasar <span class="text-danger">*</span></label>
-                                        <input type="text" name="StatusPasar" class="form-control" value="{{ old('StatusPasar', $saham->StatusPasar ?? 'Pasar Tutup - 28 Mar 2024') }}" required placeholder="Contoh: Pasar Tutup - 28 Mar 2024">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Pembukaan (Rp) <span class="text-danger">*</span></label>
-                                        <input type="number" step="any" name="Pembukaan" class="form-control" value="{{ old('Pembukaan', $saham->Pembukaan ?? 580) }}" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Penutupan Kemarin (Rp) <span class="text-danger">*</span></label>
-                                        <input type="number" step="any" name="PenutupanKemarin" class="form-control" value="{{ old('PenutupanKemarin', $saham->PenutupanKemarin ?? 585) }}" required>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Tertinggi Hari Ini (Rp) <span class="text-danger">*</span></label>
-                                        <input type="number" step="any" name="TertinggiHariIni" class="form-control" value="{{ old('TertinggiHariIni', $saham->TertinggiHariIni ?? 605) }}" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Terendah Hari Ini (Rp) <span class="text-danger">*</span></label>
-                                        <input type="number" step="any" name="TerendahHariIni" class="form-control" value="{{ old('TerendahHariIni', $saham->TerendahHariIni ?? 585) }}" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>52 Mgg Tertinggi (Rp) <span class="text-danger">*</span></label>
-                                        <input type="number" step="any" name="Tertinggi52Mgg" class="form-control" value="{{ old('Tertinggi52Mgg', $saham->Tertinggi52Mgg ?? 690) }}" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>52 Mgg Terendah (Rp) <span class="text-danger">*</span></label>
-                                        <input type="number" step="any" name="Terendah52Mgg" class="form-control" value="{{ old('Terendah52Mgg', $saham->Terendah52Mgg ?? 490) }}" required>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Volume Saham (Lembar) <span class="text-danger">*</span></label>
-                                        <input type="number" name="VolumeSaham" class="form-control" value="{{ old('VolumeSaham', $saham->VolumeSaham ?? 14831013) }}" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Nilai Transaksi <span class="text-danger">*</span></label>
-                                        <input type="text" name="NilaiTransaksi" class="form-control" value="{{ old('NilaiTransaksi', $saham->NilaiTransaksi ?? 'Rp 8,82 Miliar') }}" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Kapitalisasi Pasar <span class="text-danger">*</span></label>
-                                        <input type="text" name="KapitalisasiPasar" class="form-control" value="{{ old('KapitalisasiPasar', $saham->KapitalisasiPasar ?? 'Rp 4,08 Triliun') }}" required>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="text-right mt-3">
-                                <button type="submit" class="btn btn-primary px-4 font-weight-bold">
-                                    <i class="fas fa-save mr-1"></i> Simpan Informasi Saham
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <!-- ============================================ -->
-                    <!-- TAB 2: STRUKTUR KEPEMILIKAN SAHAM -->
-                    <!-- ============================================ -->
-                    <div class="tab-pane fade" id="tab-struktur" role="tabpanel">
+                    <div class="tab-pane fade show active" id="tab-struktur" role="tabpanel">
                         <div class="d-flex justify-content-between mb-3">
                             <h5 class="font-weight-bold text-secondary mb-0">Tabel Komposisi Pemegang Saham</h5>
                             <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalTambahStruktur">

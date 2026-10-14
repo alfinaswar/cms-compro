@@ -353,14 +353,16 @@
                                     class="text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">
                                     {{ $currentLocale === 'en' ? 'Year:' : 'Tahun:' }}
                                 </label>
-                                <select id="annualYearSelect" onchange="filterAnnualReport(this.value)"
-                                    class="px-4 py-1.5 pr-10 text-xs md:text-sm font-semibold text-slate-700 bg-[#EEF4FF] border border-slate-300 rounded-xl outline-none focus:border-[#0099ff] focus:ring-1 focus:ring-[#0099ff] cursor-pointer appearance-none">
-                                    <option value="2025" selected>2025</option>
-                                    <option value="2024">2024</option>
-                                    <option value="2023">2023</option>
-                                </select>
-                                <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                                    <i class="fa-solid fa-chevron-down text-xs text-slate-500"></i>
+                                <div class="relative inline-block">
+                                    <select id="annualYearSelect" onchange="filterAnnualReport(this.value)"
+                                        class="pl-4 pr-10 py-1.5 text-xs md:text-sm font-semibold text-slate-800 bg-[#EEF4FF] hover:bg-[#e1edff] border border-slate-300 rounded-xl outline-none focus:border-[#0099ff] focus:ring-1 focus:ring-[#0099ff] cursor-pointer appearance-none transition-colors">
+                                        <option value="2025" selected>2025</option>
+                                        <option value="2024">2024</option>
+                                        <option value="2023">2023</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-500">
+                                        <i class="fa-solid fa-chevron-down text-xs"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -665,23 +667,27 @@
                                 </div>
                             </div>
 
-                            {{-- Year Dropdown Filter --}}
-                            {{-- Year Dropdown Filter untuk Quarterly Report --}}
-                            <div class="flex items-center gap-2">
-                                <label for="quarterYearSelect"
-                                    class="text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                            {{-- Year Filter untuk Quarterly Report --}}
+                            <div class="flex items-center gap-3">
+                                <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">
                                     {{ $currentLocale === 'en' ? 'Year:' : 'Tahun:' }}
                                 </label>
-                                <select id="quarterYearSelect" onchange="filterQuarterReport(this.value)"
-                                    class="px-4 py-1.5 pr-10 text-xs md:text-sm font-semibold text-slate-700 bg-[#EEF4FF] border border-slate-300 rounded-xl outline-none focus:border-[#0099ff] focus:ring-1 focus:ring-[#0099ff] cursor-pointer appearance-none">
-                                    <option value="2026" selected>2026</option>
-                                    <option value="2025">2025</option>
-                                    <option value="2024">2024</option>
-                                </select>
-                                <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                                    <i class="fas fa-chevron-down text-xs text-slate-500"></i>
-                                </div>
 
+                                {{-- High contrast buttons: Inactive is clearly visible bg-slate-200 / slate-100 with border and dark text --}}
+                                <div class="inline-flex p-1 bg-slate-200 rounded-xl border border-slate-300 gap-1.5" id="quarterYearPills">
+                                    <button type="button" onclick="filterQuarterReport('2026', this)"
+                                        class="quarter-pill-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-[#0099ff] text-white shadow-sm">
+                                        2026
+                                    </button>
+                                    <button type="button" onclick="filterQuarterReport('2025', this)"
+                                        class="quarter-pill-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-slate-100 hover:bg-white text-slate-800 border border-slate-300 shadow-2xs">
+                                        2025
+                                    </button>
+                                    <button type="button" onclick="filterQuarterReport('2024', this)"
+                                        class="quarter-pill-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-slate-100 hover:bg-white text-slate-800 border border-slate-300 shadow-2xs">
+                                        2024
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
@@ -896,32 +902,31 @@
                                 </div>
                                 <div>
                                     <h2 class="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
-                                        {{ $currentLocale === 'en' ? '5-Year Financial Summary' : 'Ringkasan Kinerja Keuangan' }}
+                                        {{ __('Financial Highlight') }}
                                     </h2>
                                     <p class="text-xs md:text-sm text-slate-500 mt-1">
-                                        {{ $pengaturanKinerja->Subjudul ?? ($currentLocale === 'en' ? 'Summary of core financial metrics of the company over the past 5 years.' : 'Ringkasan kinerja keuangan utama perusahaan selama 5 tahun terakhir (2021 - 2025).') }}
+                                        {{ $currentLocale === 'en' ? 'Summary of core financial metrics and key performance indicators of the company.' : 'Ringkasan indikator kinerja dan pos keuangan utama perseroan.' }}
                                     </p>
                                 </div>
                             </div>
 
-                            {{-- Toggle Mode: Grafik / Tabel --}}
-                            <div
-                                class="inline-flex p-1 bg-slate-100 rounded-xl border border-slate-200 self-start sm:self-auto">
-                                <button type="button" id="btnViewChart" onclick="switchFinancialView('chart')"
-                                    class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all bg-white text-slate-900 shadow-xs">
-                                    <i class="fa-solid fa-chart-simple text-xs text-[#0099ff]"></i>
-                                    {{ $currentLocale === 'en' ? 'Chart' : 'Grafik' }}
+                            {{-- Action Buttons: Download Excel & Download PDF --}}
+                            <div class="flex items-center gap-2.5 self-start sm:self-auto">
+                                <button type="button" onclick="downloadFinancialExcel()"
+                                    class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow-xs transition-all">
+                                    <i class="fa-solid fa-file-excel text-xs"></i>
+                                    Download Excel
                                 </button>
-                                <button type="button" id="btnViewTable" onclick="switchFinancialView('table')"
-                                    class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900">
-                                    <i class="fa-solid fa-table text-xs text-slate-400"></i>
-                                    {{ $currentLocale === 'en' ? 'Table' : 'Tabel' }}
+                                <button type="button" onclick="downloadFinancialPdf()"
+                                    class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#0099ff] hover:bg-[#0080d6] text-white rounded-xl text-xs font-semibold shadow-xs transition-all">
+                                    <i class="fa-solid fa-file-pdf text-xs"></i>
+                                    Download PDF
                                 </button>
                             </div>
                         </div>
 
                         {{-- 1. GRAFIK VIEW (2 BAR CHARTS - DYNAMIC) --}}
-                        <div id="financialChartView" class="space-y-6">
+                        <div id="financialChartView" class="space-y-6 mb-8">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {{-- Chart 1: Pendapatan Usaha --}}
                                 <div class="bg-[#EFF4FF] border border-slate-200/80 rounded-2xl p-5">
@@ -1008,11 +1013,11 @@
                             </div>
                         </div>
 
-                        {{-- 2. TABEL LENGKAP TAHUNAN (DYNAMIC RELASIONAL CMS) --}}
+                        {{-- 2. TABEL LENGKAP TAHUNAN (GABUNG DALAM 1 CONTAINER) --}}
                         <div id="financialTableView"
-                            class="hidden overflow-hidden rounded-2xl border border-slate-200 mt-2">
+                            class="overflow-hidden rounded-2xl border border-slate-200">
                             <div class="overflow-x-auto table-scrollbar">
-                                <table class="w-full text-left text-xs text-slate-700 divide-y divide-slate-200">
+                                <table id="financialDataTable" class="w-full text-left text-xs text-slate-700 divide-y divide-slate-200">
                                     <thead class="bg-slate-100 text-slate-800 font-bold tracking-wider">
                                         <tr>
                                             <th class="py-3 px-4 min-w-[240px]">
@@ -1184,37 +1189,91 @@
                 }
             }
 
-            // Filter Quarterly Reports by Year
-            function filterQuarterReport(year) {
+            // Filter Quarterly Reports by Year & toggle active pill button
+            function filterQuarterReport(year, btn) {
                 document.querySelectorAll('.quarter-report-grid').forEach(grid => grid.classList.add('hidden'));
                 const target = document.getElementById('quarter-grid-' + year);
                 if (target) {
                     target.classList.remove('hidden');
                 }
+
+                // Update active state on buttons
+                if (btn) {
+                    document.querySelectorAll('#quarterYearPills .quarter-pill-btn').forEach(b => {
+                        b.className = 'quarter-pill-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-slate-100 hover:bg-white text-slate-800 border border-slate-300 shadow-2xs';
+                    });
+                    btn.className = 'quarter-pill-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-[#0099ff] text-white shadow-sm';
+                }
             }
 
-            // Toggle between Chart view & Table view
-            function switchFinancialView(mode) {
-                const chartView = document.getElementById('financialChartView');
-                const tableView = document.getElementById('financialTableView');
-                const btnChart = document.getElementById('btnViewChart');
-                const btnTable = document.getElementById('btnViewTable');
+            // Export Financial Data to Excel (CSV format with UTF-8 BOM)
+            function downloadFinancialExcel() {
+                const table = document.getElementById('financialDataTable');
+                if (!table) return;
 
-                if (mode === 'chart') {
-                    chartView.classList.remove('hidden');
-                    tableView.classList.add('hidden');
-                    btnChart.classList.add('bg-white', 'text-slate-900', 'shadow-xs');
-                    btnChart.classList.remove('text-slate-600');
-                    btnTable.classList.remove('bg-white', 'text-slate-900', 'shadow-xs');
-                    btnTable.classList.add('text-slate-600');
-                } else {
-                    chartView.classList.add('hidden');
-                    tableView.classList.remove('hidden');
-                    btnTable.classList.add('bg-white', 'text-slate-900', 'shadow-xs');
-                    btnTable.classList.remove('text-slate-600');
-                    btnChart.classList.remove('bg-white', 'text-slate-900', 'shadow-xs');
-                    btnChart.classList.add('text-slate-600');
-                }
+                let csv = [];
+                const rows = table.querySelectorAll('tr');
+
+                rows.forEach(row => {
+                    let cols = [];
+                    row.querySelectorAll('th, td').forEach(cell => {
+                        // Bersihkan spasi dan quotes ganda
+                        let text = cell.innerText.replace(/(\r\n|\n|\r)/gm, ' ').trim();
+                        text = text.replace(/"/g, '""');
+                        cols.push('"' + text + '"');
+                    });
+                    csv.push(cols.join(','));
+                });
+
+                const csvContent = '\uFEFF' + csv.join('\r\n');
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'Financial_Highlight_JTPE.csv';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+
+            // Export / Print Financial Highlight to PDF
+            function downloadFinancialPdf() {
+                const container = document.getElementById('ringkasan-kinerja');
+                if (!container) return;
+
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Financial Highlight - PT Jasuindo Tiga Perkasa Tbk</title>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+                        <style>
+                            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 24px; color: #1e293b; }
+                            table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 11px; }
+                            th, td { border: 1px solid #cbd5e1; padding: 6px 10px; }
+                            th { background-color: #f1f5f9; text-align: left; }
+                            .header-title { font-size: 20px; font-weight: bold; margin-bottom: 4px; }
+                            .header-sub { font-size: 12px; color: #64748b; margin-bottom: 20px; }
+                            @media print {
+                                button { display: none !important; }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="header-title">PT JASUINDO TIGA PERKASA TBK - FINANCIAL HIGHLIGHT</div>
+                        <div class="header-sub">Ikhtisar Kinerja Keuangan & Rasio Penting</div>
+                        ${container.innerHTML}
+                        <script>
+                            window.onload = function() {
+                                window.print();
+                            }
+                        <\/script>
+                    </body>
+                    </html>
+                `);
+                printWindow.document.close();
             }
 
 

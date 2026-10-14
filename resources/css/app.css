@@ -10,3 +10,15 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* Global Typography: desktop body minimal 16px, line-height 1.4em */
+body {
+    line-height: 1.4em;
+}
+
+@media (min-width: 1024px) {
+    body {
+        font-size: 16px;
+        line-height: 1.4em;
+    }
+}

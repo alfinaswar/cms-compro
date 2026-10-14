@@ -320,7 +320,6 @@
                                         <th style="width: 8%" class="text-center">Tahun</th>
                                         <th>Judul Dokumen</th>
                                         <th>Kategori Dokumen</th>
-                                        <th class="text-center">Status Kegiatan</th>
                                         <th class="text-center">File</th>
                                         <th class="text-center">Status</th>
                                         <th class="text-center" style="width: 15%">Aksi</th>
@@ -333,11 +332,6 @@
                                             <td class="text-center font-weight-bold text-primary">{{ $rups->Tahun }}</td>
                                             <td class="font-weight-bold">{{ $rups->Judul }}</td>
                                             <td>{{ $rups->KategoriDokumen ?? '-' }}</td>
-                                            <td class="text-center">
-                                                <span class="badge {{ $rups->StatusKegiatan === 'Selesai' ? 'badge-success' : 'badge-warning' }}">
-                                                    {{ $rups->StatusKegiatan }}
-                                                </span>
-                                            </td>
                                             <td class="text-center">
                                                 @if($rups->PathFile)
                                                     <a href="{{ asset('storage/' . $rups->PathFile) }}" target="_blank" class="btn btn-xs btn-outline-danger">
@@ -500,8 +494,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label>File Dokumen (PDF) <span class="text-danger">*</span></label>
-                        <input type="file" name="FileDokumen" class="form-control-file" required>
+                        <label>File Dokumen (PDF, DOCX, XLSX) <span class="text-danger">*</span></label>
+                        <input type="file" name="FileDokumen[]" class="form-control-file" multiple required>
+                        <small class="text-muted">Bisa memilih lebih dari 1 file sekaligus (multiple files)</small>
                     </div>
 
                     <div class="row">
@@ -542,22 +537,9 @@
                     <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-4">
-                            <div class="form-group">
-                                <label>Tahun Buku <span class="text-danger">*</span></label>
-                                <input type="number" name="Tahun" class="form-control" required value="{{ date('Y') }}">
-                            </div>
-                        </div>
-                        <div class="col-8">
-                            <div class="form-group">
-                                <label>Status Kegiatan</label>
-                                <select name="StatusKegiatan" class="form-control">
-                                    <option value="Selesai">Selesai</option>
-                                    <option value="Terjadwal">Terjadwal</option>
-                                </select>
-                            </div>
-                        </div>
+                    <div class="form-group">
+                        <label>Tahun Buku <span class="text-danger">*</span></label>
+                        <input type="number" name="Tahun" class="form-control" required value="{{ date('Y') }}">
                     </div>
 
                     <div class="form-group">

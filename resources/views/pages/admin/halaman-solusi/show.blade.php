@@ -114,6 +114,25 @@
                 color: #0c4a6e;
             }
 
+            .solusi-content table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 1.5rem 0;
+                font-size: 0.95rem;
+            }
+
+            .solusi-content table th,
+            .solusi-content table td {
+                padding: 0.75rem 1rem;
+                border: 1px solid #e2e8f0;
+            }
+
+            .solusi-content table th {
+                background: #f8fafc;
+                font-weight: 700;
+                color: #0f172a;
+            }
+
             /* Tipografi keterangan pada kartu detail */
             .detail-text {
                 font-size: .9375rem;
@@ -322,9 +341,97 @@
     @endif
 
     <!-- ========================================== -->
+    <!-- FAQ SECTION (WITH SCHEMA.ORG JSON-LD) -->
+    <!-- ========================================== -->
+    @php
+        $faqs = [
+            [
+                'q' => $locale === 'en' ? 'What does this solution encompass and who is it designed for?' : 'Apa saja yang dicakup dalam solusi ini dan untuk siapa solusi ini dirancang?',
+                'a' => $locale === 'en' 
+                    ? 'This solution provides comprehensive, end-to-end digital credentials and high-security document infrastructure tailored for governments, financial institutions, and global corporations demanding uncompromising authenticity, compliance, and reliability.'
+                    : 'Solusi ini mencakup infrastruktur teknologi sekuritas terpadu, mulai dari manufaktur kredensial fisik berkeamanan tinggi hingga transformasi identitas digital dan pembayaran yang dirancang khusus untuk instansi pemerintah, perbankan, dan sektor industri enterprise.'
+            ],
+            [
+                'q' => $locale === 'en' ? 'Does this solution adhere to international security certifications?' : 'Apakah solusi ini mematuhi standar sertifikasi keamanan internasional?',
+                'a' => $locale === 'en'
+                    ? 'Yes, all of our processes and facilities are certified under ISO 9001, ISO 27001 (Information Security Management), INTERGRAF High Security Printing certification, and EMV compliance for banking and identity credentials.'
+                    : 'Ya. Seluruh fasilitas produksi dan operasional kami telah tersertifikasi standar internasional bergengsi, termasuk ISO 9001, ISO 27001 (Sistem Manajemen Keamanan Informasi), sertifikasi sekuritas global INTERGRAF, serta standar EMV untuk kartu pembayaran dan identitas cerdas.'
+            ],
+            [
+                'q' => $locale === 'en' ? 'Can this solution integrate with our existing core enterprise systems?' : 'Dapatkah solusi ini diintegrasikan dengan infrastruktur sistem yang sudah ada?',
+                'a' => $locale === 'en'
+                    ? 'Yes. We provide modern RESTful APIs, SDKs, and customized middleware to facilitate seamless interoperability with your core enterprise architectures, database systems, and identity validation platforms.'
+                    : 'Tentu. Kami menyediakan arsitektur integrasi berbasis API yang aman, SDK modular, serta dukungan kustomisasi middleware yang memudahkan integrasi langsung dengan core banking, ERP korporat, atau database kependudukan nasional.'
+            ],
+            [
+                'q' => $locale === 'en' ? 'What service level agreements (SLA) and technical support are offered?' : 'Bagaimana komitmen SLA dan dukungan teknis purna jual yang disediakan?',
+                'a' => $locale === 'en'
+                    ? 'We offer comprehensive SLA tiers including 24/7 dedicated enterprise technical support, scheduled system maintenance, preventative monitoring, and on-site expert consultation.'
+                    : 'Kami berkomitmen menyediakan SLA komprehensif, tim teknis berdedikasi 24/7, pemeliharaan berkala, serta pendampingan langsung dari tenaga ahli profesional guna memastikan kelancaran operasional jangka panjang.'
+            ]
+        ];
+    @endphp
+
+    <section class="py-20 bg-slate-50 border-t border-slate-200/80" id="faq-section">
+        <div class="container mx-auto px-6">
+            <div class="max-w-3xl mx-auto">
+                <div class="text-center mb-12">
+                    <span class="inline-flex items-center gap-1.5 py-1.5 px-4 rounded-full bg-brand-50 text-brand-700 text-xs font-bold uppercase tracking-wider mb-4 border border-brand-200">
+                        <i class="fa-solid fa-circle-question text-brand-600"></i> FAQ &amp; Knowledge Base
+                    </span>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                        {{ $locale === 'en' ? 'Frequently Asked Questions' : 'Pertanyaan yang Sering Diajukan' }}
+                    </h2>
+                    <p class="text-slate-500 text-sm md:text-base mt-2.5">
+                        {{ $locale === 'en' ? 'Everything you need to know about this solution, security certifications, and implementation.' : 'Informasi mendalam seputar implementasi solusi, spesifikasi teknis, dan sertifikasi keamanan kami.' }}
+                    </p>
+                </div>
+
+                <div class="space-y-4" id="faqAccordion">
+                    @foreach($faqs as $idx => $item)
+                        <div class="faq-item bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all duration-200 hover:border-brand-300">
+                            <button type="button" 
+                                onclick="toggleFaq('faq-content-{{ $idx }}', 'faq-icon-{{ $idx }}')"
+                                class="w-full px-6 py-5 text-left font-bold text-slate-900 flex items-center justify-between gap-4 hover:bg-slate-50/80 transition-colors">
+                                <span class="text-base font-bold text-slate-900 leading-snug">{{ $item['q'] }}</span>
+                                <div class="w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center flex-shrink-0 text-brand-600">
+                                    <i id="faq-icon-{{ $idx }}" class="fa-solid {{ $idx === 0 ? 'fa-chevron-up' : 'fa-chevron-down' }} text-xs transition-transform duration-200"></i>
+                                </div>
+                            </button>
+                            <div id="faq-content-{{ $idx }}" class="px-6 pb-6 pt-1 text-slate-600 text-sm leading-relaxed border-t border-slate-100 {{ $idx === 0 ? '' : 'hidden' }}">
+                                <p>{{ $item['a'] }}</p>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Schema.org FAQPage JSON-LD -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            @foreach($faqs as $index => $faq)
+            {
+                "@type": "Question",
+                "name": {!! json_encode($faq['q']) !!},
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": {!! json_encode($faq['a']) !!}
+                }
+            }{{ !$loop->last ? ',' : '' }}
+            @endforeach
+        ]
+    }
+    </script>
+
+    <!-- ========================================== -->
     <!-- CTA SECTION -->
     <!-- ========================================== -->
-    <section class="py-16 bg-slate-50">
+    <section class="py-16 bg-white">
         <div class="container mx-auto px-6">
             <div
                 class="bg-gradient-to-br from-brand-900 via-brand-800 to-brand-950 rounded-3xl p-8 md:p-14 text-center relative overflow-hidden">
@@ -362,5 +469,23 @@
             </div>
         </div>
     </section>
+
+    @push('scripts')
+    <script>
+        function toggleFaq(contentId, iconId) {
+            const content = document.getElementById(contentId);
+            const icon = document.getElementById(iconId);
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            } else {
+                content.classList.add('hidden');
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            }
+        }
+    </script>
+    @endpush
 
 @endsection

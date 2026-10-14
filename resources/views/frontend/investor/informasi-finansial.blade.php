@@ -18,23 +18,12 @@
                         </div>
 
                         <nav class="space-y-1.5" id="investor-sidebar-nav">
-                            <a href="#informasi-saham"
+                            <a href="#struktur-kepemilikan"
                                 class="flex items-start gap-3 p-2.5 rounded-lg bg-blue-50 text-[#0051d5] font-semibold text-xs transition-colors sidebar-nav-link"
-                                data-target="informasi-saham">
+                                data-target="struktur-kepemilikan">
                                 <span class="text-xs font-bold w-5">01</span>
                                 <div>
-                                    <p class="text-xs font-bold leading-tight">{{ __('investor.nav_stock_info') }}</p>
-                                    <p class="text-[11px] font-normal text-slate-500 mt-0.5">
-                                        {{ __('investor.nav_stock_info_desc') }}</p>
-                                </div>
-                            </a>
-
-                            <a href="#struktur-kepemilikan"
-                                class="flex items-start gap-3 p-2.5 rounded-lg text-slate-700 hover:bg-slate-50 text-xs transition-colors sidebar-nav-link"
-                                data-target="struktur-kepemilikan">
-                                <span class="text-xs font-bold text-slate-400 w-5">02</span>
-                                <div>
-                                    <p class="text-xs font-semibold leading-tight">{{ __('investor.nav_ownership') }}</p>
+                                    <p class="text-xs font-bold leading-tight">{{ __('investor.nav_ownership') }}</p>
                                     <p class="text-[11px] font-normal text-slate-500 mt-0.5">
                                         {{ __('investor.nav_ownership_desc') }}</p>
                                 </div>
@@ -43,7 +32,7 @@
                             <a href="#pemegang-saham-utama"
                                 class="flex items-start gap-3 p-2.5 rounded-lg text-slate-700 hover:bg-slate-50 text-xs transition-colors sidebar-nav-link"
                                 data-target="pemegang-saham-utama">
-                                <span class="text-xs font-bold text-slate-400 w-5">03</span>
+                                <span class="text-xs font-bold text-slate-400 w-5">02</span>
                                 <div>
                                     <p class="text-xs font-semibold leading-tight">{{ __('investor.nav_controlling') }}</p>
                                     <p class="text-[11px] font-normal text-slate-500 mt-0.5">
@@ -54,7 +43,7 @@
                             <a href="#entitas-anak"
                                 class="flex items-start gap-3 p-2.5 rounded-lg text-slate-700 hover:bg-slate-50 text-xs transition-colors sidebar-nav-link"
                                 data-target="entitas-anak">
-                                <span class="text-xs font-bold text-slate-400 w-5">04</span>
+                                <span class="text-xs font-bold text-slate-400 w-5">03</span>
                                 <div>
                                     <p class="text-xs font-semibold leading-tight">{{ __('investor.nav_subsidiaries') }}</p>
                                     <p class="text-[11px] font-normal text-slate-500 mt-0.5">
@@ -79,156 +68,7 @@
                 <!-- RIGHT CONTENT AREA -->
                 <div class="lg:col-span-8 xl:col-span-9 space-y-12">
 
-                    <!-- SECTION 01: INFORMASI SAHAM -->
-                    <section id="informasi-saham" class="scroll-mt-32">
-                        <div class="mb-4">
-                            <span
-                                class="text-[10px] font-bold tracking-wider uppercase text-[#0051d5] bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
-                                {{ __('investor.stock_badge') }}
-                            </span>
-                            <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-2">
-                                {{ __('investor.stock_title') }}
-                            </h2>
-                        </div>
-
-                        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                                <div class="lg:col-span-7 space-y-6">
-                                    <div class="flex flex-wrap items-baseline gap-3">
-                                        <span class="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
-                                            Rp {{ number_format($saham->HargaTerakhir, 0, ',', '.') }}
-                                        </span>
-                                        <span
-                                            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold {{ $saham->Perubahan >= 0 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200' }}">
-                                            <i
-                                                class="fa-solid {{ $saham->Perubahan >= 0 ? 'fa-arrow-trend-up' : 'fa-arrow-trend-down' }}"></i>
-                                            {{ $saham->Perubahan >= 0 ? '+' : '' }}{{ number_format($saham->Perubahan, 0, ',', '.') }}
-                                            ({{ $saham->Perubahan >= 0 ? '+' : '' }}{{ $saham->PersentasePerubahan }}%)
-                                        </span>
-                                        <span class="text-xs text-slate-400 font-medium">{{ $saham->StatusPasar }}</span>
-                                    </div>
-
-                                    <div class="bg-slate-50/70 p-4 rounded-xl border border-slate-100">
-                                        <div class="flex items-center justify-between mb-4">
-                                            <span
-                                                class="text-xs font-semibold text-slate-700">{{ __('investor.stock_chart_label') }}</span>
-                                            <div class="flex gap-1">
-                                                <span
-                                                    class="px-2 py-0.5 rounded text-[10px] font-bold bg-[#0099ff] text-white">5{{ __('investor.chart_day_short') }}</span>
-                                                <span
-                                                    class="px-2 py-0.5 rounded text-[10px] font-medium text-slate-500 hover:bg-slate-200 cursor-pointer">1{{ __('investor.chart_month_short') }}</span>
-                                                <span
-                                                    class="px-2 py-0.5 rounded text-[10px] font-medium text-slate-500 hover:bg-slate-200 cursor-pointer">1{{ __('investor.chart_year_short') }}</span>
-                                            </div>
-                                        </div>
-
-                                        <div class="h-44 w-full relative">
-                                            <svg class="w-full h-full overflow-visible" viewBox="0 0 500 150"
-                                                preserveAspectRatio="none">
-                                                <defs>
-                                                    <linearGradient id="chartGradient" x1="0" y1="0"
-                                                        x2="0" y2="1">
-                                                        <stop offset="0%" stop-color="#0099ff" stop-opacity="0.25" />
-                                                        <stop offset="100%" stop-color="#0099ff" stop-opacity="0.0" />
-                                                    </linearGradient>
-                                                </defs>
-                                                <line x1="0" y1="30" x2="500" y2="30"
-                                                    stroke="#e2e8f0" stroke-dasharray="3,3" />
-                                                <line x1="0" y1="75" x2="500" y2="75"
-                                                    stroke="#e2e8f0" stroke-dasharray="3,3" />
-                                                <line x1="0" y1="120" x2="500" y2="120"
-                                                    stroke="#e2e8f0" stroke-dasharray="3,3" />
-                                                <polygon fill="url(#chartGradient)"
-                                                    points="0,110 120,95 240,75 360,75 500,35 500,150 0,150" />
-                                                <polyline fill="none" stroke="#0099ff" stroke-width="3"
-                                                    stroke-linecap="round" stroke-linejoin="round"
-                                                    points="0,110 120,95 240,75 360,75 500,35" />
-                                                <circle cx="0" cy="110" r="4" fill="#0099ff" />
-                                                <circle cx="120" cy="95" r="4" fill="#0099ff" />
-                                                <circle cx="240" cy="75" r="4" fill="#0099ff" />
-                                                <circle cx="360" cy="75" r="4" fill="#0099ff" />
-                                                <circle cx="500" cy="35" r="5" fill="#0284c7"
-                                                    stroke="#ffffff" stroke-width="2" />
-                                            </svg>
-                                        </div>
-                                        <div class="flex justify-between text-[11px] text-slate-400 mt-2 px-1">
-                                            <span>22 Mar (575)</span>
-                                            <span>25 Mar (580)</span>
-                                            <span>26 Mar (585)</span>
-                                            <span>27 Mar (585)</span>
-                                            <span class="font-bold text-[#0099ff]">28 Mar (595)</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="lg:col-span-5 bg-slate-50/60 rounded-xl p-5 border border-slate-100">
-                                    <h3
-                                        class="text-xs font-bold uppercase tracking-wider text-slate-600 mb-4 pb-2 border-b border-slate-200">
-                                        {{ __('investor.stock_stats_title') }}
-                                    </h3>
-
-                                    <div class="grid grid-cols-2 gap-y-3.5 gap-x-4 text-xs">
-                                        <div>
-                                            <span
-                                                class="text-slate-400 block text-[11px]">{{ __('investor.stat_open') }}</span>
-                                            <span class="font-bold text-slate-800">Rp
-                                                {{ number_format($saham->Pembukaan, 0, ',', '.') }}</span>
-                                        </div>
-                                        <div>
-                                            <span
-                                                class="text-slate-400 block text-[11px]">{{ __('investor.stat_prev_close') }}</span>
-                                            <span class="font-bold text-slate-800">Rp
-                                                {{ number_format($saham->PenutupanKemarin, 0, ',', '.') }}</span>
-                                        </div>
-                                        <div>
-                                            <span
-                                                class="text-slate-400 block text-[11px]">{{ __('investor.stat_today_high') }}</span>
-                                            <span class="font-bold text-emerald-600">Rp
-                                                {{ number_format($saham->TertinggiHariIni, 0, ',', '.') }}</span>
-                                        </div>
-                                        <div>
-                                            <span
-                                                class="text-slate-400 block text-[11px]">{{ __('investor.stat_today_low') }}</span>
-                                            <span class="font-bold text-rose-600">Rp
-                                                {{ number_format($saham->TerendahHariIni, 0, ',', '.') }}</span>
-                                        </div>
-                                        <div>
-                                            <span
-                                                class="text-slate-400 block text-[11px]">{{ __('investor.stat_52w_high') }}</span>
-                                            <span class="font-semibold text-slate-700">Rp
-                                                {{ number_format($saham->Tertinggi52Mgg, 0, ',', '.') }}</span>
-                                        </div>
-                                        <div>
-                                            <span
-                                                class="text-slate-400 block text-[11px]">{{ __('investor.stat_52w_low') }}</span>
-                                            <span class="font-semibold text-slate-700">Rp
-                                                {{ number_format($saham->Terendah52Mgg, 0, ',', '.') }}</span>
-                                        </div>
-                                        <div class="col-span-2 pt-2 border-t border-slate-200">
-                                            <div class="flex justify-between items-center py-1">
-                                                <span class="text-slate-500">{{ __('investor.stat_volume') }}</span>
-                                                <span
-                                                    class="font-bold text-slate-900">{{ number_format($saham->VolumeSaham, 0, ',', '.') }}
-                                                    {{ __('investor.unit_shares') }}</span>
-                                            </div>
-                                            <div class="flex justify-between items-center py-1">
-                                                <span
-                                                    class="text-slate-500">{{ __('investor.stat_transaction_value') }}</span>
-                                                <span class="font-bold text-slate-900">{{ $saham->NilaiTransaksi }}</span>
-                                            </div>
-                                            <div class="flex justify-between items-center py-1">
-                                                <span class="text-slate-500">{{ __('investor.stat_market_cap') }}</span>
-                                                <span
-                                                    class="font-bold text-[#0051d5]">{{ $saham->KapitalisasiPasar }}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- SECTION 02: STRUKTUR KEPEMILIKAN -->
+                    <!-- SECTION 01: STRUKTUR KEPEMILIKAN -->
                     <section id="struktur-kepemilikan" class="scroll-mt-32">
                         <div class="mb-4">
                             <span
@@ -291,9 +131,37 @@
                             </div>
                         </div>
 
+                        <!-- FITUR FILTER STRUKTUR KEPEMILIKAN -->
+                        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 mb-4">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Filter:</span>
+                                    <div class="inline-flex p-1 bg-slate-100 rounded-xl border border-slate-200 gap-1" id="filter-ownership-btns">
+                                        <button type="button" data-filter="all"
+                                            class="filter-ownership-btn px-3 py-1 rounded-lg text-xs font-bold transition-all bg-[#0099ff] text-white shadow-2xs">
+                                            Semua
+                                        </button>
+                                        <button type="button" data-filter="nasional"
+                                            class="filter-ownership-btn px-3 py-1 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all">
+                                            Pemodal Nasional
+                                        </button>
+                                        <button type="button" data-filter="asing"
+                                            class="filter-ownership-btn px-3 py-1 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all">
+                                            Pemodal Asing
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="relative w-full sm:w-64">
+                                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                                    <input type="text" id="search-ownership" placeholder="Cari kategori pemegang saham..."
+                                        class="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-700 focus:bg-white focus:border-[#0099ff] outline-none transition-all">
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
                             <div class="overflow-x-auto">
-                                <table class="w-full text-xs text-left">
+                                <table id="ownership-table" class="w-full text-xs text-left">
                                     <thead
                                         class="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase tracking-wider text-[11px]">
                                         <tr>
@@ -303,22 +171,21 @@
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-slate-100">
-                                        <tr class="bg-slate-50/50 font-bold text-slate-900">
+                                        <tr class="ownership-group-header group-nasional bg-slate-50/50 font-bold text-slate-900">
                                             <td colspan="3" class="py-2.5 px-6 text-xs text-[#0051d5]">
                                                 A. {{ __('investor.ownership_domestic') }}
                                             </td>
                                         </tr>
                                         @foreach ($strukturNasional as $item)
-                                            <tr class="hover:bg-slate-50/60 transition-colors">
-                                                <td class="py-3 px-6 pl-10 text-slate-700">{{ $item->KategoriPemegang }}
-                                                </td>
+                                            <tr class="ownership-row group-nasional hover:bg-slate-50/60 transition-colors" data-group="nasional" data-name="{{ strtolower($item->KategoriPemegang) }}">
+                                                <td class="py-3 px-6 pl-10 text-slate-700">{{ $item->KategoriPemegang }}</td>
                                                 <td class="py-3 px-6 text-right font-medium text-slate-900">
                                                     {{ number_format($item->JumlahSaham, 0, ',', '.') }}</td>
                                                 <td class="py-3 px-6 text-right text-slate-600">
                                                     {{ number_format($item->Persentase, 2, ',', '.') }}%</td>
                                             </tr>
                                         @endforeach
-                                        <tr class="bg-blue-50/40 font-bold text-slate-900">
+                                        <tr class="ownership-subtotal group-nasional bg-blue-50/40 font-bold text-slate-900">
                                             <td class="py-2.5 px-6 pl-10">{{ __('investor.subtotal_domestic') }}</td>
                                             <td class="py-2.5 px-6 text-right text-[#0051d5]">
                                                 {{ number_format($totalNasionalSaham, 0, ',', '.') }}</td>
@@ -326,22 +193,21 @@
                                                 {{ number_format($totalNasionalPersen, 2, ',', '.') }}%</td>
                                         </tr>
 
-                                        <tr class="bg-slate-50/50 font-bold text-slate-900">
+                                        <tr class="ownership-group-header group-asing bg-slate-50/50 font-bold text-slate-900">
                                             <td colspan="3" class="py-2.5 px-6 text-xs text-indigo-700">
                                                 B. {{ __('investor.ownership_foreign') }}
                                             </td>
                                         </tr>
                                         @foreach ($strukturAsing as $item)
-                                            <tr class="hover:bg-slate-50/60 transition-colors">
-                                                <td class="py-3 px-6 pl-10 text-slate-700">{{ $item->KategoriPemegang }}
-                                                </td>
+                                            <tr class="ownership-row group-asing hover:bg-slate-50/60 transition-colors" data-group="asing" data-name="{{ strtolower($item->KategoriPemegang) }}">
+                                                <td class="py-3 px-6 pl-10 text-slate-700">{{ $item->KategoriPemegang }}</td>
                                                 <td class="py-3 px-6 text-right font-medium text-slate-900">
                                                     {{ number_format($item->JumlahSaham, 0, ',', '.') }}</td>
                                                 <td class="py-3 px-6 text-right text-slate-600">
                                                     {{ number_format($item->Persentase, 2, ',', '.') }}%</td>
                                             </tr>
                                         @endforeach
-                                        <tr class="bg-indigo-50/40 font-bold text-slate-900">
+                                        <tr class="ownership-subtotal group-asing bg-indigo-50/40 font-bold text-slate-900">
                                             <td class="py-2.5 px-6 pl-10">{{ __('investor.subtotal_foreign') }}</td>
                                             <td class="py-2.5 px-6 text-right text-indigo-700">
                                                 {{ number_format($totalAsingSaham, 0, ',', '.') }}</td>
@@ -362,7 +228,7 @@
                         </div>
                     </section>
 
-                    <!-- SECTION 03: PEMEGANG SAHAM UTAMA -->
+                    <!-- SECTION 02: PEMEGANG SAHAM UTAMA -->
                     <section id="pemegang-saham-utama" class="scroll-mt-32">
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                             <div>
@@ -386,9 +252,14 @@
                         <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
                             @if ($skema->PathGambar)
                                 <div class="w-full rounded-xl overflow-hidden mb-4 border border-slate-100">
-                                    <img src="{{ asset('storage/' . $skema->PathGambar) }}"
-                                        alt="{{ __('investor.controlling_title') }}"
-                                        class="w-full h-auto object-contain max-h-[600px] mx-auto">
+                                    <a href="{{ asset('storage/' . $skema->PathGambar) }}" class="glightbox block relative group cursor-zoom-in" data-gallery="pemegang-saham" data-title="{{ __('investor.controlling_title') }}">
+                                        <img src="{{ asset('storage/' . $skema->PathGambar) }}"
+                                            alt="{{ __('investor.controlling_title') }}"
+                                            class="w-full h-auto object-contain max-h-[600px] mx-auto group-hover:opacity-95 transition-all">
+                                        <div class="absolute bottom-3 right-3 bg-slate-900/75 hover:bg-slate-900 text-white text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-md">
+                                            <i class="fa-solid fa-magnifying-glass-plus"></i> Klik untuk Perbesar
+                                        </div>
+                                    </a>
                                 </div>
                             @else
                                 <div class="p-6 bg-slate-50/60 rounded-xl border border-slate-100 text-center">
@@ -498,7 +369,7 @@
                         </div>
                     </section>
 
-                    <!-- SECTION 04: ENTITAS ANAK -->
+                    <!-- SECTION 03: ENTITAS ANAK PERUSAHAAN (TABEL LENGKAP & SORTABLE) -->
                     <section id="entitas-anak" class="scroll-mt-32">
                         <div class="mb-4">
                             <span
@@ -513,7 +384,8 @@
                             </p>
                         </div>
 
-                        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 mb-6">
+                        <!-- FILTER & SEARCH ENTITAS ANAK -->
+                        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 mb-5">
                             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                                 <div class="relative flex-1">
                                     <i
@@ -524,7 +396,7 @@
                                 </div>
                                 <div class="flex flex-wrap gap-1.5" id="filter-entitas-tabs">
                                     <button type="button" data-filter="all"
-                                        class="filter-entitas-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-[#0099ff] text-white transition-all">
+                                        class="filter-entitas-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-[#0099ff] text-white transition-all shadow-2xs">
                                         {{ __('investor.subs_filter_all') }} ({{ $entitasAnak->count() }})
                                     </button>
                                     <button type="button" data-filter="Entitas Anak"
@@ -541,65 +413,102 @@
                             </div>
                         </div>
 
-                        <div class="space-y-3" id="entitas-list-container">
-                            @foreach ($entitasAnak as $anak)
-                                <div class="entitas-item bg-white rounded-xl p-5 shadow-sm border border-slate-200/80 hover:border-[#0099ff] hover:shadow-md transition-all duration-200"
-                                    data-name="{{ strtolower($anak->NamaEntitas) }}" data-type="{{ $anak->Tipe }}"
-                                    data-bidang="{{ strtolower($anak->BidangUsaha) }}">
-                                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
-                                        <div class="md:col-span-5">
-                                            <div class="flex items-center gap-2 mb-1">
-                                                <span
-                                                    class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider {{ $anak->Tipe === 'Entitas Anak' ? 'bg-blue-50 text-[#0051d5] border border-blue-100' : 'bg-amber-50 text-amber-700 border border-amber-200' }}">
-                                                    {{ $anak->Tipe === 'Entitas Anak' ? __('investor.subs_type_subsidiary') : __('investor.subs_type_associate') }}
-                                                </span>
-                                                @if ($anak->TahunBergabung)
-                                                    <span
-                                                        class="text-[11px] text-slate-400 font-medium">{{ $anak->TahunBergabung }}</span>
-                                                @endif
-                                            </div>
-                                            <h3 class="font-bold text-slate-900 text-sm md:text-base leading-snug">
-                                                {{ $anak->NamaEntitas }}</h3>
-                                            <p class="text-xs text-slate-500 flex items-center gap-1.5 mt-0.5">
-                                                <i class="fa-solid fa-location-dot text-slate-400 text-[10px]"></i>
-                                                {{ $anak->Lokasi ?? 'Indonesia' }}
-                                            </p>
-                                        </div>
-
-                                        <div class="md:col-span-3">
-                                            <span
-                                                class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
-                                                {{ __('investor.subs_ownership_label') }}
-                                            </span>
-                                            <div class="flex items-center gap-2">
-                                                <span class="font-extrabold text-sm md:text-base text-slate-900">
-                                                    {{ number_format($anak->PersentaseKepemilikan, 2, ',', '.') }}%
-                                                </span>
-                                                <div class="flex-1 bg-slate-100 h-2 rounded-full overflow-hidden">
-                                                    <div class="h-full rounded-full {{ $anak->PersentaseKepemilikan >= 50 ? 'bg-[#0099ff]' : 'bg-amber-500' }}"
-                                                        style="width: {{ min(100, $anak->PersentaseKepemilikan) }}%">
+                        <!-- TABEL ENTITAS ANAK PERUSAHAAN (SORTABLE) -->
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+                            <div class="overflow-x-auto">
+                                <table id="entitas-table" class="w-full text-xs text-left">
+                                    <thead class="bg-slate-100 border-b border-slate-200 text-slate-700 font-bold uppercase tracking-wider text-[11px]">
+                                        <tr>
+                                            <th class="py-3.5 px-4 text-center w-12">#</th>
+                                            <th class="py-3.5 px-4 min-w-[200px]">Nama Entitas</th>
+                                            <th class="py-3.5 px-4 min-w-[120px]">Tipe Entitas</th>
+                                            <th class="py-3.5 px-4 min-w-[150px]" title="Tahun resmi bergabung atau didirikan dalam kelompok usaha perseroan">
+                                                Tahun Bergabung / Pendirian <i class="fa-solid fa-circle-info text-slate-400 text-[10px] ml-1"></i>
+                                            </th>
+                                            <th class="py-3.5 px-4 min-w-[120px]">Domisili</th>
+                                            <th class="py-3.5 px-4 min-w-[220px]">Bidang Usaha</th>
+                                            <th class="py-3.5 px-4 text-right min-w-[170px]">
+                                                <button type="button" id="btnSortKepemilikan" onclick="toggleSortKepemilikan()"
+                                                    class="inline-flex items-center gap-1.5 font-bold uppercase hover:text-[#0099ff] transition-colors focus:outline-none">
+                                                    <span>Kepemilikan Saham</span>
+                                                    <i id="sortIcon" class="fa-solid fa-sort text-xs text-slate-400"></i>
+                                                </button>
+                                            </th>
+                                            <th class="py-3.5 px-4 text-center w-24">Tautan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="entitas-tbody" class="divide-y divide-slate-100">
+                                        @forelse ($entitasAnak as $index => $anak)
+                                            <tr class="entitas-table-row hover:bg-slate-50/70 transition-colors"
+                                                data-name="{{ strtolower($anak->NamaEntitas) }}"
+                                                data-type="{{ $anak->Tipe }}"
+                                                data-bidang="{{ strtolower($anak->BidangUsaha) }}"
+                                                data-persen="{{ (float)$anak->PersentaseKepemilikan }}">
+                                                <td class="py-3.5 px-4 text-center text-slate-400 font-medium row-num">{{ $loop->iteration }}</td>
+                                                <td class="py-3.5 px-4">
+                                                    <span class="font-bold text-slate-900 block">{{ $anak->NamaEntitas }}</span>
+                                                </td>
+                                                <td class="py-3.5 px-4">
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider {{ $anak->Tipe === 'Entitas Anak' ? 'bg-blue-50 text-[#0051d5] border border-blue-200' : 'bg-amber-50 text-amber-700 border border-amber-200' }}">
+                                                        {{ $anak->Tipe === 'Entitas Anak' ? __('investor.subs_type_subsidiary') : __('investor.subs_type_associate') }}
+                                                    </span>
+                                                </td>
+                                                <td class="py-3.5 px-4">
+                                                    @if ($anak->TahunBergabung)
+                                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-semibold text-[11px]">
+                                                            <i class="fa-regular fa-calendar text-[10px] text-slate-400"></i>
+                                                            Tahun {{ $anak->TahunBergabung }}
+                                                        </span>
+                                                    @else
+                                                        <span class="text-slate-400">-</span>
+                                                    @endif
+                                                </td>
+                                                <td class="py-3.5 px-4 text-slate-600">
+                                                    <span class="inline-flex items-center gap-1">
+                                                        <i class="fa-solid fa-location-dot text-slate-400 text-[10px]"></i>
+                                                        {{ $anak->Lokasi ?? 'Indonesia' }}
+                                                    </span>
+                                                </td>
+                                                <td class="py-3.5 px-4 text-slate-600 leading-relaxed">
+                                                    {{ $anak->BidangUsaha }}
+                                                </td>
+                                                <td class="py-3.5 px-4 text-right">
+                                                    <div class="flex items-center justify-end gap-2.5">
+                                                        <span class="font-extrabold text-sm text-slate-900">
+                                                            {{ number_format($anak->PersentaseKepemilikan, 2, ',', '.') }}%
+                                                        </span>
+                                                        <div class="w-16 bg-slate-100 h-2 rounded-full overflow-hidden hidden sm:block">
+                                                            <div class="h-full rounded-full {{ $anak->PersentaseKepemilikan >= 50 ? 'bg-[#0099ff]' : 'bg-amber-500' }}"
+                                                                style="width: {{ min(100, $anak->PersentaseKepemilikan) }}%"></div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="md:col-span-4 text-xs text-slate-600">
-                                            <p class="line-clamp-2 leading-relaxed">{{ $anak->BidangUsaha }}</p>
-                                            @if ($anak->UrlWebsite)
-                                                <a href="{{ $anak->UrlWebsite }}" target="_blank"
-                                                    class="inline-flex items-center gap-1 text-[#0051d5] hover:underline font-semibold mt-1 text-[11px]">
-                                                    {{ __('investor.subs_visit_website') }} <i
-                                                        class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
-                                                </a>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
+                                                </td>
+                                                <td class="py-3.5 px-4 text-center">
+                                                    @if ($anak->UrlWebsite)
+                                                        <a href="{{ $anak->UrlWebsite }}" target="_blank"
+                                                            class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-blue-50 text-[#0051d5] hover:bg-[#0099ff] hover:text-white transition-colors"
+                                                            title="Kunjungi Website">
+                                                            <i class="fa-solid fa-arrow-up-right-from-square text-[11px]"></i>
+                                                        </a>
+                                                    @else
+                                                        <span class="text-slate-300">-</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="8" class="text-center py-8 text-slate-400">
+                                                    Belum ada data entitas anak yang terdaftar.
+                                                </td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </section>
 
-                    <!-- BOTTOM CTA -->
+                    <!-- BOTTOM CTA (TANPA TOMBOL HUBUNGI HUBUNGAN INVESTOR SESUAI REVISI UAT) -->
                     <div
                         class="bg-gradient-to-r from-[#0a557a] to-[#094e70] rounded-2xl p-8 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-md">
                         <div>
@@ -607,12 +516,8 @@
                             <p class="text-xs md:text-sm text-sky-100 max-w-xl">{{ __('investor.cta_desc') }}</p>
                         </div>
                         <div class="flex flex-wrap gap-3">
-                            <a href="{{ route('frontend.investor.informasi-lainnya', ['locale' => app()->getLocale()]) }}#hubungi-investor"
-                                class="px-5 py-2.5 rounded-xl bg-white text-[#0a557a] hover:bg-sky-50 font-bold text-xs transition-colors shadow-sm whitespace-nowrap">
-                                {{ __('investor.cta_contact_ir') }}
-                            </a>
                             <a href="{{ route('frontend.contact.index', ['locale' => app()->getLocale()]) }}"
-                                class="px-5 py-2.5 rounded-xl bg-sky-900/60 hover:bg-sky-900 text-white font-semibold text-xs border border-white/20 transition-colors whitespace-nowrap">
+                                class="px-6 py-2.5 rounded-xl bg-white text-[#0a557a] hover:bg-sky-50 font-bold text-xs transition-colors shadow-sm whitespace-nowrap">
                                 {{ __('Contact Us') }}
                             </a>
                         </div>
@@ -625,39 +530,125 @@
 
     @push('scripts')
         <script>
+            let currentSortOrder = 'none'; // 'asc', 'desc', 'none'
+
+            // Sort Entitas Anak by Kepemilikan Saham
+            function toggleSortKepemilikan() {
+                const tbody = document.getElementById('entitas-tbody');
+                if (!tbody) return;
+
+                const rows = Array.from(tbody.querySelectorAll('.entitas-table-row'));
+                const icon = document.getElementById('sortIcon');
+
+                if (currentSortOrder === 'none' || currentSortOrder === 'asc') {
+                    currentSortOrder = 'desc';
+                    icon.className = 'fa-solid fa-sort-down text-xs text-[#0099ff]';
+                    rows.sort((a, b) => parseFloat(b.dataset.persen) - parseFloat(a.dataset.persen));
+                } else {
+                    currentSortOrder = 'asc';
+                    icon.className = 'fa-solid fa-sort-up text-xs text-[#0099ff]';
+                    rows.sort((a, b) => parseFloat(a.dataset.persen) - parseFloat(b.dataset.persen));
+                }
+
+                rows.forEach((row, idx) => {
+                    tbody.appendChild(row);
+                    const rowNum = row.querySelector('.row-num');
+                    if (rowNum) rowNum.textContent = idx + 1;
+                });
+            }
+
             document.addEventListener('DOMContentLoaded', function() {
+                // 1. FILTER & SEARCH STRUKTUR KEPEMILIKAN
+                const ownershipFilterBtns = document.querySelectorAll('.filter-ownership-btn');
+                const ownershipSearch = document.getElementById('search-ownership');
+                const ownershipRows = document.querySelectorAll('.ownership-row');
+                const headerNasional = document.querySelector('.ownership-group-header.group-nasional');
+                const subtotalNasional = document.querySelector('.ownership-subtotal.group-nasional');
+                const headerAsing = document.querySelector('.ownership-group-header.group-asing');
+                const subtotalAsing = document.querySelector('.ownership-subtotal.group-asing');
+
+                function filterOwnership() {
+                    const query = ownershipSearch ? ownershipSearch.value.toLowerCase().trim() : '';
+                    const activeBtn = document.querySelector('.filter-ownership-btn.bg-\\[\\#0099ff\\]');
+                    const groupFilter = activeBtn ? activeBtn.getAttribute('data-filter') : 'all';
+
+                    ownershipRows.forEach(row => {
+                        const name = row.getAttribute('data-name') || '';
+                        const group = row.getAttribute('data-group') || '';
+                        const matchesQuery = !query || name.includes(query);
+                        const matchesGroup = groupFilter === 'all' || group === groupFilter;
+
+                        row.style.display = (matchesQuery && matchesGroup) ? '' : 'none';
+                    });
+
+                    // Hide headers & subtotals if that group is filtered out or if searching
+                    if (headerNasional) headerNasional.style.display = (groupFilter === 'asing' || query) ? 'none' : '';
+                    if (subtotalNasional) subtotalNasional.style.display = (groupFilter === 'asing' || query) ? 'none' : '';
+                    if (headerAsing) headerAsing.style.display = (groupFilter === 'nasional' || query) ? 'none' : '';
+                    if (subtotalAsing) subtotalAsing.style.display = (groupFilter === 'nasional' || query) ? 'none' : '';
+                }
+
+                ownershipFilterBtns.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        ownershipFilterBtns.forEach(b => {
+                            b.classList.remove('bg-[#0099ff]', 'text-white', 'shadow-2xs');
+                            b.classList.add('text-slate-600');
+                        });
+                        this.classList.remove('text-slate-600');
+                        this.classList.add('bg-[#0099ff]', 'text-white', 'shadow-2xs');
+                        filterOwnership();
+                    });
+                });
+
+                if (ownershipSearch) {
+                    ownershipSearch.addEventListener('input', filterOwnership);
+                }
+
+                // 2. FILTER & SEARCH ENTITAS ANAK
                 const filterBtns = document.querySelectorAll('.filter-entitas-btn');
                 const searchInput = document.getElementById('search-entitas');
-                const items = document.querySelectorAll('.entitas-item');
+                const tableRows = document.querySelectorAll('.entitas-table-row');
 
-                function filterList() {
+                function filterEntitasList() {
                     const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
                     const activeBtn = document.querySelector('.filter-entitas-btn.bg-\\[\\#0099ff\\]');
                     const filterType = activeBtn ? activeBtn.getAttribute('data-filter') : 'all';
-                    items.forEach(item => {
-                        const name = item.getAttribute('data-name') || '';
-                        const type = item.getAttribute('data-type') || '';
-                        const bidang = item.getAttribute('data-bidang') || '';
+
+                    let visibleIndex = 1;
+                    tableRows.forEach(row => {
+                        const name = row.getAttribute('data-name') || '';
+                        const type = row.getAttribute('data-type') || '';
+                        const bidang = row.getAttribute('data-bidang') || '';
                         const matchesQuery = !query || name.includes(query) || bidang.includes(query);
                         const matchesType = filterType === 'all' || type === filterType;
-                        item.style.display = (matchesQuery && matchesType) ? 'block' : 'none';
+
+                        if (matchesQuery && matchesType) {
+                            row.style.display = '';
+                            const numCol = row.querySelector('.row-num');
+                            if (numCol) numCol.textContent = visibleIndex++;
+                        } else {
+                            row.style.display = 'none';
+                        }
                     });
                 }
 
                 filterBtns.forEach(btn => {
                     btn.addEventListener('click', function() {
                         filterBtns.forEach(b => {
-                            b.classList.remove('bg-[#0099ff]', 'text-white');
+                            b.classList.remove('bg-[#0099ff]', 'text-white', 'shadow-2xs');
                             b.classList.add('text-slate-600');
                         });
                         this.classList.remove('text-slate-600');
-                        this.classList.add('bg-[#0099ff]', 'text-white');
-                        filterList();
+                        this.classList.add('bg-[#0099ff]', 'text-white', 'shadow-2xs');
+                        filterEntitasList();
                     });
                 });
 
-                if (searchInput) searchInput.addEventListener('input', filterList);
+                if (searchInput) {
+                    searchInput.addEventListener('input', filterEntitasList);
+                }
 
+                // 3. SCROLLSPY
                 const navLinks = document.querySelectorAll('.sidebar-nav-link');
                 const sections = document.querySelectorAll('section[id]');
                 window.addEventListener('scroll', function() {

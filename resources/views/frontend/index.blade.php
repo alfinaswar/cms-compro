@@ -167,12 +167,25 @@
             scroll-margin-top: 80px;
         }
 
+        /* Global Typography Rule: Desktop body font-size minimal 16px, line-height 1.4em */
+        body {
+            line-height: 1.4em;
+        }
+        @media (min-width: 1024px) {
+            body {
+                font-size: 16px;
+                line-height: 1.4em;
+            }
+        }
+
         @import "tailwindcss";
 
         @theme {
             --font-mono: "Libertinus Mono", ui-monospace, monospace;
         }
     </style>
+    <!-- GLightbox CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
 </head>
 
 <body class="font-sans text-slate-600 antialiased bg-white">
@@ -1128,7 +1141,21 @@
             }
         });
     </script>
+    <!-- GLightbox JS -->
+    <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof GLightbox !== 'undefined') {
+                window.lightbox = GLightbox({
+                    selector: '.glightbox',
+                    touchNavigation: true,
+                    loop: true,
+                    zoomable: true
+                });
+            }
+        });
+    </script>
+    @stack('scripts')
 </body>
 
 </html>
-@stack('scripts')

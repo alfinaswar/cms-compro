@@ -30,7 +30,12 @@ class HalamanSolusiController extends Controller
                     return $row->Judul;
                 })
                 ->addColumn('Slug', function ($row) {
-                    return $row->Slug;
+                    $urlId = url('/id/solusi/' . $row->Slug);
+                    $urlEn = url('/en/solusi/' . $row->Slug);
+                    return '<code>' . e($row->Slug) . '</code>
+                        <div class="mt-1 small">
+                            <a href="' . $urlId . '" target="_blank" class="badge badge-primary mr-1" title="Buka Versi ID"><i class="fa fa-external-link-alt mr-1"></i>/id/solusi/' . e($row->Slug) . '</a>
+                        </div>';
                 })
                 ->addColumn('Konten', function ($row) {
                     return Str::limit(strip_tags($row->Konten), 100);
@@ -44,7 +49,7 @@ class HalamanSolusiController extends Controller
                     $encryptedId = encrypt($row->id);
                     $btn = '<div class="btn-group btn-group-sm">';
                     if (auth()->user()->can('solusi.view')) {
-                        $btn .= '<a href="' . route('halaman-solusi.show', $row->Slug) . '" class="btn btn-info" title="Show" target="_blank"><i class="fa fa-eye"></i></a>';
+                        $btn .= '<a href="' . route('halaman-solusi.show', ['locale' => session('locale', 'id'), 'id' => $row->Slug]) . '" class="btn btn-info" title="Lihat di Web" target="_blank"><i class="fa fa-eye"></i></a>';
                     }
                     if (auth()->user()->can('solusi.edit')) {
                         $btn .= '<a href="' . route('halaman-solusi.edit', $encryptedId) . '" class="btn btn-warning" title="Edit"><i class="fa fa-edit"></i></a>';
@@ -55,7 +60,7 @@ class HalamanSolusiController extends Controller
                     $btn .= '</div>';
                     return $btn;
                 })
-                ->rawColumns(['Status', 'action'])
+                ->rawColumns(['Slug', 'Status', 'action'])
                 ->make(true);
         }
 
@@ -170,8 +175,11 @@ class HalamanSolusiController extends Controller
      */
     public function show($id)
     {
-        dd($id);
-        $halamanSolusi = HalamanSolusi::with('details')->where('Slug', $id)->firstOrFail();
+        $halamanSolusi = HalamanSolusi::with(['details.translations', 'translations'])
+            ->where('Slug', $id)
+            ->orWhere('id', is_numeric($id) ? $id : null)
+            ->firstOrFail();
+
         return view('pages.admin.halaman-solusi.show', compact('halamanSolusi'));
     }
 

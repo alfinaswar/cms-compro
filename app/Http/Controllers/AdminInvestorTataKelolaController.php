@@ -157,19 +157,39 @@ class AdminInvestorTataKelolaController extends Controller
             'Judul' => 'required|string|max:255',
             'Kategori' => 'required|in:Dokumen Tata Kelola,Kebijakan Operasional,Komite Audit,Satuan Audit Internal',
             'Deskripsi' => 'nullable|string',
-            'FileDokumen' => 'nullable|file|mimes:pdf,docx,xlsx|max:10240',
+            'FileDokumen' => 'nullable',
+            'FileDokumen.*' => 'nullable|file|mimes:pdf,docx,xlsx|max:10240',
             'Urutan' => 'nullable|integer|min:0',
             'Status' => 'required|in:Aktif,Nonaktif',
         ]);
 
         if ($request->hasFile('FileDokumen')) {
-            $file = $request->file('FileDokumen');
-            $validated['PathFile'] = $file->store('investor/dokumen-gcg', 'public');
-            $validated['FileSize'] = round($file->getSize() / 1024 / 1024, 2) . ' MB';
-        }
+            $uploaded = $request->file('FileDokumen');
+            $files = is_array($uploaded) ? $uploaded : [$uploaded];
+            $baseUrutan = (int)($validated['Urutan'] ?? 0);
 
-        $validated['UserCreate'] = auth()->user()->name;
-        DokumenTataKelola::create($validated);
+            foreach ($files as $idx => $file) {
+                $path = $file->store('investor/dokumen-gcg', 'public');
+                $size = round($file->getSize() / 1024 / 1024, 2) . ' MB';
+                $judul = count($files) > 1 
+                    ? $validated['Judul'] . ' (' . pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . ')' 
+                    : $validated['Judul'];
+
+                DokumenTataKelola::create([
+                    'Judul' => $judul,
+                    'Kategori' => $validated['Kategori'],
+                    'Deskripsi' => $validated['Deskripsi'] ?? null,
+                    'PathFile' => $path,
+                    'FileSize' => $size,
+                    'Urutan' => $baseUrutan + $idx,
+                    'Status' => $validated['Status'],
+                    'UserCreate' => auth()->user()->name,
+                ]);
+            }
+        } else {
+            $validated['UserCreate'] = auth()->user()->name;
+            DokumenTataKelola::create($validated);
+        }
 
         return redirect()->back()->with('success', 'Dokumen tata kelola berhasil ditambahkan.');
     }
@@ -221,11 +241,13 @@ class AdminInvestorTataKelolaController extends Controller
             'Tahun' => 'required|integer|min:2000|max:2099',
             'Judul' => 'required|string|max:255',
             'KategoriDokumen' => 'nullable|string|max:100',
-            'StatusKegiatan' => 'required|in:Terjadwal,Selesai',
+            'StatusKegiatan' => 'nullable|string',
             'FileDokumen' => 'nullable|file|mimes:pdf|max:10240',
             'Urutan' => 'nullable|integer|min:0',
             'Status' => 'required|in:Aktif,Nonaktif',
         ]);
+
+        $validated['StatusKegiatan'] = $validated['StatusKegiatan'] ?? 'Selesai';
 
         if ($request->hasFile('FileDokumen')) {
             $file = $request->file('FileDokumen');
@@ -247,11 +269,11 @@ class AdminInvestorTataKelolaController extends Controller
             'Tahun' => 'required|integer|min:2000|max:2099',
             'Judul' => 'required|string|max:255',
             'KategoriDokumen' => 'nullable|string|max:100',
-            'StatusKegiatan' => 'required|in:Terjadwal,Selesai',
+            'StatusKegiatan' => 'nullable|string',
             'FileDokumen' => 'nullable|file|mimes:pdf|max:10240',
             'Urutan' => 'nullable|integer|min:0',
             'Status' => 'required|in:Aktif,Nonaktif',
-        ]);
+        $validated['StatusKegiatan'] = $validated['StatusKegiatan'] ?? 'Selesai';
 
         if ($request->hasFile('FileDokumen')) {
             if ($rups->PathFile && Storage::disk('public')->exists($rups->PathFile)) {

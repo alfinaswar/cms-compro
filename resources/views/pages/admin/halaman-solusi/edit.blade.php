@@ -101,13 +101,21 @@
 
                             <hr class="my-4">
                             <div class="form-group">
-                                <label><strong>Slug</strong></label>
+                                <label><strong>Slug / URL Link Halaman</strong></label>
+                                <div class="alert alert-info py-2 px-3 mb-2 small text-dark" style="background-color: #e8f4fd; border-left: 4px solid #0099ff;">
+                                    <i class="fa fa-info-circle text-primary mr-1"></i> <strong>Petunjuk Mengganti Link:</strong>
+                                    Untuk mengubah link halaman solusi ini, cukup edit teks <strong>Slug</strong> di bawah.
+                                    <div class="mt-1">
+                                        <strong>Link Publik:</strong>
+                                        <a href="{{ url('/id/solusi/' . $data->Slug) }}" target="_blank" class="badge badge-primary ml-1" id="previewUrlLink"><i class="fa fa-external-link-alt mr-1"></i>{{ url('/id/solusi/' . $data->Slug) }}</a>
+                                    </div>
+                                </div>
                                 <div class="input-group">
                                     <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-link"></i></span></div>
                                     <input type="text" name="Slug" id="Slug" class="form-control @error('Slug') is-invalid @enderror"
                                         placeholder="otomatis-terbentuk-jika-dikosongkan" value="{{ old('Slug', $data->Slug) }}">
                                 </div>
-                                <small class="text-muted">Kosongkan untuk generate otomatis dari Judul Indonesia.</small>
+                                <small class="text-muted">Ubah teks slug di atas untuk memperbarui URL halaman (gunakan huruf kecil, angka, dan tanda hubung <code>-</code>). Kosongkan jika ingin dibuat otomatis dari Judul Indonesia.</small>
                             </div>
                         </div>
                     </div>
