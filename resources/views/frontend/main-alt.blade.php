@@ -611,7 +611,7 @@
                                 class="text-[10px] font-bold tracking-widest text-white bg-brand-800/70 px-2.5 py-1 rounded">{{ $t['tier'] }}</span>
                             <i class="{{ $t['icon'] }} text-white"></i>
                         </div>
-                        <h3 class="font-bold text-xl text-white mb-3 leading-snug tracking-tight max-w-[180px]">
+                        <h3 class="font-bold text-xl text-white mb-3 leading-snug tracking-tight max-w-[280px]">
                             {{ $t['title'] }}
                         </h3>
                         <p class="text-xs text-white leading-relaxed mb-4">{{ $t['desc'] }}</p>
@@ -679,7 +679,7 @@
                 {{ __('Recognized & Certified by Domestic and International Credential Standards') }}
             </p>
         </div>
-        {{-- Buat muter looping logo kerjasama :) --}}
+        {{-- Buat muter looping logo kerjasama tanpa terlihat kosong --}}
         <style>
             @keyframes marquee {
                 0% {
@@ -709,36 +709,32 @@
             <div
                 class="pointer-events-none absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white to-transparent z-10">
             </div>
+            @php
+                // Ulangi logo supaya jumlahnya selalu terlihat penuh (minimal 16 logo)
+                $repeatCount = 2;
+                $logoCount = count($allLogos);
+                if ($logoCount > 0 && $logoCount < 8) {
+                    $repeatCount = (int) ceil(16 / $logoCount);
+                }
+            @endphp
             <div class="animate-marquee">
-                <div class="flex items-center gap-16 px-8">
-                    @foreach ($allLogos as $l)
-                        <div
-                            class="flex items-center justify-center h-16 w-36 shrink-0 opacity-80 hover:opacity-100 transition-opacity">
-                            @if ($l->PathLogo)
-                                <img src="{{ asset('storage/' . $l->PathLogo) }}" alt="{{ $l->NamaPartner }}"
-                                    class="max-h-full max-w-full object-contain">
-                            @else
-                                <span
-                                    class="font-bold text-lg text-slate-500 whitespace-nowrap">{{ $l->NamaPartner }}</span>
-                            @endif
-                        </div>
-                    @endforeach
-                </div>
-
-                <div class="flex items-center gap-16 px-8" aria-hidden="true">
-                    @foreach ($allLogos as $l)
-                        <div
-                            class="flex items-center justify-center h-16 w-36 shrink-0 opacity-80 hover:opacity-100 transition-opacity">
-                            @if ($l->PathLogo)
-                                <img src="{{ asset('storage/' . $l->PathLogo) }}" alt="{{ $l->NamaPartner }}"
-                                    class="max-h-full max-w-full object-contain">
-                            @else
-                                <span
-                                    class="font-bold text-lg text-slate-500 whitespace-nowrap">{{ $l->NamaPartner }}</span>
-                            @endif
-                        </div>
-                    @endforeach
-                </div>
+                @for ($i = 0; $i < $repeatCount; $i++)
+                    <div class="flex items-center gap-16 px-8"
+                        @if ($i > 0) aria-hidden="true" @endif>
+                        @foreach ($allLogos as $l)
+                            <div
+                                class="flex items-center justify-center h-16 w-36 shrink-0 opacity-80 hover:opacity-100 transition-opacity">
+                                @if ($l->PathLogo)
+                                    <img src="{{ asset('storage/' . $l->PathLogo) }}" alt="{{ $l->NamaPartner }}"
+                                        class="max-h-full max-w-full object-contain">
+                                @else
+                                    <span
+                                        class="font-bold text-lg text-slate-500 whitespace-nowrap">{{ $l->NamaPartner }}</span>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                @endfor
             </div>
         </div>
     </section>
@@ -776,11 +772,7 @@
                                     {{ $fTrans->Judul ?: $featured->Judul }}</h3>
                                 <p class="text-sm text-slate-400 leading-relaxed mb-6 line-clamp-3">
                                     {{ $fTrans->Ringkasan ?: $featured->Ringkasan }}</p>
-                                {{-- <div class="flex items-center gap-2 text-xs text-slate-400 mb-6">
-                                    <i class="fa-regular fa-user"></i> {{ $featured->Penulis ?? 'Admin' }}
-                                    <span class="mx-1">•</span>
-                                    <i class="fa-regular fa-clock"></i> 5 min read
-                                </div> --}}
+
                                 <div class="mt-auto space-y-3">
                                     <a href="{{ route('frontend.detail', ['slug' => $featured->Slug]) }}"
                                         class="flex items-center justify-center w-full px-6 py-3 bg-brand-600 hover:bg-brand-500 text-white text-sm font-bold rounded-lg transition-colors">

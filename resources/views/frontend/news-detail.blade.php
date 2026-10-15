@@ -2,7 +2,6 @@
 
 @section('content-frontend')
     @php
-        // Helper untuk berita utama
         $trans = $news->translate($locale) ?? ($news->translate('id') ?? $news->translations->first());
         $displayJudul = $trans?->Judul ?: ($news->Judul ?: 'Berita');
         $displayKonten = $trans?->Konten ?: ($news->Konten ?: '');
@@ -67,10 +66,6 @@
                         <div class="p-6 md:p-8">
                             <!-- Meta -->
                             <div class="flex flex-wrap items-center gap-4 text-sm text-slate-500 mb-4">
-                                <span>
-                                    <i class="fa-regular fa-user mr-1"></i>
-                                    {{ $news->Penulis ?? 'Admin' }}
-                                </span>
                                 <span>
                                     <i class="fa-regular fa-calendar mr-1"></i>
                                     {{ $news->TanggalPublikasi ? \Carbon\Carbon::parse($news->TanggalPublikasi)->isoFormat('D MMM, Y') : '-' }}
@@ -211,7 +206,7 @@
                             <img src="https://ui-avatars.com/api/?name={{ urlencode($news->Penulis ?? 'Admin') }}&background=0284c7&color=fff"
                                 alt="Author" class="w-16 h-16 rounded-full object-cover flex-shrink-0">
                             <div class="flex-1">
-                                <h3 class="text-lg font-bold text-slate-900 mb-2">{{ $news->Penulis ?? 'Admin' }}</h3>
+                                {{-- <h3 class="text-lg font-bold text-slate-900 mb-2">{{ $news->Penulis ?? 'Admin' }}</h3> --}}
                                 <p class="text-sm text-slate-600 mb-3">
                                     Penulis artikel ini telah berpengalaman di bidang IT dan teknologi.
                                     Ikuti tulisan-tulisannya untuk insight terbaru seputar dunia digital.

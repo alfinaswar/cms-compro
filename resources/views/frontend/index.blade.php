@@ -62,6 +62,23 @@
             }
         }
     </script>
+    <style>
+        /* Set min 16px for body text and 1.4 line-height for desktop */
+        @media (min-width: 1024px) {
+            body {
+                font-size: 16px;
+                line-height: 1.4em;
+            }
+        }
+
+        /* Optional: On mobile, you can allow slightly smaller size if you want, but not below 15px */
+        @media (max-width: 1023.98px) {
+            body {
+                font-size: 15px;
+                line-height: 1.4em;
+            }
+        }
+    </style>
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -171,6 +188,7 @@
         body {
             line-height: 1.4em;
         }
+
         @media (min-width: 1024px) {
             body {
                 font-size: 16px;
@@ -1090,10 +1108,10 @@
                                 ${highlightText(article.judul, query)}
                             </h4>
                             ${article.ringkasan ? `
-                                                <p class="text-xs text-slate-500 line-clamp-1 mt-0.5">
-                                                    ${highlightText(article.ringkasan, query)}
-                                                </p>
-                                            ` : ''}
+                                                    <p class="text-xs text-slate-500 line-clamp-1 mt-0.5">
+                                                        ${highlightText(article.ringkasan, query)}
+                                                    </p>
+                                                ` : ''}
                         </div>
                         <div class="flex-shrink-0 self-center">
                             <i class="fa-solid fa-arrow-right text-slate-400 text-xs"></i>
@@ -1144,7 +1162,7 @@
     <!-- GLightbox JS -->
     <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             if (typeof GLightbox !== 'undefined') {
                 window.lightbox = GLightbox({
                     selector: '.glightbox',

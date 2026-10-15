@@ -73,10 +73,6 @@
                                 <!-- Meta -->
                                 <div class="flex flex-wrap items-center gap-4 text-sm text-slate-500 mb-3">
                                     <span>
-                                        <i class="fa-regular fa-user mr-1"></i>
-                                        {{ $item->Penulis ?? 'Admin' }}
-                                    </span>
-                                    <span>
                                         <i class="fa-regular fa-calendar mr-1"></i>
                                         {{ $item->TanggalPublikasi ? \Carbon\Carbon::parse($item->TanggalPublikasi)->isoFormat('D MMM, Y') : '-' }}
                                     </span>
