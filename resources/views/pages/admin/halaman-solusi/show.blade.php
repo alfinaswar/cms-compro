@@ -430,24 +430,6 @@
     </section>
 
     <!-- Schema.org FAQPage JSON-LD -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-            @foreach($faqs as $index => $faq)
-            {
-                "@type": "Question",
-                "name": {!! json_encode($faq['q']) !!},
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": {!! json_encode($faq['a']) !!}
-                }
-            }@if(!$loop->last),@endif
-            @endforeach
-        ]
-    }
-    </script>
 
     <!-- ========================================== -->
     <!-- CTA SECTION -->

@@ -173,8 +173,9 @@ class HalamanSolusiController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show($slug, $id)
     {
+        // dd($id);
         $halamanSolusi = HalamanSolusi::with(['details.translations', 'translations'])
             ->where('Slug', $id)
             ->orWhere('id', is_numeric($id) ? $id : null)
