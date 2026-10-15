@@ -13,7 +13,7 @@ class HalamanSolusiController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:solusi.view')->only(['index', 'show']);
+        // $this->middleware('permission:solusi.view')->only(['index', 'show']);
         $this->middleware('permission:solusi.create')->only(['create', 'store']);
         $this->middleware('permission:solusi.edit')->only(['edit', 'update']);
         $this->middleware('permission:solusi.delete')->only(['destroy']);
