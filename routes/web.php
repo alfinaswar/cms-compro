@@ -76,6 +76,7 @@ Route::group(['prefix' => '{locale}', 'where' => ['locale' => 'id|en']], functio
         ->where('slug', 'kebijakan-privasi|syarat-ketentuan|tentang-kami|faq');
     Route::get('/api/search-articles/', [BeritaController::class, 'searchArticles'])
         ->name('frontend.api.search-articles');
+    Route::get('/landing-page/solusi/show/{id}/', [HalamanSolusiController::class, 'show'])->name('halaman-solusi.admin.show');
 });
 
 Route::middleware('auth')->group(function () {
