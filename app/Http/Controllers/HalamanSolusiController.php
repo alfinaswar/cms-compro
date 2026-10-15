@@ -179,7 +179,7 @@ class HalamanSolusiController extends Controller
             ->where('Slug', $id)
             ->orWhere('id', is_numeric($id) ? $id : null)
             ->firstOrFail();
-
+        // dd($halamanSolusi);
         return view('pages.admin.halaman-solusi.show', compact('halamanSolusi'));
     }
 
