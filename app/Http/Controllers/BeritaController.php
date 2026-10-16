@@ -549,11 +549,7 @@ class BeritaController extends Controller
     public function newsDetail($locale, $slug)
     {
         $locale = app()->getLocale();
-
-        // 1. Main News: Eager load all translations so fallback works
         $news = Berita::with('translations')->where('Slug', $slug)->firstOrFail();
-
-        // 2. Recent News (Sidebar): Eager load translations
         $recentNews = Berita::with('translations')
             ->where('id', '!=', $news->id)
             ->where('Status', 'Diterbitkan')
@@ -561,23 +557,20 @@ class BeritaController extends Controller
             ->take(3)
             ->get();
 
-        // 3. Categories from master KategoriBerita
         $categories = KategoriBerita::pluck('NamaKategori');
 
-        // 4. Prev/Next Posts: Eager load translations
         $prevPost = Berita::with('translations')
-            ->where('TanggalPublikasi', '<', $news->TanggalPublikasi)
             ->where('Status', 'Diterbitkan')
+            ->when($news->TanggalPublikasi, function ($query) use ($news) {
+                $query->where('TanggalPublikasi', '<', $news->TanggalPublikasi);
+            })
             ->latest('TanggalPublikasi')
             ->first();
-
         $nextPost = Berita::with('translations')
             ->where('TanggalPublikasi', '>', $news->TanggalPublikasi)
             ->where('Status', 'Diterbitkan')
             ->oldest('TanggalPublikasi')
             ->first();
-
-        // 5. Related Posts: Eager load translations
         $relatedPosts = Berita::with('translations')
             ->where('Kategori', $news->Kategori)
             ->where('id', '!=', $news->id)
@@ -593,7 +586,7 @@ class BeritaController extends Controller
             'prevPost',
             'nextPost',
             'relatedPosts',
-            'locale'  // Kirim locale ke view
+            'locale'
         ));
     }
     public function searchArticles(Request $request)
