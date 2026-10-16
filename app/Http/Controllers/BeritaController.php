@@ -504,6 +504,8 @@ class BeritaController extends Controller
 
     public function news(Request $request)
     {
+        // dd($request->all());
+        $kategori = KategoriBerita::where('NamaKategori', $request->kategori)->first();
         $locale = app()->getLocale();
         $query = Berita::where('Status', 'Diterbitkan');
         $query->with([
@@ -524,7 +526,7 @@ class BeritaController extends Controller
             });
         }
         if ($request->filled('kategori')) {
-            $query->where('Kategori', $request->kategori);
+            $query->where('Kategori', $kategori->id ?? $request->kategori);
         }
         if ($request->filled('tag')) {
             $query->where('Tags', 'like', '%' . $request->tag . '%');
