@@ -18,10 +18,15 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         ]);
 
-        // 2. Tambahkan SetLocale ke grup middleware 'web'
-        $middleware->web(append: [
-            \App\Http\Middleware\SetLocale::class,
-        ]);
+        // 2. Tambahkan EnforceTrailingSlash dan SetLocale ke grup middleware 'web'
+        $middleware->web(
+            prepend: [
+                \App\Http\Middleware\EnforceTrailingSlash::class,
+            ],
+            append: [
+                \App\Http\Middleware\SetLocale::class,
+            ]
+        );
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

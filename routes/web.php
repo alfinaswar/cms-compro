@@ -79,9 +79,9 @@ Route::group(['prefix' => '{locale}', 'where' => ['locale' => 'id|en']], functio
         ->name('frontend.api.search-articles');
     Route::get('/landing-page/solusi/show/{id}/', [HalamanSolusiController::class, 'show'])->name('halaman-solusi.admin.show');
     //SITEMAP
-    Route::get('/peta-situs', [SitemapPageController::class, 'index'])
+    Route::get('/peta-situs/', [SitemapPageController::class, 'index'])
         ->name('frontend.sitemap');
-    Route::get('/sitemap', function () {
+    Route::get('/sitemap/', function () {
         return redirect()->route('frontend.sitemap', ['locale' => app()->getLocale()]);
     });
 
@@ -250,11 +250,11 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         Route::post('/mark-all-read/', [ContactUsController::class, 'markAllAsRead'])->name('contact.mark-all-read');
 
         Route::get('subjek-kontak/', [MasterSubjectController::class, 'index'])->name('subjek.index');
-        Route::get('subjek-kontak/create', [MasterSubjectController::class, 'create'])->name('subjek.create');
-        Route::post('subjek-kontak/store', [MasterSubjectController::class, 'store'])->name('subjek.store');
-        Route::get('subjek-kontak/{id}/edit', [MasterSubjectController::class, 'edit'])->name('subjek.edit');
-        Route::put('subjek-kontak/{id}', [MasterSubjectController::class, 'update'])->name('subjek.update');
-        Route::delete('subjek-kontak/{id}', [MasterSubjectController::class, 'destroy'])->name('subjek.destroy');
+        Route::get('subjek-kontak/create/', [MasterSubjectController::class, 'create'])->name('subjek.create');
+        Route::post('subjek-kontak/store/', [MasterSubjectController::class, 'store'])->name('subjek.store');
+        Route::get('subjek-kontak/{id}/edit/', [MasterSubjectController::class, 'edit'])->name('subjek.edit');
+        Route::put('subjek-kontak/{id}/', [MasterSubjectController::class, 'update'])->name('subjek.update');
+        Route::delete('subjek-kontak/{id}/', [MasterSubjectController::class, 'destroy'])->name('subjek.destroy');
     });
     Route::resource('jenis-laporan', JenisLaporanKeuanganController::class)->names('jenis-laporan');
     Route::prefix('jenis-laporan/{jenisId}/dokumen')->name('jenis-laporan.details.')->group(function () {

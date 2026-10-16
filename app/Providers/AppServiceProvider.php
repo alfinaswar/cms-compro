@@ -95,6 +95,31 @@ class AppServiceProvider extends ServiceProvider
 
     public function register(): void
     {
-        //
+        $this->app->singleton('url', function ($app) {
+            $routes = $app['router']->getRoutes();
+            $app->instance('routes', $routes);
+
+            $request = $app->has('request') ? $app['request'] : \Illuminate\Http\Request::createFromGlobals();
+            $custom = new \App\Routing\CustomUrlGenerator(
+                $routes,
+                $request,
+                $app['config']['app.asset_url']
+            );
+
+            $app->rebinding('request', function ($app, $request) use ($custom) {
+                $custom->setRequest($request);
+            });
+
+            $custom->setSessionResolver(function () use ($app) {
+                return $app['session'] ?? null;
+            });
+
+            $custom->setKeyResolver(function () use ($app) {
+                $config = $app->make('config');
+                return [$config->get('app.key'), ...($config->get('app.previous_keys') ?? [])];
+            });
+
+            return $custom;
+        });
     }
 }
