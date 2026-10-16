@@ -1,5 +1,5 @@
 .sec-title {
-    line-height: 1.2;
+    line-height: 1.4em;
     margin-bottom: calc(var(--section-title-space) - 11px);
     @include xs{
         font-size: 26px;
@@ -10,6 +10,7 @@
     display: block;
     font-weight: 500;
     font-size: 20px;
+    line-height: 1.4em;
     letter-spacing: 0.02em;
     color: $theme-color;
     font-family: $style-font;
@@ -34,10 +35,16 @@
 
 }
 
+.headline,
+.hero-headline,
+.subheadline,
+.sub-headline {
+    line-height: 1.4em;
+}
 
 .box-title {
     font-size: 24px;
-    line-height: 1.4;
+    line-height: 1.4em;
     font-weight: 600;
     margin-top: -0.32em;
 
@@ -51,6 +58,7 @@
 }
 
 .box-subtitle {
+    line-height: 1.4em;
     margin-bottom: 8px;
 }
 

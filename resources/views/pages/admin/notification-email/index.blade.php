@@ -45,7 +45,7 @@
             }
 
             .email-text {
-                font-family: 'Courier New', monospace;
+                font-family: 'Plus Jakarta Sans', sans-serif;
                 font-weight: 600;
                 color: #1e293b;
             }

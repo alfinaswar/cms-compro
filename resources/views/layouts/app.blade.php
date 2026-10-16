@@ -15,8 +15,10 @@
     <link rel="stylesheet" href="{{ asset('') }}assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('') }}assets/dist/css/adminlte.min.css">
-    <!-- Google Font: Source Sans Pro -->
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <!-- Google Font: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- DataTables -->
     <link rel="stylesheet" href="{{ asset('') }}assets/plugins/datatables-bs4/css/dataTables.bootstrap4.css">
     <!-- SweetAlert2 -->
@@ -31,6 +33,18 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @stack('styles')
     <style>
+        body, .main-header, .main-sidebar, .content-wrapper, .main-footer,
+        h1, h2, h3, h4, h5, h6, p, a, span:not([class*="fa"]):not([class*="ion"]):not([class*="bi"]),
+        button, input, select, textarea, .table, .modal, .card, .alert,
+        .dropdown-menu, .nav, .form-control, .custom-select, .select2-container,
+        .swal2-popup, .dataTables_wrapper {
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+        }
+
+        h1, h2, h3, h4, h5, h6, .headline, .subheadline, .sub-headline {
+            line-height: 1.4em !important;
+        }
+
         .main-sidebar {
             background: linear-gradient(180deg, #1a202c 0%, #2d3748 100%);
             border-right: 1px solid rgba(255, 255, 255, 0.05);

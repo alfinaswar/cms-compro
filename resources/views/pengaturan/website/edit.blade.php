@@ -355,7 +355,7 @@
                                         <div class="col-12">
                                             <div class="form-group">
                                                 <label>Custom Script Header</label>
-                                                <textarea name="ScriptHeaderCustom" class="form-control font-monospace" rows="4" style="font-size: 12px;"
+                                                <textarea name="ScriptHeaderCustom" class="form-control" rows="4" style="font-size: 12px;"
                                                     placeholder="Masukkan script header (misal Google Tag, Pixel, verifikasi, dll)">{{ old('ScriptHeaderCustom', $pengaturan->ScriptHeaderCustom) }}</textarea>
                                                 <small class="text-muted">Masukkan script &lt;script&gt; tag di sini jika
                                                     diperlukan (Pixel FB, Verif Domain, dll).</small>

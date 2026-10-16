@@ -50,7 +50,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
         rel="stylesheet">
 
     <link rel="stylesheet" href="{{ asset('') }}assets-landing-page/css/bootstrap.min.css">
@@ -58,6 +58,14 @@
     <link rel="stylesheet" href="{{ asset('') }}assets-landing-page/css/magnific-popup.min.css">
     <link rel="stylesheet" href="{{ asset('') }}assets-landing-page/css/swiper-bundle.min.css">
     <link rel="stylesheet" href="{{ asset('') }}assets-landing-page/css/style.css">
+    <style>
+        body, h1, h2, h3, h4, h5, h6, p, a, span:not([class*="fa"]):not([class*="icon"]), button, input, select, textarea {
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+        }
+        h1, h2, h3, h4, h5, h6, .headline, .subheadline, .sub-headline, .sec-title, .sub-title, .box-title, .box-subtitle {
+            line-height: 1.4em !important;
+        }
+    </style>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @stack('fontend-css')
 

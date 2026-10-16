@@ -400,14 +400,14 @@
                                             class="flex justify-between items-center text-[10px] text-white/70 font-semibold tracking-wider">
                                             <span>ANNUAL REPORT</span>
                                             <span
-                                                class="px-1.5 py-0.5 rounded bg-white/10 text-white font-mono">2025</span>
+                                                class="px-1.5 py-0.5 rounded bg-white/10 text-white font-sans">2025</span>
                                         </div>
                                         <div class="my-auto text-center">
                                             <div
                                                 class="text-[9px] uppercase tracking-widest text-amber-300 font-semibold mb-1">
                                                 PT JASUINDO TIGA PERKASA TBK</div>
                                             <div
-                                                class="text-base font-serif font-extrabold tracking-tight text-white leading-tight">
+                                                class="text-base font-sans font-extrabold tracking-tight text-white leading-tight">
                                                 Journey into the Future</div>
                                             <div class="w-8 h-0.5 bg-amber-400 mx-auto my-2 rounded"></div>
                                             <div class="text-[10px] text-white/80 italic">Innovation &bull; Security &bull;
@@ -474,14 +474,14 @@
                                             class="flex justify-between items-center text-[10px] text-white/70 font-semibold tracking-wider">
                                             <span>ANNUAL REPORT</span>
                                             <span
-                                                class="px-1.5 py-0.5 rounded bg-white/10 text-white font-mono">2024</span>
+                                                class="px-1.5 py-0.5 rounded bg-white/10 text-white font-sans">2024</span>
                                         </div>
                                         <div class="my-auto text-center">
                                             <div
                                                 class="text-[9px] uppercase tracking-widest text-emerald-300 font-semibold mb-1">
                                                 PT JASUINDO TIGA PERKASA TBK</div>
                                             <div
-                                                class="text-base font-serif font-extrabold tracking-tight text-white leading-tight">
+                                                class="text-base font-sans font-extrabold tracking-tight text-white leading-tight">
                                                 Empowering Digital Trust</div>
                                             <div class="w-8 h-0.5 bg-emerald-400 mx-auto my-2 rounded"></div>
                                             <div class="text-[10px] text-white/80 italic">Global Smart Card Solutions</div>
@@ -571,14 +571,14 @@
                                             class="flex justify-between items-center text-[10px] text-white/70 font-semibold tracking-wider">
                                             <span>ANNUAL REPORT</span>
                                             <span
-                                                class="px-1.5 py-0.5 rounded bg-white/10 text-white font-mono">2023</span>
+                                                class="px-1.5 py-0.5 rounded bg-white/10 text-white font-sans">2023</span>
                                         </div>
                                         <div class="my-auto text-center">
                                             <div
                                                 class="text-[9px] uppercase tracking-widest text-cyan-300 font-semibold mb-1">
                                                 PT JASUINDO TIGA PERKASA TBK</div>
                                             <div
-                                                class="text-base font-serif font-extrabold tracking-tight text-white leading-tight">
+                                                class="text-base font-sans font-extrabold tracking-tight text-white leading-tight">
                                                 Resilience &amp; Growth</div>
                                             <div class="w-8 h-0.5 bg-cyan-400 mx-auto my-2 rounded"></div>
                                             <div class="text-[10px] text-white/80 italic">Delivering Enduring Value</div>
@@ -1268,10 +1268,12 @@
                     <!DOCTYPE html>
                     <html>
                     <head>
-                        <title>Financial Highlight - PT Jasuindo Tiga Perkasa Tbk</title>
+                        <link rel="preconnect" href="https://fonts.googleapis.com">
+                        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
                         <style>
-                            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 24px; color: #1e293b; }
+                            body { font-family: 'Plus Jakarta Sans', sans-serif; padding: 24px; color: #1e293b; }
                             table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 11px; }
                             th, td { border: 1px solid #cbd5e1; padding: 6px 10px; }
                             th { background-color: #f1f5f9; text-align: left; }

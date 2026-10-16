@@ -280,7 +280,7 @@
                             {{-- Preview Google --}}
                             <div class="alert alert-light border mb-3 px-3 pt-2 pb-1">
                                 <small class="text-muted d-block mb-1">Preview Google:</small>
-                                <div style="font-family: arial, sans-serif;">
+                                <div style="font-family: 'Plus Jakarta Sans', sans-serif;">
                                     <div id="seoPreviewTitle" style="color:#1a0dab; font-size:17px; line-height:20px; margin-bottom:2px;">Judul Solusi</div>
                                     <div style="color:#006621; font-size:13px; margin-bottom:2px;">{{ url('/solusi') }}/<span id="seoPreviewSlug">slug-solusi</span></div>
                                     <div id="seoPreviewDesc" style="color:#545454; font-size:13px; line-height:1.4;">Deskripsi solusi akan muncul di sini...</div>

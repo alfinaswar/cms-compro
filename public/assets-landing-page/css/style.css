@@ -108,8 +108,8 @@ Last Update: 20-07-2025
   --brand-color: #79F4E4;
   --light-blue-color: #001C49;
   --title-font: "Plus Jakarta Sans", sans-serif;
-  --body-font: "Nunito", sans-serif;
-  --style-font: "Nunito", sans-serif;
+  --body-font: "Plus Jakarta Sans", sans-serif;
+  --style-font: "Plus Jakarta Sans", sans-serif;
   --icon-font: "Font Awesome 6 Pro";
   --main-container: 1320px;
   --container-gutters: 24px;
@@ -296,37 +296,37 @@ h6 {
 .h1,
 h1 {
   font-size: 80px;
-  line-height: 1.18;
+  line-height: 1.4em;
 }
 
 .h2,
 h2 {
   font-size: 48px;
-  line-height: 1.327;
+  line-height: 1.4em;
 }
 
 .h3,
 h3 {
   font-size: 32px;
-  line-height: 1.278;
+  line-height: 1.4em;
 }
 
 .h4,
 h4 {
   font-size: 30px;
-  line-height: 1.333;
+  line-height: 1.4em;
 }
 
 .h5,
 h5 {
   font-size: 24px;
-  line-height: 1.417;
+  line-height: 1.4em;
 }
 
 .h6,
 h6 {
   font-size: 20px;
-  line-height: 1.5;
+  line-height: 1.4em;
 }
 
 /* Large devices */
@@ -3496,7 +3496,7 @@ input[type=time]::-webkit-calendar-picker-indicator {
 
 /*------------------- 3.3. Titles -------------------*/
 .sec-title {
-  line-height: 1.2;
+  line-height: 1.4em;
   margin-bottom: calc(var(--section-title-space) - 11px);
   /* Extra small devices */
 }
@@ -3511,6 +3511,7 @@ input[type=time]::-webkit-calendar-picker-indicator {
   display: block;
   font-weight: 500;
   font-size: 20px;
+  line-height: 1.4em;
   letter-spacing: 0.02em;
   color: var(--theme-color);
   font-family: var(--style-font);
@@ -3532,9 +3533,16 @@ input[type=time]::-webkit-calendar-picker-indicator {
   margin-bottom: 10px;
 }
 
+.headline,
+.hero-headline,
+.subheadline,
+.sub-headline {
+  line-height: 1.4em;
+}
+
 .box-title {
   font-size: 24px;
-  line-height: 1.4;
+  line-height: 1.4em;
   font-weight: 600;
   margin-top: -0.32em;
 }
@@ -3548,6 +3556,7 @@ input[type=time]::-webkit-calendar-picker-indicator {
 }
 
 .box-subtitle {
+  line-height: 1.4em;
   margin-bottom: 8px;
 }
 

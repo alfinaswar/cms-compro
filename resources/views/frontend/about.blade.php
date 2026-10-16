@@ -181,7 +181,7 @@
             }
 
             .mono-label {
-                font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+                font-family: 'Plus Jakarta Sans', sans-serif;
                 letter-spacing: .18em;
             }
 
@@ -230,14 +230,17 @@
             }
 
             /* Responsive size adjustment for headings and subheadlines */
-            h1,
+            h1, h2, h3, h4, h5, h6,
+            .headline,
+            .subheadline,
+            .sub-headline,
             .text-3xl,
             .text-4xl,
             .md\:text-4xl,
             .md\:text-5xl,
             .text-2xl,
             .md\:text-3xl {
-                /* these will still use tailwind's font-size so don't override */
+                line-height: 1.4em !important;
             }
         </style>
     @endpush

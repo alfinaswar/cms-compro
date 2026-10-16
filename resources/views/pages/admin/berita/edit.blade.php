@@ -278,7 +278,7 @@
                             <!-- SEO Preview Box -->
                             <div class="alert alert-light border mb-3">
                                 <small class="text-muted d-block mb-1">Preview Google:</small>
-                                <div style="font-family: arial, sans-serif;">
+                                <div style="font-family: 'Plus Jakarta Sans', sans-serif;">
                                     <div id="seoPreviewTitle"
                                         style="color: #1a0dab; font-size: 18px; line-height: 21px; margin-bottom: 2px;">
                                         {{ old('SEOTitle', $berita->translate('id')->SEOTitle ?? ($berita->SEOTitle ?? $berita->Judul)) }}

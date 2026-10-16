@@ -19,7 +19,14 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif']
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    lineHeight: {
+                        tight: '1.4em',
+                        snug: '1.4em',
+                        none: '1.4em',
                     },
                     colors: {
                         brand: {
@@ -185,7 +192,17 @@
         }
 
         /* Global Typography Rule: Desktop body font-size minimal 16px, line-height 1.4em */
-        body {
+        html,
+        body,
+        input,
+        button,
+        select,
+        textarea,
+        optgroup,
+        kbd,
+        code,
+        pre {
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
             line-height: 1.4em;
         }
 
@@ -196,10 +213,25 @@
             }
         }
 
+        /* Headline & Sub-headline Line-Height: 1.4em */
+        h1, h2, h3, h4, h5, h6,
+        .h1, .h2, .h3, .h4, .h5, .h6,
+        .headline, .hero-headline,
+        .sec-title, .box-title, .title,
+        .sub-title, .subheadline, .sub-headline, .sec-subtitle, .box-subtitle, .subtitle,
+        [class*="subjudul"], [class*="SubJudul"] {
+            line-height: 1.4em !important;
+        }
+
         @import "tailwindcss";
 
         @theme {
-            --font-mono: "Libertinus Mono", ui-monospace, monospace;
+            --font-sans: "Plus Jakarta Sans", sans-serif;
+            --font-mono: "Plus Jakarta Sans", sans-serif;
+            --font-serif: "Plus Jakarta Sans", sans-serif;
+            --leading-none: 1.4em;
+            --leading-tight: 1.4em;
+            --leading-snug: 1.4em;
         }
     </style>
     <!-- GLightbox CSS -->
@@ -872,11 +904,11 @@
                 <p class="mt-4 text-xs text-slate-400 flex items-center gap-2">
                     <i class="fa-solid fa-keyboard"></i>
                     {{ __('Press') }} <kbd
-                        class="px-1.5 py-0.5 bg-slate-100 border border-slate-200 rounded text-[10px] font-mono">ESC</kbd>
+                        class="px-1.5 py-0.5 bg-slate-100 border border-slate-200 rounded text-[10px] font-sans">ESC</kbd>
                     {{ __('to close') }}
                     <span class="mx-1">•</span>
                     <kbd
-                        class="px-1.5 py-0.5 bg-slate-100 border border-slate-200 rounded text-[10px] font-mono">Enter</kbd>
+                        class="px-1.5 py-0.5 bg-slate-100 border border-slate-200 rounded text-[10px] font-sans">Enter</kbd>
                     {{ __('for full search') }}
                 </p>
             </form>

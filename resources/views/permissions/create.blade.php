@@ -16,7 +16,7 @@
                 font-size: 18px;
                 font-weight: 600;
                 color: #1e293b;
-                font-family: monospace;
+                font-family: 'Plus Jakarta Sans', sans-serif;
             }
 
             .form-control-modern {

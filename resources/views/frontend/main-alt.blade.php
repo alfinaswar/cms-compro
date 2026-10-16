@@ -858,7 +858,7 @@
                 <div class="relative z-10 flex flex-col h-full p-4 md:p-0">
                     <div>
                         <span
-                            class="inline-block mb-[20px] text-[10px] font-light font-mono text-[#38BDF8] px-[10px] py-[5px] bg-[#24324B] border border-[#24324B] text-sm rounded-full">
+                            class="inline-block mb-[20px] text-[10px] font-light font-sans text-[#38BDF8] px-[10px] py-[5px] bg-[#24324B] border border-[#24324B] text-sm rounded-full">
                             <i class="fa-solid fa-file-signature mr-1"></i> {{ __('Permintaan & Penawaran (RFQ)') }}
                         </span>
 

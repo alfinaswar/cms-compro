@@ -444,7 +444,7 @@
             .permission-item label small {
                 display: block;
                 font-size: 11px;
-                font-family: 'Fira Mono', 'Courier New', monospace;
+                font-family: 'Plus Jakarta Sans', sans-serif;
                 color: #8aa5c1;
                 margin-top: 2px;
                 font-weight: 400;

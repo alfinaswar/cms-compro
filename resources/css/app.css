@@ -7,12 +7,27 @@
 @source "../**/*.vue";
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-mono: 'Plus Jakarta Sans', sans-serif;
+    --font-serif: 'Plus Jakarta Sans', sans-serif;
+    --leading-none: 1.4em;
+    --leading-tight: 1.4em;
+    --leading-snug: 1.4em;
 }
 
 /* Global Typography: desktop body minimal 16px, line-height 1.4em */
+html,
 body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    line-height: 1.4em;
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6,
+.headline, .hero-headline,
+.sec-title, .box-title, .title,
+.sub-title, .subheadline, .sub-headline, .sec-subtitle, .box-subtitle, .subtitle {
     line-height: 1.4em;
 }
 

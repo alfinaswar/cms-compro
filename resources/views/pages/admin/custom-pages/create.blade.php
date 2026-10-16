@@ -165,7 +165,7 @@
                                 style="background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:12px;">
                                 <small class="text-muted d-block mb-2"><i class="fa fa-eye mr-1"></i>Preview Google
                                     (Real-time):</small>
-                                <div style="font-family: arial, sans-serif;">
+                                <div style="font-family: 'Plus Jakarta Sans', sans-serif;">
                                     {{-- Baris Favicon + Domain --}}
                                     <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
                                         <span

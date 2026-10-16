@@ -14,7 +14,7 @@
                 border-radius: 8px;
                 padding: 12px;
                 margin-bottom: 16px;
-                font-family: arial, sans-serif;
+                font-family: 'Plus Jakarta Sans', sans-serif;
             }
 
             .seo-preview .seo-title {

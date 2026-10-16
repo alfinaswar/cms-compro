@@ -177,7 +177,7 @@
             border: 1px solid var(--cu-border);
             border-radius: 4px;
             overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             color: var(--cu-text);
         }
 

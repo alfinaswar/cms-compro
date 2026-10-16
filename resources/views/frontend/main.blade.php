@@ -51,6 +51,10 @@
             #hero-slider .hero-dot {
                 transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             }
+
+            #hero-slider .hero-slide h1 {
+                line-height: 1.4em !important;
+            }
         </style>
     @endpush
 
