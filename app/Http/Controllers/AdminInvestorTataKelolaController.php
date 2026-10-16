@@ -166,13 +166,13 @@ class AdminInvestorTataKelolaController extends Controller
         if ($request->hasFile('FileDokumen')) {
             $uploaded = $request->file('FileDokumen');
             $files = is_array($uploaded) ? $uploaded : [$uploaded];
-            $baseUrutan = (int)($validated['Urutan'] ?? 0);
+            $baseUrutan = (int) ($validated['Urutan'] ?? 0);
 
             foreach ($files as $idx => $file) {
                 $path = $file->store('investor/dokumen-gcg', 'public');
                 $size = round($file->getSize() / 1024 / 1024, 2) . ' MB';
-                $judul = count($files) > 1 
-                    ? $validated['Judul'] . ' (' . pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . ')' 
+                $judul = count($files) > 1
+                    ? $validated['Judul'] . ' (' . pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . ')'
                     : $validated['Judul'];
 
                 DokumenTataKelola::create([
@@ -273,6 +273,8 @@ class AdminInvestorTataKelolaController extends Controller
             'FileDokumen' => 'nullable|file|mimes:pdf|max:10240',
             'Urutan' => 'nullable|integer|min:0',
             'Status' => 'required|in:Aktif,Nonaktif',
+        ]);
+
         $validated['StatusKegiatan'] = $validated['StatusKegiatan'] ?? 'Selesai';
 
         if ($request->hasFile('FileDokumen')) {

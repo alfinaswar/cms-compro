@@ -119,6 +119,7 @@ class ContactUsController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         $validatedData = $request->validate([
             'NamaLengkap' => 'required|string|max:255',
             'Email' => 'required|email|max:255',

@@ -31,6 +31,7 @@ use App\Http\Controllers\PengaturanWebsiteController;
 use App\Http\Controllers\PenghargaanPerusahaanController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SitemapPageController;
 use App\Http\Controllers\StaticPageController;
 use App\Http\Controllers\StrukturOrganisasiController;
 use App\Http\Controllers\StrukturOrganisasiDetailController;
@@ -77,6 +78,13 @@ Route::group(['prefix' => '{locale}', 'where' => ['locale' => 'id|en']], functio
     Route::get('/api/search-articles/', [BeritaController::class, 'searchArticles'])
         ->name('frontend.api.search-articles');
     Route::get('/landing-page/solusi/show/{id}/', [HalamanSolusiController::class, 'show'])->name('halaman-solusi.admin.show');
+    //SITEMAP
+    Route::get('/peta-situs', [SitemapPageController::class, 'index'])
+        ->name('frontend.sitemap');
+    Route::get('/sitemap', function () {
+        return redirect()->route('frontend.sitemap', ['locale' => app()->getLocale()]);
+    });
+
 });
 
 Route::middleware('auth')->group(function () {

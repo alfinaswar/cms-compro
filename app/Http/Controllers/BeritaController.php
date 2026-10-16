@@ -271,7 +271,7 @@ class BeritaController extends Controller
         $validated = $request->validate([
             'Kategori' => 'required|string|max:100',
             'Tags' => 'nullable|string',
-            'PathThumbnail' => 'required|image|mimes:webp|max:307',
+            'PathThumbnail' => 'nullable|image|mimes:webp|max:307',
             'Status' => 'required|in:Draf,Diterbitkan,Arsip',
             'TanggalPublikasi' => 'nullable|date',
             'Penulis' => 'nullable|string|max:100',

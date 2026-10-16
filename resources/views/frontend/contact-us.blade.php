@@ -509,7 +509,7 @@
                                 <label class="block text-sm font-semibold text-slate-700 mb-2">{{ __('Subject') }} <span
                                         class="text-red-500">*</span></label>
                                 <div class="relative">
-                                    <select name="SubjectId" id="subject" required
+                                    <select name="Subjek" id="subject" required
                                         class="form-input w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:bg-white outline-none transition-all appearance-none">
                                         <option value="" disabled selected>{{ __('Select Subject') }}</option>
                                         @if (isset($subject) && count($subject) > 0)

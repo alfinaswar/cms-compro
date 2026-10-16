@@ -355,20 +355,13 @@
                                                         $childUrl = route($child->RouteName);
                                                         // Prefix locale segment if not already present
                                                         $parsed = parse_url($childUrl);
-                                                        // If using route() and in multi-locale,
-                                                        // pastikan linknya sudah mengandung /en atau /id sesuai $currentLocale.
-                                                        // Biasanya Laravel route() dengan url localization, jadi pastikan route diweb.php sudah ada prefix localization-nya.
-                                                        // Tidak perlu concat manual $currentLocale.
                                                     } catch (\Exception $e) {
                                                         $childUrl = route('frontend.main');
                                                     }
                                                 } elseif (!empty($child->Url) && $child->Url !== '#') {
-                                                    // Untuk link manual (Url), pastikan JANGAN tambahkan base url dua kali
-                                                    // Cek apakah $child->Url sudah berupa URL absolut
                                                     if (preg_match('/^https?:\/\//', $child->Url)) {
                                                         $childUrl = $child->Url;
                                                     } else {
-                                                        // Untuk path relatif, tambahkan locale di depan (pastikan tidak double-slash)
                                                         $childUrl = url($currentLocale . '/' . ltrim($child->Url, '/'));
                                                     }
                                                 } else {
@@ -781,8 +774,10 @@
                             class="text-slate-500 hover:text-white transition-colors">{{ __('Privacy Policy') }}</a>
                         <a href="http://cms-compro.test/id/faq"
                             class="text-slate-500 hover:text-white transition-colors">{{ __('Cookies') }}</a>
-                        <a href="http://cms-compro.test/id/tentang-kami"
-                            class="text-slate-500 hover:text-white transition-colors">{{ __('Sitemap') }}</a>
+                        <a href="{{ route('frontend.sitemap') }}"
+                            class="text-slate-500 hover:text-white transition-colors">
+                            {{ __('Sitemap') }}
+                        </a>
                     </div>
 
                 </div>
@@ -1108,10 +1103,10 @@
                                 ${highlightText(article.judul, query)}
                             </h4>
                             ${article.ringkasan ? `
-                                                    <p class="text-xs text-slate-500 line-clamp-1 mt-0.5">
-                                                        ${highlightText(article.ringkasan, query)}
-                                                    </p>
-                                                ` : ''}
+                                                                            <p class="text-xs text-slate-500 line-clamp-1 mt-0.5">
+                                                                                ${highlightText(article.ringkasan, query)}
+                                                                            </p>
+                                                                        ` : ''}
                         </div>
                         <div class="flex-shrink-0 self-center">
                             <i class="fa-solid fa-arrow-right text-slate-400 text-xs"></i>
@@ -1174,6 +1169,7 @@
         });
     </script>
     @stack('scripts')
+    @include('frontend.cookie-consent')
 </body>
 
 </html>

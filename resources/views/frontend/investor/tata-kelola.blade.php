@@ -1,8 +1,69 @@
 @extends('frontend.index')
 
 @section('content-frontend')
-    @include('frontend.investor.partials.hero-tabs')
+    @php
+        $locale = app()->getLocale();
+        $en = $locale === 'en';
 
+        $tr = function ($model, $field) use ($locale) {
+            if (!$model) {
+                return null;
+            }
+            if (method_exists($model, 'translate')) {
+                $t = $model->translate($locale);
+                if ($t && !empty($t->$field)) {
+                    return $t->$field;
+                }
+            }
+            $enField = $field . 'En';
+            if ($locale === 'en' && !empty($model->$enField)) {
+                return $model->$enField;
+            }
+            return $model->$field;
+        };
+    @endphp
+
+    @include('frontend.investor.partials.hero-tabs')
+@push('styles')
+<style>
+    /* Sticky Sidebar */
+    .sticky-sidebar {
+        position: sticky;
+        top: 100px; /* Jarak dari atas saat sticky */
+        max-height: calc(100vh - 120px); /* Tinggi maksimal agar tidak overflow */
+        overflow-y: auto; /* Scroll jika konten terlalu panjang */
+    }
+
+    /* Custom scrollbar untuk sidebar */
+    .sticky-sidebar::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .sticky-sidebar::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 4px;
+    }
+
+    .sticky-sidebar::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+
+    .sticky-sidebar::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+
+    /* Smooth scroll behavior */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* Offset untuk anchor links */
+    section[id] {
+        scroll-margin-top: 120px;
+    }
+</style>
+@endpush
     <!-- ========================================== -->
     <!-- MAIN CONTENT SECTION -->
     <!-- ========================================== -->
@@ -13,79 +74,83 @@
                 <!-- ========================================== -->
                 <!-- LEFT STICKY SIDEBAR -->
                 <!-- ========================================== -->
-                <div class="lg:col-span-4 xl:col-span-3 space-y-6">
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 p-5 sticky top-36">
-                        <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
-                            <span class="text-[11px] font-bold text-slate-500 tracking-wider uppercase">
-                                {{ __('investor.on_this_page') }}
-                            </span>
-                            <i class="fa-solid fa-bars-staggered text-slate-400 text-xs"></i>
-                        </div>
+                <!-- LEFT STICKY SIDEBAR -->
+                <div class="lg:col-span-4 xl:col-span-3">
+                    <div class="sticky top-28 space-y-6">
+                        <!-- Sidebar Card -->
+                        <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 p-5">
+                            <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+                                <span class="text-[11px] font-bold text-slate-500 tracking-wider uppercase">
+                                    {{ __('investor.on_this_page') }}
+                                </span>
+                                <i class="fa-solid fa-bars-staggered text-slate-400 text-xs"></i>
+                            </div>
 
-                        <nav class="space-y-1.5" id="tata-kelola-nav">
-                            <a href="#bagan-manajemen"
-                                class="flex items-start gap-3 p-2.5 rounded-lg bg-blue-50 text-[#0051d5] font-semibold text-xs transition-colors sidebar-nav-link"
-                                data-target="bagan-manajemen">
-                                <span class="text-xs font-bold w-5">01</span>
-                                <div>
-                                    <p class="text-xs font-bold leading-tight">{{ __('gcg.nav_chart') }}</p>
-                                    <p class="text-[11px] font-normal text-slate-500 mt-0.5">{{ __('gcg.nav_chart_desc') }}
-                                    </p>
-                                </div>
-                            </a>
-
-                            <a href="#dokumen-gcg"
-                                class="flex items-start gap-3 p-2.5 rounded-lg text-slate-700 hover:bg-slate-50 text-xs transition-colors sidebar-nav-link"
-                                data-target="dokumen-gcg">
-                                <span class="text-xs font-bold text-slate-400 w-5">02</span>
-                                <div>
-                                    <p class="text-xs font-semibold leading-tight">{{ __('gcg.nav_docs') }}</p>
-                                    <p class="text-[11px] font-normal text-slate-500 mt-0.5">{{ __('gcg.nav_docs_desc') }}
-                                    </p>
-                                </div>
-                            </a>
-
-                            <a href="#rups"
-                                class="flex items-start gap-3 p-2.5 rounded-lg text-slate-700 hover:bg-slate-50 text-xs transition-colors sidebar-nav-link"
-                                data-target="rups">
-                                <span class="text-xs font-bold text-slate-400 w-5">03</span>
-                                <div>
-                                    <p class="text-xs font-semibold leading-tight">{{ __('gcg.nav_rups') }}</p>
-                                    <p class="text-[11px] font-normal text-slate-500 mt-0.5">{{ __('gcg.nav_rups_desc') }}
-                                    </p>
-                                </div>
-                            </a>
-
-                            <a href="#komite-wbs"
-                                class="flex items-start gap-3 p-2.5 rounded-lg text-slate-700 hover:bg-slate-50 text-xs transition-colors sidebar-nav-link"
-                                data-target="komite-wbs">
-                                <span class="text-xs font-bold text-slate-400 w-5">04</span>
-                                <div>
-                                    <p class="text-xs font-semibold leading-tight">{{ __('gcg.nav_audit') }}</p>
-                                    <p class="text-[11px] font-normal text-slate-500 mt-0.5">{{ __('gcg.nav_audit_desc') }}
-                                    </p>
-                                </div>
-                            </a>
-                        </nav>
-
-                        <!-- Contact Corporate Secretary Box -->
-                        <div
-                            class="mt-6 pt-4 border-t border-slate-100 bg-slate-50 rounded-xl p-3.5 text-xs text-slate-700">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
-                                {{ __('gcg.corp_sec_label') }}
-                            </span>
-                            <p class="text-[11px] text-slate-500 mb-2 leading-relaxed">
-                                {{ __('gcg.corp_sec_desc') }}
-                            </p>
-                            <div class="space-y-1.5 text-xs">
-                                <a href="mailto:{{ $bagan->EmailSekretariat }}"
-                                    class="flex items-center gap-2 text-[#0051d5] font-semibold hover:underline">
-                                    <i class="fa-regular fa-envelope text-[11px]"></i> {{ $bagan->EmailSekretariat }}
+                            <nav class="space-y-1.5" id="tata-kelola-nav">
+                                <a href="#bagan-manajemen"
+                                    class="flex items-start gap-3 p-2.5 rounded-lg bg-blue-50 text-[#0051d5] font-semibold text-xs transition-colors sidebar-nav-link"
+                                    data-target="bagan-manajemen">
+                                    <span class="text-xs font-bold w-5">01</span>
+                                    <div>
+                                        <p class="text-xs font-bold leading-tight">{{ __('gcg.nav_chart') }}</p>
+                                        <p class="text-[11px] font-normal text-slate-500 mt-0.5">
+                                            {{ __('gcg.nav_chart_desc') }}</p>
+                                    </div>
                                 </a>
-                                <p class="flex items-center gap-2 text-slate-600">
-                                    <i class="fa-solid fa-phone text-[11px] text-slate-400"></i>
-                                    {{ $bagan->TeleponSekretariat }}
+
+                                <a href="#dokumen-gcg"
+                                    class="flex items-start gap-3 p-2.5 rounded-lg text-slate-700 hover:bg-slate-50 text-xs transition-colors sidebar-nav-link"
+                                    data-target="dokumen-gcg">
+                                    <span class="text-xs font-bold text-slate-400 w-5">02</span>
+                                    <div>
+                                        <p class="text-xs font-semibold leading-tight">{{ __('gcg.nav_docs') }}</p>
+                                        <p class="text-[11px] font-normal text-slate-500 mt-0.5">
+                                            {{ __('gcg.nav_docs_desc') }}</p>
+                                    </div>
+                                </a>
+
+                                <a href="#rups"
+                                    class="flex items-start gap-3 p-2.5 rounded-lg text-slate-700 hover:bg-slate-50 text-xs transition-colors sidebar-nav-link"
+                                    data-target="rups">
+                                    <span class="text-xs font-bold text-slate-400 w-5">03</span>
+                                    <div>
+                                        <p class="text-xs font-semibold leading-tight">{{ __('gcg.nav_rups') }}</p>
+                                        <p class="text-[11px] font-normal text-slate-500 mt-0.5">
+                                            {{ __('gcg.nav_rups_desc') }}</p>
+                                    </div>
+                                </a>
+
+                                <a href="#komite-wbs"
+                                    class="flex items-start gap-3 p-2.5 rounded-lg text-slate-700 hover:bg-slate-50 text-xs transition-colors sidebar-nav-link"
+                                    data-target="komite-wbs">
+                                    <span class="text-xs font-bold text-slate-400 w-5">04</span>
+                                    <div>
+                                        <p class="text-xs font-semibold leading-tight">{{ __('gcg.nav_audit') }}</p>
+                                        <p class="text-[11px] font-normal text-slate-500 mt-0.5">
+                                            {{ __('gcg.nav_audit_desc') }}</p>
+                                    </div>
+                                </a>
+                            </nav>
+
+                            <!-- Contact Corporate Secretary Box -->
+                            <div
+                                class="mt-6 pt-4 border-t border-slate-100 bg-slate-50 rounded-xl p-3.5 text-xs text-slate-700">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
+                                    {{ __('gcg.corp_sec_label') }}
+                                </span>
+                                <p class="text-[11px] text-slate-500 mb-2 leading-relaxed">
+                                    {{ __('gcg.corp_sec_desc') }}
                                 </p>
+                                <div class="space-y-1.5 text-xs">
+                                    <a href="mailto:{{ $bagan->EmailSekretariat }}"
+                                        class="flex items-center gap-2 text-[#0051d5] font-semibold hover:underline">
+                                        <i class="fa-regular fa-envelope text-[11px]"></i> {{ $bagan->EmailSekretariat }}
+                                    </a>
+                                    <p class="flex items-center gap-2 text-slate-600">
+                                        <i class="fa-solid fa-phone text-[11px] text-slate-400"></i>
+                                        {{ $bagan->TeleponSekretariat }}
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -128,7 +193,6 @@
                             </div>
                         </div>
 
-                        <!-- Bagan Container -->
                         <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 mb-8">
                             @if ($bagan->PathGambar)
                                 <div class="w-full rounded-xl overflow-hidden border border-slate-100">
@@ -143,7 +207,6 @@
                                         <h4 class="font-bold text-sm">{{ __('gcg.diag_rups') }}</h4>
                                     </div>
                                     <div class="w-0.5 h-6 bg-slate-300 mx-auto"></div>
-
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto my-2">
                                         <div class="bg-sky-50 border border-sky-200 p-4 rounded-xl text-left">
                                             <div class="flex items-center justify-between mb-1">
@@ -157,10 +220,8 @@
                                             <p class="text-[11px] text-slate-500 mt-1">
                                                 {{ __('gcg.diag_commissioners_desc') }}</p>
                                             <div class="mt-2 pt-2 border-t border-sky-100 text-[11px] text-sky-800">
-                                                {{ __('gcg.diag_committees') }}
-                                            </div>
+                                                {{ __('gcg.diag_committees') }}</div>
                                         </div>
-
                                         <div class="bg-[#0b1c30] text-white p-4 rounded-xl text-left">
                                             <div class="flex items-center justify-between mb-1">
                                                 <span
@@ -172,15 +233,13 @@
                                             <p class="text-[11px] text-slate-300 mt-1">{{ __('gcg.diag_directors_desc') }}
                                             </p>
                                             <div class="mt-2 pt-2 border-t border-slate-700 text-[11px] text-slate-300">
-                                                {{ __('gcg.diag_directors_units') }}
-                                            </div>
+                                                {{ __('gcg.diag_directors_units') }}</div>
                                         </div>
                                     </div>
                                 </div>
                             @endif
                         </div>
 
-                        <!-- SUB-SECTION: MANAJEMEN PERSEROAN -->
                         <div>
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                                 <div>
@@ -188,11 +247,8 @@
                                         class="text-[10px] font-bold tracking-wider uppercase text-[#0051d5] bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
                                         {{ __('gcg.leadership_badge') }}
                                     </span>
-                                    <h3 class="text-xl font-bold text-slate-900 mt-1">
-                                        {{ __('gcg.leadership_title') }}
-                                    </h3>
+                                    <h3 class="text-xl font-bold text-slate-900 mt-1">{{ __('gcg.leadership_title') }}</h3>
                                 </div>
-
                                 <div class="flex gap-1.5 bg-slate-100 p-1 rounded-xl self-start">
                                     <button type="button" id="tab-komisaris-btn"
                                         class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-white text-[#0051d5] shadow-sm transition-all">
@@ -205,7 +261,6 @@
                                 </div>
                             </div>
 
-                            <!-- Dewan Komisaris Grid -->
                             <div id="grid-komisaris" class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 @foreach ($komisaris as $person)
                                     <div
@@ -226,12 +281,11 @@
                                                     <h4 class="font-bold text-slate-900 text-sm leading-tight">
                                                         {{ $person->Nama }}</h4>
                                                     <span
-                                                        class="text-[11px] font-bold text-[#0051d5] uppercase tracking-wider block mt-0.5">
-                                                        {{ $person->Jabatan }}
-                                                    </span>
+                                                        class="text-[11px] font-bold text-[#0051d5] uppercase tracking-wider block mt-0.5">{{ $person->Jabatan }}</span>
                                                 </div>
                                             </div>
-                                            <p class="text-xs text-slate-500 line-clamp-3 leading-relaxed mb-4">
+                                            <!-- REVISI 1: Deskripsi utuh tanpa line-clamp -->
+                                            <p class="text-xs text-slate-500 leading-relaxed mb-4">
                                                 {{ $person->DeskripsiSingkat }}
                                             </p>
                                         </div>
@@ -248,7 +302,6 @@
                                 @endforeach
                             </div>
 
-                            <!-- Direksi Grid -->
                             <div id="grid-direksi" class="grid grid-cols-1 md:grid-cols-3 gap-4 hidden">
                                 @foreach ($direksi as $person)
                                     <div
@@ -269,12 +322,11 @@
                                                     <h4 class="font-bold text-slate-900 text-sm leading-tight">
                                                         {{ $person->Nama }}</h4>
                                                     <span
-                                                        class="text-[11px] font-bold text-emerald-700 uppercase tracking-wider block mt-0.5">
-                                                        {{ $person->Jabatan }}
-                                                    </span>
+                                                        class="text-[11px] font-bold text-emerald-700 uppercase tracking-wider block mt-0.5">{{ $person->Jabatan }}</span>
                                                 </div>
                                             </div>
-                                            <p class="text-xs text-slate-500 line-clamp-3 leading-relaxed mb-4">
+                                            <!-- REVISI 1: Deskripsi utuh tanpa line-clamp -->
+                                            <p class="text-xs text-slate-500 leading-relaxed mb-4">
                                                 {{ $person->DeskripsiSingkat }}
                                             </p>
                                         </div>
@@ -303,9 +355,7 @@
                             <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-2">
                                 {{ __('gcg.s2_title') }}
                             </h2>
-                            <p class="text-xs md:text-sm text-slate-500 mt-1">
-                                {{ __('gcg.s2_desc') }}
-                            </p>
+                            <p class="text-xs md:text-sm text-slate-500 mt-1">{{ __('gcg.s2_desc') }}</p>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
@@ -327,8 +377,10 @@
                                         </div>
                                         <h4 class="font-bold text-slate-900 text-sm leading-snug mb-1">{{ $doc->Judul }}
                                         </h4>
+                                        <!-- REVISI 1: Deskripsi utuh tanpa line-clamp -->
                                         @if ($doc->Deskripsi)
-                                            <p class="text-xs text-slate-500 mb-4 line-clamp-2">{{ $doc->Deskripsi }}</p>
+                                            <p class="text-xs text-slate-500 mb-4 leading-relaxed">{{ $doc->Deskripsi }}
+                                            </p>
                                         @endif
                                     </div>
                                     <div class="pt-3 border-t border-slate-100 flex items-center justify-end">
@@ -353,18 +405,14 @@
 
                             <div class="space-y-3">
                                 @foreach ($kebijakan as $idx => $keb)
-                                    <div class="border border-slate-200 rounded-xl overflow-hidden">
-                                        <button type="button"
-                                            class="accordion-btn w-full p-4 text-left font-bold text-xs md:text-sm text-slate-800 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                                            <div class="flex items-center gap-3">
-                                                <i class="fa-solid fa-shield-halved text-[#0051d5]"></i>
-                                                <span>{{ $keb->Judul }}</span>
-                                            </div>
-                                            <i
-                                                class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform duration-200 accordion-icon"></i>
-                                        </button>
+                                    <!-- REVISI 2: Dibuat terbuka semua (static), bukan toggle/accordion -->
+                                    <div class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50/50">
                                         <div
-                                            class="accordion-content px-4 pb-4 text-xs text-slate-600 border-t border-slate-100 pt-3 hidden">
+                                            class="p-4 font-bold text-xs md:text-sm text-slate-800 flex items-center gap-3 border-b border-slate-200 bg-white">
+                                            <i class="fa-solid fa-shield-halved text-[#0051d5]"></i>
+                                            <span>{{ $keb->Judul }}</span>
+                                        </div>
+                                        <div class="px-4 py-4 text-xs text-slate-600">
                                             <p class="leading-relaxed mb-3">
                                                 {{ $keb->Deskripsi ?? __('gcg.s2_ops_desc_default') }}
                                             </p>
@@ -402,10 +450,11 @@
                                     {{ __('gcg.s3_pick_year') }}
                                 </span>
                                 @foreach ($rupsTahun as $th)
-                                    <a href="?tahun_rups={{ $th }}#rups"
-                                        class="px-4 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-colors {{ $selectedTahun == $th ? 'bg-[#0099ff] text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                                    <!-- REVISI 4: Menggunakan JS untuk filter tanpa reload/jump -->
+                                    <button type="button" onclick="filterRups('{{ $th }}', this)"
+                                        class="rups-year-pill px-4 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-colors {{ $selectedTahun == $th ? 'bg-[#0099ff] text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
                                         {{ $th }}
-                                    </a>
+                                    </button>
                                 @endforeach
                             </div>
 
@@ -413,46 +462,47 @@
                                 <div
                                     class="flex items-center justify-between text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
                                     <span>{{ __('gcg.s3_docs_label') }} {{ $selectedTahun }}</span>
-                                    <span
-                                        class="bg-emerald-50 text-emerald-700 px-2.5 py-0.5 rounded-full border border-emerald-200 text-[10px]">
-                                        {{ __('gcg.s3_status') }}
-                                    </span>
+                                    <!-- REVISI 3: Pill "Terjadwal / Selesai" dihapus -->
                                 </div>
 
-                                @forelse($rupsDokumen as $item)
-                                    <div
-                                        class="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-slate-200/80 hover:border-[#0099ff] bg-white gap-3 transition-colors">
-                                        <div class="flex items-start gap-3">
-                                            <div
-                                                class="w-8 h-8 rounded-lg bg-blue-50 text-[#0051d5] flex items-center justify-center flex-shrink-0 text-xs">
-                                                <i class="fa-regular fa-file-pdf"></i>
+                                <!-- Container ini akan di-replace oleh JS saat filter -->
+                                <div id="rups-list-container" class="space-y-3">
+                                    @forelse($rupsDokumen as $item)
+                                        <div
+                                            class="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-slate-200/80 hover:border-[#0099ff] bg-white gap-3 transition-colors">
+                                            <div class="flex items-start gap-3">
+                                                <div
+                                                    class="w-8 h-8 rounded-lg bg-blue-50 text-[#0051d5] flex items-center justify-center flex-shrink-0 text-xs">
+                                                    <i class="fa-regular fa-file-pdf"></i>
+                                                </div>
+                                                <div>
+                                                    <h4 class="font-bold text-slate-900 text-xs md:text-sm leading-tight">
+                                                        {{ $item->Judul }}</h4>
+                                                    @if ($item->KategoriDokumen)
+                                                        <span
+                                                            class="text-[11px] text-slate-400">{{ $item->KategoriDokumen }}</span>
+                                                    @endif
+                                                </div>
                                             </div>
-                                            <div>
-                                                <h4 class="font-bold text-slate-900 text-xs md:text-sm leading-tight">
-                                                    {{ $item->Judul }}</h4>
-                                                @if ($item->KategoriDokumen)
+                                            <div class="flex items-center gap-2 self-end sm:self-center">
+                                                @if ($item->PathFile)
+                                                    <a href="{{ asset('storage/' . $item->PathFile) }}" target="_blank"
+                                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-50 hover:bg-[#0099ff] text-slate-700 hover:text-white font-semibold text-xs border border-slate-200 transition-colors">
+                                                        <i class="fa-solid fa-download text-xs"></i>
+                                                        {{ __('gcg.download') }}
+                                                    </a>
+                                                @else
                                                     <span
-                                                        class="text-[11px] text-slate-400">{{ $item->KategoriDokumen }}</span>
+                                                        class="text-xs text-slate-400 italic">{{ __('gcg.s3_not_uploaded') }}</span>
                                                 @endif
                                             </div>
                                         </div>
-                                        <div class="flex items-center gap-2 self-end sm:self-center">
-                                            @if ($item->PathFile)
-                                                <a href="{{ asset('storage/' . $item->PathFile) }}" target="_blank"
-                                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-50 hover:bg-[#0099ff] text-slate-700 hover:text-white font-semibold text-xs border border-slate-200 transition-colors">
-                                                    <i class="fa-solid fa-download text-xs"></i> {{ __('gcg.download') }}
-                                                </a>
-                                            @else
-                                                <span
-                                                    class="text-xs text-slate-400 italic">{{ __('gcg.s3_not_uploaded') }}</span>
-                                            @endif
+                                    @empty
+                                        <div class="p-8 text-center bg-slate-50 rounded-xl text-slate-500 text-xs">
+                                            {{ __('gcg.s3_empty') }} {{ $selectedTahun }}.
                                         </div>
-                                    </div>
-                                @empty
-                                    <div class="p-8 text-center bg-slate-50 rounded-xl text-slate-500 text-xs">
-                                        {{ __('gcg.s3_empty') }} {{ $selectedTahun }}.
-                                    </div>
-                                @endforelse
+                                    @endforelse
+                                </div>
                             </div>
                         </div>
                     </section>
@@ -477,8 +527,7 @@
                                 </div>
                                 <h3 class="font-bold text-slate-900 text-sm mb-1">{{ __('gcg.s4_internal_audit') }}</h3>
                                 <p class="text-xs text-slate-500 leading-relaxed mb-4">
-                                    {{ __('gcg.s4_internal_audit_desc') }}
-                                </p>
+                                    {{ __('gcg.s4_internal_audit_desc') }}</p>
                                 @php $piagamInternal = $komiteAudit->firstWhere('Kategori', 'Satuan Audit Internal'); @endphp
                                 @if ($piagamInternal && $piagamInternal->PathFile)
                                     <a href="{{ asset('storage/' . $piagamInternal->PathFile) }}" target="_blank"
@@ -495,8 +544,7 @@
                                 </div>
                                 <h3 class="font-bold text-slate-900 text-sm mb-1">{{ __('gcg.s4_audit_committee') }}</h3>
                                 <p class="text-xs text-slate-500 leading-relaxed mb-4">
-                                    {{ __('gcg.s4_audit_committee_desc') }}
-                                </p>
+                                    {{ __('gcg.s4_audit_committee_desc') }}</p>
                                 @php $piagamKomite = $komiteAudit->firstWhere('Kategori', 'Komite Audit'); @endphp
                                 @if ($piagamKomite && $piagamKomite->PathFile)
                                     <a href="{{ asset('storage/' . $piagamKomite->PathFile) }}" target="_blank"
@@ -517,9 +565,8 @@
                                             class="w-7 h-7 rounded-lg bg-cyan-900/60 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-xs">
                                             <i class="fa-solid fa-lock"></i>
                                         </div>
-                                        <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-wider">
-                                            {{ __('gcg.wbs_channel') }}
-                                        </span>
+                                        <span
+                                            class="text-[10px] font-bold text-cyan-400 uppercase tracking-wider">{{ __('gcg.wbs_channel') }}</span>
                                     </div>
                                     <h3 class="text-2xl font-bold text-white">{{ __('gcg.wbs_title') }}</h3>
                                 </div>
@@ -531,9 +578,7 @@
                                 </div>
                             </div>
 
-                            <p class="text-xs text-slate-300 leading-relaxed mb-6">
-                                {{ __('gcg.wbs_desc') }}
-                            </p>
+                            <p class="text-xs text-slate-300 leading-relaxed mb-6">{{ __('gcg.wbs_desc') }}</p>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs mb-6">
                                 <div class="bg-[#063d5e]/50 p-4 rounded-xl border border-cyan-700/30">
@@ -548,9 +593,7 @@
                                         class="text-[10px] text-cyan-300/80 font-bold block uppercase tracking-wider mb-1">{{ __('gcg.wbs_email_label') }}</span>
                                     <p class="text-[11px] text-slate-300 mt-0.5">{{ __('gcg.wbs_email_desc') }}</p>
                                     <a href="mailto:smap@jasuindo.com"
-                                        class="font-bold text-cyan-400 hover:underline block mt-1">
-                                        smap@jasuindo.com
-                                    </a>
+                                        class="font-bold text-cyan-400 hover:underline block mt-1">smap@jasuindo.com</a>
                                 </div>
                             </div>
 
@@ -579,7 +622,6 @@
                 class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-lg">
                 <i class="fa-solid fa-xmark"></i>
             </button>
-
             <div class="flex items-center gap-4 pb-4 border-b border-slate-100 mb-4">
                 <div id="modal-profil-foto-box"
                     class="w-16 h-16 rounded-full bg-blue-100 text-[#0051d5] font-bold flex items-center justify-center text-lg flex-shrink-0">
@@ -592,9 +634,7 @@
                     <p id="modal-profil-jabatan" class="text-xs text-slate-500 font-medium"></p>
                 </div>
             </div>
-
             <div class="text-xs text-slate-700 leading-relaxed max-h-72 overflow-y-auto pr-2" id="modal-profil-bio"></div>
-
             <div class="mt-6 pt-4 border-t border-slate-100 text-right">
                 <button type="button" id="close-profil-modal-btn"
                     class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold text-xs transition-colors">
@@ -613,7 +653,6 @@
                 class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-lg">
                 <i class="fa-solid fa-xmark"></i>
             </button>
-
             <div class="mb-4 pb-3 border-b border-slate-100">
                 <span
                     class="text-[10px] font-bold uppercase tracking-wider text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-100">
@@ -622,7 +661,6 @@
                 <h3 class="text-xl font-bold text-slate-900 mt-1">{{ __('gcg.wbs_form_title') }}</h3>
                 <p class="text-xs text-slate-500 mt-0.5">{{ __('gcg.wbs_form_desc') }}</p>
             </div>
-
             <form id="form-wbs" enctype="multipart/form-data" class="space-y-4 text-xs">
                 @csrf
                 <div>
@@ -639,7 +677,6 @@
                         <option value="Lainnya">{{ __('gcg.wbs_cat_6') }}</option>
                     </select>
                 </div>
-
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                         <label class="block font-bold text-slate-700 mb-1">{{ __('gcg.wbs_reported_label') }}</label>
@@ -652,30 +689,25 @@
                             class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:bg-white focus:border-[#0099ff]">
                     </div>
                 </div>
-
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">{{ __('gcg.wbs_location_label') }}</label>
                     <input type="text" name="LokasiKejadian" placeholder="{{ __('gcg.wbs_location_ph') }}"
                         class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:bg-white focus:border-[#0099ff]">
                 </div>
-
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">{{ __('gcg.wbs_narrative_label') }} *</label>
                     <textarea name="UraianKejadian" rows="4" required placeholder="{{ __('gcg.wbs_narrative_ph') }}"
                         class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:bg-white focus:border-[#0099ff]"></textarea>
                 </div>
-
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">{{ __('gcg.wbs_attachment_label') }}</label>
                     <input type="file" name="BuktiFile"
                         class="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-[#0051d5] hover:file:bg-blue-100">
                     <p class="text-[10px] text-slate-400 mt-1">{{ __('gcg.wbs_attachment_note') }}</p>
                 </div>
-
                 <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-2">
-                        {{ __('gcg.wbs_reporter_label') }}
-                    </span>
+                    <span
+                        class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-2">{{ __('gcg.wbs_reporter_label') }}</span>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <input type="text" name="NamaPelapor" placeholder="{{ __('gcg.wbs_reporter_name_ph') }}"
                             class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs outline-none">
@@ -683,7 +715,6 @@
                             class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs outline-none">
                     </div>
                 </div>
-
                 <div class="pt-2 flex justify-end gap-2">
                     <button type="button" id="cancel-wbs-btn"
                         class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-xs">
@@ -727,20 +758,7 @@
                     });
                 }
 
-                // Accordion
-                document.querySelectorAll('.accordion-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const content = this.nextElementSibling;
-                        const icon = this.querySelector('.accordion-icon');
-                        if (content.classList.contains('hidden')) {
-                            content.classList.remove('hidden');
-                            icon.classList.add('rotate-180');
-                        } else {
-                            content.classList.add('hidden');
-                            icon.classList.remove('rotate-180');
-                        }
-                    });
-                });
+                // REVISI 2: Logic accordion dihapus karena sudah dibuat static/terbuka semua
 
                 // Modal Profil
                 const modalProfil = document.getElementById('modal-profil');
@@ -748,26 +766,24 @@
                     'close-profil-modal-btn')];
                 document.querySelectorAll('.btn-profil-modal').forEach(btn => {
                     btn.addEventListener('click', function() {
-                        const nama = this.getAttribute('data-nama');
-                        const jabatan = this.getAttribute('data-jabatan');
-                        const kategori = this.getAttribute('data-kategori');
-                        const bio = this.getAttribute('data-bio');
-                        const foto = this.getAttribute('data-foto');
-
-                        document.getElementById('modal-profil-nama').innerText = nama;
-                        document.getElementById('modal-profil-jabatan').innerText = jabatan;
-                        document.getElementById('modal-profil-kategori').innerText = kategori;
-                        document.getElementById('modal-profil-bio').innerHTML = bio.replace(/\n/g,
-                            '<br><br>');
+                        document.getElementById('modal-profil-nama').innerText = this.getAttribute(
+                            'data-nama');
+                        document.getElementById('modal-profil-jabatan').innerText = this.getAttribute(
+                            'data-jabatan');
+                        document.getElementById('modal-profil-kategori').innerText = this.getAttribute(
+                            'data-kategori');
+                        document.getElementById('modal-profil-bio').innerHTML = this.getAttribute(
+                            'data-bio').replace(/\n/g, '<br><br>');
 
                         const fotoBox = document.getElementById('modal-profil-foto-box');
+                        const foto = this.getAttribute('data-foto');
+                        const nama = this.getAttribute('data-nama');
                         if (foto) {
                             fotoBox.innerHTML =
                                 `<img src="${foto}" class="w-full h-full rounded-full object-cover">`;
                         } else {
                             fotoBox.innerHTML = `<span>${nama.substring(0, 2).toUpperCase()}</span>`;
                         }
-
                         modalProfil.classList.remove('hidden');
                     });
                 });
@@ -780,7 +796,6 @@
                 const btnOpenWbs = document.getElementById('btn-open-wbs');
                 const closeWbsBtns = [document.getElementById('close-wbs-modal'), document.getElementById(
                     'cancel-wbs-btn')];
-
                 if (btnOpenWbs) btnOpenWbs.addEventListener('click', () => modalWbs.classList.remove('hidden'));
                 closeWbsBtns.forEach(b => {
                     if (b) b.addEventListener('click', () => modalWbs.classList.add('hidden'));
@@ -818,6 +833,52 @@
                             });
                     });
                 }
+
+                // REVISI 4: Smooth Filter RUPS tanpa reload/jump ke atas
+                window.filterRups = function(tahun, element) {
+                    // 1. Update UI tombol aktif segera
+                    document.querySelectorAll('.rups-year-pill').forEach(p => {
+                        p.classList.remove('bg-[#0099ff]', 'text-white');
+                        p.classList.add('bg-slate-100', 'text-slate-600');
+                    });
+                    element.classList.remove('bg-slate-100', 'text-slate-600');
+                    element.classList.add('bg-[#0099ff]', 'text-white');
+
+                    // 2. Tampilkan loading di container list
+                    const container = document.getElementById('rups-list-container');
+                    const originalContent = container.innerHTML;
+                    container.innerHTML = `
+                        <div class="p-8 text-center bg-slate-50 rounded-xl">
+                            <i class="fa-solid fa-circle-notch fa-spin text-2xl text-[#0099ff] mb-2"></i>
+                            <p class="text-xs text-slate-500">Memuat data tahun ${tahun}...</p>
+                        </div>`;
+
+                    // 3. Fetch halaman saat ini dengan parameter tahun baru
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('tahun_rups', tahun);
+                    // Hapus hash agar tidak jump saat fetch
+                    url.hash = '';
+
+                    fetch(url.toString())
+                        .then(response => response.text())
+                        .then(html => {
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(html, 'text/html');
+                            const newContainer = doc.getElementById('rups-list-container');
+
+                            if (newContainer) {
+                                container.innerHTML = newContainer.innerHTML;
+                                // Update URL browser tanpa reload
+                                window.history.pushState({}, '', url.toString() + '#rups');
+                            } else {
+                                container.innerHTML = originalContent; // Fallback jika gagal
+                            }
+                        })
+                        .catch(() => {
+                            container.innerHTML = originalContent;
+                            alert('Gagal memuat data. Silakan coba lagi.');
+                        });
+                };
             });
         </script>
     @endpush
