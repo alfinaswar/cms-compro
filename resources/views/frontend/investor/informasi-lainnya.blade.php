@@ -1,5 +1,23 @@
 @extends('frontend.index')
 
+@push('styles')
+    <style>
+        .custom-sidebar-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-sidebar-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-sidebar-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-sidebar-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+@endpush
+
 @section('content-frontend')
     @include('frontend.investor.partials.hero-tabs')
 
@@ -8,13 +26,14 @@
     <!-- ========================================== -->
     <section class="py-12 bg-[#f8f9ff]">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
                 <!-- ========================================== -->
                 <!-- LEFT SIDEBAR -->
                 <!-- ========================================== -->
-                <div class="lg:col-span-4 xl:col-span-3 space-y-6">
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 p-5 sticky top-36">
+                <div class="lg:col-span-4 xl:col-span-3">
+                    <div class="sticky top-[160px] space-y-6 max-h-[calc(100vh-180px)] overflow-y-auto custom-sidebar-scroll pr-1">
+                        <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 p-5">
                         <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
                             <span class="text-[11px] font-bold text-slate-500 tracking-wider uppercase">
                                 {{ __('investor.on_this_page') }}
@@ -70,7 +89,7 @@
                             </p>
                         </div>
 
-                        <div class="bg-[#0b1c30] text-white rounded-xl p-4 shadow-sm">
+                        <div class="mt-4 bg-[#0b1c30] text-white rounded-xl p-4 shadow-sm">
                             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
                                 {{ __('investor.commitment_label') }}
                             </span>
@@ -83,6 +102,7 @@
                                 {{ __('investor.commitment_desc') }}
                             </p>
                         </div>
+                        </div>
                     </div>
                 </div>
 
@@ -94,7 +114,7 @@
                     <!-- ------------------------------------------ -->
                     <!-- SECTION 01: LEMBAGA PENUNJANG PASAR MODAL -->
                     <!-- ------------------------------------------ -->
-                    <section id="lembaga-penunjang" class="scroll-mt-32">
+                    <section id="lembaga-penunjang" class="scroll-mt-40">
                         <div class="mb-4">
                             <span
                                 class="text-[10px] font-bold tracking-wider uppercase text-[#0051d5] bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
@@ -178,7 +198,7 @@
                     <!-- ------------------------------------------ -->
                     <!-- SECTION 02: KETERBUKAAN INFORMASI -->
                     <!-- ------------------------------------------ -->
-                    <section id="keterbukaan-informasi" class="scroll-mt-32">
+                    <section id="keterbukaan-informasi" class="scroll-mt-40">
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                             <div>
                                 <span
@@ -314,7 +334,7 @@
                     <!-- ------------------------------------------ -->
                     <!-- SECTION 03: HUBUNGI HUBUNGAN INVESTOR -->
                     <!-- ------------------------------------------ -->
-                    <section id="hubungi-investor" class="scroll-mt-32">
+                    <section id="hubungi-investor" class="scroll-mt-40">
                         <div class="mb-4">
                             <span
                                 class="text-[10px] font-bold tracking-wider uppercase text-[#0051d5] bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
@@ -335,9 +355,9 @@
                                 <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
                                     {{ __('investor.other_s3_email_label') }}
                                 </span>
-                                <a href="mailto:{{ $kantor->HubunganInvestorEmail ?? 'corporate@jasuindo.com' }}"
+                                <a href="mailto:{{ $kantor?->HubunganInvestorEmail ?? $kantor?->Email ?? 'corporate@jasuindo.com' }}"
                                     class="text-sm md:text-base font-bold text-[#0051d5] hover:underline block mb-2">
-                                    {{ $kantor?->Email ?? 'corporate@jasuindo.com' }}
+                                    {{ $kantor?->HubunganInvestorEmail ?? $kantor?->Email ?? 'corporate@jasuindo.com' }}
                                 </a>
                                 <p class="text-xs text-slate-500 leading-relaxed">{{ __('investor.other_s3_email_desc') }}
                                 </p>
@@ -365,7 +385,7 @@
                                 <h4 class="font-bold text-slate-900 text-sm">{{ __('investor.other_s3_physical_title') }}
                                 </h4>
                                 <p class="text-xs text-slate-500 mt-0.5">{{ __('investor.other_s3_physical_desc') }}</p>
-                                @if ($kantor->AlamatLengkap)
+                                @if (!empty($kantor?->AlamatLengkap))
                                     <div class="mt-2 text-xs text-slate-700">
                                         <i class="fa-solid fa-location-dot mr-1 text-[13px] text-[#0051d5]"></i>
                                         {{ $kantor->AlamatLengkap }}
@@ -523,6 +543,27 @@
                             });
                     });
                 }
+
+                // SCROLLSPY
+                const navLinks = document.querySelectorAll('#informasi-lainnya-nav .sidebar-nav-link');
+                const sections = document.querySelectorAll('section[id]');
+                window.addEventListener('scroll', function() {
+                    let current = '';
+                    sections.forEach(section => {
+                        const sectionTop = section.offsetTop - 175;
+                        if (window.scrollY >= sectionTop) current = section.getAttribute('id');
+                    });
+                    navLinks.forEach(link => {
+                        const target = link.getAttribute('data-target');
+                        if (target === current) {
+                            link.classList.add('bg-blue-50', 'text-[#0051d5]', 'font-semibold');
+                            link.classList.remove('text-slate-700');
+                        } else {
+                            link.classList.remove('bg-blue-50', 'text-[#0051d5]', 'font-semibold');
+                            link.classList.add('text-slate-700');
+                        }
+                    });
+                });
             });
         </script>
     @endpush

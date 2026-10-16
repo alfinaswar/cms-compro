@@ -14,9 +14,30 @@
         <style>
             .sticky-sidebar {
                 position: sticky;
-                top: 90px;
-                max-height: calc(100vh - 110px);
+                top: 160px;
+                max-height: calc(100vh - 180px);
                 overflow-y: auto;
+            }
+
+            .sticky-sidebar::-webkit-scrollbar,
+            .custom-sidebar-scroll::-webkit-scrollbar {
+                width: 4px;
+            }
+
+            .sticky-sidebar::-webkit-scrollbar-track,
+            .custom-sidebar-scroll::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            .sticky-sidebar::-webkit-scrollbar-thumb,
+            .custom-sidebar-scroll::-webkit-scrollbar-thumb {
+                background: #cbd5e1;
+                border-radius: 4px;
+            }
+
+            .sticky-sidebar::-webkit-scrollbar-thumb:hover,
+            .custom-sidebar-scroll::-webkit-scrollbar-thumb:hover {
+                background: #94a3b8;
             }
 
             .sidebar-link.active {
@@ -78,7 +99,7 @@
                 {{-- LEFT SIDEBAR: DAFTAR LAPORAN & SUPPORT --}}
                 {{-- ========================================== --}}
                 <div class="lg:col-span-3">
-                    <div class="sticky top-28 space-y-5">
+                    <div class="sticky top-[160px] space-y-5 max-h-[calc(100vh-180px)] overflow-y-auto custom-sidebar-scroll pr-1">
 
                         {{-- Navigasi Cepat Daftar Laporan --}}
                         <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5">
@@ -196,7 +217,7 @@
                     {{-- SECTION 1: PROSPEKTUS & KETERBUKAAN --}}
                     {{-- ========================================== --}}
                     <div id="prospektus"
-                        class="scroll-mt-28 bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 md:p-8">
+                        class="scroll-mt-40 bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 md:p-8">
                         <div class="flex items-start gap-3.5 pb-5 mb-6 border-b border-slate-100">
                             <div
                                 class="w-10 h-10 rounded-xl bg-blue-50 text-[#0099ff] flex items-center justify-center text-lg flex-shrink-0">
@@ -329,7 +350,7 @@
                     {{-- SECTION 2: LAPORAN TAHUNAN (ANNUAL REPORT) --}}
                     {{-- ========================================== --}}
                     <div id="laporan-tahunan"
-                        class="scroll-mt-28 bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 md:p-8">
+                        class="scroll-mt-40 bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 md:p-8">
                         <div
                             class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 mb-6 border-b border-slate-100">
                             <div class="flex items-start gap-3.5">
@@ -649,7 +670,7 @@
                     </div>
 
                     <div id="laporan-triwulanan"
-                        class="scroll-mt-28 bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 md:p-8">
+                        class="scroll-mt-40 bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 md:p-8">
                         <div
                             class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 mb-6 border-b border-slate-100">
                             <div class="flex items-start gap-3.5">
@@ -892,7 +913,7 @@
                         </div>
                     </div>
                     <div id="ringkasan-kinerja"
-                        class="scroll-mt-28 bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 md:p-8">
+                        class="scroll-mt-40 bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 md:p-8">
                         <div
                             class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 mb-6 border-b border-slate-100">
                             <div class="flex items-start gap-3.5">
@@ -1303,7 +1324,7 @@
                     let currentSectionId = '';
 
                     sections.forEach(section => {
-                        const sectionTop = section.offsetTop - 150;
+                        const sectionTop = section.offsetTop - 175;
                         if (window.scrollY >= sectionTop) {
                             currentSectionId = section.getAttribute('id');
                         }

@@ -1,15 +1,34 @@
 @extends('frontend.index')
 
+@push('styles')
+    <style>
+        .custom-sidebar-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-sidebar-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-sidebar-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-sidebar-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+@endpush
+
 @section('content-frontend')
     @include('frontend.investor.partials.hero-tabs')
 
     <section class="py-12 bg-[#f8f9ff]">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
                 <!-- LEFT STICKY SIDEBAR -->
-                <div class="lg:col-span-4 xl:col-span-3 space-y-6">
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 p-5 sticky top-36">
+                <div class="lg:col-span-4 xl:col-span-3">
+                    <div class="sticky top-[160px] space-y-6 max-h-[calc(100vh-180px)] overflow-y-auto custom-sidebar-scroll pr-1">
+                        <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 p-5">
                         <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
                             <span class="text-[11px] font-bold text-slate-500 tracking-wider uppercase">
                                 {{ __('investor.on_this_page') }}
@@ -62,6 +81,7 @@
                                 {{ __('investor.bei_ojk_desc') }}
                             </p>
                         </div>
+                        </div>
                     </div>
                 </div>
 
@@ -69,7 +89,7 @@
                 <div class="lg:col-span-8 xl:col-span-9 space-y-12">
 
                     <!-- SECTION 01: STRUKTUR KEPEMILIKAN -->
-                    <section id="struktur-kepemilikan" class="scroll-mt-32">
+                    <section id="struktur-kepemilikan" class="scroll-mt-40">
                         <div class="mb-4">
                             <span
                                 class="text-[10px] font-bold tracking-wider uppercase text-[#0051d5] bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
@@ -229,7 +249,7 @@
                     </section>
 
                     <!-- SECTION 02: PEMEGANG SAHAM UTAMA -->
-                    <section id="pemegang-saham-utama" class="scroll-mt-32">
+                    <section id="pemegang-saham-utama" class="scroll-mt-40">
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                             <div>
                                 <span
@@ -370,7 +390,7 @@
                     </section>
 
                     <!-- SECTION 03: ENTITAS ANAK PERUSAHAAN (TABEL LENGKAP & SORTABLE) -->
-                    <section id="entitas-anak" class="scroll-mt-32">
+                    <section id="entitas-anak" class="scroll-mt-40">
                         <div class="mb-4">
                             <span
                                 class="text-[10px] font-bold tracking-wider uppercase text-[#0051d5] bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
@@ -654,7 +674,7 @@
                 window.addEventListener('scroll', function() {
                     let current = '';
                     sections.forEach(section => {
-                        const sectionTop = section.offsetTop - 160;
+                        const sectionTop = section.offsetTop - 175;
                         if (window.scrollY >= sectionTop) current = section.getAttribute('id');
                     });
                     navLinks.forEach(link => {

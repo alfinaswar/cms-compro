@@ -29,8 +29,8 @@
     /* Sticky Sidebar */
     .sticky-sidebar {
         position: sticky;
-        top: 100px; /* Jarak dari atas saat sticky */
-        max-height: calc(100vh - 120px); /* Tinggi maksimal agar tidak overflow */
+        top: 160px; /* Jarak dari atas agar tidak menempel dengan navbar */
+        max-height: calc(100vh - 180px); /* Tinggi maksimal agar tidak overflow */
         overflow-y: auto; /* Scroll jika konten terlalu panjang */
     }
 
@@ -40,8 +40,7 @@
     }
 
     .sticky-sidebar::-webkit-scrollbar-track {
-        background: #f1f5f9;
-        border-radius: 4px;
+        background: transparent;
     }
 
     .sticky-sidebar::-webkit-scrollbar-thumb {
@@ -60,7 +59,7 @@
 
     /* Offset untuk anchor links */
     section[id] {
-        scroll-margin-top: 120px;
+        scroll-margin-top: 160px;
     }
 </style>
 @endpush
@@ -69,14 +68,13 @@
     <!-- ========================================== -->
     <section class="py-12 bg-[#f8f9ff]">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
                 <!-- ========================================== -->
                 <!-- LEFT STICKY SIDEBAR -->
                 <!-- ========================================== -->
-                <!-- LEFT STICKY SIDEBAR -->
                 <div class="lg:col-span-4 xl:col-span-3">
-                    <div class="sticky top-28 space-y-6">
+                    <div class="sticky-sidebar space-y-6 pr-1">
                         <!-- Sidebar Card -->
                         <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 p-5">
                             <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
@@ -162,7 +160,7 @@
                 <div class="lg:col-span-8 xl:col-span-9 space-y-12">
 
                     <!-- SECTION 01: BAGAN & MANAJEMEN -->
-                    <section id="bagan-manajemen" class="scroll-mt-32">
+                    <section id="bagan-manajemen" class="scroll-mt-40">
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                             <div>
                                 <span
@@ -346,7 +344,7 @@
                     </section>
 
                     <!-- SECTION 02: DOKUMEN TATA KELOLA -->
-                    <section id="dokumen-gcg" class="scroll-mt-32">
+                    <section id="dokumen-gcg" class="scroll-mt-40">
                         <div class="mb-4">
                             <span
                                 class="text-[10px] font-bold tracking-wider uppercase text-[#0051d5] bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
@@ -431,7 +429,7 @@
                     </section>
 
                     <!-- SECTION 03: RUPS & RISALAH -->
-                    <section id="rups" class="scroll-mt-32">
+                    <section id="rups" class="scroll-mt-40">
                         <div class="mb-4">
                             <span
                                 class="text-[10px] font-bold tracking-wider uppercase text-[#0051d5] bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
@@ -508,7 +506,7 @@
                     </section>
 
                     <!-- SECTION 04: KOMITE AUDIT & WBS -->
-                    <section id="komite-wbs" class="scroll-mt-32">
+                    <section id="komite-wbs" class="scroll-mt-40">
                         <div class="mb-4">
                             <span
                                 class="text-[10px] font-bold tracking-wider uppercase text-[#0051d5] bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
@@ -879,6 +877,27 @@
                             alert('Gagal memuat data. Silakan coba lagi.');
                         });
                 };
+
+                // SCROLLSPY
+                const navLinks = document.querySelectorAll('#tata-kelola-nav .sidebar-nav-link');
+                const sections = document.querySelectorAll('section[id]');
+                window.addEventListener('scroll', function() {
+                    let current = '';
+                    sections.forEach(section => {
+                        const sectionTop = section.offsetTop - 175;
+                        if (window.scrollY >= sectionTop) current = section.getAttribute('id');
+                    });
+                    navLinks.forEach(link => {
+                        const target = link.getAttribute('data-target');
+                        if (target === current) {
+                            link.classList.add('bg-blue-50', 'text-[#0051d5]', 'font-semibold');
+                            link.classList.remove('text-slate-700');
+                        } else {
+                            link.classList.remove('bg-blue-50', 'text-[#0051d5]', 'font-semibold');
+                            link.classList.add('text-slate-700');
+                        }
+                    });
+                });
             });
         </script>
     @endpush
