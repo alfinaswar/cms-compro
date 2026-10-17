@@ -214,12 +214,31 @@
         }
 
         /* Headline & Sub-headline Line-Height: 1.4em */
-        h1, h2, h3, h4, h5, h6,
-        .h1, .h2, .h3, .h4, .h5, .h6,
-        .headline, .hero-headline,
-        .sec-title, .box-title, .title,
-        .sub-title, .subheadline, .sub-headline, .sec-subtitle, .box-subtitle, .subtitle,
-        [class*="subjudul"], [class*="SubJudul"] {
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        .h1,
+        .h2,
+        .h3,
+        .h4,
+        .h5,
+        .h6,
+        .headline,
+        .hero-headline,
+        .sec-title,
+        .box-title,
+        .title,
+        .sub-title,
+        .subheadline,
+        .sub-headline,
+        .sec-subtitle,
+        .box-subtitle,
+        .subtitle,
+        [class*="subjudul"],
+        [class*="SubJudul"] {
             line-height: 1.4em !important;
         }
 
@@ -249,7 +268,9 @@
 
         // Helper: normalisasi path URL (buang domain, query, fragment, trailing slash)
         $navNormalizePath = function ($url) {
-            if (empty($url) || $url === '#') return null;
+            if (empty($url) || $url === '#') {
+                return null;
+            }
             $u = strtolower(trim((string) parse_url((string) $url, PHP_URL_PATH), '/'));
             return $u; // '' berarti homepage
         };
@@ -267,7 +288,9 @@
         // Parent dropdown (Url '#') TIDAK AKAN pernah aktif — hanya child-nya yang bisa aktif.
         $navIsActive = function ($url) use ($navNormalizePath, $navCurrentPath) {
             $p = $navNormalizePath($url);
-            if ($p === null) return false;
+            if ($p === null) {
+                return false;
+            }
             if ($p === '') {
                 return $navCurrentPath === ''; // homepage
             }
@@ -276,7 +299,9 @@
 
         // Helper: normalize Url Simpanan Admin (buang domain sendiri agar tetap ter-match)
         $navStoredPath = function ($url) use ($navNormalizePath) {
-            if (empty($url) || $url === '#') return null;
+            if (empty($url) || $url === '#') {
+                return null;
+            }
             $u = strtolower(trim((string) $url));
             // Jika URL absolut mengarah ke domain sendiri, pakai path-nya saja
             $host = strtolower((string) request()->getHost());
@@ -291,7 +316,9 @@
 
         // Deteksi halaman "Solusi" via route halaman-solusi.show (child Solution dari DB admin)
         $navOnSolutionPage = request()->routeIs('halaman-solusi.show');
-        $navSolutionSlug = $navOnSolutionPage ? (string) (request()->route('id') ?? request()->route('slug') ?? '') : '';
+        $navSolutionSlug = $navOnSolutionPage
+            ? (string) (request()->route('id') ?? (request()->route('slug') ?? ''))
+            : '';
     @endphp
 
     <!-- ========================================== -->
@@ -368,7 +395,9 @@
                             // Helper: cocokkan path URL menu dengan path halaman saat ini
                             // (mendukung trailing slash dari CustomUrlGenerator & prefix locale)
                             $matchUrl = function ($url) use ($pathWithoutLocale, $pathWithSlash) {
-                                if (empty($url) || $url === '#') return false;
+                                if (empty($url) || $url === '#') {
+                                    return false;
+                                }
                                 if (preg_match('#^(https?:)?//#i', $url)) {
                                     $url = preg_replace('#^https?://[^/]+#i', '', $url);
                                 }
@@ -776,16 +805,20 @@
                         @php
                             $footerLogo = !empty($websiteSettings?->PathLogoGelap)
                                 ? asset('storage/' . $websiteSettings->PathLogoGelap)
-                                : (!empty($websiteSettings?->PathLogo) ? asset('storage/' . $websiteSettings->PathLogo) : null);
+                                : (!empty($websiteSettings?->PathLogo)
+                                    ? asset('storage/' . $websiteSettings->PathLogo)
+                                    : null);
                         @endphp
                         @if ($footerLogo)
-                            <a href="{{ route('frontend.main', ['locale' => $currentLocale]) }}" class="inline-block">
+                            <a href="{{ route('frontend.main', ['locale' => $currentLocale]) }}"
+                                class="inline-block">
                                 <img src="{{ $footerLogo }}"
                                     alt="{{ $websiteSettings->NamaPerusahaan ?? __('Logo') }}"
                                     class="h-10 w-auto object-contain">
                             </a>
                         @else
-                            <a href="{{ route('frontend.main', ['locale' => $currentLocale]) }}" class="flex items-center space-x-2">
+                            <a href="{{ route('frontend.main', ['locale' => $currentLocale]) }}"
+                                class="flex items-center space-x-2">
                                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path d="M5 20L12 12L19 20L26 12L33 20" stroke="white" stroke-width="3"
@@ -793,7 +826,8 @@
                                     <path d="M5 28L12 20L19 28" stroke="#0ea5e9" stroke-width="3"
                                         stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
-                                <span class="text-2xl font-bold">{{ $websiteSettings->NamaSingkat ?? $websiteSettings->NamaPerusahaan ?? 'JASUINDO' }}</span>
+                                <span
+                                    class="text-2xl font-bold">{{ $websiteSettings->NamaSingkat ?? ($websiteSettings->NamaPerusahaan ?? 'JASUINDO') }}</span>
                             </a>
                         @endif
                     </div>
@@ -802,36 +836,36 @@
                     </p>
                     <div class="flex flex-wrap gap-3">
                         @if (!empty($websiteSettings?->SosialFacebook))
-                            <a href="{{ $websiteSettings->SosialFacebook }}" target="_blank" rel="noopener noreferrer"
-                                aria-label="Facebook"
+                            <a href="{{ $websiteSettings->SosialFacebook }}" target="_blank"
+                                rel="noopener noreferrer" aria-label="Facebook"
                                 class="w-8 h-8 bg-brand-900 hover:bg-brand-800 rounded-lg flex items-center justify-center transition-colors">
                                 <i class="fa-brands fa-facebook-f text-sm"></i>
                             </a>
                         @endif
                         @if (!empty($websiteSettings?->SosialInstagram))
-                            <a href="{{ $websiteSettings->SosialInstagram }}" target="_blank" rel="noopener noreferrer"
-                                aria-label="Instagram"
+                            <a href="{{ $websiteSettings->SosialInstagram }}" target="_blank"
+                                rel="noopener noreferrer" aria-label="Instagram"
                                 class="w-8 h-8 bg-brand-900 hover:bg-brand-800 rounded-lg flex items-center justify-center transition-colors">
                                 <i class="fa-brands fa-instagram text-sm"></i>
                             </a>
                         @endif
                         @if (!empty($websiteSettings?->SosialLinkedIn))
-                            <a href="{{ $websiteSettings->SosialLinkedIn }}" target="_blank" rel="noopener noreferrer"
-                                aria-label="LinkedIn"
+                            <a href="{{ $websiteSettings->SosialLinkedIn }}" target="_blank"
+                                rel="noopener noreferrer" aria-label="LinkedIn"
                                 class="w-8 h-8 bg-brand-900 hover:bg-brand-800 rounded-lg flex items-center justify-center transition-colors">
                                 <i class="fa-brands fa-linkedin-in text-sm"></i>
                             </a>
                         @endif
                         @if (!empty($websiteSettings?->SosialYoutube))
-                            <a href="{{ $websiteSettings->SosialYoutube }}" target="_blank" rel="noopener noreferrer"
-                                aria-label="YouTube"
+                            <a href="{{ $websiteSettings->SosialYoutube }}" target="_blank"
+                                rel="noopener noreferrer" aria-label="YouTube"
                                 class="w-8 h-8 bg-brand-900 hover:bg-brand-800 rounded-lg flex items-center justify-center transition-colors">
                                 <i class="fa-brands fa-youtube text-sm"></i>
                             </a>
                         @endif
                         @if (!empty($websiteSettings?->SosialTwitter))
-                            <a href="{{ $websiteSettings->SosialTwitter }}" target="_blank" rel="noopener noreferrer"
-                                aria-label="Twitter / X"
+                            <a href="{{ $websiteSettings->SosialTwitter }}" target="_blank"
+                                rel="noopener noreferrer" aria-label="Twitter / X"
                                 class="w-8 h-8 bg-brand-900 hover:bg-brand-800 rounded-lg flex items-center justify-center transition-colors">
                                 <i class="fa-brands fa-x-twitter text-sm"></i>
                             </a>
@@ -861,7 +895,10 @@
                             @foreach ($footerMenus as $footerMenu)
                                 @php
                                     $fmTranslation = $footerMenu->translations->firstWhere('Locale', $currentLocale);
-                                    $fmName = $fmTranslation && !empty($fmTranslation->NamaMenu) ? $fmTranslation->NamaMenu : $footerMenu->NamaMenu;
+                                    $fmName =
+                                        $fmTranslation && !empty($fmTranslation->NamaMenu)
+                                            ? $fmTranslation->NamaMenu
+                                            : $footerMenu->NamaMenu;
                                 @endphp
                                 <li>
                                     <a href="{{ $footerMenu->link }}" target="{{ $footerMenu->Target ?? '_self' }}"
@@ -891,16 +928,29 @@
                 <div class="lg:col-span-2">
                     <h3 class="text-base font-bold mb-4">{{ __('Solutions') }}</h3>
                     @php
-                        $footerSolusi = !empty($halamanSolusi) && $halamanSolusi->isNotEmpty()
-                            ? $halamanSolusi->filter(fn($item) => $item->IsPublished ?? true)
-                            : \App\Models\HalamanSolusi::with('translations')->where(function($q) {
-                                $q->where('IsPublished', true)->orWhereNull('IsPublished');
-                            })->get();
+                        $footerSolusi =
+                            !empty($halamanSolusi) &&
+                            (is_array($halamanSolusi)
+                                ? !empty($halamanSolusi)
+                                : ($halamanSolusi instanceof \Illuminate\Support\Collection
+                                    ? $halamanSolusi->count() > 0
+                                    : false))
+                                ? (is_array($halamanSolusi)
+                                    ? collect($halamanSolusi)->filter(fn($item) => $item->IsPublished ?? true)
+                                    : $halamanSolusi->filter(fn($item) => $item->IsPublished ?? true))
+                                : \App\Models\HalamanSolusi::with('translations')
+                                    ->where(function ($q) {
+                                        $q->where('IsPublished', true)->orWhereNull('IsPublished');
+                                    })
+                                    ->get();
                     @endphp
+
                     <ul class="space-y-2.5">
                         @forelse ($footerSolusi as $solusiItem)
                             @php
-                                $sTrans = $solusiItem->translations ? $solusiItem->translations->firstWhere('Locale', $currentLocale) : null;
+                                $sTrans = $solusiItem->translations
+                                    ? $solusiItem->translations->firstWhere('Locale', $currentLocale)
+                                    : null;
                                 $sJudul = $sTrans && !empty($sTrans->Judul) ? $sTrans->Judul : $solusiItem->Judul;
                                 $sSlug = !empty($solusiItem->Slug) ? $solusiItem->Slug : $solusiItem->id;
                             @endphp
@@ -938,24 +988,28 @@
                                 @endif
                                 @if (!empty($websiteSettings->NomorTelepon))
                                     <p class="text-slate-400">
-                                        <span class="text-slate-500">{{ __('Phone') }}</span> 
-                                        <a href="tel:{{ preg_replace('/[^0-9+]/', '', $websiteSettings->NomorTelepon) }}" class="hover:text-white transition-colors">
+                                        <span class="text-slate-500">{{ __('Phone') }}</span>
+                                        <a href="tel:{{ preg_replace('/[^0-9+]/', '', $websiteSettings->NomorTelepon) }}"
+                                            class="hover:text-white transition-colors">
                                             {{ $websiteSettings->NomorTelepon }}
                                         </a>
                                     </p>
                                 @endif
                                 @if (!empty($websiteSettings->NomorWhatsApp))
                                     <p class="text-slate-400">
-                                        <span class="text-slate-500">WhatsApp:</span> 
-                                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $websiteSettings->NomorWhatsApp) }}" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">
+                                        <span class="text-slate-500">WhatsApp:</span>
+                                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $websiteSettings->NomorWhatsApp) }}"
+                                            target="_blank" rel="noopener noreferrer"
+                                            class="hover:text-white transition-colors">
                                             {{ $websiteSettings->NomorWhatsApp }}
                                         </a>
                                     </p>
                                 @endif
                                 @if (!empty($websiteSettings->AlamatEmail))
                                     <p class="text-slate-400">
-                                        <span class="text-slate-500">Email:</span> 
-                                        <a href="mailto:{{ $websiteSettings->AlamatEmail }}" class="hover:text-white transition-colors">
+                                        <span class="text-slate-500">Email:</span>
+                                        <a href="mailto:{{ $websiteSettings->AlamatEmail }}"
+                                            class="hover:text-white transition-colors">
                                             {{ $websiteSettings->AlamatEmail }}
                                         </a>
                                     </p>
@@ -963,7 +1017,8 @@
                             </div>
                         @else
                             <div>
-                                <p class="mb-1">Jalan Raya Betro Nomor 21,<br>Sedati, Sidoarjo, Surabaya 61253 Indonesia
+                                <p class="mb-1">Jalan Raya Betro Nomor 21,<br>Sedati, Sidoarjo, Surabaya 61253
+                                    Indonesia
                                 </p>
                                 <p class="text-slate-500">{{ __('Phone') }} +62 31 8910919 (Hunting)</p>
                             </div>
@@ -979,17 +1034,25 @@
                         @if (!empty($websiteSettings?->TeksCopyright))
                             {{ $websiteSettings->TeksCopyright }}
                         @else
-                            © {{ date('Y') }} {{ $websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk' }}. {{ __('All rights reserved') }}
+                            © {{ date('Y') }}
+                            {{ $websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk' }}.
+                            {{ __('All rights reserved') }}
                         @endif
                     </p>
                     <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs">
                         @php
                             $termsUrl = !empty($websiteSettings?->TautanSyaratKetentuan)
                                 ? $websiteSettings->TautanSyaratKetentuan
-                                : route('static-pages.show', ['locale' => $currentLocale, 'slug' => 'syarat-ketentuan']);
+                                : route('static-pages.show', [
+                                    'locale' => $currentLocale,
+                                    'slug' => 'syarat-ketentuan',
+                                ]);
                             $privacyUrl = !empty($websiteSettings?->TautanKebijakanPrivasi)
                                 ? $websiteSettings->TautanKebijakanPrivasi
-                                : route('static-pages.show', ['locale' => $currentLocale, 'slug' => 'kebijakan-privasi']);
+                                : route('static-pages.show', [
+                                    'locale' => $currentLocale,
+                                    'slug' => 'kebijakan-privasi',
+                                ]);
                             $faqUrl = route('static-pages.show', ['locale' => $currentLocale, 'slug' => 'faq']);
                         @endphp
                         <a href="{{ $termsUrl }}"
@@ -1327,10 +1390,10 @@
                                 ${highlightText(article.judul, query)}
                             </h4>
                             ${article.ringkasan ? `
-                                                                            <p class="text-xs text-slate-500 line-clamp-1 mt-0.5">
-                                                                                ${highlightText(article.ringkasan, query)}
-                                                                            </p>
-                                                                        ` : ''}
+                                                                                <p class="text-xs text-slate-500 line-clamp-1 mt-0.5">
+                                                                                    ${highlightText(article.ringkasan, query)}
+                                                                                </p>
+                                                                            ` : ''}
                         </div>
                         <div class="flex-shrink-0 self-center">
                             <i class="fa-solid fa-arrow-right text-slate-400 text-xs"></i>
