@@ -773,12 +773,19 @@
                 <!-- Logo & Description -->
                 <div class="lg:col-span-3">
                     <div class="mb-4">
-                        @if (!empty($websiteSettings) && !empty($websiteSettings->PathLogo))
-                            <img src="{{ asset('storage/' . $websiteSettings->PathLogo) }}"
-                                alt="{{ $websiteSettings->NamaPerusahaan ?? __('Logo') }}"
-                                class="h-10 w-auto object-contain" style="filter: brightness(0) invert(1);">
+                        @php
+                            $footerLogo = !empty($websiteSettings?->PathLogoGelap)
+                                ? asset('storage/' . $websiteSettings->PathLogoGelap)
+                                : (!empty($websiteSettings?->PathLogo) ? asset('storage/' . $websiteSettings->PathLogo) : null);
+                        @endphp
+                        @if ($footerLogo)
+                            <a href="{{ route('frontend.main', ['locale' => $currentLocale]) }}" class="inline-block">
+                                <img src="{{ $footerLogo }}"
+                                    alt="{{ $websiteSettings->NamaPerusahaan ?? __('Logo') }}"
+                                    class="h-10 w-auto object-contain">
+                            </a>
                         @else
-                            <div class="flex items-center space-x-2">
+                            <a href="{{ route('frontend.main', ['locale' => $currentLocale]) }}" class="flex items-center space-x-2">
                                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path d="M5 20L12 12L19 20L26 12L33 20" stroke="white" stroke-width="3"
@@ -786,36 +793,54 @@
                                     <path d="M5 28L12 20L19 28" stroke="#0ea5e9" stroke-width="3"
                                         stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
-                                <span class="text-2xl font-bold">JASUINDO</span>
-                            </div>
+                                <span class="text-2xl font-bold">{{ $websiteSettings->NamaSingkat ?? $websiteSettings->NamaPerusahaan ?? 'JASUINDO' }}</span>
+                            </a>
                         @endif
                     </div>
                     <p class="text-slate-400 text-sm leading-relaxed mb-4">
-                        {{ $websiteSettings->DeskripsiSingkat ?? __('The Fastest Growing Identity & Payment Company in Asia') }}
+                        {{ $websiteSettings->DeskripsiSingkat ?? __('Perusahaan percetakan keamanan terkemuka di Indonesia untuk dokumen sekuriti & solusi identitas.') }}
                     </p>
-                    <div class="flex space-x-3">
-                        @if (!empty($websiteSettings->SosialFacebook))
-                            <a href="{{ $websiteSettings->SosialFacebook }}" target="_blank"
+                    <div class="flex flex-wrap gap-3">
+                        @if (!empty($websiteSettings?->SosialFacebook))
+                            <a href="{{ $websiteSettings->SosialFacebook }}" target="_blank" rel="noopener noreferrer"
+                                aria-label="Facebook"
                                 class="w-8 h-8 bg-brand-900 hover:bg-brand-800 rounded-lg flex items-center justify-center transition-colors">
                                 <i class="fa-brands fa-facebook-f text-sm"></i>
                             </a>
                         @endif
-                        @if (!empty($websiteSettings->SosialInstagram))
-                            <a href="{{ $websiteSettings->SosialInstagram }}" target="_blank"
+                        @if (!empty($websiteSettings?->SosialInstagram))
+                            <a href="{{ $websiteSettings->SosialInstagram }}" target="_blank" rel="noopener noreferrer"
+                                aria-label="Instagram"
                                 class="w-8 h-8 bg-brand-900 hover:bg-brand-800 rounded-lg flex items-center justify-center transition-colors">
                                 <i class="fa-brands fa-instagram text-sm"></i>
                             </a>
                         @endif
-                        @if (!empty($websiteSettings->SosialLinkedIn))
-                            <a href="{{ $websiteSettings->SosialLinkedIn }}" target="_blank"
+                        @if (!empty($websiteSettings?->SosialLinkedIn))
+                            <a href="{{ $websiteSettings->SosialLinkedIn }}" target="_blank" rel="noopener noreferrer"
+                                aria-label="LinkedIn"
                                 class="w-8 h-8 bg-brand-900 hover:bg-brand-800 rounded-lg flex items-center justify-center transition-colors">
                                 <i class="fa-brands fa-linkedin-in text-sm"></i>
                             </a>
                         @endif
-                        @if (!empty($websiteSettings->SosialYoutube))
-                            <a href="{{ $websiteSettings->SosialYoutube }}" target="_blank"
+                        @if (!empty($websiteSettings?->SosialYoutube))
+                            <a href="{{ $websiteSettings->SosialYoutube }}" target="_blank" rel="noopener noreferrer"
+                                aria-label="YouTube"
                                 class="w-8 h-8 bg-brand-900 hover:bg-brand-800 rounded-lg flex items-center justify-center transition-colors">
                                 <i class="fa-brands fa-youtube text-sm"></i>
+                            </a>
+                        @endif
+                        @if (!empty($websiteSettings?->SosialTwitter))
+                            <a href="{{ $websiteSettings->SosialTwitter }}" target="_blank" rel="noopener noreferrer"
+                                aria-label="Twitter / X"
+                                class="w-8 h-8 bg-brand-900 hover:bg-brand-800 rounded-lg flex items-center justify-center transition-colors">
+                                <i class="fa-brands fa-x-twitter text-sm"></i>
+                            </a>
+                        @endif
+                        @if (!empty($websiteSettings?->SosialTiktok))
+                            <a href="{{ $websiteSettings->SosialTiktok }}" target="_blank" rel="noopener noreferrer"
+                                aria-label="TikTok"
+                                class="w-8 h-8 bg-brand-900 hover:bg-brand-800 rounded-lg flex items-center justify-center transition-colors">
+                                <i class="fa-brands fa-tiktok text-sm"></i>
                             </a>
                         @endif
                     </div>
@@ -824,38 +849,81 @@
                 <!-- Company Links -->
                 <div class="lg:col-span-2">
                     <h3 class="text-base font-bold mb-4">{{ __('Company') }}</h3>
+                    @php
+                        $footerMenus = \App\Models\Menu::where('StatusAktif', true)
+                            ->where('TampilkanDiFooter', true)
+                            ->with('translations')
+                            ->orderBy('Urutan', 'asc')
+                            ->get();
+                    @endphp
                     <ul class="space-y-2.5">
-                        <li><a href="{{ url('about') }}"
-                                class="text-slate-400 hover:text-white transition-colors text-sm">{{ __('About Us') }}</a>
-                        </li>
-                        <li><a href="{{ url('career') }}"
-                                class="text-slate-400 hover:text-white transition-colors text-sm">{{ __('Career') }}</a>
-                        </li>
-                        <li><a href="{{ url('news') }}"
-                                class="text-slate-400 hover:text-white transition-colors text-sm">{{ __('News') }}</a>
-                        </li>
-                        <li><a href="{{ url('contact') }}"
-                                class="text-slate-400 hover:text-white transition-colors text-sm">{{ __('Contact Us') }}</a>
-                        </li>
+                        @if ($footerMenus->isNotEmpty())
+                            @foreach ($footerMenus as $footerMenu)
+                                @php
+                                    $fmTranslation = $footerMenu->translations->firstWhere('Locale', $currentLocale);
+                                    $fmName = $fmTranslation && !empty($fmTranslation->NamaMenu) ? $fmTranslation->NamaMenu : $footerMenu->NamaMenu;
+                                @endphp
+                                <li>
+                                    <a href="{{ $footerMenu->link }}" target="{{ $footerMenu->Target ?? '_self' }}"
+                                        class="text-slate-400 hover:text-white transition-colors text-sm">
+                                        {{ $fmName }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        @else
+                            <li><a href="{{ route('frontend.about-us', ['locale' => $currentLocale]) }}"
+                                    class="text-slate-400 hover:text-white transition-colors text-sm">{{ __('About Us') }}</a>
+                            </li>
+                            <li><a href="{{ route('frontend.career', ['locale' => $currentLocale]) }}"
+                                    class="text-slate-400 hover:text-white transition-colors text-sm">{{ __('Career') }}</a>
+                            </li>
+                            <li><a href="{{ route('frontend.news', ['locale' => $currentLocale]) }}"
+                                    class="text-slate-400 hover:text-white transition-colors text-sm">{{ __('News') }}</a>
+                            </li>
+                            <li><a href="{{ route('frontend.contact.index', ['locale' => $currentLocale]) }}"
+                                    class="text-slate-400 hover:text-white transition-colors text-sm">{{ __('Contact Us') }}</a>
+                            </li>
+                        @endif
                     </ul>
                 </div>
 
                 <!-- Solutions Links -->
                 <div class="lg:col-span-2">
                     <h3 class="text-base font-bold mb-4">{{ __('Solutions') }}</h3>
+                    @php
+                        $footerSolusi = !empty($halamanSolusi) && $halamanSolusi->isNotEmpty()
+                            ? $halamanSolusi->filter(fn($item) => $item->IsPublished ?? true)
+                            : \App\Models\HalamanSolusi::with('translations')->where(function($q) {
+                                $q->where('IsPublished', true)->orWhereNull('IsPublished');
+                            })->get();
+                    @endphp
                     <ul class="space-y-2.5">
-                        <li><a href="#"
-                                class="text-slate-400 hover:text-white transition-colors text-sm">{{ __('Identity') }}</a>
-                        </li>
-                        <li><a href="#"
-                                class="text-slate-400 hover:text-white transition-colors text-sm">{{ __('Payment') }}</a>
-                        </li>
-                        <li><a href="#"
-                                class="text-slate-400 hover:text-white transition-colors text-sm">{{ __('Brand Protection') }}</a>
-                        </li>
-                        <li><a href="#"
-                                class="text-slate-400 hover:text-white transition-colors text-sm">{{ __('Commercial Printing') }}</a>
-                        </li>
+                        @forelse ($footerSolusi as $solusiItem)
+                            @php
+                                $sTrans = $solusiItem->translations ? $solusiItem->translations->firstWhere('Locale', $currentLocale) : null;
+                                $sJudul = $sTrans && !empty($sTrans->Judul) ? $sTrans->Judul : $solusiItem->Judul;
+                                $sSlug = !empty($solusiItem->Slug) ? $solusiItem->Slug : $solusiItem->id;
+                            @endphp
+                            <li>
+                                <a href="{{ route('halaman-solusi.show', ['locale' => $currentLocale, 'id' => $sSlug]) }}"
+                                    class="text-slate-400 hover:text-white transition-colors text-sm">
+                                    {{ $sJudul }}
+                                </a>
+                            </li>
+                        @empty
+                            <li><a href="#"
+                                    class="text-slate-400 hover:text-white transition-colors text-sm">{{ __('Identity') }}</a>
+                            </li>
+                            <li><a href="#"
+                                    class="text-slate-400 hover:text-white transition-colors text-sm">{{ __('Payment') }}</a>
+                            </li>
+                            <li><a href="#"
+                                    class="text-slate-400 hover:text-white transition-colors text-sm">{{ __('Brand Protection') }}</a>
+                            </li>
+                            <li><a href="#"
+                                    class="text-slate-400 hover:text-white transition-colors text-sm">{{ __('Commercial Printing') }}</a>
+                            </li>
+                        @endforelse
                     </ul>
                 </div>
 
@@ -863,15 +931,43 @@
                 <div class="lg:col-span-5">
                     <h3 class="text-base font-bold mb-4">{{ __('Head Office') }}</h3>
                     <div class="space-y-3 text-slate-400 text-sm">
-                        <div>
-                            <p class="mb-1">Jalan Raya Betro Nomor 21,<br>Sedati, Sidoarjo, Surabaya 61253 Indonesia
-                            </p>
-                            <p class="text-slate-500">{{ __('Phone') }} +62 31 8910919 (Hunting)</p>
-                        </div>
-                        <div class="pt-2 border-t border-slate-800">
-                            <p class="mb-1">Jalan Raya Lingkar Timur Km 1,<br>Desa Banjarsari, Buduran,
-                                Sidoarjo<br>Surabaya 61252 Indonesia</p>
-                        </div>
+                        @if (!empty($websiteSettings) && (!empty($websiteSettings->AlamatKantor) || !empty($websiteSettings->NomorTelepon)))
+                            <div>
+                                @if (!empty($websiteSettings->AlamatKantor))
+                                    <p class="mb-1 leading-relaxed whitespace-pre-line">{!! nl2br(e($websiteSettings->AlamatKantor)) !!}</p>
+                                @endif
+                                @if (!empty($websiteSettings->NomorTelepon))
+                                    <p class="text-slate-400">
+                                        <span class="text-slate-500">{{ __('Phone') }}</span> 
+                                        <a href="tel:{{ preg_replace('/[^0-9+]/', '', $websiteSettings->NomorTelepon) }}" class="hover:text-white transition-colors">
+                                            {{ $websiteSettings->NomorTelepon }}
+                                        </a>
+                                    </p>
+                                @endif
+                                @if (!empty($websiteSettings->NomorWhatsApp))
+                                    <p class="text-slate-400">
+                                        <span class="text-slate-500">WhatsApp:</span> 
+                                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $websiteSettings->NomorWhatsApp) }}" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">
+                                            {{ $websiteSettings->NomorWhatsApp }}
+                                        </a>
+                                    </p>
+                                @endif
+                                @if (!empty($websiteSettings->AlamatEmail))
+                                    <p class="text-slate-400">
+                                        <span class="text-slate-500">Email:</span> 
+                                        <a href="mailto:{{ $websiteSettings->AlamatEmail }}" class="hover:text-white transition-colors">
+                                            {{ $websiteSettings->AlamatEmail }}
+                                        </a>
+                                    </p>
+                                @endif
+                            </div>
+                        @else
+                            <div>
+                                <p class="mb-1">Jalan Raya Betro Nomor 21,<br>Sedati, Sidoarjo, Surabaya 61253 Indonesia
+                                </p>
+                                <p class="text-slate-500">{{ __('Phone') }} +62 31 8910919 (Hunting)</p>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -880,16 +976,29 @@
             <div class="border-t border-slate-800 mt-12 pt-8">
                 <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                     <p class="text-slate-500 text-xs">
-                        © {{ date('Y') }} PT Jasuindo Tiga Perkasa Tbk. {{ __('All rights reserved') }}
+                        @if (!empty($websiteSettings?->TeksCopyright))
+                            {{ $websiteSettings->TeksCopyright }}
+                        @else
+                            © {{ date('Y') }} {{ $websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk' }}. {{ __('All rights reserved') }}
+                        @endif
                     </p>
-                    <div class="flex space-x-6 text-xs">
-                        <a href="http://cms-compro.test/id/syarat-ketentuan"
+                    <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs">
+                        @php
+                            $termsUrl = !empty($websiteSettings?->TautanSyaratKetentuan)
+                                ? $websiteSettings->TautanSyaratKetentuan
+                                : route('static-pages.show', ['locale' => $currentLocale, 'slug' => 'syarat-ketentuan']);
+                            $privacyUrl = !empty($websiteSettings?->TautanKebijakanPrivasi)
+                                ? $websiteSettings->TautanKebijakanPrivasi
+                                : route('static-pages.show', ['locale' => $currentLocale, 'slug' => 'kebijakan-privasi']);
+                            $faqUrl = route('static-pages.show', ['locale' => $currentLocale, 'slug' => 'faq']);
+                        @endphp
+                        <a href="{{ $termsUrl }}"
                             class="text-slate-500 hover:text-white transition-colors">{{ __('Terms & Conditions') }}</a>
-                        <a href="http://cms-compro.test/id/kebijakan-privasi"
+                        <a href="{{ $privacyUrl }}"
                             class="text-slate-500 hover:text-white transition-colors">{{ __('Privacy Policy') }}</a>
-                        <a href="http://cms-compro.test/id/faq"
+                        <a href="{{ $faqUrl }}"
                             class="text-slate-500 hover:text-white transition-colors">{{ __('Cookies') }}</a>
-                        <a href="{{ route('frontend.sitemap') }}"
+                        <a href="{{ route('frontend.sitemap', ['locale' => $currentLocale]) }}"
                             class="text-slate-500 hover:text-white transition-colors">
                             {{ __('Sitemap') }}
                         </a>

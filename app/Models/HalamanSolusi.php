@@ -41,4 +41,16 @@ class HalamanSolusi extends Model
     {
         return $this->hasMany(HalamanSolusiDetail::class, 'HalamanSolusiId');
     }
+
+    protected static function booted(): void
+    {
+        static::saved(function () {
+            \Illuminate\Support\Facades\Cache::forget('halaman_solusi');
+        });
+
+        static::deleted(function () {
+            \Illuminate\Support\Facades\Cache::forget('halaman_solusi');
+        });
+    }
 }
+

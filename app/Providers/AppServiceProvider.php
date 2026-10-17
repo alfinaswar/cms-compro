@@ -28,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
             }));
 
             View::share('halamanSolusi', Cache::remember('halaman_solusi', 3600, function () {
-                return \App\Models\HalamanSolusi::get();
+                return \App\Models\HalamanSolusi::with('translations')->get();
             }));
 
             View::share('heroSliders', Cache::remember('hero_sliders', 3600, function () {
