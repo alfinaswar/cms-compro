@@ -315,15 +315,33 @@
                             }
 
                             // 3. Cek Active State (termasuk jika salah satu child-nya aktif)
+                            $currentPath = trim(request()->path(), '/');
+                            $pathWithoutLocale = implode('/', array_slice(explode('/', $currentPath), 1));
+                            $pathWithSlash = $pathWithoutLocale . '/';
+
+                            // Helper: cocokkan path URL menu dengan path halaman saat ini
+                            // (mendukung trailing slash dari CustomUrlGenerator & prefix locale)
+                            $matchUrl = function ($url) use ($pathWithoutLocale, $pathWithSlash) {
+                                if (empty($url) || $url === '#') return false;
+                                if (preg_match('#^(https?:)?//#i', $url)) {
+                                    $url = preg_replace('#^https?://[^/]+#i', '', $url);
+                                }
+                                $u = strtolower(trim(parse_url($url, PHP_URL_PATH) ?? '', '/'));
+                                $cur1 = strtolower($pathWithoutLocale);
+                                $cur2 = strtolower($pathWithSlash);
+                                if ($u === '' || $u === '/') {
+                                    return $cur1 === '' || $cur1 === 'id' || $cur1 === 'en';
+                                }
+                                return $u === $cur1 || $u === $cur2 || str_starts_with($cur1, $u . '/');
+                            };
+
                             if ($menu->JenisLink === 'route' && !empty($menu->RouteName)) {
                                 $isActive =
                                     request()->routeIs($menu->RouteName) || request()->routeIs($menu->RouteName . '.*');
                             } else {
-                                $currentPath = trim(request()->path(), '/');
-                                $pathWithoutLocale = implode('/', array_slice(explode('/', $currentPath), 1));
                                 $menuPath = trim($menu->Url ?? '', '/');
-                                $isActive =
-                                    $pathWithoutLocale === $menuPath || ($menuPath === '' && $pathWithoutLocale === '');
+                                $isActive = $matchUrl($menu->Url) ||
+                                    ($menuPath === '' && $pathWithoutLocale === '');
                             }
 
                             // Jika menu punya children, periksa apakah ada child yang aktif
@@ -337,15 +355,15 @@
                                             $isActive = true;
                                             break;
                                         }
-                                    } else {
-                                        $childPath = trim($childCheck->Url ?? '', '/');
-                                        if (!empty($childPath) && $pathWithoutLocale === $childPath) {
-                                            $isActive = true;
-                                            break;
-                                        }
+                                    } elseif ($matchUrl($childCheck->Url)) {
+                                        $isActive = true;
+                                        break;
                                     }
                                 }
                             }
+
+                            // 4. Underline aktif hanya saat navbar sudah sticky/scrolled (putih saat transparent)
+                            $activeUnderlineClass = $isActive ? 'nav-active-item after:w-full' : 'after:w-0';
                         @endphp
 
                         @if ($hasChildren)
