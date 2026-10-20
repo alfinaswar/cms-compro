@@ -34,4 +34,42 @@ class HalamanSolusiSubpageItem extends Model
     {
         return $this->belongsTo(HalamanSolusiSubpage::class, 'HalamanSolusiSubpageId');
     }
+
+    /**
+     * Relasi ke tabel terjemahan item
+     */
+    public function translations()
+    {
+        return $this->hasMany(HalamanSolusiSubpageItemTranslation::class, 'HalamanSolusiSubpageItemId');
+    }
+
+    /**
+     * Ambil terjemahan berdasarkan bahasa: locale aktif -> terjemahan 'id' -> objek kosong
+     */
+    public function translate($locale = null)
+    {
+        $locale = $locale ?: app()->getLocale();
+        $trans = $this->translations->firstWhere('Locale', $locale);
+
+        // Fallback ke terjemahan Indonesia jika bahasa diminta tidak tersedia
+        if (!$trans && $locale !== 'id') {
+            $trans = $this->translations->firstWhere('Locale', 'id');
+        }
+
+        return $trans ?: new HalamanSolusiSubpageItemTranslation();
+    }
+
+    /**
+     * Nilai field sesuai bahasa dengan fallback ke kolom utama (berisi konten Indonesia)
+     */
+    public function t($field, $locale = null)
+    {
+        $value = $this->translate($locale)->{$field} ?? null;
+
+        if ($value === null || $value === '') {
+            return $this->{$field} ?? null;
+        }
+
+        return $value;
+    }
 }

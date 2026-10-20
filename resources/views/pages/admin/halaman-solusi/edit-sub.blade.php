@@ -1,6 +1,22 @@
 @extends('layouts.app')
 
 @section('content')
+    @php
+        // Helper nilai terjemahan: ambil nilai field per locale untuk form.
+        // Locale 'id' fallback ke kolom utama (data lama yang tersimpan tanpa terjemahan).
+        $tv = function ($model, $locale, $field) {
+            if (!$model) {
+                return null;
+            }
+            $trans = $model->translations->firstWhere('Locale', $locale);
+            $value = $trans->{$field} ?? null;
+            if ($locale === 'id' && ($value === null || $value === '')) {
+                $value = $model->{$field} ?? null;
+            }
+            return $value;
+        };
+    @endphp
+
     @push('styles')
         <link rel="stylesheet" href="{{ asset('assets/plugins/summernote/summernote-bs4.css') }}">
         <style>
@@ -174,25 +190,53 @@
                         <div class="tab-pane fade show active" id="tab-hero">
                             <div class="row">
                                 <div class="col-md-8">
-                                    <div class="form-group">
-                                        <label>Judul Halaman <span class="text-danger">*</span></label>
-                                        <input type="text" name="Judul" class="form-control"
-                                            value="{{ old('Judul', $subpage->Judul) }}" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Sub Judul</label>
-                                        <input type="text" name="SubJudul" class="form-control"
-                                            value="{{ old('SubJudul', $subpage->SubJudul) }}">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Deskripsi Hero</label>
-                                        <textarea name="Deskripsi" class="form-control" rows="3">{{ old('Deskripsi', $subpage->Deskripsi) }}</textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Konten Utama (Rich Text)</label>
-                                        <textarea name="Konten" class="form-control summernote" rows="5">{{ old('Konten', $subpage->Konten) }}</textarea>
-                                        <small class="text-muted">Opsional. Untuk konten tambahan di luar
-                                            section-section.</small>
+                                    {{-- Tab bahasa (ID/EN) untuk konten hero --}}
+                                    <ul class="nav nav-tabs mb-3" id="heroLangTabs" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" data-toggle="tab" href="#hero-id" role="tab">
+                                                <i class="fa fa-flag mr-1"></i> Bahasa Indonesia <span class="text-danger">*</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#hero-en" role="tab">
+                                                <i class="fa fa-globe mr-1"></i> English
+                                            </a>
+                                        </li>
+                                    </ul>
+
+                                    <div class="tab-content">
+                                        @foreach (['id' => 'Bahasa Indonesia', 'en' => 'English'] as $langCode => $langLabel)
+                                            <div class="tab-pane fade {{ $langCode === 'id' ? 'show active' : '' }}" id="hero-{{ $langCode }}" role="tabpanel">
+                                                <div class="form-group">
+                                                    <label>Judul Halaman @if ($langCode === 'id')<span class="text-danger">*</span>@endif</label>
+                                                    <input type="text" name="translations[{{ $langCode }}][Judul]"
+                                                        class="form-control @error('translations.'.$langCode.'.Judul') is-invalid @enderror"
+                                                        value="{{ old('translations.'.$langCode.'.Judul', $tv($subpage, $langCode, 'Judul')) }}"
+                                                        placeholder="Judul halaman ({{ $langLabel }})" @if ($langCode === 'id') required @endif>
+                                                    @error('translations.'.$langCode.'.Judul')
+                                                        <span class="invalid-feedback d-block mt-1">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Sub Judul</label>
+                                                    <input type="text" name="translations[{{ $langCode }}][SubJudul]" class="form-control"
+                                                        value="{{ old('translations.'.$langCode.'.SubJudul', $tv($subpage, $langCode, 'SubJudul')) }}"
+                                                        placeholder="Sub judul hero ({{ $langLabel }})">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Deskripsi Hero</label>
+                                                    <textarea name="translations[{{ $langCode }}][Deskripsi]" class="form-control" rows="3"
+                                                        placeholder="Deskripsi hero ({{ $langLabel }})">{{ old('translations.'.$langCode.'.Deskripsi', $tv($subpage, $langCode, 'Deskripsi')) }}</textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Konten Utama (Rich Text)</label>
+                                                    <textarea name="translations[{{ $langCode }}][Konten]" id="summernote-hero-{{ $langCode }}"
+                                                        class="form-control summernote" rows="5">{{ old('translations.'.$langCode.'.Konten', $tv($subpage, $langCode, 'Konten')) }}</textarea>
+                                                    <small class="text-muted">Opsional. Untuk konten tambahan di luar
+                                                        section-section.</small>
+                                                </div>
+                                            </div>
+                                        @endforeach
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -249,23 +293,7 @@
                             </div>
 
                             <div class="section-divider">Sub Judul, Judul & Deskripsi</div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <label>Sub Judul (Badge)</label>
-                                    <input type="text" name="Sec1SubJudul" class="form-control form-control-sm"
-                                        value="{{ old('Sec1SubJudul', $subpage->Sec1SubJudul) }}" placeholder="Label badge">
-                                </div>
-                                <div class="col-md-8">
-                                    <label>Judul Section</label>
-                                    <input type="text" name="Sec1Judul" class="form-control form-control-sm"
-                                        value="{{ old('Sec1Judul', $subpage->Sec1Judul) }}" placeholder="Judul section">
-                                </div>
-                                <div class="col-12 mt-2">
-                                    <label>Deskripsi</label>
-                                    <textarea name="Sec1Deskripsi" class="form-control form-control-sm"
-                                        rows="2">{{ old('Sec1Deskripsi', $subpage->Sec1Deskripsi) }}</textarea>
-                                </div>
-                            </div>
+                            @include('pages.admin.halaman-solusi.partials.subpage.section-header-tabs', ['prefix' => 'Sec1', 'paneBase' => 'sec1', 'rows' => 2])
 
                             <div class="section-divider">
                                 Detail Komponen (Gambar, Judul, Sub Judul & Poin Keunggulan)
@@ -294,23 +322,7 @@
                             </div>
 
                             <div class="section-divider">Sub Judul, Judul & Deskripsi</div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <label>Sub Judul (Badge)</label>
-                                    <input type="text" name="Sec2SubJudul" class="form-control form-control-sm"
-                                        value="{{ old('Sec2SubJudul', $subpage->Sec2SubJudul) }}">
-                                </div>
-                                <div class="col-md-8">
-                                    <label>Judul Section</label>
-                                    <input type="text" name="Sec2Judul" class="form-control form-control-sm"
-                                        value="{{ old('Sec2Judul', $subpage->Sec2Judul) }}">
-                                </div>
-                                <div class="col-12 mt-2">
-                                    <label>Deskripsi</label>
-                                    <textarea name="Sec2Deskripsi" class="form-control form-control-sm"
-                                        rows="3">{{ old('Sec2Deskripsi', $subpage->Sec2Deskripsi) }}</textarea>
-                                </div>
-                            </div>
+                            @include('pages.admin.halaman-solusi.partials.subpage.section-header-tabs', ['prefix' => 'Sec2', 'paneBase' => 'sec2', 'rows' => 3])
 
                             <div class="section-divider">
                                 Detail (Icon, Judul & Deskripsi)
@@ -339,23 +351,7 @@
                             </div>
 
                             <div class="section-divider">Sub Judul, Judul & Deskripsi</div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <label>Sub Judul (Badge)</label>
-                                    <input type="text" name="Sec3SubJudul" class="form-control form-control-sm"
-                                        value="{{ old('Sec3SubJudul', $subpage->Sec3SubJudul) }}">
-                                </div>
-                                <div class="col-md-8">
-                                    <label>Judul Section</label>
-                                    <input type="text" name="Sec3Judul" class="form-control form-control-sm"
-                                        value="{{ old('Sec3Judul', $subpage->Sec3Judul) }}">
-                                </div>
-                                <div class="col-12 mt-2">
-                                    <label>Deskripsi</label>
-                                    <textarea name="Sec3Deskripsi" class="form-control form-control-sm"
-                                        rows="2">{{ old('Sec3Deskripsi', $subpage->Sec3Deskripsi) }}</textarea>
-                                </div>
-                            </div>
+                            @include('pages.admin.halaman-solusi.partials.subpage.section-header-tabs', ['prefix' => 'Sec3', 'paneBase' => 'sec3', 'rows' => 2])
 
                             <div class="section-divider">
                                 Detail (Icon, Judul & Deskripsi)
@@ -383,23 +379,7 @@
                             </div>
 
                             <div class="section-divider">Sub Judul, Judul & Deskripsi</div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <label>Sub Judul (Badge)</label>
-                                    <input type="text" name="FaqSubJudul" class="form-control form-control-sm"
-                                        value="{{ old('FaqSubJudul', $subpage->FaqSubJudul) }}">
-                                </div>
-                                <div class="col-md-8">
-                                    <label>Judul Section</label>
-                                    <input type="text" name="FaqJudul" class="form-control form-control-sm"
-                                        value="{{ old('FaqJudul', $subpage->FaqJudul) }}">
-                                </div>
-                                <div class="col-12 mt-2">
-                                    <label>Deskripsi</label>
-                                    <textarea name="FaqDeskripsi" class="form-control form-control-sm"
-                                        rows="2">{{ old('FaqDeskripsi', $subpage->FaqDeskripsi) }}</textarea>
-                                </div>
-                            </div>
+                            @include('pages.admin.halaman-solusi.partials.subpage.section-header-tabs', ['prefix' => 'Faq', 'paneBase' => 'faq-head', 'rows' => 2])
 
                             <div class="section-divider">
                                 Daftar FAQ

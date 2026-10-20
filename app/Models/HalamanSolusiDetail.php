@@ -35,6 +35,28 @@ class HalamanSolusiDetail extends Model
     }
 
     /**
+     * Nilai field sesuai bahasa: terjemahan locale -> terjemahan 'id' -> kolom utama
+     */
+    public function t($field, $locale = null)
+    {
+        $locale = $locale ?: app()->getLocale();
+        $trans = $this->translations->firstWhere('Locale', $locale);
+
+        // Fallback ke terjemahan Indonesia jika bahasa diminta tidak tersedia
+        if (!$trans && $locale !== 'id') {
+            $trans = $this->translations->firstWhere('Locale', 'id');
+        }
+
+        $value = $trans->{$field} ?? null;
+
+        if ($value === null || $value === '') {
+            return $this->{$field} ?? null;
+        }
+
+        return $value;
+    }
+
+    /**
      * Relasi balik ke model utama solusi
      */
     public function solusi()

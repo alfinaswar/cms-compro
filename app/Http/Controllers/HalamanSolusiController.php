@@ -212,7 +212,7 @@ class HalamanSolusiController extends Controller
             ->firstOrFail();
 
         // Cari subpage yang dipublikasikan milik detail pada solusi induk ini
-        $subpage = HalamanSolusiSubpage::with(['items', 'detail.translations'])
+        $subpage = HalamanSolusiSubpage::with(['translations', 'items.translations', 'detail.translations'])
             ->where('Slug', $subSlug)
             ->where('IsPublished', true)
             ->whereHas('detail', function ($q) use ($halamanSolusi) {
@@ -240,7 +240,7 @@ class HalamanSolusiController extends Controller
         $detail = HalamanSolusiDetail::with('translations')->findOrFail($id);
 
         // Pastikan sub-halaman sudah ada (dibuat saat pertama kali dibuka)
-        $subpage = HalamanSolusiSubpage::with('items')->firstOrCreate(
+        $subpage = HalamanSolusiSubpage::with(['translations', 'items.translations'])->firstOrCreate(
             ['HalamanSolusiDetailId' => $detail->id],
             [
                 'Judul'       => $detail->Judul,
@@ -253,7 +253,7 @@ class HalamanSolusiController extends Controller
     }
 
     /**
-     * Simpan/update konten sub-halaman solusi.
+     * Simpan/update konten sub-halaman solusi (dukung multi bahasa: Indonesia & Inggris).
      */
     public function updateSub(Request $request, $id)
     {
@@ -261,43 +261,53 @@ class HalamanSolusiController extends Controller
         $detail = HalamanSolusiDetail::findOrFail($id);
         $subpage = HalamanSolusiSubpage::firstOrNew(['HalamanSolusiDetailId' => $detail->id]);
 
-        $request->validate([
+        // Field teks subhalaman yang tersedia per bahasa (id & en)
+        $translatableFields = [
             // Hero
-            'Judul'        => 'required|string|max:255',
-            'SubJudul'     => 'nullable|string|max:255',
-            'Deskripsi'    => 'nullable|string',
-            'Konten'       => 'nullable|string',
+            'Judul', 'SubJudul', 'Deskripsi', 'Konten',
+            // Header Section 1 (Komponen)
+            'Sec1SubJudul', 'Sec1Judul', 'Sec1Deskripsi',
+            // Header Section 2 (Solusi)
+            'Sec2SubJudul', 'Sec2Judul', 'Sec2Deskripsi',
+            // Header Section 3 (Keamanan)
+            'Sec3SubJudul', 'Sec3Judul', 'Sec3Deskripsi',
+            // Header FAQ
+            'FaqSubJudul', 'FaqJudul', 'FaqDeskripsi',
+        ];
+        $longTextFields = ['Deskripsi', 'Konten', 'Sec1Deskripsi', 'Sec2Deskripsi', 'Sec3Deskripsi', 'FaqDeskripsi'];
+
+        $rules = [
+            // Field bersama (tidak per bahasa)
             'Slug'         => 'nullable|string|max:255',
             'GambarHero'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'IsPublished'  => 'nullable|in:0,1',
-            // Header Section 1 (Komponen)
-            'Sec1SubJudul' => 'nullable|string|max:255',
-            'Sec1Judul'    => 'nullable|string|max:255',
-            'Sec1Deskripsi' => 'nullable|string',
-            // Header Section 2 (Solusi)
-            'Sec2SubJudul' => 'nullable|string|max:255',
-            'Sec2Judul'    => 'nullable|string|max:255',
-            'Sec2Deskripsi' => 'nullable|string',
-            // Header Section 3 (Keamanan)
-            'Sec3SubJudul' => 'nullable|string|max:255',
-            'Sec3Judul'    => 'nullable|string|max:255',
-            'Sec3Deskripsi' => 'nullable|string',
-            // Header FAQ
-            'FaqSubJudul'  => 'nullable|string|max:255',
-            'FaqJudul'     => 'nullable|string|max:255',
-            'FaqDeskripsi' => 'nullable|string',
             // Repeater item
             'komponen'      => 'nullable|array',
             'solusi_items'  => 'nullable|array',
             'security_items' => 'nullable|array',
             'faqs'          => 'nullable|array',
-        ]);
+        ];
+        foreach (['id', 'en'] as $locale) {
+            foreach ($translatableFields as $field) {
+                $rule = in_array($field, $longTextFields) ? 'nullable|string' : 'nullable|string|max:255';
+                // Judul versi Indonesia wajib diisi
+                if ($locale === 'id' && $field === 'Judul') {
+                    $rule = 'required|string|max:255';
+                }
+                $rules["translations.$locale.$field"] = $rule;
+            }
+        }
 
-        // ===== 1. Data Hero =====
-        $subpage->Judul      = $request->Judul;
-        $subpage->SubJudul   = $request->SubJudul;
-        $subpage->Deskripsi  = $request->Deskripsi;
-        $subpage->Konten     = $request->Konten;
+        $request->validate($rules);
+
+        $trans   = $request->input('translations', []);
+        $idTrans = $trans['id'] ?? [];
+
+        // ===== 1. Data Hero (kolom utama diisi versi Indonesia sebagai fallback) =====
+        $subpage->Judul      = $idTrans['Judul'] ?? null;
+        $subpage->SubJudul   = $idTrans['SubJudul'] ?? null;
+        $subpage->Deskripsi  = $idTrans['Deskripsi'] ?? null;
+        $subpage->Konten     = $idTrans['Konten'] ?? null;
         $subpage->Slug       = $request->Slug ?: Str::slug($subpage->Judul);
         $subpage->IsPublished = $request->has('IsPublished') ? (bool)$request->IsPublished : false;
         // ===== Section headers (Section 1, 2, 3 & FAQ) =====
@@ -307,7 +317,7 @@ class HalamanSolusiController extends Controller
             'Sec3SubJudul', 'Sec3Judul', 'Sec3Deskripsi',
             'FaqSubJudul', 'FaqJudul', 'FaqDeskripsi',
         ] as $field) {
-            $subpage->$field = $request->$field;
+            $subpage->$field = $idTrans[$field] ?? null;
         }
 
         $subpage->UserUpdate = auth()->user()->name;
@@ -324,9 +334,24 @@ class HalamanSolusiController extends Controller
         }
         $subpage->save();
 
+        // ===== 1b. Terjemahan hero & header section (id & en) =====
+        foreach (['id', 'en'] as $locale) {
+            $values = [];
+            foreach ($translatableFields as $field) {
+                $values[$field] = $trans[$locale][$field] ?? null;
+            }
+            $subpage->translations()->updateOrCreate(['Locale' => $locale], $values);
+        }
+
         // ===== 2. Item repeater per section =====
-        $saveItems = function (array $rows, string $section) use ($subpage, $request) {
+        $saveItems = function (array $rows, string $section, string $inputKey) use ($subpage, $request) {
             $keepIds = [];
+
+            // Bersihkan daftar poin dari string kosong
+            $cleanList = function ($list) {
+                $list = array_map('trim', (array)($list ?? []));
+                return array_values(array_filter($list, fn ($v) => $v !== '' && $v !== null));
+            };
 
             foreach ($rows as $i => $row) {
                 // Cari item lama berdasarkan Id hidden (pastikan milik subpage & section ini)
@@ -343,20 +368,28 @@ class HalamanSolusiController extends Controller
                     $item->Section = $section;
                 }
 
-                if ($section === 'faq') {
-                    $item->Judul     = $row['Pertanyaan'] ?? null;
-                    $item->Deskripsi = $row['Jawaban'] ?? null;
-                } else {
-                    $item->Judul     = $row['Judul'] ?? null;
-                    $item->SubJudul  = $row['SubJudul'] ?? null;
-                    $item->Deskripsi = $row['Deskripsi'] ?? null;
+                // Nilai teks per bahasa (form FAQ memakai key Pertanyaan/Jawaban)
+                $rowTrans = [];
+                foreach (['id', 'en'] as $locale) {
+                    $values = $row['translations'][$locale] ?? [];
+                    if ($section === 'faq') {
+                        $values = [
+                            'Judul'     => $values['Pertanyaan'] ?? null,
+                            'Deskripsi' => $values['Jawaban'] ?? null,
+                        ];
+                    }
+                    $rowTrans[$locale] = $values;
                 }
 
+                // Kolom utama item diisi versi Indonesia sebagai fallback
+                $item->Judul     = $rowTrans['id']['Judul'] ?? null;
+                $item->SubJudul  = $rowTrans['id']['SubJudul'] ?? null;
+                $item->Deskripsi = $rowTrans['id']['Deskripsi'] ?? null;
+
                 if ($section === 'section1') {
-                    // Tipe layout + poin-poin keunggulan
+                    // Tipe layout + poin-poin keunggulan (versi Indonesia di kolom utama)
                     $item->Tipe  = ($row['Tipe'] ?? 'besar') === 'horizontal' ? 'horizontal' : 'besar';
-                    $items       = array_map('trim', (array)($row['Items'] ?? []));
-                    $item->Items = array_values(array_filter($items, fn ($v) => $v !== '' && $v !== null));
+                    $item->Items = $cleanList($rowTrans['id']['Items'] ?? []);
                 } else {
                     $item->Tipe  = null;
                     $item->Items = null;
@@ -364,8 +397,8 @@ class HalamanSolusiController extends Controller
 
                 // Upload gambar komponen (section1) / icon (section2 & 3)
                 $fileInput = $section === 'section1'
-                    ? "komponen.$i.Gambar"
-                    : ($section === 'section2' ? "solusi_items.$i.Icon" : ($section === 'section3' ? "security_items.$i.Icon" : null));
+                    ? "$inputKey.$i.Gambar"
+                    : (in_array($section, ['section2', 'section3']) ? "$inputKey.$i.Icon" : null);
 
                 if ($fileInput && $request->hasFile($fileInput)) {
                     $folder = $section === 'section1' ? 'halaman-solusi/subpage/komponen' : 'halaman-solusi/subpage/icon';
@@ -386,6 +419,20 @@ class HalamanSolusiController extends Controller
 
                 $item->SortOrder = $i;
                 $item->save();
+
+                // Terjemahan item (id & en)
+                foreach ($rowTrans as $locale => $values) {
+                    $data = [
+                        'Judul'     => $values['Judul'] ?? null,
+                        'SubJudul'  => $values['SubJudul'] ?? null,
+                        'Deskripsi' => $values['Deskripsi'] ?? null,
+                    ];
+                    if ($section === 'section1') {
+                        $data['Items'] = $cleanList($values['Items'] ?? []);
+                    }
+                    $item->translations()->updateOrCreate(['Locale' => $locale], $data);
+                }
+
                 $keepIds[] = $item->id;
             }
 
@@ -400,14 +447,15 @@ class HalamanSolusiController extends Controller
                         Storage::disk('public')->delete($old->$field);
                     }
                 }
+                $old->translations()->delete();
                 $old->delete();
             }
         };
 
-        $saveItems($request->komponen ?? [], 'section1');
-        $saveItems($request->solusi_items ?? [], 'section2');
-        $saveItems($request->security_items ?? [], 'section3');
-        $saveItems($request->faqs ?? [], 'faq');
+        $saveItems($request->komponen ?? [], 'section1', 'komponen');
+        $saveItems($request->solusi_items ?? [], 'section2', 'solusi_items');
+        $saveItems($request->security_items ?? [], 'section3', 'security_items');
+        $saveItems($request->faqs ?? [], 'faq', 'faqs');
 
         if ($detail->solusi) {
             activity()
