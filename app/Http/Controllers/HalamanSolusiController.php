@@ -26,16 +26,22 @@ class HalamanSolusiController extends Controller
 
             return DataTables::of($data)
                 ->addIndexColumn()
+                ->addColumn('Toggle', function ($row) {
+                    return '<button type="button" class="btn btn-sm btn-light border btn-detail-toggle" title="Lihat Detail">
+                            <i class="fa fa-chevron-down"></i>
+                        </button>';
+                })
                 ->addColumn('Judul', function ($row) {
                     return $row->Judul;
                 })
                 ->addColumn('Slug', function ($row) {
                     $urlId = url('/id/solusi/' . $row->Slug);
-                    $urlEn = url('/en/solusi/' . $row->Slug);
                     return '<code>' . e($row->Slug) . '</code>
-                        <div class="mt-1 small">
-                            <a href="' . $urlId . '" target="_blank" class="badge badge-primary mr-1" title="Buka Versi ID"><i class="fa fa-external-link-alt mr-1"></i>/id/solusi/' . e($row->Slug) . '</a>
-                        </div>';
+                    <div class="mt-1 small">
+                        <a href="' . $urlId . '" target="_blank" class="badge badge-primary mr-1" title="Buka Versi ID">
+                            <i class="fa fa-external-link-alt mr-1"></i>/id/solusi/' . e($row->Slug) . '
+                        </a>
+                    </div>';
                 })
                 ->addColumn('Konten', function ($row) {
                     return Str::limit(strip_tags($row->Konten), 100);
@@ -44,6 +50,15 @@ class HalamanSolusiController extends Controller
                     return $row->IsPublished
                         ? '<span class="badge badge-success">Publikasi</span>'
                         : '<span class="badge badge-secondary">Draft</span>';
+                })
+                ->addColumn('DetailHtml', function ($row) {
+                    return view('pages.admin.halaman-solusi.partials.detail-row', [
+                        'row' => $row,
+                        'kontenFull' => Str::limit(strip_tags($row->Konten), 800, '...'),
+                        'editUrl' => route('halaman-solusi.edit', encrypt($row->id)),
+                        'urlId' => url('/id/solusi/' . $row->Slug),
+                        'urlEn' => url('/en/solusi/' . $row->Slug),
+                    ])->render();
                 })
                 ->addColumn('action', function ($row) {
                     $encryptedId = encrypt($row->id);
@@ -60,7 +75,7 @@ class HalamanSolusiController extends Controller
                     $btn .= '</div>';
                     return $btn;
                 })
-                ->rawColumns(['Slug', 'Status', 'action'])
+                ->rawColumns(['Toggle', 'Slug', 'Status', 'action', 'DetailHtml']) // ✅ FIX DI SINI
                 ->make(true);
         }
 
@@ -193,6 +208,12 @@ class HalamanSolusiController extends Controller
         $data = HalamanSolusi::with('details')->find($id);
         // dd($data);
         return view('pages.admin.halaman-solusi.edit', compact('data'));
+    }
+    public function editSub($id)
+    {
+        $id = decrypt($id);
+        $detail = HalamanSolusiDetail::with('translations')->findOrFail($id);
+        return view('pages.admin.halaman-solusi.edit-sub', compact('detail'));
     }
 
     /**

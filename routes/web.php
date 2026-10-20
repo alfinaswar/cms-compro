@@ -150,7 +150,8 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         // Route::get('/landing-page/solusi/show/{id}/', [HalamanSolusiController::class, 'show'])->name('halaman-solusi.admin.show');
         Route::put('/landing-page/solusi/update/{id}/', [HalamanSolusiController::class, 'update'])->name('halaman-solusi.update');
         Route::delete('/landing-page/solusi/delete/{id}/', [HalamanSolusiController::class, 'destroy'])->name('halaman-solusi.destroy');
-
+        Route::get('/landing-page/solusi/edit-sub/{id}/', [HalamanSolusiController::class, 'editSub'])->name('halaman-solusi.edit-sub');
+        Route::get('/landing-page/solusi-detail/edit/{id}/', [HalamanSolusiController::class, 'editSub'])->name('halaman-solusi.detail.edit');
         // Routes Slider
         Route::get('/landing-page/hero-slider/', [HeroSliderController::class, 'index'])->name('hero-slider.index');
         Route::get('/landing-page/hero-slider/create/', [HeroSliderController::class, 'create'])->name('hero-slider.create');
