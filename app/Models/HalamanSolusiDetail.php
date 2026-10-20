@@ -41,4 +41,12 @@ class HalamanSolusiDetail extends Model
     {
         return $this->belongsTo(HalamanSolusi::class, 'HalamanSolusiId');
     }
+
+    /**
+     * Relasi 1:1 ke sub-halaman (konten detail subhalaman)
+     */
+    public function subpage()
+    {
+        return $this->hasOne(HalamanSolusiSubpage::class, 'HalamanSolusiDetailId', 'id');
+    }
 }

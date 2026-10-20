@@ -72,6 +72,7 @@ Route::group(['prefix' => '{locale}', 'where' => ['locale' => 'id|en']], functio
     Route::get('/contact-us/', [ContactUsController::class, 'index'])->name('frontend.contact.index');
     Route::post('/store-contact-us/', [ContactUsController::class, 'store'])->name('frontend.contact.store');
     Route::get('/solusi/{id}/', [HalamanSolusiController::class, 'show'])->name('halaman-solusi.show');
+    Route::get('/solusi/{parent}/{sub}/', [HalamanSolusiController::class, 'showSub'])->name('halaman-solusi.sub-show');
     Route::get('/{slug}/', [StaticPageController::class, 'show'])
         ->name('static-pages.show')
         ->where('slug', 'kebijakan-privasi|syarat-ketentuan|tentang-kami|faq');
@@ -152,6 +153,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         Route::delete('/landing-page/solusi/delete/{id}/', [HalamanSolusiController::class, 'destroy'])->name('halaman-solusi.destroy');
         Route::get('/landing-page/solusi/edit-sub/{id}/', [HalamanSolusiController::class, 'editSub'])->name('halaman-solusi.edit-sub');
         Route::get('/landing-page/solusi-detail/edit/{id}/', [HalamanSolusiController::class, 'editSub'])->name('halaman-solusi.detail.edit');
+        Route::put('/landing-page/solusi-detail/update/{id}/', [HalamanSolusiController::class, 'updateSub'])->name('halaman-solusi.detail.update');
         // Routes Slider
         Route::get('/landing-page/hero-slider/', [HeroSliderController::class, 'index'])->name('hero-slider.index');
         Route::get('/landing-page/hero-slider/create/', [HeroSliderController::class, 'create'])->name('hero-slider.create');

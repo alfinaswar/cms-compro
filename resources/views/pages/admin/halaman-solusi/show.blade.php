@@ -280,10 +280,15 @@
                             $detailJudul = $tr($detail, 'Judul');
                             $detailKeterangan = $tr($detail, 'Keterangan');
                             $number = str_pad($index + 1, 2, '0', STR_PAD_LEFT);
+                            // Kartu detail dengan subhalaman publikasi dapat diklik menuju halaman sub-solusi
+                            $hasSub = $detail->subpage && $detail->subpage->IsPublished && filled($detail->subpage->Slug);
+                            $subUrl = $hasSub
+                                ? route('halaman-solusi.sub-show', ['locale' => $locale, 'parent' => $halamanSolusi->Slug, 'sub' => $detail->subpage->Slug])
+                                : null;
+                            $cardTag = $hasSub ? 'a' : 'div';
                         @endphp
 
-                        <article
-                            class="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-xl hover:border-brand-300 transition-all duration-300 group flex flex-col">
+                        <{{ $cardTag }} @if ($hasSub) href="{{ $subUrl }}" @endif class="block h-full bg-white rounded-2xl border border-slate-200 overflow-hidden @if ($hasSub) hover:shadow-xl hover:-translate-y-1 @else hover:shadow-xl @endif hover:border-brand-300 transition-all duration-300 group flex flex-col">
                             <!-- Image / Icon Placeholder -->
                             <div
                                 class="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-slate-100 to-slate-50">
@@ -332,8 +337,18 @@
                                 <div class="detail-text flex-grow">
                                     {!! $detailKeterangan !!}
                                 </div>
+
+                                @if ($hasSub)
+                                    <div class="mt-5 pt-5 border-t border-slate-100">
+                                        <span
+                                            class="inline-flex items-center gap-2 text-sm font-bold text-brand-600 group-hover:text-brand-700 transition-colors">
+                                            <i class="fa-solid fa-circle-arrow-right"></i>
+                                            {{ __('Lihat Detail') }}
+                                        </span>
+                                    </div>
+                                @endif
                             </div>
-                        </article>
+                        </{{ $cardTag }}>
                     @endforeach
                 </div>
             </div>

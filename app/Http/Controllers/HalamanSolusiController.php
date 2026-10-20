@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\HalamanSolusi;
 use App\Models\HalamanSolusiDetail;
+use App\Models\HalamanSolusiSubpage;
+use App\Models\HalamanSolusiSubpageItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\DataTables;
@@ -15,7 +17,7 @@ class HalamanSolusiController extends Controller
     {
         // $this->middleware('permission:solusi.view')->only(['index', 'show']);
         $this->middleware('permission:solusi.create')->only(['create', 'store']);
-        $this->middleware('permission:solusi.edit')->only(['edit', 'update']);
+        $this->middleware('permission:solusi.edit')->only(['edit', 'update', 'editSub', 'updateSub']);
         $this->middleware('permission:solusi.delete')->only(['destroy']);
     }
 
@@ -191,12 +193,35 @@ class HalamanSolusiController extends Controller
     public function show($slug, $id)
     {
         // dd($id);
-        $halamanSolusi = HalamanSolusi::with(['details.translations', 'translations'])
+        $halamanSolusi = HalamanSolusi::with(['details.translations', 'details.subpage', 'translations'])
             ->where('Slug', $id)
             ->orWhere('id', is_numeric($id) ? $id : null)
             ->firstOrFail();
         // dd($halamanSolusi);
         return view('pages.admin.halaman-solusi.show', compact('halamanSolusi'));
+    }
+
+    /**
+     * Display a public sub-solution page (dari button "Subhalaman").
+     */
+    public function showSub($locale, $parentSlug, $subSlug)
+    {
+        $halamanSolusi = HalamanSolusi::with(['details.translations', 'translations'])
+            ->where('Slug', $parentSlug)
+            ->orWhere('id', is_numeric($parentSlug) ? $parentSlug : null)
+            ->firstOrFail();
+
+        // Cari subpage yang dipublikasikan milik detail pada solusi induk ini
+        $subpage = HalamanSolusiSubpage::with(['items', 'detail.translations'])
+            ->where('Slug', $subSlug)
+            ->where('IsPublished', true)
+            ->whereHas('detail', function ($q) use ($halamanSolusi) {
+                $q->where('HalamanSolusiId', $halamanSolusi->id)
+                    ->whereNull('halaman_solusi_details.deleted_at');
+            })
+            ->firstOrFail();
+
+        return view('pages.admin.halaman-solusi.show-sub', compact('halamanSolusi', 'subpage'));
     }
 
     /**
@@ -213,7 +238,192 @@ class HalamanSolusiController extends Controller
     {
         $id = decrypt($id);
         $detail = HalamanSolusiDetail::with('translations')->findOrFail($id);
-        return view('pages.admin.halaman-solusi.edit-sub', compact('detail'));
+
+        // Pastikan sub-halaman sudah ada (dibuat saat pertama kali dibuka)
+        $subpage = HalamanSolusiSubpage::with('items')->firstOrCreate(
+            ['HalamanSolusiDetailId' => $detail->id],
+            [
+                'Judul'       => $detail->Judul,
+                'Slug'        => $detail->Judul ? Str::slug($detail->Judul) : null,
+                'IsPublished' => true,
+            ]
+        );
+
+        return view('pages.admin.halaman-solusi.edit-sub', compact('detail', 'subpage'));
+    }
+
+    /**
+     * Simpan/update konten sub-halaman solusi.
+     */
+    public function updateSub(Request $request, $id)
+    {
+        $id = decrypt($id);
+        $detail = HalamanSolusiDetail::findOrFail($id);
+        $subpage = HalamanSolusiSubpage::firstOrNew(['HalamanSolusiDetailId' => $detail->id]);
+
+        $request->validate([
+            // Hero
+            'Judul'        => 'required|string|max:255',
+            'SubJudul'     => 'nullable|string|max:255',
+            'Deskripsi'    => 'nullable|string',
+            'Konten'       => 'nullable|string',
+            'Slug'         => 'nullable|string|max:255',
+            'GambarHero'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'IsPublished'  => 'nullable|in:0,1',
+            // Header Section 1 (Komponen)
+            'Sec1SubJudul' => 'nullable|string|max:255',
+            'Sec1Judul'    => 'nullable|string|max:255',
+            'Sec1Deskripsi' => 'nullable|string',
+            // Header Section 2 (Solusi)
+            'Sec2SubJudul' => 'nullable|string|max:255',
+            'Sec2Judul'    => 'nullable|string|max:255',
+            'Sec2Deskripsi' => 'nullable|string',
+            // Header Section 3 (Keamanan)
+            'Sec3SubJudul' => 'nullable|string|max:255',
+            'Sec3Judul'    => 'nullable|string|max:255',
+            'Sec3Deskripsi' => 'nullable|string',
+            // Header FAQ
+            'FaqSubJudul'  => 'nullable|string|max:255',
+            'FaqJudul'     => 'nullable|string|max:255',
+            'FaqDeskripsi' => 'nullable|string',
+            // Repeater item
+            'komponen'      => 'nullable|array',
+            'solusi_items'  => 'nullable|array',
+            'security_items' => 'nullable|array',
+            'faqs'          => 'nullable|array',
+        ]);
+
+        // ===== 1. Data Hero =====
+        $subpage->Judul      = $request->Judul;
+        $subpage->SubJudul   = $request->SubJudul;
+        $subpage->Deskripsi  = $request->Deskripsi;
+        $subpage->Konten     = $request->Konten;
+        $subpage->Slug       = $request->Slug ?: Str::slug($subpage->Judul);
+        $subpage->IsPublished = $request->has('IsPublished') ? (bool)$request->IsPublished : false;
+        // ===== Section headers (Section 1, 2, 3 & FAQ) =====
+        foreach ([
+            'Sec1SubJudul', 'Sec1Judul', 'Sec1Deskripsi',
+            'Sec2SubJudul', 'Sec2Judul', 'Sec2Deskripsi',
+            'Sec3SubJudul', 'Sec3Judul', 'Sec3Deskripsi',
+            'FaqSubJudul', 'FaqJudul', 'FaqDeskripsi',
+        ] as $field) {
+            $subpage->$field = $request->$field;
+        }
+
+        $subpage->UserUpdate = auth()->user()->name;
+        if (!$subpage->exists) {
+            $subpage->UserCreate = auth()->user()->name;
+        }
+
+        if ($request->hasFile('GambarHero')) {
+            if ($subpage->GambarHero && Storage::disk('public')->exists($subpage->GambarHero)) {
+                Storage::disk('public')->delete($subpage->GambarHero);
+            }
+            $file = $request->file('GambarHero');
+            $subpage->GambarHero = $file->storeAs('halaman-solusi/subpage/hero', $file->hashName(), 'public');
+        }
+        $subpage->save();
+
+        // ===== 2. Item repeater per section =====
+        $saveItems = function (array $rows, string $section) use ($subpage, $request) {
+            $keepIds = [];
+
+            foreach ($rows as $i => $row) {
+                // Cari item lama berdasarkan Id hidden (pastikan milik subpage & section ini)
+                $item = null;
+                if (!empty($row['Id'])) {
+                    $item = HalamanSolusiSubpageItem::where('HalamanSolusiSubpageId', $subpage->id)
+                        ->where('Section', $section)
+                        ->where('id', (int)$row['Id'])
+                        ->first();
+                }
+                if (!$item) {
+                    $item = new HalamanSolusiSubpageItem();
+                    $item->HalamanSolusiSubpageId = $subpage->id;
+                    $item->Section = $section;
+                }
+
+                if ($section === 'faq') {
+                    $item->Judul     = $row['Pertanyaan'] ?? null;
+                    $item->Deskripsi = $row['Jawaban'] ?? null;
+                } else {
+                    $item->Judul     = $row['Judul'] ?? null;
+                    $item->SubJudul  = $row['SubJudul'] ?? null;
+                    $item->Deskripsi = $row['Deskripsi'] ?? null;
+                }
+
+                if ($section === 'section1') {
+                    // Tipe layout + poin-poin keunggulan
+                    $item->Tipe  = ($row['Tipe'] ?? 'besar') === 'horizontal' ? 'horizontal' : 'besar';
+                    $items       = array_map('trim', (array)($row['Items'] ?? []));
+                    $item->Items = array_values(array_filter($items, fn ($v) => $v !== '' && $v !== null));
+                } else {
+                    $item->Tipe  = null;
+                    $item->Items = null;
+                }
+
+                // Upload gambar komponen (section1) / icon (section2 & 3)
+                $fileInput = $section === 'section1'
+                    ? "komponen.$i.Gambar"
+                    : ($section === 'section2' ? "solusi_items.$i.Icon" : ($section === 'section3' ? "security_items.$i.Icon" : null));
+
+                if ($fileInput && $request->hasFile($fileInput)) {
+                    $folder = $section === 'section1' ? 'halaman-solusi/subpage/komponen' : 'halaman-solusi/subpage/icon';
+                    // Hapus file lama jika ada
+                    foreach (['Gambar', 'Icon'] as $field) {
+                        if ($item->$field && Storage::disk('public')->exists($item->$field)) {
+                            Storage::disk('public')->delete($item->$field);
+                        }
+                    }
+                    $file = $request->file($fileInput);
+                    $stored = $file->storeAs($folder, $file->hashName(), 'public');
+                    if ($section === 'section1') {
+                        $item->Gambar = $stored;
+                    } else {
+                        $item->Icon = $stored;
+                    }
+                }
+
+                $item->SortOrder = $i;
+                $item->save();
+                $keepIds[] = $item->id;
+            }
+
+            // Hapus item section ini yang sudah tidak ada di form (beserta filenya)
+            $deleted = HalamanSolusiSubpageItem::where('HalamanSolusiSubpageId', $subpage->id)
+                ->where('Section', $section)
+                ->when(!empty($keepIds), fn ($q) => $q->whereNotIn('id', $keepIds))
+                ->get();
+            foreach ($deleted as $old) {
+                foreach (['Gambar', 'Icon'] as $field) {
+                    if ($old->$field && Storage::disk('public')->exists($old->$field)) {
+                        Storage::disk('public')->delete($old->$field);
+                    }
+                }
+                $old->delete();
+            }
+        };
+
+        $saveItems($request->komponen ?? [], 'section1');
+        $saveItems($request->solusi_items ?? [], 'section2');
+        $saveItems($request->security_items ?? [], 'section3');
+        $saveItems($request->faqs ?? [], 'faq');
+
+        if ($detail->solusi) {
+            activity()
+                ->causedBy(auth()->user())
+                ->performedOn($detail->solusi)
+                ->withProperties(['attributes' => $subpage->toArray()])
+                ->log('Memperbarui subhalaman solusi: ' . ($subpage->Judul ?? ($detail->Judul ?? '')));
+        } else {
+            activity()
+                ->causedBy(auth()->user())
+                ->log('Memperbarui subhalaman solusi: ' . ($subpage->Judul ?? ($detail->Judul ?? '')));
+        }
+
+        return redirect()
+            ->route('halaman-solusi.detail.edit', encrypt($detail->id))
+            ->with('success', 'Subhalaman solusi berhasil disimpan.');
     }
 
     /**
