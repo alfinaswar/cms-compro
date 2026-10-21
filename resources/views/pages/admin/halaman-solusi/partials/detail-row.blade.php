@@ -22,10 +22,10 @@
                                 <tr>
                                     <td>{{ $i + 1 }}</td>
                                     <td>
-                                        {{ $detail->Judul ?? '-' }}
+                                        {{ filled($detail->t('Judul')) ? $detail->t('Judul') : '-' }}
                                     </td>
                                     <td>
-                                        {!! $detail->Keterangan ? nl2br(e($detail->Keterangan)) : '<span class="text-muted">-</span>' !!}
+                                        {!! $detail->t('Keterangan') ? nl2br(e($detail->t('Keterangan'))) : '<span class="text-muted">-</span>' !!}
                                     </td>
                                     <td>
                                         @if ($detail->Gambar)

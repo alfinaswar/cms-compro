@@ -115,7 +115,7 @@
                         <a href="{{ route('halaman-solusi.index') }}" class="text-muted mr-2" title="Kembali ke daftar solusi">
                             <i class="fa fa-arrow-left"></i>
                         </a>
-                        Edit Subhalaman — {{ $detail->Judul ?? ($subpage->Judul ?? 'Subhalaman') }}
+                        Edit Subhalaman — {{ $detail->t('Judul') ?: ($subpage->Judul ?? 'Subhalaman') }}
                     </h1>
                 </div>
                 <div class="col-sm-6">
@@ -151,7 +151,7 @@
                 <div class="card-header">
                     <h3 class="card-title">
                         <i class="fas fa-layer-group mr-2"></i>
-                        Konten Subhalaman — {{ $detail->Judul ?? ($subpage->Judul ?? '') }}
+                        Konten Subhalaman — {{ $detail->t('Judul') ?: ($subpage->Judul ?? '') }}
                     </h3>
                 </div>
                 <div class="card-body">
@@ -247,7 +247,7 @@
                                                 <span class="input-group-text">/solusi/</span>
                                             </div>
                                             <input type="text" name="Slug" class="form-control"
-                                                value="{{ old('Slug', $subpage->Slug ?: \Str::slug($subpage->Judul ?: ($detail->Judul ?? ''))) }}"
+                                                value="{{ old('Slug', $subpage->Slug ?: \Str::slug($subpage->Judul ?: ($detail->t('Judul') ?? ''))) }}"
                                                 required>
                                         </div>
                                     </div>
