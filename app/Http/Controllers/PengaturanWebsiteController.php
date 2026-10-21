@@ -125,6 +125,7 @@ class PengaturanWebsiteController extends Controller
             'PesanMaintenance' => 'nullable|string|max:255',
             'AktifkanCookieConsent' => 'nullable|boolean',
             'TeksCookieConsent' => 'nullable|string',
+            'AutoLogoutMenit' => 'nullable|integer|min:1|max:1440',
             // Footer
             'TeksCopyright' => 'nullable|string|max:255',
             'TautanKebijakanPrivasi' => 'nullable|url|max:255',

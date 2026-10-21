@@ -403,6 +403,16 @@
                                         <textarea name="TeksCookieConsent" class="form-control" rows="2"
                                             placeholder="Isi teks atau pesan cookie consent">{{ old('TeksCookieConsent', $pengaturan->TeksCookieConsent) }}</textarea>
                                     </div>
+
+                                    <div class="form-group mt-4">
+                                        <label>Auto Logout Idle (menit)</label>
+                                        <input type="number" min="1" max="1440" name="AutoLogoutMenit"
+                                            class="form-control" style="max-width: 200px;"
+                                            value="{{ old('AutoLogoutMenit', $pengaturan->AutoLogoutMenit ?? 15) }}"
+                                            placeholder="15">
+                                        <small class="text-muted">User akan otomatis logout jika tidak ada aktivitas
+                                            selama durasi ini (browser admin panel).</small>
+                                    </div>
                                 </div>
 
                             </div>

@@ -264,6 +264,58 @@
             }
         });
     </script>
+    <script>
+        // Auto logout saat idle (durasi diatur di Pengaturan Website)
+        (function () {
+            var timeoutMs = {{ (int) ($websiteSettings->AutoLogoutMenit ?? 15) * 60000 }};
+            var csrf = $('meta[name="csrf-token"]').attr('content');
+            var timer, idleFired = false;
+
+            ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'].forEach(function (evt) {
+                document.addEventListener(evt, resetIdle);
+            });
+
+            function resetIdle() {
+                idleFired = false;
+                clearTimeout(timer);
+                if (window.Swal) Swal.close();
+                timer = setTimeout(startLogout, timeoutMs);
+            }
+
+            function startLogout() {
+                idleFired = true;
+                if (!window.Swal) {
+                    doLogout();
+                    return;
+                }
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Logout otomatis',
+                    html: 'Tidak ada aktivitas. Anda akan keluar dalam 3 detik...',
+                    timer: 3000,
+                    timerProgressBar: true,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    showConfirmButton: false
+                }).then(function () {
+                    // batal jika user kembali aktif saat countdown
+                    if (idleFired) doLogout();
+                });
+            }
+
+            function doLogout() {
+                fetch('{{ route('logout') }}', {
+                    method: 'POST',
+                    headers: { 'X-CSRF-TOKEN': csrf },
+                    keepalive: true
+                }).catch(function () {}).finally(function () {
+                    window.location.href = '{{ route('login') }}';
+                });
+            }
+
+            resetIdle();
+        })();
+    </script>
     @stack('scripts')
 </body>
 
