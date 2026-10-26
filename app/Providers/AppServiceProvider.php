@@ -8,12 +8,23 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\URL;
-
 class AppServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        URL::defaults(['locale' => app()->getLocale()]);
+        // Fallback URL default untuk request yang TIDAK melewati middleware SetLocale
+        // (contoh: halaman 404, karena middleware grup 'web' tidak jalan saat route
+        // tidak cocok). Untuk request normal, SetLocale menimpanya dengan locale
+        // yang sebenarnya (termasuk dari session).
+        $bootLocale = request()->segment(1);
+        if (!in_array($bootLocale, \App\Http\Middleware\SetLocale::SUPPORTED, true)) {
+            $bootLocale = config('app.locale', \App\Http\Middleware\SetLocale::DEFAULT);
+        }
+        URL::defaults(['locale' => $bootLocale]);
+
+        // Samakan locale aplikasi untuk request yang tidak melewati SetLocale
+        // (mis. halaman 404), supaya teks error ikut bahasa yang dipilih di URL.
+        \Illuminate\Support\Facades\App::setLocale($bootLocale);
 
         try {
             // ========================================

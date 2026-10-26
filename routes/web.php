@@ -42,13 +42,16 @@ use App\Models\ContactUs;
 use App\Models\JenisLaporanKeuangan;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [LandingPageController::class, 'index'])->name('frontend.main');  // Hanya Tampil Footer saja
-
-Auth::routes();
+// Redirect halaman utama ke prefix locale aktif (default: id).
+// Tanpa nama: nama 'frontend.main' dipakai route ber-locale di bawah.
 Route::get('/', function () {
-    $locale = session('locale', 'id');
+    $locale = session('locale', \App\Http\Middleware\SetLocale::DEFAULT);
+    if (!in_array($locale, \App\Http\Middleware\SetLocale::SUPPORTED, true)) {
+        $locale = \App\Http\Middleware\SetLocale::DEFAULT;
+    }
     return redirect('/' . $locale . '/');
 });
+
 // 2. Auth Routes (di luar group locale)
 Auth::routes();
 Route::get('/admin/home/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

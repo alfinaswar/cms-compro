@@ -18,7 +18,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         ]);
 
-        // 2. Tambahkan EnforceTrailingSlash dan SetLocale ke grup middleware 'web'
+        // 2. EnforceTrailingSlash di-prepend (tidak butuh session).
+        //    SetLocale di-append supaya berjalan SETELAH StartSession, sehingga
+        //    Session::get()/put() aman. Semua middleware grup 'web' tetap jalan
+        //    sebelum controller, jadi locale & URL::defaults sudah benar saat
+        //    view merender __('...') dan route().
         $middleware->web(
             prepend: [
                 \App\Http\Middleware\EnforceTrailingSlash::class,
