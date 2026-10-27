@@ -1,5 +1,33 @@
 @extends('frontend.index')
 
+@push('styles')
+    <style>
+        /* Pagination news tetap terang walau OS/Chrome dark mode.
+           Tailwind v4 tanpa config: `dark:` = prefers-color-scheme, jadi utility
+           dark: di view pagination bawaan Laravel ikut aktif. CSS tanpa @layer
+           menang atas layer utilities, jadi cukup reset ke warna terang. */
+        .news-pagination nav :is(a, span) {
+            background-color: #fff;
+            border-color: #e2e8f0;
+            color: #334155;
+        }
+
+        .news-pagination nav a:hover {
+            background-color: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .news-pagination nav span[aria-current="page"] > span {
+            background-color: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .news-pagination nav p {
+            color: #334155;
+        }
+    </style>
+@endpush
+
 @section('content-frontend')
     <!-- Hero Section -->
     <section class="relative pt-32 pb-20 bg-gradient-to-br from-brand-900 via-brand-800 to-brand-900 overflow-hidden">
@@ -114,7 +142,7 @@
 
                     <!-- Pagination (Laravel otomatis menangani locale di sini) -->
                     @if ($news->hasPages())
-                        <div class="mt-8 flex justify-center">
+                        <div class="mt-8 flex justify-center news-pagination">
                             {{ $news->links() }}
                             <!-- Atau gunakan custom pagination Anda, Laravel otomatis append locale -->
                         </div>
