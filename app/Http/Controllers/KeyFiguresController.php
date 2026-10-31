@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\KeyFigures;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\DataTables;
 
@@ -74,6 +75,8 @@ class KeyFiguresController extends Controller
         $request->validate([
             'Konten' => 'required|string|max:255',
             'Keterangan' => 'required|string',
+            'KontenEn' => 'nullable|string|max:255|required_with:KeteranganEn',
+            'KeteranganEn' => 'nullable|string|required_with:KontenEn',
             'Icon' => 'nullable|file|image|max:1024',
         ]);
 
@@ -85,11 +88,16 @@ class KeyFiguresController extends Controller
         $data = [
             'Konten' => $request->Konten,
             'Keterangan' => $request->Keterangan,
+            // Fallback ke Bahasa Indonesia jika kolom English dibiarkan kosong
+            'KontenEn' => $request->filled('KontenEn') ? $request->KontenEn : $request->Konten,
+            'KeteranganEn' => $request->filled('KeteranganEn') ? $request->KeteranganEn : $request->Keterangan,
             'Icon' => $iconPath,
             'UserCreate' => auth()->user() ? auth()->user()->name : null,
         ];
 
         KeyFigures::create($data);
+
+        Cache::forget('key_figures');
 
         return redirect()->route('pengaturan-key-figure.index')->with('success', 'Key Figure created successfully.');
     }
@@ -122,6 +130,8 @@ class KeyFiguresController extends Controller
         $request->validate([
             'Konten' => 'required|string|max:255',
             'Keterangan' => 'required|string',
+            'KontenEn' => 'nullable|string|max:255|required_with:KeteranganEn',
+            'KeteranganEn' => 'nullable|string|required_with:KontenEn',
             'Icon' => 'nullable|file|image|max:1024',
         ]);
 
@@ -139,9 +149,14 @@ class KeyFiguresController extends Controller
         $data->update([
             'Konten' => $request->Konten,
             'Keterangan' => $request->Keterangan,
+            // Fallback ke Bahasa Indonesia jika kolom English dibiarkan kosong
+            'KontenEn' => $request->filled('KontenEn') ? $request->KontenEn : $request->Konten,
+            'KeteranganEn' => $request->filled('KeteranganEn') ? $request->KeteranganEn : $request->Keterangan,
             'Icon' => $iconPath,
             'UserUpdate' => auth()->user() ? auth()->user()->name : null,
         ]);
+
+        Cache::forget('key_figures');
 
         return redirect()->route('pengaturan-key-figure.index')->with('success', 'Key Figure updated successfully.');
     }
@@ -160,6 +175,8 @@ class KeyFiguresController extends Controller
             }
 
             $keyFigure->delete();
+
+            Cache::forget('key_figures');
 
             return response()->json([
                 'message' => 'Key Figure berhasil dihapus.'
