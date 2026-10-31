@@ -10,9 +10,9 @@ class HalamanSolusiTranslation extends Model
 
     protected $guarded = ['id'];
 
-    /**
-     * Relasi balik ke model utama
-     */
+    protected $casts = [
+        'FaqItems' => 'array',
+    ];
     public function solusi()
     {
         return $this->belongsTo(HalamanSolusi::class, 'halaman_solusi_id');

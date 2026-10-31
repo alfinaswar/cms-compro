@@ -185,6 +185,7 @@
                                         if ($existingDetails->count() > 0) {
                                             foreach ($existingDetails as $item) {
                                                 $details[] = [
+                                                    'id' => $item->id,
                                                     'gambar' => $item->Gambar,
                                                     'translations' => [
                                                         'id' => [
@@ -201,6 +202,7 @@
                                             }
                                         } else {
                                             $details[] = [
+                                                'id' => '',
                                                 'gambar' => '',
                                                 'translations' => [
                                                     'id' => ['Judul' => '', 'Keterangan' => ''],
@@ -214,12 +216,23 @@
                                 @foreach ($details as $i => $detail)
                                     <div class="detail-solusi-item border rounded p-3 mb-3 position-relative bg-light"
                                         data-index="{{ $i }}">
-                                        <ul class="nav nav-tabs mb-2" role="tablist">
-                                            <li class="nav-item"><a class="nav-link active" data-toggle="tab"
-                                                    href="#detail-id-{{ $i }}">🇮🇩 ID</a></li>
-                                            <li class="nav-item"><a class="nav-link" data-toggle="tab"
-                                                    href="#detail-en-{{ $i }}">🇬🇧 EN</a></li>
-                                        </ul>
+                                        @if (!empty($detail['id']))
+                                            <input type="hidden" name="details[{{ $i }}][id]" value="{{ $detail['id'] }}">
+                                        @endif
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <ul class="nav nav-tabs mb-0" role="tablist">
+                                                <li class="nav-item"><a class="nav-link active py-1 px-2" data-toggle="tab"
+                                                        href="#detail-id-{{ $i }}">🇮🇩 ID</a></li>
+                                                <li class="nav-item"><a class="nav-link py-1 px-2" data-toggle="tab"
+                                                        href="#detail-en-{{ $i }}">🇬🇧 EN</a></li>
+                                            </ul>
+                                            @if (!empty($detail['id']))
+                                                <a href="{{ route('halaman-solusi.detail.edit', encrypt($detail['id'])) }}"
+                                                    target="_blank" class="btn btn-sm btn-outline-primary" style="margin-right: 25px;">
+                                                    <i class="fa fa-layer-group mr-1"></i> Edit Subhalaman / Produk
+                                                </a>
+                                            @endif
+                                        </div>
                                         <div class="tab-content">
                                             <div class="tab-pane fade show active" id="detail-id-{{ $i }}">
                                                 <div class="form-group mb-2">
@@ -277,6 +290,103 @@
                             <div class="alert alert-info mt-2 mb-0 py-2 px-3" style="font-size:13px;">
                                 <i class="fa fa-info-circle mr-1"></i> Tambahkan satu atau lebih detail solusi untuk
                                 menjelaskan fitur/layanan secara terpisah.
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- FAQ PER SOLUSI --}}
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white border-bottom d-flex align-items-center"
+                            style="position: relative;">
+                            <h5 class="mb-0"><i class="fa fa-question-circle text-info mr-2"></i><strong>FAQ Solusi</strong>
+                            </h5>
+                            <button type="button" class="btn btn-info btn-sm px-3" id="btnTambahFaqSolusi"
+                                style="position: absolute; right: 20px;">
+                                <i class="fa fa-plus mr-1"></i>Tambah FAQ
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div id="faq-solusi-wrapper">
+                                @php
+                                    $existingFaqsId = $data->translate('id')->FaqItems ?? $data->FaqItems ?? [];
+                                    $existingFaqsEn = $data->translate('en')->FaqItems ?? [];
+                                    $formFaqs = old('faqs_main');
+
+                                    if (!$formFaqs) {
+                                        $formFaqs = [];
+                                        if (is_array($existingFaqsId) && count($existingFaqsId) > 0) {
+                                            foreach ($existingFaqsId as $fIdx => $fItem) {
+                                                $formFaqs[] = [
+                                                    'translations' => [
+                                                        'id' => [
+                                                            'Pertanyaan' => $fItem['q'] ?? '',
+                                                            'Jawaban' => $fItem['a'] ?? '',
+                                                        ],
+                                                        'en' => [
+                                                            'Pertanyaan' => $existingFaqsEn[$fIdx]['q'] ?? '',
+                                                            'Jawaban' => $existingFaqsEn[$fIdx]['a'] ?? '',
+                                                        ],
+                                                    ],
+                                                ];
+                                            }
+                                        }
+                                    }
+                                @endphp
+
+                                @forelse ($formFaqs as $fi => $faqRow)
+                                    <div class="faq-solusi-item border rounded p-3 mb-3 position-relative bg-light"
+                                        data-index="{{ $fi }}">
+                                        <ul class="nav nav-tabs mb-2" role="tablist">
+                                            <li class="nav-item"><a class="nav-link active py-1 px-2" data-toggle="tab"
+                                                    href="#faq-id-{{ $fi }}">🇮🇩 ID</a></li>
+                                            <li class="nav-item"><a class="nav-link py-1 px-2" data-toggle="tab"
+                                                    href="#faq-en-{{ $fi }}">🇬🇧 EN</a></li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div class="tab-pane fade show active" id="faq-id-{{ $fi }}">
+                                                <div class="form-group mb-2">
+                                                    <label>Pertanyaan (ID)</label>
+                                                    <input type="text"
+                                                        name="faqs_main[{{ $fi }}][translations][id][Pertanyaan]"
+                                                        class="form-control"
+                                                        value="{{ old('faqs_main.' . $fi . '.translations.id.Pertanyaan', $faqRow['translations']['id']['Pertanyaan'] ?? '') }}"
+                                                        placeholder="Pertanyaan seputar solusi ini...">
+                                                </div>
+                                                <div class="form-group mb-0">
+                                                    <label>Jawaban (ID)</label>
+                                                    <textarea name="faqs_main[{{ $fi }}][translations][id][Jawaban]"
+                                                        class="form-control" rows="3"
+                                                        placeholder="Jawaban lengkap...">{{ old('faqs_main.' . $fi . '.translations.id.Jawaban', $faqRow['translations']['id']['Jawaban'] ?? '') }}</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="faq-en-{{ $fi }}">
+                                                <div class="form-group mb-2">
+                                                    <label>Question (EN)</label>
+                                                    <input type="text"
+                                                        name="faqs_main[{{ $fi }}][translations][en][Pertanyaan]"
+                                                        class="form-control"
+                                                        value="{{ old('faqs_main.' . $fi . '.translations.en.Pertanyaan', $faqRow['translations']['en']['Pertanyaan'] ?? '') }}"
+                                                        placeholder="Question about this solution...">
+                                                </div>
+                                                <div class="form-group mb-0">
+                                                    <label>Answer (EN)</label>
+                                                    <textarea name="faqs_main[{{ $fi }}][translations][en][Jawaban]"
+                                                        class="form-control" rows="3"
+                                                        placeholder="Complete answer...">{{ old('faqs_main.' . $fi . '.translations.en.Jawaban', $faqRow['translations']['en']['Jawaban'] ?? '') }}</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-danger btn-sm position-absolute"
+                                            style="top:-10px; right:-10px; border-radius:50%; width:28px; height:28px; padding:0;"
+                                            onclick="hapusFaqSolusi(this)"><i class="fa fa-times"></i></button>
+                                    </div>
+                                @empty
+                                    <p class="text-muted small mb-0 empty-faq-note">Belum ada FAQ per solusi. Klik <strong>Tambah FAQ</strong> di atas untuk menambahkan pertanyaan & jawaban yang tampil di bagian bawah halaman solusi.</p>
+                                @endforelse
+                            </div>
+
+                            <div class="alert alert-light border mt-3 mb-0 py-2 px-3 small text-muted">
+                                <i class="fa fa-info-circle mr-1 text-info"></i> FAQ yang diisi di sini akan tampil di section FAQ halaman solusi publik. Jika dikosongkan, solusi akan menampilkan FAQ dari sub-produk atau FAQ default sistem.
                             </div>
                         </div>
                     </div>
@@ -515,7 +625,52 @@
                 </div>`;
                 $('#detail-solusi-wrapper').append(html);
             });
+
+            // 5. FAQ SOLUSI DINAMIS
+            $('#btnTambahFaqSolusi').click(function() {
+                $('.empty-faq-note').remove();
+                let fIdx = $('#faq-solusi-wrapper .faq-solusi-item').length;
+                let faqHtml = `
+                <div class="faq-solusi-item border rounded p-3 mb-3 position-relative bg-light" data-index="` + fIdx + `">
+                    <ul class="nav nav-tabs mb-2" role="tablist">
+                        <li class="nav-item"><a class="nav-link active py-1 px-2" data-toggle="tab" href="#faq-id-` + fIdx + `">🇮🇩 ID</a></li>
+                        <li class="nav-item"><a class="nav-link py-1 px-2" data-toggle="tab" href="#faq-en-` + fIdx + `">🇬🇧 EN</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="faq-id-` + fIdx + `">
+                            <div class="form-group mb-2">
+                                <label>Pertanyaan (ID)</label>
+                                <input type="text" name="faqs_main[` + fIdx + `][translations][id][Pertanyaan]" class="form-control" placeholder="Pertanyaan seputar solusi ini...">
+                            </div>
+                            <div class="form-group mb-0">
+                                <label>Jawaban (ID)</label>
+                                <textarea name="faqs_main[` + fIdx + `][translations][id][Jawaban]" class="form-control" rows="3" placeholder="Jawaban lengkap..."></textarea>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="faq-en-` + fIdx + `">
+                            <div class="form-group mb-2">
+                                <label>Question (EN)</label>
+                                <input type="text" name="faqs_main[` + fIdx + `][translations][en][Pertanyaan]" class="form-control" placeholder="Question about this solution...">
+                            </div>
+                            <div class="form-group mb-0">
+                                <label>Answer (EN)</label>
+                                <textarea name="faqs_main[` + fIdx + `][translations][en][Jawaban]" class="form-control" rows="3" placeholder="Complete answer..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-danger btn-sm position-absolute"
+                        style="top:-10px; right:-10px; border-radius:50%; width:28px; height:28px; padding:0;"
+                        onclick="hapusFaqSolusi(this)"><i class="fa fa-times"></i></button>
+                </div>`;
+                $('#faq-solusi-wrapper').append(faqHtml);
+            });
         });
+
+        function hapusFaqSolusi(btn) {
+            $(btn).closest('.faq-solusi-item').fadeOut(200, function() {
+                $(this).remove();
+            });
+        }
 
         function hapusDetailSolusi(btn) {
             if ($('.detail-solusi-item').length <= 1) {

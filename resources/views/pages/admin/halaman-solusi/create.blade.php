@@ -144,6 +144,81 @@
                             </div>
                         </div>
                     </div>
+
+                    {{-- FAQ PER SOLUSI --}}
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white border-bottom d-flex align-items-center"
+                            style="position: relative;">
+                            <h5 class="mb-0"><i class="fa fa-question-circle text-info mr-2"></i><strong>FAQ Solusi</strong>
+                            </h5>
+                            <button type="button" class="btn btn-info btn-sm px-3" id="btnTambahFaqSolusi"
+                                style="position: absolute; right: 20px;">
+                                <i class="fa fa-plus mr-1"></i>Tambah FAQ
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div id="faq-solusi-wrapper">
+                                @php
+                                    $formFaqs = old('faqs_main', []);
+                                @endphp
+
+                                @forelse ($formFaqs as $fi => $faqRow)
+                                    <div class="faq-solusi-item border rounded p-3 mb-3 position-relative bg-light"
+                                        data-index="{{ $fi }}">
+                                        <ul class="nav nav-tabs mb-2" role="tablist">
+                                            <li class="nav-item"><a class="nav-link active py-1 px-2" data-toggle="tab"
+                                                    href="#faq-id-{{ $fi }}">🇮🇩 ID</a></li>
+                                            <li class="nav-item"><a class="nav-link py-1 px-2" data-toggle="tab"
+                                                    href="#faq-en-{{ $fi }}">🇬🇧 EN</a></li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div class="tab-pane fade show active" id="faq-id-{{ $fi }}">
+                                                <div class="form-group mb-2">
+                                                    <label>Pertanyaan (ID)</label>
+                                                    <input type="text"
+                                                        name="faqs_main[{{ $fi }}][translations][id][Pertanyaan]"
+                                                        class="form-control"
+                                                        value="{{ old('faqs_main.' . $fi . '.translations.id.Pertanyaan', $faqRow['translations']['id']['Pertanyaan'] ?? '') }}"
+                                                        placeholder="Pertanyaan seputar solusi ini...">
+                                                </div>
+                                                <div class="form-group mb-0">
+                                                    <label>Jawaban (ID)</label>
+                                                    <textarea name="faqs_main[{{ $fi }}][translations][id][Jawaban]"
+                                                        class="form-control" rows="3"
+                                                        placeholder="Jawaban lengkap...">{{ old('faqs_main.' . $fi . '.translations.id.Jawaban', $faqRow['translations']['id']['Jawaban'] ?? '') }}</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade" id="faq-en-{{ $fi }}">
+                                                <div class="form-group mb-2">
+                                                    <label>Question (EN)</label>
+                                                    <input type="text"
+                                                        name="faqs_main[{{ $fi }}][translations][en][Pertanyaan]"
+                                                        class="form-control"
+                                                        value="{{ old('faqs_main.' . $fi . '.translations.en.Pertanyaan', $faqRow['translations']['en']['Pertanyaan'] ?? '') }}"
+                                                        placeholder="Question about this solution...">
+                                                </div>
+                                                <div class="form-group mb-0">
+                                                    <label>Answer (EN)</label>
+                                                    <textarea name="faqs_main[{{ $fi }}][translations][en][Jawaban]"
+                                                        class="form-control" rows="3"
+                                                        placeholder="Complete answer...">{{ old('faqs_main.' . $fi . '.translations.en.Jawaban', $faqRow['translations']['en']['Jawaban'] ?? '') }}</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-danger btn-sm position-absolute"
+                                            style="top:-10px; right:-10px; border-radius:50%; width:28px; height:28px; padding:0;"
+                                            onclick="hapusFaqSolusi(this)"><i class="fa fa-times"></i></button>
+                                    </div>
+                                @empty
+                                    <p class="text-muted small mb-0 empty-faq-note">Belum ada FAQ per solusi. Klik <strong>Tambah FAQ</strong> di atas jika ingin menambahkan FAQ khusus untuk solusi ini.</p>
+                                @endforelse
+                            </div>
+
+                            <div class="alert alert-light border mt-3 mb-0 py-2 px-3 small text-muted">
+                                <i class="fa fa-info-circle mr-1 text-info"></i> FAQ yang diisi di sini akan tampil di section FAQ halaman solusi publik.
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 {{-- ================= KOLOM KANAN ================= --}}
@@ -302,7 +377,50 @@
                 </div>`;
                 $('#detail-solusi-wrapper').append(html);
             });
+
+            // 6. FAQ SOLUSI DINAMIS
+            $('#btnTambahFaqSolusi').click(function() {
+                $('.empty-faq-note').remove();
+                let fIdx = $('#faq-solusi-wrapper .faq-solusi-item').length;
+                let faqHtml = `
+                <div class="faq-solusi-item border rounded p-3 mb-3 position-relative bg-light" data-index="` + fIdx + `">
+                    <ul class="nav nav-tabs mb-2" role="tablist">
+                        <li class="nav-item"><a class="nav-link active py-1 px-2" data-toggle="tab" href="#faq-id-` + fIdx + `">🇮🇩 ID</a></li>
+                        <li class="nav-item"><a class="nav-link py-1 px-2" data-toggle="tab" href="#faq-en-` + fIdx + `">🇬🇧 EN</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="faq-id-` + fIdx + `">
+                            <div class="form-group mb-2">
+                                <label>Pertanyaan (ID)</label>
+                                <input type="text" name="faqs_main[` + fIdx + `][translations][id][Pertanyaan]" class="form-control" placeholder="Pertanyaan seputar solusi ini...">
+                            </div>
+                            <div class="form-group mb-0">
+                                <label>Jawaban (ID)</label>
+                                <textarea name="faqs_main[` + fIdx + `][translations][id][Jawaban]" class="form-control" rows="3" placeholder="Jawaban lengkap..."></textarea>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="faq-en-` + fIdx + `">
+                            <div class="form-group mb-2">
+                                <label>Question (EN)</label>
+                                <input type="text" name="faqs_main[` + fIdx + `][translations][en][Pertanyaan]" class="form-control" placeholder="Question about this solution...">
+                            </div>
+                            <div class="form-group mb-0">
+                                <label>Answer (EN)</label>
+                                <textarea name="faqs_main[` + fIdx + `][translations][en][Jawaban]" class="form-control" rows="3" placeholder="Complete answer..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-danger btn-sm position-absolute"
+                        style="top:-10px; right:-10px; border-radius:50%; width:28px; height:28px; padding:0;"
+                        onclick="hapusFaqSolusi(this)"><i class="fa fa-times"></i></button>
+                </div>`;
+                $('#faq-solusi-wrapper').append(faqHtml);
+            });
         });
+
+        function hapusFaqSolusi(btn) {
+            $(btn).closest('.faq-solusi-item').fadeOut(200, function() { $(this).remove(); });
+        }
 
         function hapusDetailSolusi(btn) {
             if ($('.detail-solusi-item').length <= 1) {

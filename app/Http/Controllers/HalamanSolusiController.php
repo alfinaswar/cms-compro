@@ -119,17 +119,40 @@ class HalamanSolusiController extends Controller
             'details.*.translations.id.Keterangan' => 'nullable|string',
             'details.*.translations.en.Judul' => 'nullable|string|max:255',
             'details.*.translations.en.Keterangan' => 'nullable|string',
+            'faqs_main' => 'nullable|array',
+            'faqs_main.*.translations.id.Pertanyaan' => 'nullable|string',
+            'faqs_main.*.translations.id.Jawaban' => 'nullable|string',
+            'faqs_main.*.translations.en.Pertanyaan' => 'nullable|string',
+            'faqs_main.*.translations.en.Jawaban' => 'nullable|string',
         ]);
+
+        // Helper: ubah faqs_main menjadi array [{id:[q,a], en:[q,a]}, ...]
+        $buildFaqItems = function (array $faqsMain, string $locale) {
+            return collect($faqsMain)->map(fn ($row) => [
+                'q' => $row['translations'][$locale]['Pertanyaan'] ?? null,
+                'a' => $row['translations'][$locale]['Jawaban'] ?? null,
+            ])->filter(fn ($item) => $item['q'] || $item['a'])->values()->all();
+        };
 
         // 1. Simpan Data Utama (fallback ke Bahasa Indonesia)
         $solusi = new HalamanSolusi();
         $solusi->Judul = $validated['translations']['id']['Judul'];
         $solusi->DeskripsiSingkat = $validated['translations']['id']['DeskripsiSingkat'] ?? null;
         $solusi->Konten = $validated['translations']['id']['Konten'];
+        $solusi->FaqItems = !empty($request->faqs_main) ? $buildFaqItems($request->faqs_main, 'id') : null;
         $solusi->SEOTitle = $validated['translations']['id']['SEOTitle'] ?? null;
         $solusi->SEODescription = $validated['translations']['id']['SEODescription'] ?? null;
         $solusi->SEOKeywords = $validated['translations']['id']['SEOKeywords'] ?? null;
-        $solusi->Slug = $request->Slug ?: Str::slug($solusi->Judul);
+
+        // Auto-generate slug unik jika slug sudah ada di database
+        $baseSlug = Str::slug($request->Slug ?: $solusi->Judul);
+        $slug = $baseSlug;
+        $counter = 1;
+        while (HalamanSolusi::where('Slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $counter++;
+        }
+        $solusi->Slug = $slug;
+
         $solusi->IsPublished = $request->IsPublished;
         $solusi->UserCreate = auth()->user()->name;
 
@@ -146,6 +169,7 @@ class HalamanSolusiController extends Controller
                     'Judul' => $validated['translations'][$locale]['Judul'] ?? null,
                     'DeskripsiSingkat' => $validated['translations'][$locale]['DeskripsiSingkat'] ?? null,
                     'Konten' => $validated['translations'][$locale]['Konten'] ?? null,
+                    'FaqItems' => !empty($request->faqs_main) ? $buildFaqItems($request->faqs_main, $locale) : null,
                     'SEOTitle' => $validated['translations'][$locale]['SEOTitle'] ?? null,
                     'SEODescription' => $validated['translations'][$locale]['SEODescription'] ?? null,
                     'SEOKeywords' => $validated['translations'][$locale]['SEOKeywords'] ?? null,
@@ -193,7 +217,11 @@ class HalamanSolusiController extends Controller
     public function show($slug, $id)
     {
         // dd($id);
-        $halamanSolusi = HalamanSolusi::with(['details.translations', 'details.subpage', 'translations'])
+        $halamanSolusi = HalamanSolusi::with([
+            'details.translations',
+            'details.subpage.items.translations',
+            'translations',
+        ])
             ->where('Slug', $id)
             ->orWhere('id', is_numeric($id) ? $id : null)
             ->firstOrFail();
@@ -501,18 +529,40 @@ class HalamanSolusiController extends Controller
             'details.*.translations.id.Keterangan' => 'nullable|string',
             'details.*.translations.en.Judul' => 'nullable|string|max:255',
             'details.*.translations.en.Keterangan' => 'nullable|string',
+            'faqs_main' => 'nullable|array',
+            'faqs_main.*.translations.id.Pertanyaan' => 'nullable|string',
+            'faqs_main.*.translations.id.Jawaban' => 'nullable|string',
+            'faqs_main.*.translations.en.Pertanyaan' => 'nullable|string',
+            'faqs_main.*.translations.en.Jawaban' => 'nullable|string',
         ]);
 
         $solusi = HalamanSolusi::findOrFail($id);
+
+        $buildFaqItems = function (array $faqsMain, string $locale) {
+            return collect($faqsMain)->map(fn ($row) => [
+                'q' => $row['translations'][$locale]['Pertanyaan'] ?? null,
+                'a' => $row['translations'][$locale]['Jawaban'] ?? null,
+            ])->filter(fn ($item) => !empty($item['q']) || !empty($item['a']))->values()->all();
+        };
 
         // Update Data Utama
         $solusi->Judul = $validated['translations']['id']['Judul'];
         $solusi->DeskripsiSingkat = $validated['translations']['id']['DeskripsiSingkat'] ?? null;
         $solusi->Konten = $validated['translations']['id']['Konten'];
+        $solusi->FaqItems = !empty($request->faqs_main) ? $buildFaqItems($request->faqs_main, 'id') : null;
         $solusi->SEOTitle = $validated['translations']['id']['SEOTitle'] ?? null;
         $solusi->SEODescription = $validated['translations']['id']['SEODescription'] ?? null;
         $solusi->SEOKeywords = $validated['translations']['id']['SEOKeywords'] ?? null;
-        $solusi->Slug = $request->Slug ?: Str::slug($solusi->Judul);
+
+        // Auto-generate slug unik saat update (kecuali milik data ini sendiri)
+        $baseSlug = Str::slug($request->Slug ?: $solusi->Judul);
+        $slug = $baseSlug;
+        $counter = 1;
+        while (HalamanSolusi::where('Slug', $slug)->where('id', '!=', $solusi->id)->exists()) {
+            $slug = $baseSlug . '-' . $counter++;
+        }
+        $solusi->Slug = $slug;
+
         $solusi->IsPublished = $request->IsPublished;
         $solusi->UserUpdate = auth()->user()->name;
 
@@ -532,6 +582,7 @@ class HalamanSolusiController extends Controller
                     'Judul' => $validated['translations'][$locale]['Judul'] ?? null,
                     'DeskripsiSingkat' => $validated['translations'][$locale]['DeskripsiSingkat'] ?? null,
                     'Konten' => $validated['translations'][$locale]['Konten'] ?? null,
+                    'FaqItems' => !empty($request->faqs_main) ? $buildFaqItems($request->faqs_main, $locale) : null,
                     'SEOTitle' => $validated['translations'][$locale]['SEOTitle'] ?? null,
                     'SEODescription' => $validated['translations'][$locale]['SEODescription'] ?? null,
                     'SEOKeywords' => $validated['translations'][$locale]['SEOKeywords'] ?? null,
@@ -539,36 +590,60 @@ class HalamanSolusiController extends Controller
             );
         }
 
-        // Hapus detail lama & file-nya (untuk menghindari data sampah/orphaned files)
-        $oldDetails = $solusi->details;
-        foreach ($oldDetails as $oldDetail) {
-            if ($oldDetail->Gambar && \Storage::disk('public')->exists($oldDetail->Gambar)) {
-                \Storage::disk('public')->delete($oldDetail->Gambar);
-            }
-            $oldDetail->delete();  // Cascade delete akan otomatis menghapus translations-nya
-        }
-
-        // Buat ulang detail baru
+        // Update atau sinkronkan detail & terjemahan
         if (is_array($request->details)) {
+            $keptDetailIds = [];
+
             foreach ($request->details as $i => $det) {
-                $detail = new HalamanSolusidetail();
-                $detail->HalamanSolusiId = $solusi->id;
+                $detailId = !empty($det['id']) ? (int) $det['id'] : null;
+                $detail = $detailId ? $solusi->details()->where('id', $detailId)->first() : null;
+
+                if (!$detail) {
+                    $detail = new HalamanSolusiDetail();
+                    $detail->HalamanSolusiId = $solusi->id;
+                }
 
                 if ($request->hasFile("details.$i.gambar")) {
+                    if ($detail->Gambar && Storage::disk('public')->exists($detail->Gambar)) {
+                        Storage::disk('public')->delete($detail->Gambar);
+                    }
                     $file = $request->file("details.$i.gambar");
                     $detail->Gambar = $file->storeAs('halaman-solusi/detail', $file->hashName(), 'public');
                 }
+
+                // Fallback Judul & Keterangan di model utama
+                $detail->Judul = $det['translations']['id']['Judul'] ?? null;
+                $detail->Keterangan = $det['translations']['id']['Keterangan'] ?? null;
                 $detail->save();
 
                 foreach (['id', 'en'] as $locale) {
                     if (!empty($det['translations'][$locale]['Judul'])) {
-                        $detail->translations()->create([
-                            'Locale' => $locale,
-                            'Judul' => $det['translations'][$locale]['Judul'] ?? null,
-                            'Keterangan' => $det['translations'][$locale]['Keterangan'] ?? null,
-                        ]);
+                        $detail->translations()->updateOrCreate(
+                            ['Locale' => $locale],
+                            [
+                                'Judul' => $det['translations'][$locale]['Judul'] ?? null,
+                                'Keterangan' => $det['translations'][$locale]['Keterangan'] ?? null,
+                            ]
+                        );
                     }
                 }
+
+                $keptDetailIds[] = $detail->id;
+            }
+
+            // Hapus detail yang sudah dihapus oleh user pada form
+            $removedDetails = $solusi->details()->whereNotIn('id', $keptDetailIds)->get();
+            foreach ($removedDetails as $rem) {
+                if ($rem->Gambar && Storage::disk('public')->exists($rem->Gambar)) {
+                    Storage::disk('public')->delete($rem->Gambar);
+                }
+                $rem->translations()->delete();
+                if ($rem->subpage) {
+                    $rem->subpage->items()->delete();
+                    $rem->subpage->translations()->delete();
+                    $rem->subpage->delete();
+                }
+                $rem->delete();
             }
         }
 

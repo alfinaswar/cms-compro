@@ -241,7 +241,7 @@
     @if (!empty($tr($halamanSolusi, 'Konten')))
         <section class="py-16 {{ !empty($halamanSolusi->Gambar) ? 'bg-slate-50' : 'bg-white' }}">
             <div class="container mx-auto px-6">
-                <div class="max-w-3xl mx-auto">
+                <div class="max-w-5xl mx-auto">
                     <div class="flex items-center gap-3 mb-6">
                         <span class="h-px w-8 bg-brand-600"></span>
                         <span
@@ -261,95 +261,97 @@
     @if ($details->count() > 0)
         <section class="py-16 {{ !empty($tr($halamanSolusi, 'Konten')) ? 'bg-white' : 'bg-slate-50' }}">
             <div class="container mx-auto px-6">
-                <!-- Section Header -->
-                <div class="max-w-3xl mb-12">
-                    <div class="flex items-center gap-3 mb-4">
-                        <span class="h-px w-8 bg-brand-600"></span>
-                        <span
-                            class="text-xs font-bold text-brand-600 uppercase tracking-widest">{{ __('Features & Capabilities') }}</span>
+                <div class="max-w-5xl mx-auto">
+                    <!-- Section Header -->
+                    <div class="max-w-3xl mb-12">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="h-px w-8 bg-brand-600"></span>
+                            <span
+                                class="text-xs font-bold text-brand-600 uppercase tracking-widest">{{ __('Features & Capabilities') }}</span>
+                        </div>
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight">
+                            {{ __('What You Get with This Solution') }}
+                        </h2>
                     </div>
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight">
-                        {{ __('What You Get with This Solution') }}
-                    </h2>
-                </div>
 
-                <!-- Grid Details -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    @foreach ($details as $index => $detail)
-                        @php
-                            $detailJudul = $tr($detail, 'Judul');
-                            $detailKeterangan = $tr($detail, 'Keterangan');
-                            $number = str_pad($index + 1, 2, '0', STR_PAD_LEFT);
-                            // Kartu detail dengan subhalaman publikasi dapat diklik menuju halaman sub-solusi
-                            $hasSub = $detail->subpage && $detail->subpage->IsPublished && filled($detail->subpage->Slug);
-                            $subUrl = $hasSub
-                                ? route('halaman-solusi.sub-show', ['locale' => $locale, 'parent' => $halamanSolusi->Slug, 'sub' => $detail->subpage->Slug])
-                                : null;
-                            $cardTag = $hasSub ? 'a' : 'div';
-                        @endphp
+                    <!-- Grid Details -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        @foreach ($details as $index => $detail)
+                            @php
+                                $detailJudul = $tr($detail, 'Judul');
+                                $detailKeterangan = $tr($detail, 'Keterangan');
+                                $number = str_pad($index + 1, 2, '0', STR_PAD_LEFT);
+                                // Kartu detail dapat diklik jika subhalaman ada (atau dibuat otomatis jika sudah ada subpage)
+                                $hasSub = $detail->subpage && filled($detail->subpage->Slug);
+                                $subUrl = $hasSub
+                                    ? route('halaman-solusi.sub-show', ['locale' => $locale, 'parent' => $halamanSolusi->Slug, 'sub' => $detail->subpage->Slug])
+                                    : null;
+                                $cardTag = $hasSub ? 'a' : 'div';
+                            @endphp
 
-                        <{{ $cardTag }} @if ($hasSub) href="{{ $subUrl }}" @endif class="block h-full bg-white rounded-2xl border border-slate-200 overflow-hidden @if ($hasSub) hover:shadow-xl hover:-translate-y-1 @else hover:shadow-xl @endif hover:border-brand-300 transition-all duration-300 group flex flex-col">
-                            <!-- Image / Icon Placeholder -->
-                            <div
-                                class="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-slate-100 to-slate-50">
-                                @if ($detail->Gambar)
-                                    <img src="{{ asset('storage/' . $detail->Gambar) }}" alt="{{ $detailJudul }}"
-                                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                                    <div
-                                        class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent">
-                                    </div>
-                                @else
-                                    <div class="w-full h-full flex items-center justify-center">
+                            <{{ $cardTag }} @if ($hasSub) href="{{ $subUrl }}" @endif class="block h-full bg-white rounded-2xl border border-slate-200 overflow-hidden @if ($hasSub) hover:shadow-xl hover:-translate-y-1 @else hover:shadow-xl @endif hover:border-brand-300 transition-all duration-300 group flex flex-col">
+                                <!-- Image / Icon Placeholder -->
+                                <div
+                                    class="relative aspect-[16/10] overflow-hidden bg-gradient-to-br from-slate-100 to-slate-50">
+                                    @if ($detail->Gambar)
+                                        <img src="{{ asset('storage/' . $detail->Gambar) }}" alt="{{ $detailJudul }}"
+                                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                                         <div
-                                            class="w-20 h-20 rounded-2xl bg-brand-100 flex items-center justify-center group-hover:bg-brand-600 transition-colors">
-                                            <i
-                                                class="fa-solid fa-cube text-3xl text-brand-600 group-hover:text-white transition-colors"></i>
+                                            class="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent">
+                                        </div>
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center">
+                                            <div
+                                                class="w-16 h-16 rounded-2xl bg-brand-100 flex items-center justify-center group-hover:bg-brand-600 transition-colors">
+                                                <i
+                                                    class="fa-solid fa-cube text-2xl text-brand-600 group-hover:text-white transition-colors"></i>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    <!-- Number Badge -->
+                                    <div class="absolute top-3 left-3">
+                                        <div
+                                            class="w-9 h-9 rounded-lg bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md">
+                                            <span class="text-xs font-extrabold text-brand-600">{{ $number }}</span>
                                         </div>
                                     </div>
-                                @endif
 
-                                <!-- Number Badge -->
-                                <div class="absolute top-4 left-4">
-                                    <div
-                                        class="w-12 h-12 rounded-xl bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md">
-                                        <span class="text-sm font-extrabold text-brand-600">{{ $number }}</span>
-                                    </div>
+                                    @if ($detail->Gambar)
+                                        <div class="absolute bottom-3 left-3 right-3">
+                                            <h3 class="text-base md:text-lg font-bold text-white leading-snug drop-shadow-md">
+                                                {{ $detailJudul }}
+                                            </h3>
+                                        </div>
+                                    @endif
                                 </div>
 
-                                @if ($detail->Gambar)
-                                    <div class="absolute bottom-4 left-4 right-4">
-                                        <h3 class="text-lg md:text-xl font-bold text-white leading-snug drop-shadow-lg">
+                                <!-- Content -->
+                                <div class="p-5 flex flex-col flex-grow">
+                                    @if (!$detail->Gambar)
+                                        <h3
+                                            class="text-lg font-bold text-slate-900 mb-2 group-hover:text-brand-600 transition-colors">
                                             {{ $detailJudul }}
                                         </h3>
+                                    @endif
+
+                                    <div class="detail-text flex-grow text-sm leading-relaxed text-slate-600">
+                                        {!! $detailKeterangan !!}
                                     </div>
-                                @endif
-                            </div>
 
-                            <!-- Content -->
-                            <div class="p-7 flex flex-col flex-grow">
-                                @if (!$detail->Gambar)
-                                    <h3
-                                        class="text-xl font-bold text-slate-900 mb-3 group-hover:text-brand-600 transition-colors">
-                                        {{ $detailJudul }}
-                                    </h3>
-                                @endif
-
-                                <div class="detail-text flex-grow">
-                                    {!! $detailKeterangan !!}
+                                    @if ($hasSub)
+                                        <div class="mt-4 pt-3 border-t border-slate-100">
+                                            <span
+                                                class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-600 group-hover:text-brand-700 transition-colors">
+                                                <i class="fa-solid fa-circle-arrow-right"></i>
+                                                {{ __('Lihat Detail') }}
+                                            </span>
+                                        </div>
+                                    @endif
                                 </div>
-
-                                @if ($hasSub)
-                                    <div class="mt-5 pt-5 border-t border-slate-100">
-                                        <span
-                                            class="inline-flex items-center gap-2 text-sm font-bold text-brand-600 group-hover:text-brand-700 transition-colors">
-                                            <i class="fa-solid fa-circle-arrow-right"></i>
-                                            {{ __('Lihat Detail') }}
-                                        </span>
-                                    </div>
-                                @endif
-                            </div>
-                        </{{ $cardTag }}>
-                    @endforeach
+                            </{{ $cardTag }}>
+                        @endforeach
+                    </div>
                 </div>
             </div>
         </section>
@@ -359,53 +361,91 @@
     <!-- FAQ SECTION (WITH SCHEMA.ORG JSON-LD) -->
     <!-- ========================================== -->
     @php
-        $faqs = [
-            [
-                'q' =>
-                    $locale === 'en'
-                        ? 'What does this solution encompass and who is it designed for?'
-                        : 'Apa saja yang dicakup dalam solusi ini dan untuk siapa solusi ini dirancang?',
-                'a' =>
-                    $locale === 'en'
-                        ? 'This solution provides comprehensive, end-to-end digital credentials and high-security document infrastructure tailored for governments, financial institutions, and global corporations demanding uncompromising authenticity, compliance, and reliability.'
-                        : 'Solusi ini mencakup infrastruktur teknologi sekuritas terpadu, mulai dari manufaktur kredensial fisik berkeamanan tinggi hingga transformasi identitas digital dan pembayaran yang dirancang khusus untuk instansi pemerintah, perbankan, dan sektor industri enterprise.',
-            ],
-            [
-                'q' =>
-                    $locale === 'en'
-                        ? 'Does this solution adhere to international security certifications?'
-                        : 'Apakah solusi ini mematuhi standar sertifikasi keamanan internasional?',
-                'a' =>
-                    $locale === 'en'
-                        ? 'Yes, all of our processes and facilities are certified under ISO 9001, ISO 27001 (Information Security Management), INTERGRAF High Security Printing certification, and EMV compliance for banking and identity credentials.'
-                        : 'Ya. Seluruh fasilitas produksi dan operasional kami telah tersertifikasi standar internasional bergengsi, termasuk ISO 9001, ISO 27001 (Sistem Manajemen Keamanan Informasi), sertifikasi sekuritas global INTERGRAF, serta standar EMV untuk kartu pembayaran dan identitas cerdas.',
-            ],
-            [
-                'q' =>
-                    $locale === 'en'
-                        ? 'Can this solution integrate with our existing core enterprise systems?'
-                        : 'Dapatkah solusi ini diintegrasikan dengan infrastruktur sistem yang sudah ada?',
-                'a' =>
-                    $locale === 'en'
-                        ? 'Yes. We provide modern RESTful APIs, SDKs, and customized middleware to facilitate seamless interoperability with your core enterprise architectures, database systems, and identity validation platforms.'
-                        : 'Tentu. Kami menyediakan arsitektur integrasi berbasis API yang aman, SDK modular, serta dukungan kustomisasi middleware yang memudahkan integrasi langsung dengan core banking, ERP korporat, atau database kependudukan nasional.',
-            ],
-            [
-                'q' =>
-                    $locale === 'en'
-                        ? 'What service level agreements (SLA) and technical support are offered?'
-                        : 'Bagaimana komitmen SLA dan dukungan teknis purna jual yang disediakan?',
-                'a' =>
-                    $locale === 'en'
-                        ? 'We offer comprehensive SLA tiers including 24/7 dedicated enterprise technical support, scheduled system maintenance, preventative monitoring, and on-site expert consultation.'
-                        : 'Kami berkomitmen menyediakan SLA komprehensif, tim teknis berdedikasi 24/7, pemeliharaan berkala, serta pendampingan langsung dari tenaga ahli profesional guna memastikan kelancaran operasional jangka panjang.',
-            ],
-        ];
+        // Prioritas FAQ:
+        // 1. FAQ khusus solusi yang diisi di admin (FaqItems)
+        // 2. FAQ dari subpage milik detail solusi ini (jika ada)
+        // 3. Fallback ke FAQ standar
+        $faqs = [];
+
+        $solusiFaq = $halamanSolusi->t('FaqItems', $locale);
+        if (is_array($solusiFaq) && count($solusiFaq) > 0) {
+            foreach ($solusiFaq as $f) {
+                if (!empty($f['q']) || !empty($f['a'])) {
+                    $faqs[] = [
+                        'q' => $f['q'] ?? '',
+                        'a' => $f['a'] ?? '',
+                    ];
+                }
+            }
+        }
+
+        if (empty($faqs)) {
+            foreach ($details as $det) {
+                if ($det->subpage && $det->subpage->items) {
+                    $subFaqs = $det->subpage->items->where('Section', 'faq');
+                    foreach ($subFaqs as $sFaq) {
+                        $q = $sFaq->t('Judul', $locale);
+                        $a = $sFaq->t('Deskripsi', $locale);
+                        if (filled($q) || filled($a)) {
+                            $faqs[] = [
+                                'q' => $q,
+                                'a' => $a,
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+
+        if (empty($faqs)) {
+            $faqs = [
+                [
+                    'q' =>
+                        $locale === 'en'
+                            ? 'What does this solution encompass and who is it designed for?'
+                            : 'Apa saja yang dicakup dalam solusi ini dan untuk siapa solusi ini dirancang?',
+                    'a' =>
+                        $locale === 'en'
+                            ? 'This solution provides comprehensive, end-to-end digital credentials and high-security document infrastructure tailored for governments, financial institutions, and global corporations demanding uncompromising authenticity, compliance, and reliability.'
+                            : 'Solusi ini mencakup infrastruktur teknologi sekuritas terpadu, mulai dari manufaktur kredensial fisik berkeamanan tinggi hingga transformasi identitas digital dan pembayaran yang dirancang khusus untuk instansi pemerintah, perbankan, dan sektor industri enterprise.',
+                ],
+                [
+                    'q' =>
+                        $locale === 'en'
+                            ? 'Does this solution adhere to international security certifications?'
+                            : 'Apakah solusi ini mematuhi standar sertifikasi keamanan internasional?',
+                    'a' =>
+                        $locale === 'en'
+                            ? 'Yes, all of our processes and facilities are certified under ISO 9001, ISO 27001 (Information Security Management), INTERGRAF High Security Printing certification, and EMV compliance for banking and identity credentials.'
+                            : 'Ya. Seluruh fasilitas produksi dan operasional kami telah tersertifikasi standar internasional bergengsi, termasuk ISO 9001, ISO 27001 (Sistem Manajemen Keamanan Informasi), sertifikasi sekuritas global INTERGRAF, serta standar EMV untuk kartu pembayaran dan identitas cerdas.',
+                ],
+                [
+                    'q' =>
+                        $locale === 'en'
+                            ? 'Can this solution integrate with our existing core enterprise systems?'
+                            : 'Dapatkah solusi ini diintegrasikan dengan infrastruktur sistem yang sudah ada?',
+                    'a' =>
+                        $locale === 'en'
+                            ? 'Yes. We provide modern RESTful APIs, SDKs, and customized middleware to facilitate seamless interoperability with your core enterprise architectures, database systems, and identity validation platforms.'
+                            : 'Tentu. Kami menyediakan arsitektur integrasi berbasis API yang aman, SDK modular, serta dukungan kustomisasi middleware yang memudahkan integrasi langsung dengan core banking, ERP korporat, atau database kependudukan nasional.',
+                ],
+                [
+                    'q' =>
+                        $locale === 'en'
+                            ? 'What service level agreements (SLA) and technical support are offered?'
+                            : 'Bagaimana komitmen SLA dan dukungan teknis purna jual yang disediakan?',
+                    'a' =>
+                        $locale === 'en'
+                            ? 'We offer comprehensive SLA tiers including 24/7 dedicated enterprise technical support, scheduled system maintenance, preventative monitoring, and on-site expert consultation.'
+                            : 'Kami berkomitmen menyediakan SLA komprehensif, tim teknis berdedikasi 24/7, pemeliharaan berkala, serta pendampingan langsung dari tenaga ahli profesional guna memastikan kelancaran operasional jangka panjang.',
+                ],
+            ];
+        }
     @endphp
 
     <section class="py-20 bg-slate-50 border-t border-slate-200/80" id="faq-section">
         <div class="container mx-auto px-6">
-            <div class="max-w-3xl mx-auto">
+            <div class="max-w-5xl mx-auto">
                 <div class="text-center mb-12">
                     <span
                         class="inline-flex items-center gap-1.5 py-1.5 px-4 rounded-full bg-brand-50 text-brand-700 text-xs font-bold uppercase tracking-wider mb-4 border border-brand-200">

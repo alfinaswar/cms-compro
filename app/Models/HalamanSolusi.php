@@ -18,6 +18,10 @@ class HalamanSolusi extends Model
      */
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'FaqItems' => 'array',
+    ];
+
     /**
      * Relasi ke tabel terjemahan utama
      */
