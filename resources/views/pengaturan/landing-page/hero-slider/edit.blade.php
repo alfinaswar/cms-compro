@@ -131,94 +131,224 @@
 
                             <hr class="my-4">
 
-                            {{-- KONTEN TEKS --}}
-                            <div class="form-group">
-                                <label for="SubJudul"><strong>Sub Judul</strong></label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="fa fa-tag"></i></span>
-                                    </div>
-                                    <input type="text" name="SubJudul" id="SubJudul"
-                                        class="form-control @error('SubJudul') is-invalid @enderror"
-                                        placeholder="contoh: Mitra Teknologi Terpercaya"
-                                        value="{{ old('SubJudul', $heroSlider->SubJudul) }}">
-                                    @error('SubJudul')
-                                        <span class="invalid-feedback d-block">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="JudulUtama"><strong>Judul Utama</strong> <span class="text-danger">*</span></label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="fa fa-heading"></i></span>
-                                    </div>
-                                    <input type="text" name="JudulUtama" id="JudulUtama"
-                                        class="form-control @error('JudulUtama') is-invalid @enderror"
-                                        placeholder="contoh: Transformasi Digital Identitas & Pembayaran"
-                                        value="{{ old('JudulUtama', $heroSlider->JudulUtama) }}" required>
-                                    @error('JudulUtama')
-                                        <span class="invalid-feedback d-block">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="Deskripsi"><strong>Deskripsi</strong></label>
-                                <textarea name="Deskripsi" id="Deskripsi" rows="3"
-                                    class="form-control @error('Deskripsi') is-invalid @enderror"
-                                    placeholder="Deskripsi singkat yang muncul di bawah judul utama...">{{ old('Deskripsi', $heroSlider->Deskripsi) }}</textarea>
-                                @error('Deskripsi')
-                                    <span class="invalid-feedback d-block">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            <hr class="my-4">
-
-                            {{-- CALL TO ACTION (CTA) --}}
-                            <h6 class="text-primary mb-3"><i class="fa fa-mouse-pointer mr-2"></i><strong>Pengaturan Tombol (CTA)</strong></h6>
-
-                            <div class="row">
-                                <div class="col-md-6">
+                            {{-- KONTEN TEKS MULTI BAHASA --}}
+                            @php
+                                $heroHasEnError = collect(['SubJudulEn','JudulUtamaEn','HighlightEn','TeksPenuhEn','DeskripsiEn','TeksCTAEn','TeksCTA2En'])->contains(fn($f) => $errors->has($f));
+                            @endphp
+                            <ul class="nav nav-tabs mb-3" id="heroLangTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link {{ $heroHasEnError ? '' : 'active' }}" id="tab-id" data-toggle="tab" href="#panel-id" role="tab">
+                                        🇮🇩 Bahasa Indonesia
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ $heroHasEnError ? 'active' : '' }}" id="tab-en" data-toggle="tab" href="#panel-en" role="tab">
+                                        🇬🇧 English
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="heroLangTabContent">
+                                {{-- PANEL BAHASA INDONESIA --}}
+                                <div class="tab-pane fade {{ $heroHasEnError ? '' : 'show active' }}" id="panel-id" role="tabpanel">
                                     <div class="form-group">
-                                        <label for="TeksCTA"><strong>Teks Tombol 1</strong></label>
-                                        <input type="text" name="TeksCTA" id="TeksCTA" class="form-control @error('TeksCTA') is-invalid @enderror" placeholder="contoh: Jelajahi Solusi" value="{{ old('TeksCTA', $heroSlider->TeksCTA) }}">
-                                        @error('TeksCTA') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="LinkCTA"><strong>Link Tombol 1</strong></label>
+                                        <label for="SubJudul"><strong>Sub Judul</strong></label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
-                                                <span class="input-group-text"><i class="fa fa-link"></i></span>
+                                                <span class="input-group-text"><i class="fa fa-tag"></i></span>
                                             </div>
-                                            <input type="url" name="LinkCTA" id="LinkCTA" class="form-control @error('LinkCTA') is-invalid @enderror" placeholder="https://..." value="{{ old('LinkCTA', $heroSlider->LinkCTA) }}">
-                                            @error('LinkCTA') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
+                                            <input type="text" name="SubJudul" id="SubJudul"
+                                                class="form-control @error('SubJudul') is-invalid @enderror"
+                                                placeholder="contoh: Mitra Teknologi Terpercaya"
+                                                value="{{ old('SubJudul', $heroSlider->SubJudul) }}">
+                                            @error('SubJudul')
+                                                <span class="invalid-feedback d-block">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="JudulUtama"><strong>Judul Utama</strong> <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fa fa-heading"></i></span>
+                                            </div>
+                                            <input type="text" name="JudulUtama" id="JudulUtama"
+                                                class="form-control @error('JudulUtama') is-invalid @enderror"
+                                                placeholder="contoh: Transformasi Digital Identitas & Pembayaran"
+                                                value="{{ old('JudulUtama', $heroSlider->JudulUtama) }}">
+                                            @error('JudulUtama')
+                                                <span class="invalid-feedback d-block">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="Highlight"><strong>Highlight Judul (Opsional)</strong></label>
+                                        <input type="text" name="Highlight" id="Highlight"
+                                            class="form-control @error('Highlight') is-invalid @enderror"
+                                            placeholder="contoh: untuk masa depan" value="{{ old('Highlight', $heroSlider->Highlight) }}">
+                                        @error('Highlight') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
+                                        <small class="text-muted">Teks berwarna gradien yang tampil di baris kedua judul.</small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="TeksPenuh"><strong>Teks Penuh Judul (Opsional)</strong></label>
+                                        <input type="text" name="TeksPenuh" id="TeksPenuh"
+                                            class="form-control @error('TeksPenuh') is-invalid @enderror"
+                                            placeholder="teks lanjutan setelah highlight" value="{{ old('TeksPenuh', $heroSlider->TeksPenuh) }}">
+                                        @error('TeksPenuh') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="Deskripsi"><strong>Deskripsi</strong></label>
+                                        <textarea name="Deskripsi" id="Deskripsi" rows="3"
+                                            class="form-control @error('Deskripsi') is-invalid @enderror"
+                                            placeholder="Deskripsi singkat yang muncul di bawah judul utama...">{{ old('Deskripsi', $heroSlider->Deskripsi) }}</textarea>
+                                        @error('Deskripsi')
+                                            <span class="invalid-feedback d-block">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <hr class="my-4">
+
+                                    {{-- CALL TO ACTION (CTA) --}}
+                                    <h6 class="text-primary mb-3"><i class="fa fa-mouse-pointer mr-2"></i><strong>Pengaturan Tombol (CTA)</strong></h6>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="TeksCTA"><strong>Teks Tombol 1</strong></label>
+                                                <input type="text" name="TeksCTA" id="TeksCTA" class="form-control @error('TeksCTA') is-invalid @enderror" placeholder="contoh: Jelajahi Solusi" value="{{ old('TeksCTA', $heroSlider->TeksCTA) }}">
+                                                @error('TeksCTA') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="LinkCTA"><strong>Link Tombol 1</strong></label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fa fa-link"></i></span>
+                                                    </div>
+                                                    <input type="url" name="LinkCTA" id="LinkCTA" class="form-control @error('LinkCTA') is-invalid @enderror" placeholder="https://..." value="{{ old('LinkCTA', $heroSlider->LinkCTA) }}">
+                                                    @error('LinkCTA') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="TeksCTA2"><strong>Teks Tombol 2 (Opsional)</strong></label>
+                                                <input type="text" name="TeksCTA2" id="TeksCTA2" class="form-control @error('TeksCTA2') is-invalid @enderror" placeholder="contoh: Hubungi Kami" value="{{ old('TeksCTA2', $heroSlider->TeksCTA2) }}">
+                                                @error('TeksCTA2') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="LinkCTA2"><strong>Link Tombol 2</strong></label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i class="fa fa-link"></i></span>
+                                                    </div>
+                                                    <input type="url" name="LinkCTA2" id="LinkCTA2" class="form-control @error('LinkCTA2') is-invalid @enderror" placeholder="https://..." value="{{ old('LinkCTA2', $heroSlider->LinkCTA2) }}">
+                                                    @error('LinkCTA2') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="TeksCTA2"><strong>Teks Tombol 2 (Opsional)</strong></label>
-                                        <input type="text" name="TeksCTA2" id="TeksCTA2" class="form-control @error('TeksCTA2') is-invalid @enderror" placeholder="contoh: Hubungi Kami" value="{{ old('TeksCTA2', $heroSlider->TeksCTA2) }}">
-                                        @error('TeksCTA2') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
+                                {{-- PANEL ENGLISH --}}
+                                <div class="tab-pane fade {{ $heroHasEnError ? 'show active' : '' }}" id="panel-en" role="tabpanel">
+                                    <div class="alert alert-info py-2" style="font-size: 13px;">
+                                        <i class="fa fa-info-circle mr-1"></i>
+                                        Isi kolom English agar konten otomatis tampil saat frontend menggunakan bahasa Inggris.
+                                        Jika kosong, sistem akan menampilkan teks Bahasa Indonesia (fallback).
                                     </div>
-                                </div>
-                                <div class="col-md-6">
+
                                     <div class="form-group">
-                                        <label for="LinkCTA2"><strong>Link Tombol 2</strong></label>
+                                        <label for="SubJudulEn"><strong>Sub Title (English)</strong></label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
-                                                <span class="input-group-text"><i class="fa fa-link"></i></span>
+                                                <span class="input-group-text"><i class="fa fa-tag"></i></span>
                                             </div>
-                                            <input type="url" name="LinkCTA2" id="LinkCTA2" class="form-control @error('LinkCTA2') is-invalid @enderror" placeholder="https://..." value="{{ old('LinkCTA2', $heroSlider->LinkCTA2) }}">
-                                            @error('LinkCTA2') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
+                                            <input type="text" name="SubJudulEn" id="SubJudulEn"
+                                                class="form-control @error('SubJudulEn') is-invalid @enderror"
+                                                placeholder="e.g. Trusted Technology Partner"
+                                                value="{{ old('SubJudulEn', $heroSlider->SubJudulEn) }}">
+                                            @error('SubJudulEn')
+                                                <span class="invalid-feedback d-block">{{ $message }}</span>
+                                            @enderror
                                         </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="JudulUtamaEn"><strong>Main Title (English)</strong></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fa fa-heading"></i></span>
+                                            </div>
+                                            <input type="text" name="JudulUtamaEn" id="JudulUtamaEn"
+                                                class="form-control @error('JudulUtamaEn') is-invalid @enderror"
+                                                placeholder="e.g. Digital Transformation of Identity & Payment"
+                                                value="{{ old('JudulUtamaEn', $heroSlider->JudulUtamaEn) }}">
+                                            @error('JudulUtamaEn')
+                                                <span class="invalid-feedback d-block">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="HighlightEn"><strong>Title Highlight (English - Optional)</strong></label>
+                                        <input type="text" name="HighlightEn" id="HighlightEn"
+                                            class="form-control @error('HighlightEn') is-invalid @enderror"
+                                            placeholder="e.g. for the future" value="{{ old('HighlightEn', $heroSlider->HighlightEn) }}">
+                                        @error('HighlightEn') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="TeksPenuhEn"><strong>Full Title Text (English - Optional)</strong></label>
+                                        <input type="text" name="TeksPenuhEn" id="TeksPenuhEn"
+                                            class="form-control @error('TeksPenuhEn') is-invalid @enderror"
+                                            placeholder="continuation text after highlight" value="{{ old('TeksPenuhEn', $heroSlider->TeksPenuhEn) }}">
+                                        @error('TeksPenuhEn') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="DeskripsiEn"><strong>Description (English)</strong></label>
+                                        <textarea name="DeskripsiEn" id="DeskripsiEn" rows="3"
+                                            class="form-control @error('DeskripsiEn') is-invalid @enderror"
+                                            placeholder="Short description shown below the main title...">{{ old('DeskripsiEn', $heroSlider->DeskripsiEn) }}</textarea>
+                                        @error('DeskripsiEn')
+                                            <span class="invalid-feedback d-block">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+
+                                    <hr class="my-4">
+
+                                    <h6 class="text-primary mb-3"><i class="fa fa-mouse-pointer mr-2"></i><strong>Button Text (CTA) - English</strong></h6>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="TeksCTAEn"><strong>Button 1 Text (English)</strong></label>
+                                                <input type="text" name="TeksCTAEn" id="TeksCTAEn" class="form-control @error('TeksCTAEn') is-invalid @enderror" placeholder="e.g. Explore Solutions" value="{{ old('TeksCTAEn', $heroSlider->TeksCTAEn) }}">
+                                                @error('TeksCTAEn') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="TeksCTA2En"><strong>Button 2 Text (English - Optional)</strong></label>
+                                                <input type="text" name="TeksCTA2En" id="TeksCTA2En" class="form-control @error('TeksCTA2En') is-invalid @enderror" placeholder="e.g. Contact Us" value="{{ old('TeksCTA2En', $heroSlider->TeksCTA2En) }}">
+                                                @error('TeksCTA2En') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="alert alert-secondary py-2" style="font-size: 13px;">
+                                        <i class="fa fa-link mr-1"></i>
+                                        <strong>Catatan:</strong> Link tombol (URL) berlaku untuk kedua bahasa dan diatur pada tab Bahasa Indonesia.
                                     </div>
                                 </div>
                             </div>

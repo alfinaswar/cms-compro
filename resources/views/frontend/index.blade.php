@@ -246,6 +246,52 @@
         $menus = \App\Models\Menu::menuHeader()
             ->with(['translations', 'children.translations'])
             ->get();
+
+        // Helper: normalisasi path URL (buang domain, query, fragment, trailing slash)
+        $navNormalizePath = function ($url) {
+            if (empty($url) || $url === '#') return null;
+            $u = strtolower(trim((string) parse_url((string) $url, PHP_URL_PATH), '/'));
+            return $u; // '' berarti homepage
+        };
+
+        // Path saat ini tanpa prefix locale (mis. 'id/solution/payment' => 'solution/payment')
+        $navCurrentPathRaw = trim(request()->path(), '/');
+        $navSegments = explode('/', $navCurrentPathRaw);
+        $navLocalePrefix = app()->getLocale();
+        if (($navSegments[0] ?? '') === $navLocalePrefix || in_array($navSegments[0] ?? '', ['id', 'en'], true)) {
+            array_shift($navSegments);
+        }
+        $navCurrentPath = strtolower(implode('/', $navSegments));
+
+        // Helper: cocokkan URL menu dengan halaman saat ini (exact match saja).
+        // Parent dropdown (Url '#') TIDAK AKAN pernah aktif — hanya child-nya yang bisa aktif.
+        $navIsActive = function ($url) use ($navNormalizePath, $navCurrentPath) {
+            $p = $navNormalizePath($url);
+            if ($p === null) return false;
+            if ($p === '') {
+                return $navCurrentPath === ''; // homepage
+            }
+            return $p === $navCurrentPath;
+        };
+
+        // Helper: normalize Url Simpanan Admin (buang domain sendiri agar tetap ter-match)
+        $navStoredPath = function ($url) use ($navNormalizePath) {
+            if (empty($url) || $url === '#') return null;
+            $u = strtolower(trim((string) $url));
+            // Jika URL absolut mengarah ke domain sendiri, pakai path-nya saja
+            $host = strtolower((string) request()->getHost());
+            if (preg_match('#^https?://([^/]+)(.*)$#i', $u, $m)) {
+                if ($host && strtolower($m[1]) === $host) {
+                    return $navNormalizePath($u);
+                }
+                return 'EXTERNAL:' . $u; // external link, tidak pernah active by path
+            }
+            return ltrim($u, '/');
+        };
+
+        // Deteksi halaman "Solusi" via route halaman-solusi.show (child Solution dari DB admin)
+        $navOnSolutionPage = request()->routeIs('halaman-solusi.show');
+        $navSolutionSlug = $navOnSolutionPage ? (string) (request()->route('id') ?? request()->route('slug') ?? '') : '';
     @endphp
 
     <!-- ========================================== -->
@@ -319,33 +365,45 @@
                                 $isActive =
                                     request()->routeIs($menu->RouteName) || request()->routeIs($menu->RouteName . '.*');
                             } else {
-                                $currentPath = trim(request()->path(), '/');
-                                $pathWithoutLocale = implode('/', array_slice(explode('/', $currentPath), 1));
-                                $menuPath = trim($menu->Url ?? '', '/');
-                                $isActive =
-                                    $pathWithoutLocale === $menuPath || ($menuPath === '' && $pathWithoutLocale === '');
+                                // Exact match saja — parent dengan Url '#' tidak akan pernah aktif
+                                $isActive = $navIsActive($menu->Url);
                             }
+
+                            // Helper cek aktif untuk child (memperbaiki false positive & self-domain URL admin)
+                            $childActiveCheck = function ($child) use (
+                                $navIsActive,
+                                $navStoredPath,
+                                $navOnSolutionPage,
+                                $navSolutionSlug,
+                            ) {
+                                if ($child->JenisLink === 'route' && !empty($child->RouteName)) {
+                                    return request()->routeIs($child->RouteName);
+                                }
+                                if ($navIsActive($child->Url)) {
+                                    return true;
+                                }
+                                // Halaman Solusi (/solusi/{slug}/): cocokkan child berdasarkan slug di Url
+                                if ($navOnSolutionPage && $navSolutionSlug !== '') {
+                                    $stored = $navStoredPath($child->Url);
+                                    if ($stored !== null && str_contains($stored, '/' . trim($navSolutionSlug, '/'))) {
+                                        return true;
+                                    }
+                                }
+                                return false;
+                            };
 
                             // Jika menu punya children, periksa apakah ada child yang aktif
                             if ($hasChildren && !$isActive) {
                                 foreach ($menu->children as $childCheck) {
-                                    if ($childCheck->JenisLink === 'route' && !empty($childCheck->RouteName)) {
-                                        if (
-                                            request()->routeIs($childCheck->RouteName) ||
-                                            request()->routeIs($childCheck->RouteName . '.*')
-                                        ) {
-                                            $isActive = true;
-                                            break;
-                                        }
-                                    } else {
-                                        $childPath = trim($childCheck->Url ?? '', '/');
-                                        if (!empty($childPath) && $pathWithoutLocale === $childPath) {
-                                            $isActive = true;
-                                            break;
-                                        }
+                                    if ($childActiveCheck($childCheck)) {
+                                        $isActive = true;
+                                        break;
                                     }
                                 }
                             }
+
+                            // 4. Underline aktif hanya saat navbar sudah sticky/scrolled (putih saat transparent)
+                            $activeUnderlineClass = $isActive ? 'nav-active-item after:w-full' : 'after:w-0';
                         @endphp
 
                         @if ($hasChildren)
@@ -400,11 +458,10 @@
                                                     $childUrl = '#';
                                                 }
 
-                                                if ($child->JenisLink === 'route' && !empty($child->RouteName)) {
-                                                    $isChildActive = request()->routeIs($child->RouteName);
+                                                if ($childActiveCheck($child)) {
+                                                    $isChildActive = true;
                                                 } else {
-                                                    $childPath = trim($child->Url ?? '', '/');
-                                                    $isChildActive = $pathWithoutLocale === $childPath;
+                                                    $isChildActive = false;
                                                 }
                                             @endphp
                                             <a href="{{ $childUrl }}" target="{{ $child->Target ?? '_self' }}"
@@ -547,11 +604,18 @@
                                 $isActive =
                                     request()->routeIs($menu->RouteName) || request()->routeIs($menu->RouteName . '.*');
                             } else {
-                                $currentPath = trim(request()->path(), '/');
-                                $pathWithoutLocale = implode('/', array_slice(explode('/', $currentPath), 1));
-                                $menuPath = trim($menu->Url ?? '', '/');
-                                $isActive =
-                                    $pathWithoutLocale === $menuPath || ($menuPath === '' && $pathWithoutLocale === '');
+                                // Exact match saja — parent dropdown (Url '#') tidak pernah aktif
+                                $isActive = $navIsActive($menu->Url);
+                            }
+
+                            // Child aktif check yang sama dengan desktop menu
+                            if ($hasChildren && !$isActive) {
+                                foreach ($menu->children as $childCheck) {
+                                    if ($childActiveCheck($childCheck)) {
+                                        $isActive = true;
+                                        break;
+                                    }
+                                }
                             }
                         @endphp
 
@@ -591,11 +655,10 @@
                                                 $childUrl = '#';
                                             }
 
-                                            if ($child->JenisLink === 'route' && !empty($child->RouteName)) {
-                                                $isChildActive = request()->routeIs($child->RouteName);
+                                            if ($childActiveCheck($child)) {
+                                                $isChildActive = true;
                                             } else {
-                                                $childPath = trim($child->Url ?? '', '/');
-                                                $isChildActive = $pathWithoutLocale === $childPath;
+                                                $isChildActive = false;
                                             }
                                         @endphp
                                         <a href="{{ $childUrl }}" target="{{ $child->Target ?? '_self' }}"
