@@ -76,7 +76,8 @@
             ($en ? 'Official Company Profile Video 2024' : 'Video Profil Perusahaan Resmi 2024');
         $videoTagline = $mediaMeta['video_tagline'] ?? 'IDENTITAS • PEMBAYARAN • PROTEKSI MEREK';
         $videoUrl = $mediaMeta['video_url'] ?? null;
-        $pdfUrl = $mediaMeta['pdf_url'] ?? '#';
+        $pdfFile = $mediaMeta['pdf_file'] ?? null;
+        $pdfUrl = !empty($pdfFile) ? asset('storage/' . $pdfFile) : ($mediaMeta['pdf_url'] ?? null);
         $quoteSubtitle =
             $mediaMeta['quote_subtitle'] ??
             ($en ? 'Executive Governance Leadership' : 'Kepemimpinan & Tata Kelola Eksekutif');
@@ -230,7 +231,12 @@
             }
 
             /* Responsive size adjustment for headings and subheadlines */
-            h1, h2, h3, h4, h5, h6,
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6,
             .headline,
             .subheadline,
             .sub-headline,
@@ -288,11 +294,11 @@
                 </nav>
 
                 @if ($heroDetails->count())
-                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 text-left mt-10">
+                    <div class="flex flex-wrap justify-center gap-4 text-left mt-10">
                         @foreach ($heroDetails as $stat)
                             @php [$statLabel, $statDesc] = $split($tr($stat, 'Deskripsi')); @endphp
                             <div
-                                class="bg-white/95 backdrop-blur-sm border border-white/20 rounded-lg px-5 py-4 shadow-lg shadow-brand-950/20 hover:shadow-xl hover:-translate-y-0.5 transition-all">
+                                class="w-[calc(50%-0.5rem)] md:w-[calc(33.333%-0.75rem)] lg:w-[calc(25%-0.75rem)] max-w-xs flex-1 min-w-[200px] bg-white/95 backdrop-blur-sm border border-white/20 rounded-lg px-5 py-4 shadow-lg shadow-brand-950/20 hover:shadow-xl hover:-translate-y-0.5 transition-all">
                                 <p class="mono-label text-[10px] font-bold text-blue-600 uppercase mb-2">
                                     {{ $statLabel ?: $tr($stat, 'Judul') ?? '' }}
                                 </p>
@@ -334,10 +340,10 @@
                 <div class="space-y-6">
                     <div class="rounded-xl overflow-hidden border border-slate-200 shadow-lg group">
                         <div class="relative aspect-video bg-slate-900 overflow-hidden">
-                            <span
+                            {{-- <span
                                 class="absolute top-4 left-4 mono-label text-[9px] font-bold text-white bg-slate-900/70 backdrop-blur-sm px-2.5 py-1 rounded uppercase tracking-widest z-10">
                                 <i class="fa-solid fa-circle-play mr-1"></i> {{ $videoBadge }}
-                            </span>
+                            </span> --}}
                             @if ($videoUrl && Str::contains($videoUrl, ['youtube.com', 'youtu.be']))
                                 <iframe class="w-full h-full absolute inset-0"
                                     src="https://www.youtube.com/embed/{{ \Illuminate\Support\Str::afterLast(parse_url($videoUrl, PHP_URL_PATH), '/') }}?rel=0&showinfo=0&autoplay=0"
@@ -375,11 +381,11 @@
                                 <i class="fa-regular fa-file-pdf text-blue-600"></i>
                                 {{ $en ? 'Download Company Profile' : 'Download Profil Perusahaan' }}
                             </span>
-                            <a href="{{ $pdfUrl ?: '#' }}"
-                                @if ($pdfUrl && $pdfUrl !== '#') target="_blank" rel="noopener" @endif
-                                class="inline-flex items-center px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-lg transition-colors">
+                            <button type="button"
+                                onclick="openDownloadModal()"
+                                class="inline-flex items-center px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-lg transition-colors cursor-pointer">
                                 <i class="fa-solid fa-download mr-2"></i> {{ $en ? 'Download Profile' : 'Unduh Profil' }}
-                            </a>
+                            </button>
                         </div>
                     </div>
 
@@ -566,20 +572,20 @@
             @endif
 
             @if ($isoDetails->count() || $tr($Iso, 'Judul'))
-                <div class="bg-slate-900 rounded-xl p-6 md:p-8 mb-8 relative overflow-hidden">
+                <div class="bg-[#0F2854] rounded-xl p-6 md:p-8 mb-8 relative overflow-hidden shadow-md">
                     <div
-                        class="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10">
+                        class="absolute top-0 right-0 w-64 h-64 bg-cyan-400 rounded-full mix-blend-multiply filter blur-3xl opacity-10">
                     </div>
                     <div class="relative z-10">
                         <div class="flex items-start gap-4 mb-6">
-                            <div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center flex-shrink-0">
-                                <i class="fa-solid fa-certificate text-blue-400"></i>
+                            <div class="w-10 h-10 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-certificate text-cyan-400"></i>
                             </div>
                             <div>
                                 <h3 class="text-white font-extrabold">
                                     {{ $tr($Iso, 'Judul') ?? ($en ? 'ISO Certification Suite (Complete ISO Range)' : 'ISO Certification Suite (Rangkaian ISO Lengkap)') }}
                                 </h3>
-                                <p class="mono-label text-[9px] text-slate-400 uppercase tracking-widest mt-1">
+                                <p class="mono-label text-[9px] text-slate-300 uppercase tracking-widest mt-1">
                                     {{ $tr($Iso, 'SubJudul') ?? ($en ? 'Accredited by INTERGRAF, TÜV NORD, Assurance Quality Certification, and QFS' : 'Terakreditasi oleh INTERGRAF, TÜV NORD, Assurance Quality Certification, dan QFS') }}
                                 </p>
                             </div>
@@ -589,12 +595,12 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                                 @foreach ($isoDetails as $iso)
                                     <div
-                                        class="bg-slate-800/60 border border-slate-700 rounded-lg p-4 hover:border-blue-500/50 transition-colors">
+                                        class="bg-white/5 border border-white/10 rounded-lg p-4 hover:border-cyan-400/40 hover:bg-white/10 transition-colors">
                                         <p class="flex items-center gap-2 text-xs font-bold text-white mb-1">
-                                            <i class="fa-solid fa-circle-check text-blue-400"></i>
+                                            <i class="fa-solid fa-circle-check text-cyan-400"></i>
                                             {{ $tr($iso, 'Judul') }}
                                         </p>
-                                        <div class="text-[11px] text-slate-400 leading-snug pl-6">{!! $tr($iso, 'Deskripsi') !!}
+                                        <div class="text-[11px] text-slate-300 leading-snug pl-6">{!! $tr($iso, 'Deskripsi') !!}
                                         </div>
                                     </div>
                                 @endforeach
@@ -603,11 +609,11 @@
 
                         @if ($tr($Iso, 'Deskripsi'))
                             <div
-                                class="mt-6 pt-4 border-t border-slate-800 flex flex-col md:flex-row justify-between gap-2">
+                                class="mt-6 pt-4 border-t border-white/10 flex flex-col md:flex-row justify-between gap-2">
                                 <span
-                                    class="mono-label text-[9px] text-slate-500 uppercase">{!! strip_tags($tr($Iso, 'Deskripsi')) !!}</span>
+                                    class="mono-label text-[9px] text-slate-300 uppercase">{!! strip_tags($tr($Iso, 'Deskripsi')) !!}</span>
                                 <span
-                                    class="mono-label text-[9px] font-bold text-blue-400 uppercase">{{ $en ? 'Full Integrated Compliance' : 'Kepatuhan Terintegrasi Penuh' }}</span>
+                                    class="mono-label text-[9px] font-bold text-cyan-300 uppercase">{{ $en ? 'Full Integrated Compliance' : 'Kepatuhan Terintegrasi Penuh' }}</span>
                             </div>
                         @endif
                     </div>
@@ -638,52 +644,136 @@
     </section>
 
     <!-- 7. CTA -->
-    <section class="py-16 bg-white">
+    <section class="py-16 bg-[#f3f4f8]">
         <div class="container mx-auto px-6">
-            <div class="bg-slate-900 rounded-2xl p-8 md:p-14 relative overflow-hidden">
-                <i
-                    class="fa-solid fa-shield-halved absolute -right-6 top-1/2 -translate-y-1/2 text-[220px] text-white/5 rotate-12"></i>
-                <div class="relative z-10 max-w-3xl">
+            <div class="bg-[#f8faff] rounded-2xl p-8 md:p-14 border border-slate-200/90 shadow-sm relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-10">
+                <div class="relative z-10 max-w-2xl">
                     <span
-                        class="inline-block mono-label text-[9px] font-bold text-blue-300 bg-blue-500/10 border border-blue-500/30 px-3 py-1.5 rounded uppercase tracking-widest mb-5">
-                        <i class="fa-solid fa-landmark mr-1"></i>
+                        class="inline-flex items-center gap-1.5 mono-label text-[10px] font-bold text-brand-700 bg-brand-50 border border-brand-200/80 px-3 py-1.5 rounded uppercase tracking-wider mb-5">
+                        <i class="fa-solid fa-lock text-xs"></i>
                         {{ $tr($Cta, 'SubJudul') ?? ($en ? 'Sovereign Government & Enterprise Service Desk' : 'Meja Layanan Pemerintah Berdaulat & Enterprise') }}
                     </span>
-                    <h2 class="text-2xl md:text-4xl font-extrabold text-white leading-tight mb-4">
-                        {{ $tr($Cta, 'Judul') ?? ($en ? 'Strategic Partner for Leading Credential & Security Document Provision in Southeast Asia' : 'Mitra Strategis Penyedia Kredensial & Dokumen Sekuritas Terdepan di Asia Tenggara') }}
+                    <h2 class="text-2xl md:text-3xl lg:text-4xl font-extrabold text-[#111827] leading-tight mb-4">
+                        {{ $tr($Cta, 'Judul') ?? ($en ? __('Solusi Kredensial & Dokumen Pengaman Terpadu se-Asia Tenggara') : 'Solusi Kredensial & Dokumen Pengaman Terpadu se-Asia Tenggara') }}
                     </h2>
                     @if ($tr($Cta, 'Deskripsi'))
-                        <div class="text-slate-400 text-sm leading-relaxed mb-8 max-w-2xl">{!! $tr($Cta, 'Deskripsi') !!}</div>
+                        <div class="text-slate-600 text-sm leading-relaxed mb-8 max-w-xl">{!! $tr($Cta, 'Deskripsi') !!}</div>
                     @endif
-                    <div class="flex flex-col sm:flex-row gap-4">
+                    <div class="flex flex-col sm:flex-row gap-3.5">
                         @forelse ($ctaDetails as $i => $btn)
                             <a href="{{ $tr($btn, 'Deskripsi') ?: route('frontend.contact.index') }}"
-                                class="inline-flex items-center justify-center px-7 py-3.5 {{ $i === 0 ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30' : 'border border-slate-600 text-slate-200 hover:bg-white/5' }} text-sm font-bold rounded-lg transition-colors">
+                                class="inline-flex items-center justify-center px-6 py-3 {{ $i === 0 ? 'bg-[#1b2537] hover:bg-[#111827] text-white shadow-sm' : 'bg-white hover:bg-slate-50 border border-slate-300 text-slate-800' }} text-xs font-bold rounded-full transition-colors">
                                 @if ($i > 0)
-                                    <i class="fa-regular fa-file-lines mr-2"></i>
+                                    <i class="fa-regular fa-file-lines mr-2 text-slate-500"></i>
                                 @endif
                                 {{ $tr($btn, 'Judul') }}
                                 @if ($i === 0)
-                                    <i class="fa-solid fa-arrow-right ml-2"></i>
+                                    <i class="fa-brands fa-whatsapp ml-2 text-sm"></i>
                                 @endif
                             </a>
                         @empty
                             <a href="{{ route('frontend.contact.index') }}"
-                                class="inline-flex items-center justify-center px-7 py-3.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold rounded-lg transition-colors shadow-lg shadow-blue-600/30">
-                                {{ $en ? 'Start Consultation' : 'Mulai Konsultasi' }} <i
-                                    class="fa-solid fa-arrow-right ml-2"></i>
+                                class="inline-flex items-center justify-center px-6 py-3 bg-[#1b2537] hover:bg-[#111827] text-white text-xs font-bold rounded-full transition-colors shadow-sm">
+                                {{ $en ? 'Start Consultation' : 'Mulai Konsultasi' }}
+                                <i class="fa-brands fa-whatsapp ml-2 text-sm"></i>
                             </a>
                             <a href="#sertifikasi"
-                                class="inline-flex items-center justify-center px-7 py-3.5 border border-slate-600 text-slate-200 hover:bg-white/5 text-sm font-bold rounded-lg transition-colors">
-                                <i class="fa-regular fa-file-lines mr-2"></i>
+                                class="inline-flex items-center justify-center px-6 py-3 bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 text-xs font-bold rounded-full transition-colors">
+                                <i class="fa-regular fa-file-lines mr-2 text-slate-500"></i>
                                 {{ $en ? 'Review Compliance & Certification Documents' : 'Tinjau Dokumen Kepatuhan & Sertifikasi' }}
                             </a>
                         @endforelse
                     </div>
                 </div>
+
+                {{-- Gambar Icon Shield Lock PNG --}}
+                <div class="relative z-10 flex-shrink-0 flex items-center justify-center w-52 h-52 md:w-60 md:h-60 lg:w-64 lg:h-64">
+                    <img src="{{ asset('assets/dist/icon/icon-cta.png') }}"
+                        alt="Security Credential"
+                        class="w-full h-full object-contain drop-shadow-sm select-none pointer-events-none">
+                </div>
             </div>
         </div>
     </section>
+
+    <!-- Modal Collect Data Visitor untuk Download Company Profile -->
+    <div id="modalDownloadProfile" style="display: none;" class="fixed inset-0 z-50 items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm opacity-0 transition-opacity duration-300 ease-out">
+        <div class="bg-white rounded-2xl shadow-xl max-w-lg w-full overflow-hidden border border-slate-200/80 transform transition-all duration-300 ease-out opacity-0 translate-y-3 scale-[0.98]" id="modalDownloadContent">
+            <!-- Modal Header: clean & professional -->
+            <div class="px-7 py-5 bg-white border-b border-slate-100 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200/60 flex items-center justify-center text-slate-700">
+                        <i class="fa-regular fa-file-pdf text-lg text-blue-600"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-base leading-snug">
+                            {{ $en ? 'Download Company Profile' : 'Unduh Profil Perusahaan' }}
+                        </h3>
+                        <p class="text-xs text-slate-500 mt-0.5">
+                            {{ $en ? 'Please fill in your details to get the document' : 'Lengkapi data Anda untuk mengunduh dokumen' }}
+                        </p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeDownloadModal()" class="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <form id="formDownloadProfile" class="p-7 space-y-4">
+                @csrf
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1.5">
+                        {{ $en ? 'Full Name' : 'Nama Lengkap' }} <span class="text-rose-500">*</span>
+                    </label>
+                    <input type="text" name="nama" id="dlNama" required
+                        class="w-full px-3.5 py-2.5 bg-slate-50/70 border border-slate-200 rounded-lg text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all"
+                        placeholder="{{ $en ? 'e.g. John Doe' : 'contoh: Budi Santoso' }}">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1.5">
+                        {{ $en ? 'Work Email' : 'Email Kantor / Pribadi' }} <span class="text-rose-500">*</span>
+                    </label>
+                    <input type="email" name="email" id="dlEmail" required
+                        class="w-full px-3.5 py-2.5 bg-slate-50/70 border border-slate-200 rounded-lg text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all"
+                        placeholder="{{ $en ? 'e.g. name@company.com' : 'contoh: nama@perusahaan.com' }}">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1.5">
+                            {{ $en ? 'Company / Institution' : 'Perusahaan / Instansi' }}
+                        </label>
+                        <input type="text" name="perusahaan" id="dlPerusahaan"
+                            class="w-full px-3.5 py-2.5 bg-slate-50/70 border border-slate-200 rounded-lg text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all"
+                            placeholder="{{ $en ? 'e.g. Acme Corp' : 'contoh: PT Maju Jaya' }}">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1.5">
+                            {{ $en ? 'Phone / WhatsApp' : 'No. HP / WhatsApp' }}
+                        </label>
+                        <input type="tel" name="no_hp" id="dlNoHp"
+                            class="w-full px-3.5 py-2.5 bg-slate-50/70 border border-slate-200 rounded-lg text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all"
+                            placeholder="08xxxxxxxxxx">
+                    </div>
+                </div>
+
+                <div id="dlErrorMessage" class="hidden p-3 rounded-lg bg-rose-50 border border-rose-200 text-xs text-rose-600"></div>
+
+                <div class="pt-2">
+                    <button type="submit" id="btnSubmitDownload"
+                        class="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 active:bg-slate-950 text-white font-semibold text-sm rounded-lg transition-colors flex items-center justify-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-download text-xs"></i>
+                        <span>{{ $en ? 'Submit & Download File' : 'Kirim & Unduh Dokumen' }}</span>
+                    </button>
+                </div>
+                <p class="text-[11px] text-slate-400 text-center">
+                    {{ $en ? 'Your information is kept confidential and only used for internal records.' : 'Informasi Anda dijaga kerahasiaannya dan hanya digunakan untuk keperluan internal.' }}
+                </p>
+            </form>
+        </div>
+    </div>
 
 @endsection
 @push('styles')
@@ -698,6 +788,41 @@
 @endpush
 @push('scripts')
     <script>
+        window.openDownloadModal = function() {
+            const modal = document.getElementById('modalDownloadProfile');
+            const content = document.getElementById('modalDownloadContent');
+            if (!modal) return;
+
+            modal.style.display = 'flex';
+            requestAnimationFrame(() => {
+                modal.classList.remove('opacity-0');
+                modal.classList.add('opacity-100');
+                if (content) {
+                    content.classList.remove('opacity-0', 'translate-y-3', 'scale-[0.98]');
+                    content.classList.add('opacity-100', 'translate-y-0', 'scale-100');
+                }
+            });
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.closeDownloadModal = function() {
+            const modal = document.getElementById('modalDownloadProfile');
+            const content = document.getElementById('modalDownloadContent');
+            if (!modal) return;
+
+            modal.classList.remove('opacity-100');
+            modal.classList.add('opacity-0');
+            if (content) {
+                content.classList.remove('opacity-100', 'translate-y-0', 'scale-100');
+                content.classList.add('opacity-0', 'translate-y-3', 'scale-[0.98]');
+            }
+
+            setTimeout(() => {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }, 300);
+        };
+
         document.addEventListener('DOMContentLoaded', function() {
             const tabs = document.querySelectorAll('[data-tab-link]');
             const sections = Array.from(tabs)
@@ -747,6 +872,63 @@
                 passive: true
             });
             onScroll();
+
+            // Submit listener form download profile
+            const form = document.getElementById('formDownloadProfile');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const btn = document.getElementById('btnSubmitDownload');
+                    const errBox = document.getElementById('dlErrorMessage');
+                    const originalHtml = btn.innerHTML;
+
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Memproses...</span>';
+                    errBox.classList.add('hidden');
+
+                    const formData = new FormData(form);
+
+                    fetch("{{ route('frontend.about-us.download-profile', ['locale' => $locale]) }}", {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: formData
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        btn.disabled = false;
+                        btn.innerHTML = originalHtml;
+
+                        if (data.success) {
+                            closeDownloadModal();
+                            form.reset();
+
+                            if (data.download_url) {
+                                const link = document.createElement('a');
+                                link.href = data.download_url;
+                                link.target = '_blank';
+                                link.download = '';
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                            } else {
+                                alert("{{ $en ? 'Thank you! The company profile file is currently being updated by our team.' : 'Terima kasih! File profil perusahaan sedang dalam proses pembaruan oleh tim kami.' }}");
+                            }
+                        } else {
+                            errBox.textContent = data.message || 'Terjadi kesalahan.';
+                            errBox.classList.remove('hidden');
+                        }
+                    })
+                    .catch(err => {
+                        btn.disabled = false;
+                        btn.innerHTML = originalHtml;
+                        errBox.textContent = 'Terjadi kesalahan jaringan. Silakan coba kembali.';
+                        errBox.classList.remove('hidden');
+                    });
+                });
+            }
         });
     </script>
 @endpush

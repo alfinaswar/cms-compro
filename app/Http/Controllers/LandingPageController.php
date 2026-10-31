@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ClientLogo;
+use App\Models\MasterProduk;
 use App\Models\HalamanSolusi;
 use App\Models\HeroSlider;
 use App\Models\KeyFigures;
@@ -27,8 +28,15 @@ class LandingPageController extends Controller
         $Solution = HalamanSolusi::get();
         $Why = WhyChooseUs::get();
         $logo = ClientLogo::with('details')->get();
+        $masterProdukList = MasterProduk::whereNull('parent_id')
+            ->where('StatusAktif', true)
+            ->with(['activeChildren' => function ($q) {
+                $q->with('activeChildren');
+            }])
+            ->orderBy('Urutan', 'asc')
+            ->get();
         // dd($Why);
-        return view('frontend.main-alt', compact('logo', 'heroSliders', 'websiteSettings', 'KeyFigures', 'Solution', 'Why'));
+        return view('frontend.main-alt', compact('logo', 'heroSliders', 'websiteSettings', 'KeyFigures', 'Solution', 'Why', 'masterProdukList'));
     }
 
     /**

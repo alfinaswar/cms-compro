@@ -431,51 +431,6 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- 3. KEUNGGULAN (Why Choose Us) -->
-    <!-- ========================================== -->
-    <section id="why-us" class="py-20 bg-white">
-        <div class="container mx-auto px-6">
-            <div class="text-center max-w-3xl mx-auto mb-14">
-                <span class="text-xs font-bold text-brand-600 uppercase tracking-widest">{{ __('Why Choose Us?') }}</span>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-3 mb-4">
-                    {{ __('Security Without Compromise') }}</h2>
-                <p class="text-slate-600 leading-relaxed">
-                    {{ __('In an industry that demands absolute accuracy, precision, and integrity, every detail matters. Jasuindo integrates modern security technology, precise printing, and intelligent quality control to safeguard the sovereignty of identity and public trust.') }}
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-[40px]">
-                @foreach ($Why as $item)
-                    @php
-                        $trans = $item->translate($locale);
-                        $wJudul = $trans->Judul ?: $item->Judul;
-                        $wDeskripsi = $trans->Deskripsi ?: $item->Deskripsi;
-                        $showImg = false;
-                        if (!empty($item->Icon) && !\Illuminate\Support\Str::startsWith($item->Icon, 'fa-')) {
-                            $showImg = Storage::disk('public')->exists($item->Icon);
-                        }
-                    @endphp
-                    <div
-                        class="bg-slate-50 border border-slate-200 rounded-xl p-6 text-left hover:border-brand-300 hover:bg-white hover:shadow-lg transition-all duration-300">
-                        <div class="w-11 h-11 rounded-lg bg-brand-100 text-brand-600 flex items-center justify-center mb-4">
-                            @if (!empty($item->Icon) && \Illuminate\Support\Str::startsWith($item->Icon, 'fa-'))
-                                <i class="{{ $item->Icon }} text-lg"></i>
-                            @elseif($showImg)
-                                <img src="{{ asset('storage/' . $item->Icon) }}" alt="{{ $wJudul }}"
-                                    class="w-6 h-6 object-contain">
-                            @else
-                                <i class="fa-solid fa-shield-halved text-lg"></i>
-                            @endif
-                        </div>
-                        <h3 class="font-bold text-slate-900 mb-2">{{ $wJudul }}</h3>
-                        <p class="text-sm text-slate-600 leading-relaxed">{{ $wDeskripsi }}</p>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
-    <!-- ========================================== -->
     <!-- 4. EMPAT PILAR LAYANAN (Solutions) -->
     <!-- ========================================== -->
     <section id="solusi" class="py-20 bg-slate-50 p-[40px]">
@@ -588,57 +543,77 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- 5. SECURITY TIERS (Dark Section) -->
+    <!-- 5. SECURITY TIERS (Light Section Sesuai Referensi) -->
     <!-- ========================================== -->
-    <section class="py-24 bg-[#0B192E] relative overflow-hidden">
-        <svg class="absolute bottom-0 left-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <path d="M 0,0 C 0,50 30,80 100,85 L 100,100 L 0,100 Z" class="fill-[#0b2139]" />
-        </svg>
-
-        <div
-            class="absolute top-0 right-0 w-96 h-96 bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10">
+    <section class="py-24 bg-[#EEF2F6] relative overflow-hidden">
+        {{-- Aksen polygonal diagonal tipis di latar belakang seperti di referensi --}}
+        <div class="absolute inset-0 pointer-events-none opacity-40">
+            <svg class="w-full h-full" viewBox="0 0 1440 800" fill="none" preserveAspectRatio="none">
+                <path d="M-100 0 L450 800 L-100 800 Z" fill="#E2E8F0" opacity="0.6"/>
+                <path d="M1200 800 L1600 700 L1600 800 Z" fill="#E2E8F0" opacity="0.5"/>
+            </svg>
         </div>
+
         <div class="container mx-auto px-6 relative z-10">
             <div class="text-center max-w-3xl mx-auto mb-14">
                 <span
-                    class="text-xs text-[#38BDF8] uppercase tracking-widest px-[10px] py-[5px] bg-[#0e2345] border-[#24324B] text-sm rounded-full">{{ __('Multi-Layer Security Architecture') }}</span>
-                <h2 class="text-[36px] md:text-4xl font-extrabold text-white mt-3 mb-4">
-                    {{ __('Precision Security in Every Detail') }}</h2>
-                <p class="text-white font-light text-[16px] leading-relaxed">
+                    class="inline-block text-xs font-bold text-blue-600 uppercase tracking-widest px-3.5 py-1 rounded-full mb-3">
+                    {{ __('Arsitektur Keamanan Multi-Layer') }}
+                </span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-[#111827] mt-1 mb-4 leading-tight">
+                    {{ __('Precision Security in Every Detail') }}
+                </h2>
+                <p class="text-slate-600 font-normal text-sm md:text-base leading-relaxed max-w-2xl mx-auto">
                     {{ __('Document forgery requires more than just visual quality. We deploy layered security technology that can be adjusted to the threat profile and your needs.') }}
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6  p-[40px]">
-                @foreach ($tiers as $t)
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                @foreach ($tiers as $idx => $t)
+                    @php
+                        // Sesuai gambar referensi: Tier 01 pill gelap (navy), Tier 02-04 pill soft blue
+                        $isFirst = $idx === 0;
+                        $pillClass = $isFirst ? 'bg-[#182338] text-white' : 'bg-blue-50/90 text-blue-600 border border-blue-100';
+                    @endphp
                     <div
-                        class="bg-[#0e2345] border border-[#24324B] rounded-xl p-[40px] hover:border-brand-600 transition-colors">
-                        <div class="flex items-center justify-between mb-4">
-                            <span
-                                class="text-[10px] font-bold tracking-widest text-white bg-brand-800/70 px-2.5 py-1 rounded">{{ $t['tier'] }}</span>
-                            <i class="{{ $t['icon'] }} text-white"></i>
+                        class="bg-white border border-slate-200/80 rounded-2xl p-6 md:p-7 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col justify-between">
+                        <div>
+                            {{-- Header Card: Badge Tier & Icon --}}
+                            <div class="flex items-center justify-between mb-5">
+                                <span class="text-[11px] font-bold tracking-wider px-3 py-1 rounded {{ $pillClass }}">
+                                    {{ $t['tier'] }}
+                                </span>
+                                <i class="{{ $t['icon'] }} text-lg text-slate-800"></i>
+                            </div>
+
+                            {{-- Title & Desc --}}
+                            <h3 class="font-extrabold text-lg text-[#111827] mb-2 leading-snug">
+                                {{ $t['title'] }}
+                            </h3>
+                            <p class="text-xs text-slate-500 leading-relaxed mb-6">
+                                {{ $t['desc'] }}
+                            </p>
                         </div>
-                        <h3 class="font-bold text-xl text-white mb-3 leading-snug tracking-tight max-w-[280px]">
-                            {{ $t['title'] }}
-                        </h3>
-                        <p class="text-xs text-white leading-relaxed mb-4">{{ $t['desc'] }}</p>
-                        <div class="space-y-2">
+
+                        {{-- Sub Feature Boxes --}}
+                        <div class="space-y-3">
                             @foreach ($t['features'] as $f)
-                                <div class="bg-[#22395B] rounded-lg p-3">
-                                    <p class="text-xs font-semibold text-white mb-[10px]">{{ $f['t'] }}</p>
-                                    <p class="text-[11px] text-white leading-snug">{{ $f['d'] }}</p>
+                                <div class="bg-slate-50/80 border border-slate-100 rounded-xl p-3.5">
+                                    <p class="text-xs font-bold text-slate-900 mb-1">{{ $f['t'] }}</p>
+                                    <p class="text-[11px] text-slate-500 leading-snug">{{ $f['d'] }}</p>
                                 </div>
                             @endforeach
                         </div>
                     </div>
                 @endforeach
-
             </div>
 
+            {{-- Tombol Pelajari Rekam Jejak Kami: warna footer #0F2854 --}}
             <div class="text-center mt-12">
-                <a href="{{ route('frontend.about-us') }}"
-                    class="inline-flex items-center px-7 py-2.5 bg-brand-600 hover:bg-brand-500 text-white text-sm font-normal rounded-full transition-all shadow-lg shadow-brand-600/30">
-                    {{ __('Learn Our Track Record') }} <i class="fas fa-arrow-right ml-6"></i>
+                <a href="{{ route('frontend.about-us', ['locale' => $locale]) }}"
+                    class="inline-flex items-center justify-center px-8 py-3 bg-[#0F2854] hover:bg-[#163a75] active:bg-[#0c1f42] text-white text-xs md:text-sm font-semibold rounded-full transition-all shadow-md shadow-[#0F2854]/20 group">
+                    <span>{{ __('Learn Our Track Record') }}</span>
+                    <i class="fa-solid fa-arrow-right ml-3 text-xs group-hover:translate-x-1 transition-transform"></i>
                 </a>
             </div>
 
@@ -646,7 +621,52 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- 6. KAPABILITAS -->
+    <!-- 4. WHY CHOOSE US (Overview, Capabilities, Marquee) -->
+    <!-- ========================================== -->
+    <section id="why-us" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-14">
+                <span class="text-xs font-bold text-brand-600 uppercase tracking-widest">{{ __('Why Choose Us?') }}</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-3 mb-4">
+                    {{ __('Security Without Compromise') }}</h2>
+                <p class="text-slate-600 leading-relaxed">
+                    {{ __('In an industry that demands absolute accuracy, precision, and integrity, every detail matters. Jasuindo integrates modern security technology, precise printing, and intelligent quality control to safeguard the sovereignty of identity and public trust.') }}
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-[40px]">
+                @foreach ($Why as $item)
+                    @php
+                        $trans = $item->translate($locale);
+                        $wJudul = $trans->Judul ?: $item->Judul;
+                        $wDeskripsi = $trans->Deskripsi ?: $item->Deskripsi;
+                        $showImg = false;
+                        if (!empty($item->Icon) && !\Illuminate\Support\Str::startsWith($item->Icon, 'fa-')) {
+                            $showImg = Storage::disk('public')->exists($item->Icon);
+                        }
+                    @endphp
+                    <div
+                        class="bg-slate-50 border border-slate-200 rounded-xl p-6 text-left hover:border-brand-300 hover:bg-white hover:shadow-lg transition-all duration-300">
+                        <div class="w-11 h-11 rounded-lg bg-brand-100 text-brand-600 flex items-center justify-center mb-4">
+                            @if (!empty($item->Icon) && \Illuminate\Support\Str::startsWith($item->Icon, 'fa-'))
+                                <i class="{{ $item->Icon }} text-lg"></i>
+                            @elseif($showImg)
+                                <img src="{{ asset('storage/' . $item->Icon) }}" alt="{{ $wJudul }}"
+                                    class="w-6 h-6 object-contain">
+                            @else
+                                <i class="fa-solid fa-shield-halved text-lg"></i>
+                            @endif
+                        </div>
+                        <h3 class="font-bold text-slate-900 mb-2">{{ $wJudul }}</h3>
+                        <p class="text-sm text-slate-600 leading-relaxed">{{ $wDeskripsi }}</p>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- KAPABILITAS & PENDEKATAN UNIK -->
     <!-- ========================================== -->
     <section class="py-20 bg-white p-[40px]">
         <div class="container mx-auto px-6">
@@ -749,7 +769,7 @@
     <!-- 8. NEWS & REGULATORY INSIGHTS -->
     <!-- ========================================== -->
     @if ($homeNews->count() > 0)
-        <section class="py-20 bg-slate-100">
+        <section class="py-20 bg-[#F4F7FB]">
             <div class="container mx-auto px-6">
                 <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
 
@@ -759,37 +779,33 @@
                         $fTrans = $featured->translate($locale);
                     @endphp
                     <div class="lg:col-span-2">
-                        <div class="bg-brand-950 rounded-2xl p-8 h-full flex flex-col relative overflow-hidden">
-                            <div
-                                class="absolute top-0 right-0 w-40 h-40 bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20">
-                            </div>
+                        <div class="bg-white border border-slate-200/90 rounded-2xl p-8 h-full flex flex-col relative overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                             <div class="relative z-10 flex flex-col h-full">
-                                <div class="flex items-center justify-between mb-6">
+                                <div class="flex items-center justify-between mb-5">
                                     <span
-                                        class="text-[10px] font-bold text-white bg-brand-800/70 px-2.5 py-1 rounded uppercase tracking-widest">
-                                        <i class="fa-solid fa-bolt mr-1"></i> {{ __('Latest Article') }}
+                                        class="text-[10px] font-bold text-[#0F2854] bg-blue-50 border border-blue-100 px-2.5 py-1 rounded uppercase tracking-wider">
+                                        <i class="fa-solid fa-bolt mr-1 text-blue-600"></i> {{ __('Latest Article') }}
                                     </span>
 
                                     <span
-                                        class="text-xs text-slate-400">{{ \Carbon\Carbon::parse($featured->TanggalPublikasi)->isoFormat('D MMM Y') }}</span>
+                                        class="text-xs text-slate-500">{{ \Carbon\Carbon::parse($featured->TanggalPublikasi)->isoFormat('D MMM Y') }}</span>
                                 </div>
                                 <span
-                                    class="text-[10px] font-semibold text-brand-400 uppercase tracking-widest mb-3">{{ $featured->kategori->NamaKategori }}</span>
-                                <h3 class="text-2xl font-extrabold text-white leading-snug mb-4">
+                                    class="text-[11px] font-bold text-blue-700 uppercase tracking-wider mb-2">{{ $featured->kategori->NamaKategori }}</span>
+                                <h3 class="text-2xl font-extrabold text-[#111827] leading-snug mb-3">
                                     {{ $fTrans->Judul ?: $featured->Judul }}</h3>
-                                <p class="text-sm text-slate-400 leading-relaxed mb-6 line-clamp-3">
+                                <p class="text-sm text-slate-600 leading-relaxed mb-6 line-clamp-3">
                                     {{ $fTrans->Ringkasan ?: $featured->Ringkasan }}</p>
 
                                 <div class="mt-auto space-y-3">
                                     <a href="{{ route('frontend.detail', ['slug' => $featured->Slug]) }}"
-                                        class="flex items-center justify-center w-full px-6 py-3 bg-brand-600 hover:bg-brand-500 text-white text-sm font-bold rounded-lg transition-colors">
-                                        {{ __('Read Full Article') }} <i class="fa-solid fa-arrow-right ml-2"></i>
+                                        class="flex items-center justify-center w-full px-6 py-3 bg-[#0F2854] hover:bg-[#163a75] active:bg-[#0c1f42] text-white text-sm font-semibold rounded-lg transition-colors shadow-sm">
+                                        {{ __('Read Full Article') }} <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
                                     </a>
                                     <a href="{{ route('frontend.news') }}"
-                                        class="flex items-center justify-center w-full px-6 py-3 border border-brand-700 text-white hover:bg-brand-900 text-sm font-bold rounded-lg transition-colors">
-                                        {{ __('Browse All Topics') }} <i class="fa-solid fa-arrow-right ml-2"></i>
+                                        class="flex items-center justify-center w-full px-6 py-3 border border-slate-300 hover:border-[#0F2854] text-[#0F2854] hover:bg-slate-50 text-sm font-semibold rounded-lg transition-colors">
+                                        {{ __('Browse All Topics') }} <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
                                     </a>
-
                                 </div>
                             </div>
                         </div>
@@ -800,13 +816,13 @@
                         <div class="flex items-end justify-between mb-6">
                             <div>
                                 <span
-                                    class="text-xs font-bold text-brand-600 uppercase tracking-widest">{{ __('Latest Updates') }}</span>
-                                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-2">
+                                    class="text-xs font-bold text-blue-700 uppercase tracking-widest">{{ __('Latest Updates') }}</span>
+                                <h2 class="text-2xl md:text-3xl font-extrabold text-[#111827] mt-1.5">
                                     {{ __('News & Regulatory Insights') }}</h2>
                             </div>
                             <a href="{{ route('frontend.news') }}"
-                                class="text-sm font-bold text-brand-600 hover:text-brand-700 whitespace-nowrap">
-                                {{ __('View All News') }} <i class="fa-solid fa-arrow-right ml-1"></i>
+                                class="text-sm font-bold text-[#0F2854] hover:text-blue-800 whitespace-nowrap inline-flex items-center gap-1.5">
+                                {{ __('View All News') }} <i class="fa-solid fa-arrow-right text-xs"></i>
                             </a>
                         </div>
 
@@ -814,7 +830,7 @@
                             @foreach ($homeNews->slice(1, 2) as $n)
                                 @php $nTrans = $n->translate($locale); @endphp
                                 <div
-                                    class="bg-white rounded-xl border border-slate-200 p-5 flex gap-5 hover:shadow-lg hover:border-brand-300 transition-all">
+                                    class="bg-white rounded-xl border border-slate-200/90 p-5 flex gap-5 hover:shadow-md hover:border-slate-300 transition-all">
                                     <a href="{{ route('frontend.detail', ['slug' => $n->Slug]) }}" class="flex-shrink-0">
                                         <img src="{{ $n->PathThumbnail ? asset('storage/' . $n->PathThumbnail) : asset('img/no-image.png') }}"
                                             alt="{{ $nTrans->Judul ?: $n->Judul }}"
@@ -823,20 +839,20 @@
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center gap-3 text-[11px] mb-1.5">
                                             <span
-                                                class="font-bold text-brand-600 uppercase tracking-wider">{{ $n->kategori->NamaKategori }}</span>
+                                                class="font-bold text-blue-700 uppercase tracking-wider">{{ $n->kategori->NamaKategori }}</span>
                                             <span class="text-slate-400"><i
                                                     class="fa-regular fa-calendar mr-1"></i>{{ \Carbon\Carbon::parse($n->TanggalPublikasi)->isoFormat('D MMM Y') }}</span>
                                         </div>
                                         <h4
-                                            class="font-bold text-slate-900 leading-snug mb-1.5 line-clamp-2 hover:text-brand-600 transition-colors">
+                                            class="font-bold text-[#111827] leading-snug mb-1.5 line-clamp-2 hover:text-blue-700 transition-colors">
                                             <a
                                                 href="{{ route('frontend.detail', ['slug' => $n->Slug]) }}">{{ $nTrans->Judul ?: $n->Judul }}</a>
                                         </h4>
                                         <p class="text-xs text-slate-500 leading-relaxed line-clamp-2 mb-2">
                                             {{ $nTrans->Ringkasan ?: $n->Ringkasan }}</p>
                                         <a href="{{ route('frontend.detail', ['slug' => $n->Slug]) }}"
-                                            class="text-xs font-bold text-brand-600 hover:text-brand-700">
-                                            {{ __('Read More') }} <i class="fa-solid fa-arrow-right ml-1"></i>
+                                            class="text-xs font-bold text-[#0F2854] hover:text-blue-800 inline-flex items-center gap-1">
+                                            {{ __('Read More') }} <i class="fa-solid fa-arrow-right text-[10px]"></i>
                                         </a>
                                     </div>
                                 </div>
@@ -851,65 +867,60 @@
     <!-- ========================================== -->
     <!-- 9. RFQ / CONTACT CARD -->
     <!-- ========================================== -->
-    <section id="kontak" class="py-20 p-[40px] bg-white">
+    <section id="kontak" class="py-20 p-[40px] bg-slate-50">
         <div class="container mx-auto px-6">
-            <div class="bg-[#0B192E] rounded-3xl p-8 md:p-12 grid grid-cols-1 lg:grid-cols-2 gap-10 relative overflow-hidden
-                [background:radial-gradient(circle_at_10%_20%,rgba(14,165,233,0.12),transparent_35%),radial-gradient(circle_at_90%_80%,rgba(37,99,235,0.12),transparent_40%),#0B192E]"
+            <div class="bg-white border border-slate-200/90 rounded-3xl p-8 md:p-12 grid grid-cols-1 lg:grid-cols-2 gap-10 relative overflow-hidden shadow-sm"
                 style="min-height: 100px;">
-
-                <div
-                    class="absolute bottom-0 left-0 w-72 h-72 bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10">
-                </div>
 
                 {{-- Left: Info --}}
                 <div class="relative z-10 flex flex-col h-full p-4 md:p-0">
                     <div>
                         <span
-                            class="inline-block mb-[20px] text-[10px] font-light font-sans text-[#38BDF8] px-[10px] py-[5px] bg-[#24324B] border border-[#24324B] text-sm rounded-full">
-                            <i class="fa-solid fa-file-signature mr-1"></i> {{ __('Permintaan & Penawaran (RFQ)') }}
+                            class="inline-block mb-4 text-[11px] font-bold text-[#0F2854] px-3 py-1 bg-blue-50 border border-blue-100 rounded-full">
+                            <i class="fa-solid fa-file-signature mr-1.5 text-blue-600"></i> {{ __('Permintaan & Penawaran (RFQ)') }}
                         </span>
 
-                        <h2 class="text-[36px] md:text-4xl font-extrabold text-white leading-tight mb-4">
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-[#111827] leading-tight mb-4">
                             {{ __('Interested in Our Solutions?') }}</h2>
-                        <p class="text-slate-400 text-sm leading-relaxed mb-8">
+                        <p class="text-slate-600 text-sm leading-relaxed mb-8">
                             {{ __('Do you have custom specifications or require enterprise-scale bidding? Fill out the Request for Quotation (RFQ) form and our team will provide the best technical consultation and field proposal for your institution.') }}
                         </p>
 
-                        <div class="space-y-5 mb-8">
-                            <div class="flex items-start gap-4">
+                        <div class="space-y-4 mb-8">
+                            <div class="flex items-start gap-4 p-3.5 rounded-xl bg-slate-50/80 border border-slate-100">
                                 <div
-                                    class="w-9 h-9 rounded-lg bg-[#24324B] border border-[#075985]/60 text-white flex items-center justify-center flex-shrink-0">
+                                    class="w-9 h-9 rounded-lg bg-blue-50 border border-blue-100 text-[#0F2854] flex items-center justify-center flex-shrink-0">
                                     <i class="fa-solid fa-comments"></i>
                                 </div>
                                 <div>
-                                    <p class="text-sm font-semibold text-white mb-0.5">
+                                    <p class="text-sm font-bold text-slate-900 mb-0.5">
                                         {{ __('Product Consultation & Customization') }}</p>
-                                    <p class="text-xs text-slate-400">
+                                    <p class="text-xs text-slate-500 leading-relaxed">
                                         {{ __('Technical specifications, multi-layer security features, and materials can be custom-designed to meet specific requirements..') }}
                                     </p>
                                 </div>
                             </div>
-                            <div class="flex items-start gap-4">
+                            <div class="flex items-start gap-4 p-3.5 rounded-xl bg-slate-50/80 border border-slate-100">
                                 <div
-                                    class="w-9 h-9 rounded-lg bg-[#24324B] border border-[#075985]/60  text-white flex items-center justify-center flex-shrink-0">
+                                    class="w-9 h-9 rounded-lg bg-blue-50 border border-blue-100 text-[#0F2854] flex items-center justify-center flex-shrink-0">
                                     <i class="fa-solid fa-file-invoice-dollar"></i>
                                 </div>
                                 <div>
-                                    <p class="text-sm font-semibold text-white mb-0.5">
+                                    <p class="text-sm font-bold text-slate-900 mb-0.5">
                                         {{ __('Competitive & Transparent Quotation') }}</p>
-                                    <p class="text-xs text-slate-400">
+                                    <p class="text-xs text-slate-500 leading-relaxed">
                                         {{ __('Clear pricing structure and volume-based procurement terms.') }}</p>
                                 </div>
                             </div>
-                            <div class="flex items-start gap-4">
+                            <div class="flex items-start gap-4 p-3.5 rounded-xl bg-slate-50/80 border border-slate-100">
                                 <div
-                                    class="w-9 h-9 rounded-lg bg-[#24324B] border border-[#075985]/60  text-white flex items-center justify-center flex-shrink-0">
+                                    class="w-9 h-9 rounded-lg bg-blue-50 border border-blue-100 text-[#0F2854] flex items-center justify-center flex-shrink-0">
                                     <i class="fa-solid fa-box-open"></i>
                                 </div>
                                 <div>
-                                    <p class="text-sm font-semibold text-white mb-0.5">
+                                    <p class="text-sm font-bold text-slate-900 mb-0.5">
                                         {{ __('Official Physical Sample Delivery') }}</p>
-                                    <p class="text-xs text-slate-400">We send specimen samples of security documents for
+                                    <p class="text-xs text-slate-500 leading-relaxed">We send specimen samples of security documents for
                                         your
                                         evaluation.</p>
                                 </div>
@@ -918,11 +929,11 @@
                     </div>
 
                     <div class="flex-1"></div>
-                    <div class="pt-6 border-t border-brand-800 flex items-center gap-3 mt-6">
-                        <i class="fa-solid fa-headset text-brand-400"></i>
-                        <p class="text-xs text-slate-400">{{ __('Prefer direct communication?') }} <a
+                    <div class="pt-6 border-t border-slate-200 flex items-center gap-3 mt-6">
+                        <i class="fa-solid fa-headset text-blue-600"></i>
+                        <p class="text-xs text-slate-600">{{ __('Prefer direct communication?') }} <a
                                 href="tel:{{ $websiteSettings->NomorTelepon ?? '+62318910919' }}"
-                                class="text-white font-bold hover:text-brand-300">{{ __('Hotline') }}:
+                                class="text-[#0F2854] font-bold hover:text-blue-700">{{ __('Hotline') }}:
                                 {{ $websiteSettings->TelpPerusahaan ?? '(021) 526-1020' }}</a></p>
                     </div>
                 </div>
@@ -930,10 +941,10 @@
                 {{-- Right: Form --}}
                 <div class="relative z-10 flex flex-col h-full">
                     <div class="flex-1 flex flex-col">
-                        <div class="bg-white rounded-2xl p-7 shadow-2xl flex flex-col h-full">
+                        <div class="bg-slate-50/80 border border-slate-200/90 rounded-2xl p-7 flex flex-col h-full shadow-inner">
                             <div class="flex items-center justify-between mb-5">
                                 <h3 class="text-lg font-extrabold text-slate-900">{{ __('Quotation Form') }}</h3>
-                                <span class="text-[10px] font-bold text-green-700 bg-green-100 px-2.5 py-1 rounded-full"><i
+                                <span class="text-[10px] font-bold text-emerald-800 bg-emerald-100 border border-emerald-200/60 px-2.5 py-1 rounded-full"><i
                                         class="fa-solid fa-bolt mr-1"></i>{{ __('Fast Response < 24 Hours') }}</span>
                             </div>
 
@@ -947,7 +958,7 @@
                                             <span class="text-red-500">*</span></label>
                                         <input type="text" name="NamaLengkap" required
                                             placeholder="{{ __('Your full name') }}"
-                                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                                            class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-[#0F2854] focus:border-[#0F2854] outline-none">
                                     </div>
                                     <div>
                                         <label
@@ -955,7 +966,7 @@
                                             <span class="text-red-500">*</span></label>
                                         <input type="text" name="CompanyName" required
                                             placeholder="e.g. Bank Mandiri, BCA, PT Printek"
-                                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                                            class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-[#0F2854] focus:border-[#0F2854] outline-none">
                                     </div>
                                 </div>
 
@@ -964,13 +975,53 @@
                                         class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Product / Solution Need') }}
                                         <span class="text-red-500">*</span></label>
                                     <select name="ProdukYangDibutuhkan" required
-                                        class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                                        class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-800 focus:ring-2 focus:ring-[#0F2854] focus:border-[#0F2854] outline-none">
                                         <option value="">-- {{ __('Select Product or Solution') }} --</option>
-                                        @foreach ($Solution as $s)
-                                            <option value="{{ $s->translate($locale)->Judul ?: $s->Judul }}">
-                                                {{ $s->translate($locale)->Judul ?: $s->Judul }}</option>
-                                        @endforeach
-                                        <option value="Lainnya">{{ __('Other / Custom') }}</option>
+                                        @if (isset($masterProdukList) && count($masterProdukList) > 0)
+                                            @foreach ($masterProdukList as $top)
+                                                @php
+                                                    $topTitle = $locale === 'en' && !empty($top->NamaTranslate) ? $top->NamaTranslate : $top->Nama;
+                                                @endphp
+                                                @if ($top->activeChildren->count() > 0)
+                                                    <optgroup label="{{ $topTitle }}">
+                                                        @foreach ($top->activeChildren as $sub)
+                                                            @php
+                                                                $subTitle = $locale === 'en' && !empty($sub->NamaTranslate) ? $sub->NamaTranslate : $sub->Nama;
+                                                            @endphp
+                                                            @if ($sub->activeChildren->count() > 0)
+                                                                <option value="{{ $topTitle }} - {{ $subTitle }}" class="font-semibold text-slate-900" disabled>
+                                                                    &nbsp;&nbsp;▸ {{ $subTitle }}
+                                                                </option>
+                                                                @foreach ($sub->activeChildren as $subSub)
+                                                                    @php
+                                                                        $subSubTitle = $locale === 'en' && !empty($subSub->NamaTranslate) ? $subSub->NamaTranslate : $subSub->Nama;
+                                                                        $fullVal = $topTitle . ' - ' . $subTitle . ' - ' . $subSubTitle;
+                                                                    @endphp
+                                                                    <option value="{{ $fullVal }}">
+                                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;• {{ $subSubTitle }}
+                                                                    </option>
+                                                                @endforeach
+                                                            @else
+                                                                @php
+                                                                    $fullVal = $topTitle . ' - ' . $subTitle;
+                                                                @endphp
+                                                                <option value="{{ $fullVal }}">
+                                                                    &nbsp;&nbsp;• {{ $subTitle }}
+                                                                </option>
+                                                            @endif
+                                                        @endforeach
+                                                    </optgroup>
+                                                @else
+                                                    <option value="{{ $topTitle }}">{{ $topTitle }}</option>
+                                                @endif
+                                            @endforeach
+                                        @else
+                                            @foreach ($Solution as $s)
+                                                <option value="{{ $s->translate($locale)->Judul ?: $s->Judul }}">
+                                                    {{ $s->translate($locale)->Judul ?: $s->Judul }}</option>
+                                            @endforeach
+                                        @endif
+                                        <option value="Other / Lainnya">{{ __('Other / Custom') }}</option>
                                     </select>
                                 </div>
 
@@ -980,14 +1031,14 @@
                                             class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Official Email') }}
                                             <span class="text-red-500">*</span></label>
                                         <input type="email" name="Email" required placeholder="nama@instansi.go.id"
-                                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                                            class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-[#0F2854] focus:border-[#0F2854] outline-none">
                                     </div>
                                     <div>
                                         <label
                                             class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Phone / WhatsApp') }}
                                             <span class="text-red-500">*</span></label>
                                         <input type="tel" name="NomorHandphone" required placeholder="0812-xxxx-xxxx"
-                                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+                                            class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-[#0F2854] focus:border-[#0F2854] outline-none">
                                     </div>
                                 </div>
 
@@ -996,14 +1047,14 @@
                                         class="block text-xs font-semibold text-slate-700 mb-1">{{ __('Message / Requirement Notes') }}</label>
                                     <textarea name="Pesan" rows="4"
                                         placeholder="{{ __('Describe your product needs, estimated volume, or customization requirements...') }}"
-                                        class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none resize-none"></textarea>
+                                        class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-[#0F2854] focus:border-[#0F2854] outline-none resize-none"></textarea>
                                 </div>
 
                                 <button type="submit"
-                                    class="w-full flex items-center justify-center px-6 py-3.5 bg-brand-600 hover:bg-brand-500 text-white text-sm font-bold rounded-lg transition-all shadow-lg shadow-brand-600/30 mt-auto">
-                                    {{ __('Send Quotation Request (RFQ)') }} <i class="fa-solid fa-arrow-right ml-2"></i>
+                                    class="w-full flex items-center justify-center px-6 py-3.5 bg-[#0F2854] hover:bg-[#163a75] active:bg-[#0c1f42] text-white text-sm font-semibold rounded-lg transition-all shadow-md shadow-[#0F2854]/20 mt-auto">
+                                    {{ __('Send Quotation Request (RFQ)') }} <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
                                 </button>
-                                <p class="text-[10px] text-slate-400 text-center mt-3 leading-relaxed">
+                                <p class="text-[10px] text-slate-500 text-center mt-3 leading-relaxed">
                                     {{ __('Your data will be processed confidentially and used only for the quotation process.') }}
                                 </p>
                             </form>

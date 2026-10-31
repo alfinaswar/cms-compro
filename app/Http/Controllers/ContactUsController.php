@@ -6,6 +6,7 @@ use App\Exports\ContactUsExport;
 use App\Models\ContactUs;
 use App\Models\MasterKantor;
 use App\Models\MasterSubject;
+use App\Models\MasterProduk;
 use App\Models\NotificationEmailRecipient;
 use App\Models\PengaturanWebsite;
 use Illuminate\Http\Request;
@@ -33,7 +34,15 @@ class ContactUsController extends Controller
         $kantorUtama = $kantor->firstWhere('TipeKantor', 'Pusat') ?? $kantor->first();
         $kantorCabang = $kantor->filter(fn($k) => $k->id !== optional($kantorUtama)->id)->values();
 
-        return view('frontend.contact-us', compact('subject', 'kantor', 'kantorUtama', 'kantorCabang'));
+        $masterProdukList = MasterProduk::whereNull('parent_id')
+            ->where('StatusAktif', true)
+            ->with(['activeChildren' => function ($q) {
+                $q->with('activeChildren');
+            }])
+            ->orderBy('Urutan', 'asc')
+            ->get();
+
+        return view('frontend.contact-us', compact('subject', 'kantor', 'kantorUtama', 'kantorCabang', 'masterProdukList'));
     }
 
     public function list(Request $request)

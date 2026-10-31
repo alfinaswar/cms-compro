@@ -24,6 +24,7 @@ use App\Http\Controllers\LaporanKeuanganDetailController;
 use App\Http\Controllers\LowonganKerjaController;
 use App\Http\Controllers\MasterKantorController;
 use App\Http\Controllers\MasterSubjectController;
+use App\Http\Controllers\MasterProdukController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\NotificationEmailController;
 use App\Http\Controllers\NotificationEmailRecipientController;
@@ -69,6 +70,7 @@ Route::group(['prefix' => '{locale}', 'where' => ['locale' => 'id|en']], functio
     Route::post('/laporan-investor/kirim-wbs/', [InvestorFrontendController::class, 'submitWbs'])->name('frontend.investor.wbs.store');
     Route::post('/laporan-investor/permintaan-dokumen/', [InvestorFrontendController::class, 'submitPermintaanDokumen'])->name('frontend.investor.permintaan-dokumen.store');
     Route::get('/about-us/', [AboutUsController::class, 'show'])->name('frontend.about-us');
+    Route::post('/about-us/download-profile/', [AboutUsController::class, 'submitDownloadProfile'])->name('frontend.about-us.download-profile');
     Route::get('/career/', [LowonganKerjaController::class, 'career'])->name('frontend.career');
     Route::get('/career/{id}-{slug}/', [LowonganKerjaController::class, 'careerDetail'])->name('frontend.career.detail');
     Route::post('/career/{id}/apply/', [LowonganKerjaController::class, 'apply'])->name('frontend.career.apply');
@@ -193,6 +195,9 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         Route::put('/landing-page/about-us/update/', [AboutUsController::class, 'update'])->name('about-us.update');
         Route::get('/landing-page/about-us/create/', [AboutUsController::class, 'create'])->name('about-us.create');
         Route::get('/landing-page/about-us/edit/{id}/', [AboutUsController::class, 'edit'])->name('about-us.edit');
+        Route::get('/landing-page/about-us/downloads/', [AboutUsController::class, 'downloadLeadsIndex'])->name('about-us.downloads.index');
+        Route::delete('/landing-page/about-us/downloads/{id}/', [AboutUsController::class, 'destroyDownloadLead'])->name('about-us.downloads.destroy');
+        Route::get('/landing-page/about-us/downloads/export/', [AboutUsController::class, 'exportDownloadLeads'])->name('about-us.downloads.export');
 
         Route::resource('/landing-page/why-choose-us', WhyChooseUsController::class);
         Route::resource('/landing-page/client-logo', ClientLogoController::class)->names('client-logo');
@@ -261,6 +266,12 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         Route::get('subjek-kontak/{id}/edit/', [MasterSubjectController::class, 'edit'])->name('subjek.edit');
         Route::put('subjek-kontak/{id}/', [MasterSubjectController::class, 'update'])->name('subjek.update');
         Route::delete('subjek-kontak/{id}/', [MasterSubjectController::class, 'destroy'])->name('subjek.destroy');
+
+        Route::get('master-produk/', [MasterProdukController::class, 'index'])->name('master-produk.index');
+        Route::post('master-produk/store/', [MasterProdukController::class, 'store'])->name('master-produk.store');
+        Route::get('master-produk/{id}/edit/', [MasterProdukController::class, 'edit'])->name('master-produk.edit');
+        Route::put('master-produk/{id}/', [MasterProdukController::class, 'update'])->name('master-produk.update');
+        Route::delete('master-produk/{id}/', [MasterProdukController::class, 'destroy'])->name('master-produk.destroy');
     });
     Route::resource('jenis-laporan', JenisLaporanKeuanganController::class)->names('jenis-laporan');
     Route::prefix('jenis-laporan/{jenisId}/dokumen')->name('jenis-laporan.details.')->group(function () {

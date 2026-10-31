@@ -14,10 +14,10 @@ class AboutUsController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:tentang-kami.view')->only(['index']);
+        $this->middleware('permission:tentang-kami.view')->only(['index', 'downloadLeadsIndex', 'exportDownloadLeads']);
         $this->middleware('permission:tentang-kami.create')->only(['create', 'store']);
         $this->middleware('permission:tentang-kami.edit')->only(['edit', 'update']);
-        $this->middleware('permission:tentang-kami.delete')->only(['destroy']);
+        $this->middleware('permission:tentang-kami.delete')->only(['destroy', 'destroyDownloadLead']);
     }
 
     /**
@@ -46,7 +46,8 @@ class AboutUsController extends Controller
                 'video_badge' => 'Badge Video',
                 'video_tagline' => 'Tagline Video',
                 'video_url' => 'URL Video',
-                'pdf_url' => 'URL Download PDF',
+                'pdf_file' => 'Upload File PDF Company Profile',
+                'pdf_url' => 'Atau URL Download PDF Eksternal (Opsional)',
                 'quote_subtitle' => 'Sub Judul Quote',
                 'quote_author' => 'Penulis Quote',
                 'quote_company' => 'Perusahaan Quote',
@@ -90,12 +91,92 @@ class AboutUsController extends Controller
     public function index()
     {
         $sections = $this->ensureSections();
+        $downloadLeadsCount = \App\Models\CompanyProfileDownload::count();
 
         return view('pengaturan.landing-page.about.manage', [
             'sections' => $sections,
             'sectionConfig' => self::SECTIONS,
             'locales' => ['id' => '🇮🇩 Bahasa Indonesia', 'en' => '🇬🇧 English'],
+            'downloadLeadsCount' => $downloadLeadsCount,
         ]);
+    }
+
+    /**
+     * Halaman daftar visitor yang mengunduh Company Profile.
+     */
+    public function downloadLeadsIndex(Request $request)
+    {
+        $query = \App\Models\CompanyProfileDownload::query()->latest();
+
+        if ($request->filled('q')) {
+            $q = $request->q;
+            $query->where(function ($sub) use ($q) {
+                $sub->where('Nama', 'like', "%{$q}%")
+                    ->orWhere('Email', 'like', "%{$q}%")
+                    ->orWhere('Perusahaan', 'like', "%{$q}%")
+                    ->orWhere('NoHp', 'like', "%{$q}%");
+            });
+        }
+
+        $leads = $query->paginate(20)->withQueryString();
+        $totalDownloads = \App\Models\CompanyProfileDownload::count();
+
+        return view('pengaturan.landing-page.about.downloads', compact('leads', 'totalDownloads'));
+    }
+
+    /**
+     * Hapus satu data lead unduhan.
+     */
+    public function destroyDownloadLead($id)
+    {
+        $lead = \App\Models\CompanyProfileDownload::findOrFail($id);
+        $lead->delete();
+
+        if (request()->ajax()) {
+            return response()->json(['success' => true, 'message' => 'Data unduhan berhasil dihapus.']);
+        }
+
+        return redirect()->back()->with('success', 'Data unduhan berhasil dihapus.');
+    }
+
+    /**
+     * Export data visitor unduhan ke file CSV.
+     */
+    public function exportDownloadLeads()
+    {
+        $fileName = 'leads-company-profile-' . date('Y-m-d-His') . '.csv';
+        $leads = \App\Models\CompanyProfileDownload::latest()->get();
+
+        $headers = [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=\"{$fileName}\"",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
+        ];
+
+        $callback = function () use ($leads) {
+            $handle = fopen('php://output', 'w');
+            // Add UTF-8 BOM
+            fputs($handle, "\xEF\xBB\xBF");
+            fputcsv($handle, ['No', 'Tanggal', 'Nama Lengkap', 'Email', 'Perusahaan', 'No HP / WhatsApp', 'IP Address']);
+
+            foreach ($leads as $i => $item) {
+                fputcsv($handle, [
+                    $i + 1,
+                    $item->created_at ? $item->created_at->format('Y-m-d H:i:s') : '-',
+                    $item->Nama,
+                    $item->Email,
+                    $item->Perusahaan ?? '-',
+                    $item->NoHp ?? '-',
+                    $item->IpAddress ?? '-',
+                ]);
+            }
+
+            fclose($handle);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     public function create()
@@ -157,6 +238,46 @@ class AboutUsController extends Controller
     }
 
     /**
+     * Handle submit form visitor download Company Profile.
+     */
+    public function submitDownloadProfile(Request $request)
+    {
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'perusahaan' => 'nullable|string|max:255',
+            'no_hp' => 'nullable|string|max:50',
+        ]);
+
+        \App\Models\CompanyProfileDownload::create([
+            'Nama' => $validated['nama'],
+            'Email' => $validated['email'],
+            'Perusahaan' => $validated['perusahaan'] ?? null,
+            'NoHp' => $validated['no_hp'] ?? null,
+            'IpAddress' => $request->ip(),
+            'UserAgent' => $request->userAgent(),
+        ]);
+
+        // Cari file PDF dari section 6 (Media)
+        $media = AboutUs::find(6);
+        $fileDetail = $media ? $media->getDetail->firstWhere('Judul', 'pdf_file') : null;
+        $urlDetail = $media ? $media->getDetail->firstWhere('Judul', 'pdf_url') : null;
+
+        $downloadUrl = null;
+        if ($fileDetail && !empty($fileDetail->Deskripsi) && Storage::disk('public')->exists($fileDetail->Deskripsi)) {
+            $downloadUrl = asset('storage/' . $fileDetail->Deskripsi);
+        } elseif ($urlDetail && !empty($urlDetail->Deskripsi) && $urlDetail->Deskripsi !== '#') {
+            $downloadUrl = $urlDetail->Deskripsi;
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Terima kasih, data Anda telah tercatat.',
+            'download_url' => $downloadUrl,
+        ]);
+    }
+
+    /**
      * Simpan semua section sekaligus.
      */
     public function update(Request $request)
@@ -168,6 +289,7 @@ class AboutUsController extends Controller
             'sections.*.translations.*.Judul' => 'nullable|string|max:500',
             'sections.*.translations.*.Deskripsi' => 'nullable|string',
             'sections.*.Gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'sections.6.meta.pdf_file' => 'nullable|file|mimes:pdf|max:20480',
             'sections.*.details' => 'nullable|array',
             'sections.*.meta' => 'nullable|array',
         ]);
@@ -220,8 +342,13 @@ class AboutUsController extends Controller
                 $afterDetails = [];
 
                 if (!empty($config['meta_keys'])) {
+                    $metaInput = $data['meta'] ?? [];
+                    if ($request->hasFile("sections.{$sectionId}.meta.pdf_file")) {
+                        $pdfPath = $request->file("sections.{$sectionId}.meta.pdf_file")->store('about-us/pdf', 'public');
+                        $metaInput['pdf_file'] = $pdfPath;
+                    }
                     $beforeDetails = $this->extractMeta($about, $config['meta_keys']);
-                    $this->syncMetaDetails($about, $data['meta'] ?? [], $config['meta_keys']);
+                    $this->syncMetaDetails($about, $metaInput, $config['meta_keys']);
                     $about->refresh();
                     $afterDetails = $this->extractMeta($about, $config['meta_keys']);
                 } else {

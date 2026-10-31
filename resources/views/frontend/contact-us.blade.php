@@ -1,5 +1,137 @@
 @extends('frontend.index')
 
+@push('styles')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        /* Custom Select2 Styling for Contact Form */
+        .select2-container {
+            width: 100% !important;
+        }
+
+        .select2-container--default .select2-selection--single {
+            background-color: #f8fafc !important; /* bg-slate-50 */
+            border: 1px solid #e2e8f0 !important; /* border-slate-200 */
+            border-radius: 0.75rem !important; /* rounded-xl */
+            height: 52px !important;
+            display: flex !important;
+            align-items: center !important;
+            padding-left: 2.75rem !important; /* space for icon */
+            padding-right: 2.25rem !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .select2-container--default .select2-selection--single:focus,
+        .select2-container--default.select2-container--open .select2-selection--single {
+            border-color: #0284c7 !important;
+            background-color: #ffffff !important;
+            box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.1) !important;
+            outline: none !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: #334155 !important; /* text-slate-700 */
+            font-size: 0.875rem !important; /* text-sm */
+            line-height: normal !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            width: 100% !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__placeholder {
+            color: #94a3b8 !important; /* text-slate-400 */
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 50px !important;
+            right: 12px !important;
+            top: 0 !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__clear {
+            position: absolute !important;
+            right: 34px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            font-size: 1.15rem !important;
+            color: #94a3b8 !important;
+            cursor: pointer !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__clear:hover {
+            color: #ef4444 !important;
+        }
+
+        .select2-dropdown {
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 0.75rem !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+            overflow: hidden !important;
+            background-color: #ffffff !important;
+            z-index: 9999 !important;
+            margin-top: 4px !important;
+        }
+
+        .select2-search--dropdown {
+            padding: 10px 12px !important;
+            background-color: #f8fafc !important;
+            border-bottom: 1px solid #f1f5f9 !important;
+        }
+
+        .select2-search--dropdown .select2-search__field {
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 0.5rem !important;
+            padding: 8px 12px !important;
+            font-size: 0.875rem !important;
+            outline: none !important;
+            background-color: #ffffff !important;
+            width: 100% !important;
+        }
+
+        .select2-search--dropdown .select2-search__field:focus {
+            border-color: #0284c7 !important;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1) !important;
+        }
+
+        .select2-results__group {
+            font-size: 0.725rem !important;
+            font-weight: 700 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.05em !important;
+            color: #0F2854 !important;
+            background-color: #f1f5f9 !important;
+            padding: 8px 14px !important;
+            border-top: 1px solid #e2e8f0 !important;
+        }
+
+        .select2-results__group:first-child {
+            border-top: none !important;
+        }
+
+        .select2-results__option {
+            padding: 9px 16px !important;
+            font-size: 0.875rem !important;
+            color: #334155 !important;
+            transition: all 0.15s ease !important;
+        }
+
+        .select2-results__option--highlighted[aria-selected] {
+            background-color: #0F2854 !important;
+            color: #ffffff !important;
+        }
+
+        .select2-results__option[aria-selected="true"] {
+            background-color: #e2e8f0 !important;
+            color: #0F2854 !important;
+            font-weight: 600 !important;
+        }
+
+        .select2-results__option[aria-selected="true"].select2-results__option--highlighted {
+            background-color: #0F2854 !important;
+            color: #ffffff !important;
+        }
+    </style>
+@endpush
+
 @section('content-frontend')
 
     @php
@@ -587,11 +719,51 @@
                                         <span
                                             class="text-slate-400 text-xs font-normal">{{ __('(Optional)') }}</span></label>
                                     <div class="relative">
-                                        <input type="text" name="ProdukYangDibutuhkan" id="produkYangDibutuhkan"
-                                            placeholder="Digital Identity Solution"
-                                            class="form-input w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:bg-white outline-none transition-all">
+                                        <select name="ProdukYangDibutuhkan" id="produkYangDibutuhkan"
+                                            class="w-full text-slate-700" style="width: 100%;">
+                                            <option value=""></option>
+                                            @if (isset($masterProdukList) && count($masterProdukList) > 0)
+                                                @foreach ($masterProdukList as $top)
+                                                    @php
+                                                        $topTitle = $en && !empty($top->NamaTranslate) ? $top->NamaTranslate : $top->Nama;
+                                                    @endphp
+                                                    @if ($top->activeChildren->count() > 0)
+                                                        <optgroup label="{{ $topTitle }}">
+                                                            @foreach ($top->activeChildren as $sub)
+                                                                @php
+                                                                    $subTitle = $en && !empty($sub->NamaTranslate) ? $sub->NamaTranslate : $sub->Nama;
+                                                                @endphp
+                                                                @if ($sub->activeChildren->count() > 0)
+                                                                    @foreach ($sub->activeChildren as $subSub)
+                                                                        @php
+                                                                            $subSubTitle = $en && !empty($subSub->NamaTranslate) ? $subSub->NamaTranslate : $subSub->Nama;
+                                                                            $fullVal = $topTitle . ' - ' . $subTitle . ' - ' . $subSubTitle;
+                                                                        @endphp
+                                                                        <option value="{{ $fullVal }}">
+                                                                            {{ $subTitle }} — {{ $subSubTitle }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                @else
+                                                                    @php
+                                                                        $fullVal = $topTitle . ' - ' . $subTitle;
+                                                                    @endphp
+                                                                    <option value="{{ $fullVal }}">
+                                                                        {{ $subTitle }}
+                                                                    </option>
+                                                                @endif
+                                                            @endforeach
+                                                        </optgroup>
+                                                    @else
+                                                        <option value="{{ $topTitle }}">{{ $topTitle }}</option>
+                                                    @endif
+                                                @endforeach
+                                            @endif
+                                            <optgroup label="{{ $en ? 'Other' : 'Lainnya' }}">
+                                                <option value="Other / Lainnya">{{ __('Other / Custom') }}</option>
+                                            </optgroup>
+                                        </select>
                                         <div
-                                            class="input-icon absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            class="input-icon absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
                                             <i class="fa-solid fa-tag text-slate-400"></i>
                                         </div>
                                     </div>
@@ -611,9 +783,9 @@
                                 </div>
                             </div>
 
-                            <div class="flex flex-col sm:flex-row gap-3">
+                            <div>
                                 <button type="submit" id="btnSubmit"
-                                    class="flex-1 inline-flex items-center justify-center px-8 py-4 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                                    class="w-full inline-flex items-center justify-center px-8 py-4 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
                                     <span class="btn-text inline-flex items-center">
                                         <i class="fa-regular fa-paper-plane mr-2"></i> {{ __('Send Message') }}
                                     </span>
@@ -629,10 +801,6 @@
                                         {{ __('Sending...') }}
                                     </span>
                                 </button>
-                                <a href="{{ route('frontend.main') }}"
-                                    class="inline-flex items-center justify-center px-8 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all">
-                                    <i class="fa-solid fa-arrow-left mr-2"></i> {{ __('Back') }}
-                                </a>
                             </div>
 
                             <p class="form-messages mb-0 mt-3"></p>
@@ -793,8 +961,20 @@
 @endsection
 
 @push('scripts')
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        $(document).ready(function() {
+            if ($('#produkYangDibutuhkan').length) {
+                $('#produkYangDibutuhkan').select2({
+                    placeholder: "{{ $en ? 'Select Product or Solution' : 'Pilih Produk atau Layanan' }}",
+                    allowClear: true,
+                    width: '100%'
+                });
+            }
+        });
+
         document.addEventListener('DOMContentLoaded', function() {
             // ===== OFFICE TAB SWITCHER =====
             const officeTabs = document.querySelectorAll('#officeTabs .office-tab');
@@ -916,6 +1096,9 @@
                         btnSubmit.disabled = false;
                         btnSubmit.classList.remove('btn-loading');
                         form.reset();
+                        if (typeof $ !== 'undefined' && $('#produkYangDibutuhkan').length) {
+                            $('#produkYangDibutuhkan').val(null).trigger('change');
+                        }
 
                         Swal.fire({
                             icon: 'success',

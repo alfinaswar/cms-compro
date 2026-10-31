@@ -86,6 +86,13 @@
                                         <p>Subjek Kontak</p>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('master-produk.index') }}"
+                                        class="nav-link {{ request()->routeIs('master-produk.*') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Master Produk & Jasa</p>
+                                    </a>
+                                </li>
                             @endcan
 
 
@@ -200,9 +207,16 @@
                                 @can('tentang-kami.view')
                                     <li class="nav-item">
                                         <a href="{{ route('about-us.index') }}"
-                                            class="nav-link {{ request()->is('admin/landing-page/about-us*') ? 'active' : '' }}">
+                                            class="nav-link {{ request()->is('admin/landing-page/about-us') || request()->is('admin/landing-page/about-us/*') && !request()->is('admin/landing-page/about-us/downloads*') ? 'active' : '' }}">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>Tentang Kami</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('about-us.downloads.index') }}"
+                                            class="nav-link {{ request()->is('admin/landing-page/about-us/downloads*') ? 'active' : '' }}">
+                                            <i class="far fa-circle nav-icon text-info"></i>
+                                            <p>Pengunduh Profil</p>
                                         </a>
                                     </li>
                                 @endcan

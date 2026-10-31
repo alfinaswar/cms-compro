@@ -89,13 +89,19 @@
                         <i class="fas fa-building mr-2"></i>
                         Kelola Konten Halaman Tentang Kami
                     </h3>
-                    {{-- ✅ GLOBAL LANGUAGE TOGGLE --}}
-                    <div class="lang-toggle d-flex justify-content-end" id="globalLangToggle">
-                        <button type="button" class="active" data-lang="id">🇮🇩 ID</button>
-                        <button type="button" data-lang="en">🇬🇧 EN</button>
+                    <div class="d-flex align-items-center">
+                        <a href="{{ route('about-us.downloads.index') }}" class="btn btn-sm btn-outline-primary mr-3">
+                            <i class="fas fa-file-download mr-1"></i> Data Pengunduh Profile
+                            @if(isset($downloadLeadsCount) && $downloadLeadsCount > 0)
+                                <span class="badge badge-primary ml-1">{{ $downloadLeadsCount }}</span>
+                            @endif
+                        </a>
+                        {{-- ✅ GLOBAL LANGUAGE TOGGLE --}}
+                        <div class="lang-toggle d-flex justify-content-end" id="globalLangToggle">
+                            <button type="button" class="active" data-lang="id">🇮🇩 ID</button>
+                            <button type="button" data-lang="en">🇬🇧 EN</button>
+                        </div>
                     </div>
-
-
                 </div>
                 <div class="card-body">
                     <p class="text-muted mb-3">
@@ -219,11 +225,26 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>{{ $label }}</label>
-                                                    <input type="text"
-                                                        name="sections[{{ $id }}][meta][{{ $key }}]"
-                                                        class="form-control"
-                                                        value="{{ old("sections.$id.meta.$key", $meta[$key] ?? '') }}"
-                                                        placeholder="{{ $label }}">
+                                                    @if ($key === 'pdf_file')
+                                                        <input type="file"
+                                                            name="sections[{{ $id }}][meta][pdf_file]"
+                                                            class="form-control-file" accept=".pdf">
+                                                        @if (!empty($meta['pdf_file']))
+                                                            <div class="mt-2 small">
+                                                                <span class="text-success"><i class="fa fa-file-pdf mr-1"></i> File terpasang:</span>
+                                                                <a href="{{ asset('storage/' . $meta['pdf_file']) }}" target="_blank" class="text-primary font-weight-bold ml-1">
+                                                                    Lihat File PDF
+                                                                </a>
+                                                            </div>
+                                                        @endif
+                                                        <small class="text-muted d-block mt-1">Format PDF, maksimal 20 MB. Upload file baru jika ingin mengganti.</small>
+                                                    @else
+                                                        <input type="text"
+                                                            name="sections[{{ $id }}][meta][{{ $key }}]"
+                                                            class="form-control"
+                                                            value="{{ old("sections.$id.meta.$key", $meta[$key] ?? '') }}"
+                                                            placeholder="{{ $label }}">
+                                                    @endif
                                                 </div>
                                             </div>
                                         @endforeach

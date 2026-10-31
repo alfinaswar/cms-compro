@@ -47,6 +47,7 @@ class PengaturanWebsite extends Model
     public static function clearCache()
     {
         Cache::forget('pengaturan_website');
+        Cache::forget('website_settings');
     }
 
     /**
