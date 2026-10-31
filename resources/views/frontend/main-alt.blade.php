@@ -265,6 +265,10 @@
                             $locale === 'en' && !empty($slider->DeskripsiEn)
                                 ? $slider->DeskripsiEn
                                 : $slider->Deskripsi;
+                        $hTeksPenuh =
+                            $locale === 'en' && !empty($slider->TeksPenuhEn)
+                                ? $slider->TeksPenuhEn
+                                : $slider->TeksPenuh;
                         $hTeksCTA =
                             $locale === 'en' && !empty($slider->TeksCTAEn) ? $slider->TeksCTAEn : $slider->TeksCTA;
                         $hTeksCTA2 =
@@ -321,6 +325,9 @@
                                     <span class="text-brand-400">
                                         {{ $hHighlight }}
                                     </span>
+                                @endif
+                                @if (!empty($hTeksPenuh))
+                                    <span> {{ $hTeksPenuh }} </span>
                                 @endif
                                 </h1>
 
