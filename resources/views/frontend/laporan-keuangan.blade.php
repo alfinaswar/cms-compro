@@ -77,7 +77,12 @@
             }
 
             /* Offset scroll agar teks tidak tertutup sticky header */
-            section[id], div[id].scroll-target, div#prospektus, div#laporan-tahunan, div#laporan-triwulanan, div#ringkasan-kinerja {
+            section[id],
+            div[id].scroll-target,
+            div#prospektus,
+            div#laporan-tahunan,
+            div#laporan-triwulanan,
+            div#ringkasan-kinerja {
                 scroll-margin-top: 180px !important;
             }
         </style>
@@ -104,7 +109,8 @@
                 {{-- LEFT SIDEBAR: DAFTAR LAPORAN & SUPPORT --}}
                 {{-- ========================================== --}}
                 <div class="lg:col-span-3">
-                    <div class="sticky top-[160px] space-y-5 max-h-[calc(100vh-180px)] overflow-y-auto custom-sidebar-scroll pr-1">
+                    <div
+                        class="sticky top-[160px] space-y-5 max-h-[calc(100vh-180px)] overflow-y-auto custom-sidebar-scroll pr-1">
 
                         {{-- Navigasi Cepat Daftar Laporan --}}
                         <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5">
@@ -230,7 +236,7 @@
                             </div>
                             <div>
                                 <h2 class="text-xl md:text-2xl font-bold text-slate-900">
-                                    {{ $currentLocale === 'en' ? 'Prospectus & Corporate Disclosure' : 'Prospektus & 449' }}
+                                    {{ $currentLocale === 'en' ? 'Prospectus & Corporate Disclosure' : 'Prospektus' }}
                                 </h2>
                                 <p class="text-xs md:text-sm text-slate-500 mt-1">
                                     {{ $currentLocale === 'en' ? 'Official prospectus and material corporate action disclosures filed on the IDX (JTPE).' : 'Dokumen resmi prospektus penawaran umum perdana dan keterbukaan informasi perseroan di BEI (IDX: JTPE).' }}
@@ -239,115 +245,72 @@
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            {{-- Card 1: Prospektus IPO --}}
-                            <div
-                                class="report-card bg-[#EEF4FF] rounded-2xl p-6 flex flex-col justify-between border border-transparent hover:border-slate-200 transition-all">
-                                <div>
-                                    <!-- Top Section: Icon & Content -->
-                                    <div class="flex items-start gap-4 mb-4">
-                                        <!-- Icon Document -->
-                                        <div
-                                            class="w-12 h-12 rounded-2xl bg-[#FFDEC9] text-[#3B1E08] flex items-center justify-center text-xl shrink-0">
-                                            <i class="fa-regular fa-file-lines"></i>
-                                        </div>
-
-                                        <!-- Title & Badge Group -->
-                                        <div class="flex-1">
-                                            <!-- Badge & Year Info -->
-                                            <div class="flex items-center gap-2.5 mb-2 flex-wrap">
-                                                <span
-                                                    class="px-3 py-1 rounded-md text-[11px] font-bold bg-[#2B1704] text-[#FFDEC9] tracking-wide uppercase">
-                                                    {{ __('PENAWARAN SAHAM') }}
-                                                </span>
-                                                <span class="text-xs text-slate-500 font-normal">
-                                                    1999 & Addendum
-                                                </span>
+                            @forelse ($categories as $kat)
+                                <div
+                                    class="report-card bg-[#EEF4FF] rounded-2xl p-6 flex flex-col justify-between border border-transparent hover:border-slate-200 transition-all">
+                                    <div>
+                                        <!-- Top Section: Icon & Content -->
+                                        <div class="flex items-start gap-4 mb-4">
+                                            <!-- Icon Document -->
+                                            <div
+                                                class="w-12 h-12 rounded-2xl bg-[#FFDEC9] text-[#3B1E08] flex items-center justify-center text-xl shrink-0">
+                                                <i class="fa-regular fa-file-lines"></i>
                                             </div>
 
-                                            <!-- Main Title -->
-                                            <h3 class="text-lg font-bold text-[#0F172A] leading-snug">
-                                                Prospektus Penawaran Umum Perdana Saham
-                                            </h3>
-                                        </div>
-                                    </div>
+                                            <!-- Title & Badge Group -->
+                                            <div class="flex-1">
+                                                <!-- Badge & Year Info -->
+                                                <div class="flex items-center gap-2.5 mb-2 flex-wrap">
+                                                    <span
+                                                        class="px-3 py-1 rounded-md text-[11px] font-bold bg-[#2B1704] text-[#FFDEC9] tracking-wide uppercase">
+                                                        {{ $kat->jenisLaporan->NamaJenis ?? 'DOKUMEN' }}
+                                                    </span>
+                                                    <span class="text-xs text-slate-500 font-normal">
+                                                        {{ \Carbon\Carbon::parse($kat->TahunPeriode)->format('Y') }}
+                                                        @if ($kat->Bahasa === 'EN')
+                                                            <span
+                                                                class="ml-1 px-1.5 py-0.5 rounded bg-slate-200 text-slate-600 text-[10px] font-semibold">EN</span>
+                                                        @endif
+                                                    </span>
+                                                </div>
 
-                                    <!-- Description -->
-                                    <p class="text-sm text-slate-600 leading-relaxed mb-6 pl-0 sm:pl-[64px]">
-                                        Penawaran umum saham biasa perseroan yang dicatatkan pada BEI (IDX: JTPE).
-                                    </p>
-                                </div>
-
-                                <!-- Bottom Section: File Info & Download Button -->
-                                <div class="pt-4 border-t border-slate-200/60 flex items-center justify-between">
-                                    <!-- File Format & Size -->
-                                    <span class="text-sm text-slate-700 font-semibold flex items-center gap-2">
-                                        <i class="fa-regular fa-file-pdf text-base text-slate-600"></i>
-                                        PDF (34.2 MB)
-                                    </span>
-
-                                    <!-- Download Button -->
-                                    <a href="{{ asset('assets/documents/prospektus-jtpe.pdf') }}" target="_blank" download
-                                        class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-[#0052CC] bg-white hover:bg-[#0052CC] hover:text-white rounded-xl transition-all shadow-sm border border-blue-200 hover:border-[#0052CC] hover:shadow-md">
-                                        <i class="fa-solid fa-download text-sm"></i>
-                                        Unduh Berkas
-                                    </a>
-                                </div>
-                            </div>
-
-                            {{-- Card 2: Keterbukaan Informasi Aksi Korporasi --}}
-                            <div
-                                class="report-card bg-[#EEF4FF] rounded-2xl p-6 flex flex-col justify-between border border-transparent hover:border-slate-200 transition-all">
-                                <div>
-                                    <!-- Top Section: Icon & Content -->
-                                    <div class="flex items-start gap-4 mb-4">
-                                        <!-- Icon Document -->
-                                        <div
-                                            class="w-12 h-12 rounded-2xl bg-[#FFDEC9] text-[#3B1E08] flex items-center justify-center text-xl shrink-0">
-                                            <i class="fa-regular fa-file-lines"></i>
-                                        </div>
-
-                                        <!-- Title & Badge Group -->
-                                        <div class="flex-1">
-                                            <!-- Badge & Year Info -->
-                                            <div class="flex items-center gap-2.5 mb-2 flex-wrap">
-                                                <span
-                                                    class="px-3 py-1 rounded-md text-[11px] font-bold bg-[#2B1704] text-[#FFDEC9] tracking-wide uppercase">
-                                                    {{ __('PENAWARAN SAHAM') }}
-                                                </span>
-                                                <span class="text-xs text-slate-500 font-normal">
-                                                    1999 & Addendum
-                                                </span>
+                                                <!-- Main Title -->
+                                                <h3 class="text-lg font-bold text-[#0F172A] leading-snug">
+                                                    {{ $kat->Judul }}
+                                                </h3>
                                             </div>
-
-                                            <!-- Main Title -->
-                                            <h3 class="text-lg font-bold text-[#0F172A] leading-snug">
-                                                Prospektus Penawaran Umum Perdana Saham
-                                            </h3>
                                         </div>
+
+                                        <!-- Description -->
+                                        <p class="text-sm text-slate-600 leading-relaxed mb-6 pl-0 sm:pl-[64px]">
+                                            {{ $kat->Deskripsi }}
+                                        </p>
                                     </div>
 
-                                    <!-- Description -->
-                                    <p class="text-sm text-slate-600 leading-relaxed mb-6 pl-0 sm:pl-[64px]">
-                                        Penawaran umum saham biasa perseroan yang dicatatkan pada BEI (IDX: JTPE).
-                                    </p>
-                                </div>
+                                    <!-- Bottom Section: File Info & Download Button -->
+                                    <div class="pt-4 border-t border-slate-200/60 flex items-center justify-between">
+                                        <!-- File Format & Size -->
+                                        {{-- <span class="text-sm text-slate-700 font-semibold flex items-center gap-2">
+                                            <i class="fa-regular fa-file-pdf text-base text-slate-600"></i>
+                                            PDF ({{ $kat->FileSize }})
+                                        </span> --}}
 
-                                <!-- Bottom Section: File Info & Download Button -->
-                                <div class="pt-4 border-t border-slate-200/60 flex items-center justify-between">
-                                    <!-- File Format & Size -->
-                                    <span class="text-sm text-slate-700 font-semibold flex items-center gap-2">
-                                        <i class="fa-regular fa-file-pdf text-base text-slate-600"></i>
-                                        PDF (34.2 MB)
-                                    </span>
-
-                                    <!-- Download Button -->
-                                    <a href="{{ asset('assets/documents/prospektus-jtpe.pdf') }}" target="_blank" download
-                                        class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-[#0052CC] bg-white hover:bg-[#0052CC] hover:text-white rounded-xl transition-all shadow-sm border border-blue-200 hover:border-[#0052CC] hover:shadow-md">
-                                        <i class="fa-solid fa-download text-sm"></i>
-                                        Unduh Berkas
-                                    </a>
+                                        <!-- Download Button -->
+                                        <a href="{{ asset('storage/' . $kat->PathFile) }}" target="_blank"
+                                            class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-[#0052CC] bg-white hover:bg-[#0052CC] hover:text-white rounded-xl transition-all shadow-sm border border-blue-200 hover:border-[#0052CC] hover:shadow-md">
+                                            <i class="fa-solid fa-download text-sm"></i>
+                                            Unduh Berkas
+                                        </a>
+                                    </div>
                                 </div>
-                            </div>
+                            @empty
+                                <div class="col-span-full text-center py-12 text-slate-500">
+                                    <i class="fa-regular fa-folder-open text-4xl mb-3 text-slate-300"></i>
+                                    <p class="text-sm">Belum ada dokumen pada kategori ini.</p>
+                                </div>
+                            @endforelse
+
+
                         </div>
                     </div>
 
@@ -356,6 +319,8 @@
                     {{-- ========================================== --}}
                     <div id="laporan-tahunan"
                         class="scroll-mt-40 bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 md:p-8">
+
+                        {{-- ============ HEADER + DROPDOWN TAHUN ============ --}}
                         <div
                             class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 mb-6 border-b border-slate-100">
                             <div class="flex items-start gap-3.5">
@@ -368,314 +333,207 @@
                                         {{ $currentLocale === 'en' ? 'Annual Report' : 'Laporan Tahunan' }}
                                     </h2>
                                     <p class="text-xs md:text-sm text-slate-500 mt-1">
-                                        {{ $currentLocale === 'en' ? 'Annual and sustainability reports covering overall corporate operations and finances.' : 'Laporan tahunan perusahaan mencakup kinerja keuangan dan operasional secara komprehensif.' }}
+                                        {{ $currentLocale === 'en'
+                                            ? 'Annual and sustainability reports covering overall corporate operations and finances.'
+                                            : 'Laporan tahunan perusahaan mencakup kinerja keuangan dan operasional secara komprehensif.' }}
                                     </p>
                                 </div>
                             </div>
 
-                            {{-- Year Dropdown Filter untuk Annual Report --}}
-                            <div class="flex items-center gap-2">
-                                <label for="annualYearSelect"
-                                    class="text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                                    {{ $currentLocale === 'en' ? 'Year:' : 'Tahun:' }}
-                                </label>
-                                <div class="relative inline-block">
-                                    <select id="annualYearSelect" onchange="filterAnnualReport(this.value)"
-                                        class="pl-4 pr-10 py-1.5 text-xs md:text-sm font-semibold text-slate-800 bg-[#EEF4FF] hover:bg-[#e1edff] border border-slate-300 rounded-xl outline-none focus:border-[#0099ff] focus:ring-1 focus:ring-[#0099ff] cursor-pointer appearance-none transition-colors">
-                                        <option value="2025" selected>2025</option>
-                                        <option value="2024">2024</option>
-                                        <option value="2023">2023</option>
-                                    </select>
-                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-500">
-                                        <i class="fa-solid fa-chevron-down text-xs"></i>
+                            {{-- Year Dropdown Filter --}}
+                            @if ($annualReports->isNotEmpty())
+                                @php
+                                    $currentYear = now()->year;
+                                    // Ambil tahun TERBESAR dari data sebagai default tahun yang ditampilkan
+                                    $maxYear = $annualReports->max(
+                                        fn($r) => \Carbon\Carbon::parse($r->TahunPeriode)->format('Y'),
+                                    );
+                                @endphp
+
+                                <div class="flex items-center gap-2">
+                                    <label for="annualYearSelect"
+                                        class="text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                                        {{ $currentLocale === 'en' ? 'Year:' : 'Tahun:' }}
+                                    </label>
+                                    <div class="relative inline-block">
+                                        <select id="annualYearSelect" onchange="filterAnnualReport(this.value)"
+                                            class="pl-4 pr-10 py-1.5 text-xs md:text-sm font-semibold text-slate-800 bg-[#EEF4FF] hover:bg-[#e1edff] border border-slate-300 rounded-xl outline-none focus:border-[#0099ff] focus:ring-1 focus:ring-[#0099ff] cursor-pointer appearance-none transition-colors">
+                                            @for ($i = 0; $i < 5; $i++)
+                                                @php $year = $currentYear - $i; @endphp
+                                                {{-- Pilih tahun yang sama dengan $maxYear sebagai default --}}
+                                                <option value="{{ $year }}"
+                                                    @if ($year == $maxYear) selected @endif>
+                                                    {{ $year }}
+                                                </option>
+                                            @endfor
+                                        </select>
+                                        <div
+                                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-500">
+                                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+
+                        {{-- ============ DAFTAR CARD LAPORAN TAHUNAN ============ --}}
+                        @php
+                            $coverPalettes = [
+                                [
+                                    'gradient' => 'from-[#062438] via-[#094263] to-[#0a567f]',
+                                    'accent' => 'border-amber-400',
+                                    'tag' => 'text-amber-300',
+                                    'divider' => 'bg-amber-400',
+                                ],
+                                [
+                                    'gradient' => 'from-[#0c2f4d] via-[#104870] to-[#146294]',
+                                    'accent' => 'border-emerald-400',
+                                    'tag' => 'text-emerald-300',
+                                    'divider' => 'bg-emerald-400',
+                                ],
+                                [
+                                    'gradient' => 'from-[#1b2a47] via-[#243b61] to-[#2c4975]',
+                                    'accent' => 'border-cyan-400',
+                                    'tag' => 'text-cyan-300',
+                                    'divider' => 'bg-cyan-400',
+                                ],
+                                [
+                                    'gradient' => 'from-[#2d1b47] via-[#422461] to-[#572c75]',
+                                    'accent' => 'border-fuchsia-400',
+                                    'tag' => 'text-fuchsia-300',
+                                    'divider' => 'bg-fuchsia-400',
+                                ],
+                                [
+                                    'gradient' => 'from-[#47201b] via-[#612424] to-[#752c2c]',
+                                    'accent' => 'border-rose-400',
+                                    'tag' => 'text-rose-300',
+                                    'divider' => 'bg-rose-400',
+                                ],
+                            ];
+                        @endphp
+
+                        @forelse($annualReports as $report)
+                            @php
+                                $tahun = \Carbon\Carbon::parse($report->TahunPeriode)->format('Y');
+                                $palette = $coverPalettes[$loop->index % count($coverPalettes)];
+                                $bahasaLabel = $report->Bahasa === 'EN' ? 'English' : 'Bahasa Indonesia';
+
+                                // Sembunyikan card HANYA jika tahunnya BUKAN tahun default ($maxYear)
+                                $isHidden = $tahun !== $maxYear ? 'hidden' : '';
+                            @endphp
+
+                            {{-- Gunakan ID unik dari database, dan tambahkan data-year untuk JS --}}
+                            <div id="annual-card-{{ $report->id }}" data-year="{{ $tahun }}"
+                                class="annual-report-card {{ $isHidden }} bg-gradient-to-br from-slate-50 to-white border border-slate-200/90 rounded-2xl p-6 md:p-7 shadow-sm transition-all duration-300">
+
+                                <div class="grid grid-cols-1 md:grid-cols-12 gap-7 items-center">
+
+                                    {{-- 3D Book Cover --}}
+                                    <div class="md:col-span-4 flex justify-center">
+                                        <div
+                                            class="book-3d w-44 sm:w-48 h-64 rounded-xl relative overflow-hidden bg-gradient-to-br {{ $palette['gradient'] }} text-white p-5 flex flex-col justify-between border-l-4 {{ $palette['accent'] }}">
+                                            <div
+                                                class="flex justify-between items-center text-[10px] text-white/70 font-semibold tracking-wider">
+                                                <span>ANNUAL REPORT</span>
+                                                <span
+                                                    class="px-1.5 py-0.5 rounded bg-white/10 text-white font-sans">{{ $tahun }}</span>
+                                            </div>
+                                            <div class="my-auto text-center">
+                                                <div
+                                                    class="text-[9px] uppercase tracking-widest {{ $palette['tag'] }} font-semibold mb-1">
+                                                    PT JASUINDO TIGA PERKASA TBK
+                                                </div>
+                                                <div
+                                                    class="text-base font-sans font-extrabold tracking-tight text-white leading-tight px-1">
+                                                    {{ $report->Judul }}
+                                                </div>
+                                                <div class="w-8 h-0.5 {{ $palette['divider'] }} mx-auto my-2 rounded">
+                                                </div>
+                                                <div class="text-[10px] text-white/80 italic">
+                                                    {{ $bahasaLabel }} &bull; {{ $report->FileSize }} MB
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="flex justify-between items-center text-[10px] text-white/70 pt-2 border-t border-white/10">
+                                                <span>IDX: JTPE</span>
+                                                <i class="fa-solid fa-barcode text-sm opacity-60"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {{-- Details & Highlights --}}
+                                    <div class="md:col-span-8 space-y-4">
+                                        <div class="flex flex-wrap items-center gap-2">
+                                            <span
+                                                class="px-3 py-0.5 rounded-full text-xs font-semibold bg-[#0051D5] text-white flex items-center gap-1.5">
+                                                {{ $report->Status ?? 'Aktif' }}
+                                            </span>
+                                            <span class="px-3 py-1 text-xs font-semibold text-[#45464D]">
+                                                {{ $bahasaLabel }}
+                                            </span>
+                                            <span class="text-xs text-slate-400 font-medium">
+                                                {{ \Carbon\Carbon::parse($report->created_at)->translatedFormat('d F Y') }}
+                                            </span>
+                                        </div>
+
+                                        <div>
+                                            <h3 class="text-lg md:text-xl font-bold text-slate-900">
+                                                {{ $report->Judul }}
+                                            </h3>
+                                            <p class="text-xs md:text-sm text-slate-600 mt-3 leading-relaxed">
+                                                {{ $report->Deskripsi }}
+                                            </p>
+                                        </div>
+
+                                        {{-- File Info Pill --}}
+                                        <div
+                                            class="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-xs">
+                                            <div class="text-center sm:text-left">
+                                                <span
+                                                    class="text-[10px] uppercase font-semibold text-slate-400 block">Format</span>
+                                                <span class="text-sm font-extrabold text-slate-900 block">PDF</span>
+                                            </div>
+                                            <div class="text-center sm:text-left border-x border-slate-100 px-3">
+                                                <span
+                                                    class="text-[10px] uppercase font-semibold text-slate-400 block">Ukuran</span>
+                                                <span
+                                                    class="text-sm font-extrabold text-slate-900 block">{{ $report->FileSize }}
+                                                    MB</span>
+                                            </div>
+                                            <div class="text-center sm:text-left">
+                                                <span
+                                                    class="text-[10px] uppercase font-semibold text-slate-400 block">Periode</span>
+                                                <span
+                                                    class="text-sm font-extrabold text-slate-900 block">{{ $tahun }}</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="pt-2 flex flex-wrap items-center gap-3">
+                                            <a href="{{ asset('storage/' . $report->PathFile) }}" target="_blank"
+                                                download
+                                                class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#0099ff] hover:bg-[#0080d6] text-white text-xs md:text-sm font-semibold rounded-xl shadow-sm shadow-[#0099ff]/30 transition-all">
+                                                <i class="fa-solid fa-arrow-down-to-bracket text-xs"></i>
+                                                Unduh Laporan (PDF)
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        {{-- Featured Annual Report Display --}}
-                        <div id="annual-card-2025"
-                            class="annual-report-card bg-[#EEF4FF] from-slate-50 to-white border border-slate-200/90 rounded-2xl p-6 md:p-7 shadow-sm">
-                            <div class="grid grid-cols-1 md:grid-cols-12 gap-7 items-center">
-                                {{-- 3D Book Cover --}}
-                                <div class="md:col-span-4 flex justify-center">
-                                    <div
-                                        class="book-3d w-44 sm:w-48 h-64 rounded-xl relative overflow-hidden bg-gradient-to-br from-[#062438] via-[#094263] to-[#0a567f] text-white p-5 flex flex-col justify-between border-l-4 border-amber-400">
-                                        <div
-                                            class="flex justify-between items-center text-[10px] text-white/70 font-semibold tracking-wider">
-                                            <span>ANNUAL REPORT</span>
-                                            <span
-                                                class="px-1.5 py-0.5 rounded bg-white/10 text-white font-sans">2025</span>
-                                        </div>
-                                        <div class="my-auto text-center">
-                                            <div
-                                                class="text-[9px] uppercase tracking-widest text-amber-300 font-semibold mb-1">
-                                                PT JASUINDO TIGA PERKASA TBK</div>
-                                            <div
-                                                class="text-base font-sans font-extrabold tracking-tight text-white leading-tight">
-                                                Journey into the Future</div>
-                                            <div class="w-8 h-0.5 bg-amber-400 mx-auto my-2 rounded"></div>
-                                            <div class="text-[10px] text-white/80 italic">Innovation &bull; Security &bull;
-                                                Trust</div>
-                                        </div>
-                                        <div
-                                            class="flex justify-between items-center text-[10px] text-white/70 pt-2 border-t border-white/10">
-                                            <span>IDX: JTPE</span>
-                                            <i class="fa-solid fa-barcode text-sm opacity-60"></i>
-                                        </div>
-                                    </div>
+                            <br>
+                        @empty
+                            <div class="text-center py-12">
+                                <div
+                                    class="w-16 h-16 mx-auto rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 text-2xl mb-4">
+                                    <i class="fa-regular fa-folder-open"></i>
                                 </div>
-
-                                {{-- Details & Highlights --}}
-                                <div class="md:col-span-8 space-y-4">
-                                    <div class="flex flex-wrap items-center gap-2">
-                                        <span
-                                            class="px-3 py-0.5 rounded-full text-xs font-semibold bg-[#0051D5] text-white flex items-center gap-1.5">
-                                            Rilis Resmi Final
-                                        </span>
-                                        <span class="px-3 py-1 text-xs font-semibold text-[#45464D]">
-                                            Bilingual (ID / EN)
-                                        </span>
-
-                                    </div>
-
-                                    <div>
-                                        <h3 class="text-lg md:text-xl font-bold text-slate-900">
-                                            Laporan Tahunan &amp; Laporan Keberlanjutan 2025
-                                        </h3>
-                                        <p class="text-xs md:text-sm text-slate-600 mt-3 leading-relaxed">
-                                            Mencakup ikhtisar kinerja operasional, tata kelola ESG berkelanjutan, serta
-                                            laporan keuangan konsolidasian perseroan dan entitas anak yang telah diaudit
-                                            oleh Kantor Akuntan Publik independen.
-                                        </p>
-                                    </div>
-
-                                    <div class="pt-2 flex flex-wrap items-center gap-3">
-                                        <a href="{{ asset('assets/documents/annual-report-2025.pdf') }}" target="_blank"
-                                            download
-                                            class="inline-flex items-center gap-2 px-5 py-2.5 bg-black hover:bg-[#0080d6] text-white text-xs md:text-sm font-semibold rounded-xl shadow-sm shadow-[#0099ff]/30 transition-all">
-                                            <i class="fa-solid fa-arrow-down-to-bracket text-xs"></i> Unduh Laporan Tahunan
-                                            (PDF)
-                                        </a>
-                                        {{-- <button type="button"
-                                            onclick="alert('Laporan Tahunan 2025 lengkap telah tersedia untuk diunduh.')"
-                                            class="inline-flex items-center gap-1.5 text-slate-700 text-xs md:text-sm font-semibold rounded-xl transition-all">
-                                            <i class="fa-regular fa-eye text-xs text-slate-500"></i> Ringkasan Eksekutif
-                                        </button> --}}
-                                    </div>
-                                </div>
+                                <p class="text-sm text-slate-500">Belum ada laporan tahunan yang tersedia.</p>
                             </div>
-                        </div>
-
-                        {{-- Featured Annual Report Display 2024 --}}
-                        <div id="annual-card-2024"
-                            class="annual-report-card hidden bg-gradient-to-br from-slate-50 to-white border border-slate-200/90 rounded-2xl p-6 md:p-7 shadow-sm">
-                            <div class="grid grid-cols-1 md:grid-cols-12 gap-7 items-center">
-                                {{-- 3D Book Cover --}}
-                                <div class="md:col-span-4 flex justify-center">
-                                    <div
-                                        class="book-3d w-44 sm:w-48 h-64 rounded-xl relative overflow-hidden bg-gradient-to-br from-[#0c2f4d] via-[#104870] to-[#146294] text-white p-5 flex flex-col justify-between border-l-4 border-emerald-400">
-                                        <div
-                                            class="flex justify-between items-center text-[10px] text-white/70 font-semibold tracking-wider">
-                                            <span>ANNUAL REPORT</span>
-                                            <span
-                                                class="px-1.5 py-0.5 rounded bg-white/10 text-white font-sans">2024</span>
-                                        </div>
-                                        <div class="my-auto text-center">
-                                            <div
-                                                class="text-[9px] uppercase tracking-widest text-emerald-300 font-semibold mb-1">
-                                                PT JASUINDO TIGA PERKASA TBK</div>
-                                            <div
-                                                class="text-base font-sans font-extrabold tracking-tight text-white leading-tight">
-                                                Empowering Digital Trust</div>
-                                            <div class="w-8 h-0.5 bg-emerald-400 mx-auto my-2 rounded"></div>
-                                            <div class="text-[10px] text-white/80 italic">Global Smart Card Solutions</div>
-                                        </div>
-                                        <div
-                                            class="flex justify-between items-center text-[10px] text-white/70 pt-2 border-t border-white/10">
-                                            <span>IDX: JTPE</span>
-                                            <i class="fa-solid fa-barcode text-sm opacity-60"></i>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {{-- Details & Highlights --}}
-                                <div class="md:col-span-8 space-y-4">
-                                    <div class="flex flex-wrap items-center gap-2">
-                                        <span
-                                            class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1.5">
-                                            <i class="fa-solid fa-circle-check text-emerald-500"></i> Audit: WTP
-                                        </span>
-                                        <span
-                                            class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-[#0099ff] border border-blue-200">
-                                            Bilingual (ID / EN)
-                                        </span>
-                                        <span class="text-xs text-slate-400 font-medium">Rilis: 25 April 2025</span>
-                                    </div>
-
-                                    <div>
-                                        <h3 class="text-lg md:text-xl font-bold text-slate-900">
-                                            Laporan Tahunan &amp; Laporan Keberlanjutan 2024
-                                        </h3>
-                                        <p class="text-xs md:text-sm text-slate-600 mt-1 leading-relaxed">
-                                            Inovasi tanpa batas menuju ekosistem identitas dan pembayaran digital
-                                            terintegrasi, serta pencatatan kinerja keuangan yang solid di pasar domestik dan
-                                            ekspor.
-                                        </p>
-                                    </div>
-
-                                    {{-- Stat Highlight Pill Box --}}
-                                    <div
-                                        class="grid grid-cols-3 gap-3 bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-xs">
-                                        <div class="text-center sm:text-left">
-                                            <span
-                                                class="text-[10px] uppercase font-semibold text-slate-400 block">Pendapatan</span>
-                                            <span class="text-sm font-extrabold text-slate-900 block">Rp2,11 T</span>
-                                            <span class="text-[10px] text-emerald-600 font-bold">+16.2% YoY</span>
-                                        </div>
-                                        <div class="text-center sm:text-left border-x border-slate-100 px-3">
-                                            <span class="text-[10px] uppercase font-semibold text-slate-400 block">Laba
-                                                Bersih</span>
-                                            <span class="text-sm font-extrabold text-slate-900 block">Rp237,8 M</span>
-                                            <span class="text-[10px] text-emerald-600 font-bold">+9.1% YoY</span>
-                                        </div>
-                                        <div class="text-center sm:text-left">
-                                            <span class="text-[10px] uppercase font-semibold text-slate-400 block">Dividen
-                                                Final</span>
-                                            <span class="text-sm font-extrabold text-slate-900 block">Rp14,50</span>
-                                            <span class="text-[10px] text-slate-500 font-semibold">per saham</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="pt-2 flex flex-wrap items-center gap-3">
-                                        <a href="{{ asset('assets/documents/annual-report-2024.pdf') }}" target="_blank"
-                                            download
-                                            class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#0099ff] hover:bg-[#0080d6] text-white text-xs md:text-sm font-semibold rounded-xl shadow-sm shadow-[#0099ff]/30 transition-all">
-                                            <i class="fa-solid fa-arrow-down-to-bracket text-xs"></i> Unduh Laporan Tahunan
-                                            (PDF)
-                                        </a>
-                                        <button type="button"
-                                            onclick="alert('Laporan Tahunan 2024 lengkap telah tersedia untuk diunduh.')"
-                                            class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-xs md:text-sm font-semibold rounded-xl transition-all">
-                                            <i class="fa-regular fa-eye text-xs text-slate-500"></i> Ringkasan Eksekutif
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Featured Annual Report Display 2023 --}}
-                        <div id="annual-card-2023"
-                            class="annual-report-card hidden bg-gradient-to-br from-slate-50 to-white border border-slate-200/90 rounded-2xl p-6 md:p-7 shadow-sm">
-                            <div class="grid grid-cols-1 md:grid-cols-12 gap-7 items-center">
-                                {{-- 3D Book Cover --}}
-                                <div class="md:col-span-4 flex justify-center">
-                                    <div
-                                        class="book-3d w-44 sm:w-48 h-64 rounded-xl relative overflow-hidden bg-gradient-to-br from-[#1b2a47] via-[#243b61] to-[#2c4975] text-white p-5 flex flex-col justify-between border-l-4 border-cyan-400">
-                                        <div
-                                            class="flex justify-between items-center text-[10px] text-white/70 font-semibold tracking-wider">
-                                            <span>ANNUAL REPORT</span>
-                                            <span
-                                                class="px-1.5 py-0.5 rounded bg-white/10 text-white font-sans">2023</span>
-                                        </div>
-                                        <div class="my-auto text-center">
-                                            <div
-                                                class="text-[9px] uppercase tracking-widest text-cyan-300 font-semibold mb-1">
-                                                PT JASUINDO TIGA PERKASA TBK</div>
-                                            <div
-                                                class="text-base font-sans font-extrabold tracking-tight text-white leading-tight">
-                                                Resilience &amp; Growth</div>
-                                            <div class="w-8 h-0.5 bg-cyan-400 mx-auto my-2 rounded"></div>
-                                            <div class="text-[10px] text-white/80 italic">Delivering Enduring Value</div>
-                                        </div>
-                                        <div
-                                            class="flex justify-between items-center text-[10px] text-white/70 pt-2 border-t border-white/10">
-                                            <span>IDX: JTPE</span>
-                                            <i class="fa-solid fa-barcode text-sm opacity-60"></i>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {{-- Details & Highlights --}}
-                                <div class="md:col-span-8 space-y-4">
-                                    <div class="flex flex-wrap items-center gap-2">
-                                        <span
-                                            class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1.5">
-                                            <i class="fa-solid fa-circle-check text-emerald-500"></i> Audit: WTP
-                                        </span>
-                                        <span
-                                            class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-[#0099ff] border border-blue-200">
-                                            Bilingual (ID / EN)
-                                        </span>
-                                        <span class="text-xs text-slate-400 font-medium">Rilis: 22 April 2024</span>
-                                    </div>
-
-                                    <div>
-                                        <h3 class="text-lg md:text-xl font-bold text-slate-900">
-                                            Laporan Tahunan 2023
-                                        </h3>
-                                        <p class="text-xs md:text-sm text-slate-600 mt-1 leading-relaxed">
-                                            Pencapaian pertumbuhan pendapatan signifikan yang didorong oleh transformasi
-                                            digital dan peningkatan utilitas fasilitas produksi manufaktur modern.
-                                        </p>
-                                    </div>
-
-                                    {{-- Stat Highlight Pill Box --}}
-                                    <div
-                                        class="grid grid-cols-3 gap-3 bg-white p-3.5 rounded-xl border border-slate-200/80 shadow-xs">
-                                        <div class="text-center sm:text-left">
-                                            <span
-                                                class="text-[10px] uppercase font-semibold text-slate-400 block">Pendapatan</span>
-                                            <span class="text-sm font-extrabold text-slate-900 block">Rp1,82 T</span>
-                                            <span class="text-[10px] text-emerald-600 font-bold">+23.0% YoY</span>
-                                        </div>
-                                        <div class="text-center sm:text-left border-x border-slate-100 px-3">
-                                            <span class="text-[10px] uppercase font-semibold text-slate-400 block">Laba
-                                                Bersih</span>
-                                            <span class="text-sm font-extrabold text-slate-900 block">Rp218,0 M</span>
-                                            <span class="text-[10px] text-emerald-600 font-bold">+32.1% YoY</span>
-                                        </div>
-                                        <div class="text-center sm:text-left">
-                                            <span class="text-[10px] uppercase font-semibold text-slate-400 block">Dividen
-                                                Final</span>
-                                            <span class="text-sm font-extrabold text-slate-900 block">Rp12,00</span>
-                                            <span class="text-[10px] text-slate-500 font-semibold">per saham</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="pt-2 flex flex-wrap items-center gap-3">
-                                        <a href="{{ asset('assets/documents/annual-report-2023.pdf') }}" target="_blank"
-                                            download
-                                            class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#0099ff] hover:bg-[#0080d6] text-white text-xs md:text-sm font-semibold rounded-xl shadow-sm shadow-[#0099ff]/30 transition-all">
-                                            <i class="fa-solid fa-arrow-down-to-bracket text-xs"></i> Unduh Laporan Tahunan
-                                            (PDF)
-                                        </a>
-                                        <button type="button"
-                                            onclick="alert('Laporan Tahunan 2023 lengkap telah tersedia untuk diunduh.')"
-                                            class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-xs md:text-sm font-semibold rounded-xl transition-all">
-                                            <i class="fa-regular fa-eye text-xs text-slate-500"></i> Ringkasan Eksekutif
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- ========================================== --}}
-                        {{-- SECTION 3: LAPORAN KEUANGAN TRIWULANAN --}}
-                        {{-- ========================================== --}}
-
-
-                        {{-- ========================================== --}}
-                        {{-- SECTION 4: RINGKASAN KINERJA KEUANGAN (5 TAHUN) --}}
-                        {{-- ========================================== --}}
-
-                        {{-- ========================================== --}}
-                        {{-- SECTION 5: BOTTOM BANNER / CTA --}}
-                        {{-- ========================================== --}}
+                        @endforelse
                     </div>
-
                     <div id="laporan-triwulanan"
                         class="scroll-mt-40 bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 md:p-8">
+
+                        {{-- ============ HEADER + DROPDOWN TAHUN ============ --}}
                         <div
                             class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 mb-6 border-b border-slate-100">
                             <div class="flex items-start gap-3.5">
@@ -688,230 +546,202 @@
                                         {{ $currentLocale === 'en' ? 'Quarterly Financial Reports' : 'Laporan Keuangan Triwulanan' }}
                                     </h2>
                                     <p class="text-xs md:text-sm text-slate-500 mt-1">
-                                        {{ $currentLocale === 'en' ? 'Periodic quarterly financial statements audited and reviewed.' : 'Laporan keuangan triwulanan perusahaan yang diaudit dan dipublikasikan.' }}
+                                        {{ $currentLocale === 'en'
+                                            ? 'Periodic quarterly financial statements audited and reviewed.'
+                                            : 'Laporan keuangan triwulanan perusahaan yang diaudit dan dipublikasikan.' }}
                                     </p>
                                 </div>
                             </div>
 
-                            {{-- Year Dropdown Filter untuk Quarterly Report --}}
-                            <div class="flex items-center gap-2">
-                                <label for="quarterYearSelect"
-                                    class="text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-                                    {{ $currentLocale === 'en' ? 'Year:' : 'Tahun:' }}
-                                </label>
-                                <div class="relative inline-block">
-                                    <select id="quarterYearSelect" onchange="filterQuarterReport(this.value)"
-                                        class="pl-4 pr-10 py-1.5 text-xs md:text-sm font-semibold text-slate-800 bg-[#EEF4FF] hover:bg-[#e1edff] border border-slate-300 rounded-xl outline-none focus:border-[#0099ff] focus:ring-1 focus:ring-[#0099ff] cursor-pointer appearance-none transition-colors">
-                                        <option value="2026" selected>2026</option>
-                                        <option value="2025">2025</option>
-                                        <option value="2024">2024</option>
-                                    </select>
-                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-500">
-                                        <i class="fa-solid fa-chevron-down text-xs"></i>
+                            {{-- Year Dropdown Filter --}}
+                            @if ($quarterlyReports->isNotEmpty())
+                                @php
+                                    $currentYear = now()->year;
+                                    $maxYear = $quarterlyReports->max(
+                                        fn($r) => (int) \Carbon\Carbon::parse($r->TahunPeriode)->format('Y'),
+                                    );
+                                    // Default tahun = maxYear kalau dalam range 5 tahun ke belakang, kalau tidak pakai tahun terbaru di range
+                                    $minDropdownYear = $currentYear - 4;
+                                    $defaultYear = $maxYear >= $minDropdownYear ? $maxYear : $currentYear;
+                                @endphp
+
+                                <div class="flex items-center gap-2">
+                                    <label for="quarterYearSelect"
+                                        class="text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                                        {{ $currentLocale === 'en' ? 'Year:' : 'Tahun:' }}
+                                    </label>
+                                    <div class="relative inline-block">
+                                        <select id="quarterYearSelect" onchange="filterQuarterReport(this.value)"
+                                            class="pl-4 pr-10 py-1.5 text-xs md:text-sm font-semibold text-slate-800 bg-[#EEF4FF] hover:bg-[#e1edff] border border-slate-300 rounded-xl outline-none focus:border-[#0099ff] focus:ring-1 focus:ring-[#0099ff] cursor-pointer appearance-none transition-colors">
+                                            @for ($i = 0; $i < 5; $i++)
+                                                @php $year = $currentYear - $i; @endphp
+                                                <option value="{{ $year }}"
+                                                    @if ($year == $defaultYear) selected @endif>
+                                                    {{ $year }}
+                                                </option>
+                                            @endfor
+                                        </select>
+                                        <div
+                                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-500">
+                                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            @endif
                         </div>
 
-                        {{-- 4 Quarter Cards Grid: 2026 --}}
-                        <div id="quarter-grid-2026"
-                            class="quarter-report-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                            {{-- Q1 --}}
-                            <div
-                                class="report-card bg-[#EEF4FF] border border-slate-200 rounded-2xl p-5 flex flex-col justify-between">
-                                <div>
-                                    <div class="flex items-center justify-between mb-3">
-                                        <div
-                                            class="w-9 h-9 rounded-xl bg-blue-600 text-white font-extrabold flex items-center justify-center text-xs shadow-sm">
-                                            Q1
-                                        </div>
-                                        <span
-                                            class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white text-[#0051D5]">
-                                            Rilis Resmi
-                                        </span>
-                                    </div>
-                                    <h4 class="font-bold text-slate-900 text-sm mb-1">Triwulan I 2026</h4>
-                                    <p class="text-xs text-slate-500 mb-3">Per 31 Maret 2026</p>
-                                </div>
-                                <div>
-                                    <div
-                                        class="pt-3 border-t border-slate-200/80 flex items-center justify-between text-xs text-[#45464D] mb-3">
-                                        <span>Status:</span>
-                                        <span class="text-black font-semibold">Unaudited</span>
-                                    </div>
-                                    <a href="{{ asset('assets/documents/laporan-q1-2026.pdf') }}" target="_blank"
-                                        download
-                                        class="w-full flex items-center justify-center gap-1.5 py-2 bg-white hover:bg-[#0080d6] text-[#0051D5] hover:text-white text-xs font-semibold rounded-xl shadow-xs transition-all">
-                                        <i class="fa-solid fa-arrow-down-to-bracket text-xs"></i> Unduh PDF
-                                    </a>
-                                </div>
-                            </div>
+                        {{-- ============ PREPARE DATA ============ --}}
+                        @php
+                            $currentYear = now()->year;
 
-                            {{-- Q2 --}}
-                            <div
-                                class="report-card bg-[#EEF4FF] border border-slate-200 rounded-2xl p-5 flex flex-col justify-between">
-                                <div>
-                                    <div class="flex items-center justify-between mb-3">
-                                        <div
-                                            class="w-9 h-9 rounded-xl bg-blue-600 text-white font-extrabold flex items-center justify-center text-xs shadow-sm">
-                                            Q2
-                                        </div>
-                                        <span
-                                            class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white text-[#0051D5]">
-                                            Review
-                                        </span>
-                                    </div>
-                                    <h4 class="font-bold text-slate-900 text-sm mb-1">Triwulan II 2026</h4>
-                                    <p class="text-xs text-slate-500 mb-3">Per 30 Juni 2026</p>
-                                </div>
-                                <div>
-                                    <div
-                                        class="pt-3 border-t border-slate-200/80 flex items-center justify-between text-xs text-[#45464D] mb-3">
-                                        <span>Status:</span>
-                                        <span class="text-black font-semibold">Unreviewed</span>
-                                    </div>
-                                    <a href="{{ asset('assets/documents/laporan-q2-2026.pdf') }}" target="_blank"
-                                        download
-                                        class="w-full flex items-center justify-center gap-1.5 py-2 bg-white hover:bg-[#0080d6] text-[#0051D5] hover:text-white text-xs font-semibold rounded-xl shadow-xs transition-all">
-                                        <i class="fa-solid fa-arrow-down-to-bracket text-xs"></i> Unduh PDF
-                                    </a>
-                                </div>
-                            </div>
+                            // Metadata tiap quarter: label romawi, tanggal akhir periode
+                            $quarterMeta = [
+                                1 => [
+                                    'label' => 'I',
+                                    'endDate' => '31 Maret',
+                                    'badge' => 'Audit',
+                                    'badgeColor' => 'bg-emerald-100 text-emerald-800',
+                                    'iconBg' => 'bg-blue-600',
+                                ],
+                                2 => [
+                                    'label' => 'II',
+                                    'endDate' => '30 Juni',
+                                    'badge' => 'Review',
+                                    'badgeColor' => 'bg-blue-100 text-blue-800',
+                                    'iconBg' => 'bg-blue-600',
+                                ],
+                                3 => [
+                                    'label' => 'III',
+                                    'endDate' => '30 September',
+                                    'badge' => 'Review',
+                                    'badgeColor' => 'bg-blue-100 text-blue-800',
+                                    'iconBg' => 'bg-blue-600',
+                                ],
+                                4 => [
+                                    'label' => 'IV',
+                                    'endDate' => '31 Desember',
+                                    'badge' => 'Audit',
+                                    'badgeColor' => 'bg-emerald-100 text-emerald-800',
+                                    'iconBg' => 'bg-blue-600',
+                                ],
+                            ];
 
-                            {{-- Q3 --}}
-                            <div
-                                class="bg-[#EEF4FF] border border-slate-200/70 rounded-2xl p-5 flex flex-col justify-between opacity-80">
-                                <div>
-                                    <div class="flex items-center justify-between mb-3">
-                                        <div
-                                            class="w-9 h-9 rounded-xl bg-slate-200 text-slate-600 font-extrabold flex items-center justify-center text-xs">
-                                            Q3
-                                        </div>
-                                        <span
-                                            class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">
-                                            Okt 2026
-                                        </span>
-                                    </div>
-                                    <h4 class="font-bold text-slate-700 text-sm mb-1">Triwulan III 2026</h4>
-                                    <p class="text-xs text-slate-400 mb-3">Per 30 September 2026</p>
-                                </div>
-                                <div>
-                                    <div
-                                        class="pt-3 border-t border-slate-200/80 flex items-center justify-between text-xs text-slate-400 mb-3">
-                                        <span>Jadwal Rilis</span>
-                                        <span class="text-amber-600 font-medium">Segera Hadir</span>
-                                    </div>
-                                    <button disabled
-                                        class="w-full flex items-center justify-center gap-1.5 py-2 bg-slate-100 text-slate-400 text-xs font-semibold rounded-xl cursor-not-allowed">
-                                        <i class="fa-regular fa-clock text-xs"></i> Segera Hadir
-                                    </button>
-                                </div>
-                            </div>
+                            // Group data berdasarkan "tahun-quarter" (misal: "2026-1" untuk Q1 2026)
+                            $grouped = $quarterlyReports->groupBy(function ($r) {
+                                $date = \Carbon\Carbon::parse($r->TahunPeriode);
+                                $year = $date->format('Y');
+                                $quarter = (int) ceil((int) $date->format('n') / 3);
+                                return $year . '-' . $quarter;
+                            });
+                        @endphp
 
-                            {{-- Q4 / Audit --}}
-                            <div
-                                class="bg-[#EEF4FF] border border-slate-200/70 rounded-2xl p-5 flex flex-col justify-between opacity-80">
-                                <div>
-                                    <div class="flex items-center justify-between mb-3">
-                                        <div
-                                            class="w-9 h-9 rounded-xl bg-slate-200 text-slate-600 font-extrabold flex items-center justify-center text-xs">
-                                            Q4
-                                        </div>
-                                        <span
-                                            class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">
-                                            Mar 2027
-                                        </span>
-                                    </div>
-                                    <h4 class="font-bold text-slate-700 text-sm mb-1">Tahunan Audit 2026</h4>
-                                    <p class="text-xs text-slate-400 mb-3">Audit Penuh 2026</p>
-                                </div>
-                                <div>
-                                    <div
-                                        class="pt-3 border-t border-slate-200/80 flex items-center justify-between text-xs text-slate-400 mb-3">
-                                        <span>Jadwal Rilis</span>
-                                        <span class="text-amber-600 font-medium">Segera Hadir</span>
-                                    </div>
-                                    <button disabled
-                                        class="w-full flex items-center justify-center gap-1.5 py-2 bg-slate-100 text-slate-400 text-xs font-semibold rounded-xl cursor-not-allowed">
-                                        <i class="fa-regular fa-clock text-xs"></i> Segera Hadir
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                        {{-- ============ GRID PER TAHUN (5 TAHUN KEBELAKANG) ============ --}}
+                        @if ($quarterlyReports->isNotEmpty())
+                            @for ($i = 0; $i < 5; $i++)
+                                @php
+                                    $year = $currentYear - $i;
+                                    $isHidden = $year != $defaultYear ? 'hidden' : '';
+                                @endphp
 
-                        {{-- 4 Quarter Cards Grid: 2025 --}}
-                        <div id="quarter-grid-2025"
-                            class="quarter-report-grid hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                            @foreach (['I' => ['tgl' => '31 Maret 2025', 'badge' => 'Audit', 'badgeColor' => 'bg-emerald-100 text-emerald-800', 'size' => '4.1 MB'], 'II' => ['tgl' => '30 Juni 2025', 'badge' => 'Review', 'badgeColor' => 'bg-blue-100 text-blue-800', 'size' => '4.4 MB'], 'III' => ['tgl' => '30 September 2025', 'badge' => 'Review', 'badgeColor' => 'bg-blue-100 text-blue-800', 'size' => '4.6 MB'], 'IV' => ['tgl' => '31 Desember 2025', 'badge' => 'Audit', 'badgeColor' => 'bg-emerald-100 text-emerald-800', 'size' => '5.2 MB']] as $q => $item)
-                                <div
-                                    class="report-card bg-slate-50/70 border border-slate-200 rounded-2xl p-5 flex flex-col justify-between">
-                                    <div>
-                                        <div class="flex items-center justify-between mb-3">
+                                <div id="quarter-grid-{{ $year }}" data-year="{{ $year }}"
+                                    class="quarter-report-grid {{ $isHidden }} grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 transition-all duration-300">
+
+                                    @foreach ($quarterMeta as $qNum => $meta)
+                                        @php
+                                            $key = $year . '-' . $qNum;
+                                            $report = $grouped->has($key) ? $grouped[$key]->first() : null;
+                                            $hasFile = $report && $report->PathFile;
+                                        @endphp
+
+                                        @if ($hasFile)
+                                            {{-- ===== CARD AKTIF (Data tersedia) ===== --}}
                                             <div
-                                                class="w-9 h-9 rounded-xl bg-blue-600 text-white font-extrabold flex items-center justify-center text-xs shadow-sm">
-                                                Q{{ $loop->iteration }}
+                                                class="report-card bg-[#EEF4FF] border border-slate-200 rounded-2xl p-5 flex flex-col justify-between hover:shadow-md transition-shadow">
+                                                <div>
+                                                    <div class="flex items-center justify-between mb-3">
+                                                        <div
+                                                            class="w-9 h-9 rounded-xl {{ $meta['iconBg'] }} text-white font-extrabold flex items-center justify-center text-xs shadow-sm">
+                                                            Q{{ $qNum }}
+                                                        </div>
+                                                        <span
+                                                            class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $meta['badgeColor'] }}">
+                                                            {{ $meta['badge'] }}
+                                                        </span>
+                                                    </div>
+                                                    <h4 class="font-bold text-slate-900 text-sm mb-1">
+                                                        Triwulan {{ $meta['label'] }} {{ $year }}
+                                                    </h4>
+                                                    <p class="text-xs text-slate-500 mb-3">
+                                                        Per {{ $meta['endDate'] }} {{ $year }}
+                                                    </p>
+                                                    @if ($report->Deskripsi)
+                                                        <p
+                                                            class="text-[11px] text-slate-600 leading-relaxed line-clamp-2 mb-3">
+                                                            {{ $report->Deskripsi }}
+                                                        </p>
+                                                    @endif
+                                                </div>
+                                                <div>
+                                                    <div
+                                                        class="pt-3 border-t border-slate-200/80 flex items-center justify-between text-xs text-[#45464D] mb-3">
+                                                        <span>PDF &bull; {{ $report->FileSize }} MB</span>
+                                                        <span class="text-emerald-600 font-semibold">Tersedia</span>
+                                                    </div>
+                                                    <a href="{{ asset('storage/' . $report->PathFile) }}" target="_blank"
+                                                        download
+                                                        class="w-full flex items-center justify-center gap-1.5 py-2 bg-white hover:bg-[#0080d6] text-[#0051D5] hover:text-white text-xs font-semibold rounded-xl shadow-xs transition-all">
+                                                        <i class="fa-solid fa-arrow-down-to-bracket text-xs"></i> Unduh PDF
+                                                    </a>
+                                                </div>
                                             </div>
-                                            <span
-                                                class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $item['badgeColor'] }}">
-                                                {{ $item['badge'] }}
-                                            </span>
-                                        </div>
-                                        <h4 class="font-bold text-slate-900 text-sm mb-1">Triwulan {{ $q }}
-                                            2025</h4>
-                                        <p class="text-xs text-slate-500 mb-3">Per {{ $item['tgl'] }}</p>
-                                    </div>
-                                    <div>
-                                        <div
-                                            class="pt-3 border-t border-slate-200/80 flex items-center justify-between text-xs text-slate-400 mb-3">
-                                            <span>PDF &bull; {{ $item['size'] }}</span>
-                                            <span class="text-emerald-600 font-semibold">Tersedia</span>
-                                        </div>
-                                        <a href="{{ asset('assets/documents/laporan-q' . $loop->iteration . '-2025.pdf') }}"
-                                            target="_blank" download
-                                            class="w-full flex items-center justify-center gap-1.5 py-2 bg-white hover:bg-[#0080d6] text-white text-xs font-semibold rounded-xl shadow-xs transition-all">
-                                            <i class="fa-solid fa-arrow-down-to-bracket text-xs"></i> Unduh PDF
-                                        </a>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-
-                        {{-- 4 Quarter Cards Grid: 2024 --}}
-                        <div id="quarter-grid-2024"
-                            class="quarter-report-grid hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                            @foreach (['I' => ['tgl' => '31 Maret 2024', 'badge' => 'Audit', 'badgeColor' => 'bg-emerald-100 text-emerald-800', 'size' => '3.8 MB'], 'II' => ['tgl' => '30 Juni 2024', 'badge' => 'Review', 'badgeColor' => 'bg-blue-100 text-blue-800', 'size' => '4.2 MB'], 'III' => ['tgl' => '30 September 2024', 'badge' => 'Review', 'badgeColor' => 'bg-blue-100 text-blue-800', 'size' => '4.3 MB'], 'IV' => ['tgl' => '31 Desember 2024', 'badge' => 'Audit', 'badgeColor' => 'bg-emerald-100 text-emerald-800', 'size' => '4.9 MB']] as $q => $item)
-                                <div
-                                    class="report-card bg-slate-50/70 border border-slate-200 rounded-2xl p-5 flex flex-col justify-between">
-                                    <div>
-                                        <div class="flex items-center justify-between mb-3">
+                                        @else
+                                            {{-- ===== CARD DISABLED (Segera Hadir) ===== --}}
                                             <div
-                                                class="w-9 h-9 rounded-xl bg-blue-600 text-white font-extrabold flex items-center justify-center text-xs shadow-sm">
-                                                Q{{ $loop->iteration }}
+                                                class="bg-[#EEF4FF] border border-slate-200/70 rounded-2xl p-5 flex flex-col justify-between opacity-75">
+                                                <div>
+                                                    <div class="flex items-center justify-between mb-3">
+                                                        <div
+                                                            class="w-9 h-9 rounded-xl bg-slate-200 text-slate-600 font-extrabold flex items-center justify-center text-xs">
+                                                            Q{{ $qNum }}
+                                                        </div>
+                                                        <span
+                                                            class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">
+                                                            Segera
+                                                        </span>
+                                                    </div>
+                                                    <h4 class="font-bold text-slate-700 text-sm mb-1">
+                                                        Triwulan {{ $meta['label'] }} {{ $year }}
+                                                    </h4>
+                                                    <p class="text-xs text-slate-400 mb-3">
+                                                        Per {{ $meta['endDate'] }} {{ $year }}
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <div
+                                                        class="pt-3 border-t border-slate-200/80 flex items-center justify-between text-xs text-slate-400 mb-3">
+                                                        <span>Jadwal Rilis</span>
+                                                        <span class="text-amber-600 font-medium">Segera Hadir</span>
+                                                    </div>
+                                                    <button disabled
+                                                        class="w-full flex items-center justify-center gap-1.5 py-2 bg-slate-100 text-slate-400 text-xs font-semibold rounded-xl cursor-not-allowed">
+                                                        <i class="fa-regular fa-clock text-xs"></i> Segera Hadir
+                                                    </button>
+                                                </div>
                                             </div>
-                                            <span
-                                                class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $item['badgeColor'] }}">
-                                                {{ $item['badge'] }}
-                                            </span>
-                                        </div>
-                                        <h4 class="font-bold text-slate-900 text-sm mb-1">Triwulan {{ $q }}
-                                            2024</h4>
-                                        <p class="text-xs text-slate-500 mb-3">Per {{ $item['tgl'] }}</p>
-                                    </div>
-                                    <div>
-                                        <div
-                                            class="pt-3 border-t border-slate-200/80 flex items-center justify-between text-xs text-slate-400 mb-3">
-                                            <span>PDF &bull; {{ $item['size'] }}</span>
-                                            <span class="text-emerald-600 font-semibold">Tersedia</span>
-                                        </div>
-                                        <a href="{{ asset('assets/documents/laporan-q' . $loop->iteration . '-2024.pdf') }}"
-                                            target="_blank" download
-                                            class="w-full flex items-center justify-center gap-1.5 py-2 bg-white hover:bg-[#0080d6] text-white text-xs font-semibold rounded-xl shadow-xs transition-all">
-                                            <i class="fa-solid fa-arrow-down-to-bracket text-xs"></i> Unduh PDF
-                                        </a>
-                                    </div>
+                                        @endif
+                                    @endforeach
                                 </div>
-                            @endforeach
-                        </div>
+                            @endfor
+                        @else
+                            {{-- ============ EMPTY STATE ============ --}}
+                            <div class="text-center py-12">
+                                <div
+                                    class="w-16 h-16 mx-auto rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 text-2xl mb-4">
+                                    <i class="fa-regular fa-folder-open"></i>
+                                </div>
+                                <p class="text-sm text-slate-500">Belum ada laporan triwulanan yang tersedia.</p>
+                            </div>
+                        @endif
                     </div>
                     <div id="ringkasan-kinerja"
                         class="scroll-mt-40 bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 md:p-8">
@@ -1036,10 +866,10 @@
                         </div>
 
                         {{-- 2. TABEL LENGKAP TAHUNAN (GABUNG DALAM 1 CONTAINER) --}}
-                        <div id="financialTableView"
-                            class="overflow-hidden rounded-2xl border border-slate-200">
+                        <div id="financialTableView" class="overflow-hidden rounded-2xl border border-slate-200">
                             <div class="overflow-x-auto table-scrollbar">
-                                <table id="financialDataTable" class="w-full text-left text-xs text-slate-700 divide-y divide-slate-200">
+                                <table id="financialDataTable"
+                                    class="w-full text-left text-xs text-slate-700 divide-y divide-slate-200">
                                     <thead class="bg-slate-100 text-slate-800 font-bold tracking-wider">
                                         <tr>
                                             <th class="py-3 px-4 min-w-[240px]">
@@ -1204,20 +1034,27 @@
         <script>
             // Filter Annual Report by Year
             function filterAnnualReport(year) {
-                document.querySelectorAll('.annual-report-card').forEach(card => card.classList.add('hidden'));
-                const target = document.getElementById('annual-card-' + year);
-                if (target) {
-                    target.classList.remove('hidden');
-                }
+                // Loop semua card laporan tahunan
+                document.querySelectorAll('.annual-report-card').forEach(card => {
+                    // Jika data-year card sama dengan tahun yang dipilih, tampilkan
+                    if (card.dataset.year === year) {
+                        card.classList.remove('hidden');
+                    } else {
+                        // Jika tidak, sembunyikan
+                        card.classList.add('hidden');
+                    }
+                });
             }
 
             // Filter Quarterly Reports by Year
             function filterQuarterReport(year) {
-                document.querySelectorAll('.quarter-report-grid').forEach(grid => grid.classList.add('hidden'));
-                const target = document.getElementById('quarter-grid-' + year);
-                if (target) {
-                    target.classList.remove('hidden');
-                }
+                document.querySelectorAll('.quarter-report-grid').forEach(grid => {
+                    if (grid.dataset.year === year) {
+                        grid.classList.remove('hidden');
+                    } else {
+                        grid.classList.add('hidden');
+                    }
+                });
             }
 
             // Export Financial Data to Excel (CSV format with UTF-8 BOM)
@@ -1240,7 +1077,9 @@
                 });
 
                 const csvContent = '\uFEFF' + csv.join('\r\n');
-                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const blob = new Blob([csvContent], {
+                    type: 'text/csv;charset=utf-8;'
+                });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;

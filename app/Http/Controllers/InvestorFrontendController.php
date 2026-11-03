@@ -37,7 +37,8 @@ class InvestorFrontendController extends Controller
                     $query->where('Status', 'Aktif')
                         ->orderBy('TahunPeriode', 'desc')
                         ->orderBy('Urutan', 'asc');
-                }
+                },
+                'allDetails'
             ])
             ->get();
 
@@ -50,8 +51,8 @@ class InvestorFrontendController extends Controller
         $activeTab = 'laporan-keuangan';
 
         $prospektus = $categories->firstWhere('Slug', 'prospektus')?->details ?? collect();
-        $annualReports = $categories->firstWhere('Slug', 'laporan-tahunan')?->details ?? collect();
-        $quarterlyReports = $categories->firstWhere('Slug', 'laporan-triwulanan')?->details ?? collect();
+        $annualReports = $categories->firstWhere('Slug', 'annual-report')?->details ?? collect();
+        $quarterlyReports = $categories->firstWhere('Slug', 'quarterly-report')?->details ?? collect();
 
         // Dynamic Multi-Year Financial Summary Dataset (Normalized Schema)
         $pengaturanKinerja = PengaturanKinerjaKeuangan::firstOrCreate(
@@ -94,7 +95,7 @@ class InvestorFrontendController extends Controller
         }
         $kantor = MasterKantor::orderByRaw("FIELD(TipeKantor, 'Pusat') DESC")->first();
 
-
+        // dd($annualReports);
         return view('frontend.laporan-keuangan', compact(
             'categories',
             'availableYears',
