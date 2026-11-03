@@ -29,127 +29,133 @@
     /* Sticky Sidebar */
     .sticky-sidebar {
         position: sticky;
-        top: 160px; /* Jarak dari atas agar tidak menempel dengan navbar */
-        max-height: calc(100vh - 180px); /* Tinggi maksimal agar tidak overflow */
-        overflow-y: auto; /* Scroll jika konten terlalu panjang */
+        top: 160px;
+        max-height: calc(100vh - 180px);
+        overflow-y: auto;
     }
 
     /* Custom scrollbar untuk sidebar */
-    .sticky-sidebar::-webkit-scrollbar {
+    .sticky-sidebar::-webkit-scrollbar,
+    .custom-sidebar-scroll::-webkit-scrollbar {
         width: 4px;
     }
 
-    .sticky-sidebar::-webkit-scrollbar-track {
+    .sticky-sidebar::-webkit-scrollbar-track,
+    .custom-sidebar-scroll::-webkit-scrollbar-track {
         background: transparent;
     }
 
-    .sticky-sidebar::-webkit-scrollbar-thumb {
+    .sticky-sidebar::-webkit-scrollbar-thumb,
+    .custom-sidebar-scroll::-webkit-scrollbar-thumb {
         background: #cbd5e1;
         border-radius: 4px;
     }
 
-    .sticky-sidebar::-webkit-scrollbar-thumb:hover {
+    .sticky-sidebar::-webkit-scrollbar-thumb:hover,
+    .custom-sidebar-scroll::-webkit-scrollbar-thumb:hover {
         background: #94a3b8;
     }
 
-    /* Smooth scroll behavior */
-    html {
-        scroll-behavior: smooth;
+    .sidebar-link.active {
+        background-color: #f0f7ff;
+        color: #0099ff;
+        font-weight: 600;
+        border-left: 3px solid #0099ff;
     }
 
-    /* Offset untuk anchor links */
-    section[id] {
-        scroll-margin-top: 160px;
+    /* Offset untuk anchor links agar teks tidak tertutup sticky header */
+    section[id], div[id].scroll-target {
+        scroll-margin-top: 180px !important;
     }
 </style>
 @endpush
     <!-- ========================================== -->
     <!-- MAIN CONTENT SECTION -->
     <!-- ========================================== -->
-    <section class="py-12 bg-[#f8f9ff]">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section class="py-10 bg-[#f8fafc] min-h-screen">
+        <div class="container mx-auto max-w-[1420px] px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
                 <!-- ========================================== -->
                 <!-- LEFT STICKY SIDEBAR -->
                 <!-- ========================================== -->
-                <div class="lg:col-span-4 xl:col-span-3">
-                    <div class="sticky-sidebar space-y-6 pr-1">
+                <div class="lg:col-span-3">
+                    <div class="sticky top-[160px] space-y-5 max-h-[calc(100vh-180px)] overflow-y-auto custom-sidebar-scroll pr-1">
                         <!-- Sidebar Card -->
-                        <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 p-5">
-                            <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
-                                <span class="text-[11px] font-bold text-slate-500 tracking-wider uppercase">
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5">
+                            <div class="flex items-center gap-2.5 pb-3.5 mb-2 border-b border-slate-100">
+                                <div class="w-8 h-8 rounded-lg bg-blue-50 text-[#0099ff] flex items-center justify-center text-sm">
+                                    <i class="fa-solid fa-list-ul"></i>
+                                </div>
+                                <h3 class="font-bold text-slate-800 text-sm tracking-tight">
                                     {{ __('investor.on_this_page') }}
-                                </span>
-                                <i class="fa-solid fa-bars-staggered text-slate-400 text-xs"></i>
+                                </h3>
                             </div>
 
-                            <nav class="space-y-1.5" id="tata-kelola-nav">
+                            <nav class="space-y-1.5" id="sidebar-nav">
                                 <a href="#bagan-manajemen"
-                                    class="flex items-start gap-3 p-2.5 rounded-lg bg-blue-50 text-[#0051d5] font-semibold text-xs transition-colors sidebar-nav-link"
-                                    data-target="bagan-manajemen">
-                                    <span class="text-xs font-bold w-5">01</span>
-                                    <div>
-                                        <p class="text-xs font-bold leading-tight">{{ __('gcg.nav_chart') }}</p>
-                                        <p class="text-[11px] font-normal text-slate-500 mt-0.5">
-                                            {{ __('gcg.nav_chart_desc') }}</p>
-                                    </div>
+                                    class="sidebar-link active group flex items-center justify-between px-3.5 py-2.5 text-xs md:text-sm text-[#45464D] rounded-xl transition-all duration-200 hover:bg-blue-50 hover:text-[#0099ff] hover:translate-x-1.5 aria-[current=true]:bg-blue-50 aria-[current=true]:text-[#0099ff] aria-[current=true]:translate-x-1.5 aria-[current=true]:font-semibold"
+                                    aria-current="true">
+                                    <span class="flex items-center gap-2.5">
+                                        <i class="fa-solid fa-sitemap w-4 text-center text-slate-400 group-hover:text-[#0099ff] [.active_&]:text-[#0099ff]"></i>
+                                        {{ __('gcg.nav_chart') }}
+                                    </span>
+                                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-300 group-hover:text-[#0099ff] group-hover:translate-x-0.5 [.active_&]:text-[#0099ff] transition-transform"></i>
                                 </a>
 
                                 <a href="#dokumen-gcg"
-                                    class="flex items-start gap-3 p-2.5 rounded-lg text-slate-700 hover:bg-slate-50 text-xs transition-colors sidebar-nav-link"
-                                    data-target="dokumen-gcg">
-                                    <span class="text-xs font-bold text-slate-400 w-5">02</span>
-                                    <div>
-                                        <p class="text-xs font-semibold leading-tight">{{ __('gcg.nav_docs') }}</p>
-                                        <p class="text-[11px] font-normal text-slate-500 mt-0.5">
-                                            {{ __('gcg.nav_docs_desc') }}</p>
-                                    </div>
+                                    class="sidebar-link group flex items-center justify-between px-3.5 py-2.5 text-xs md:text-sm text-[#45464D] rounded-xl transition-all duration-200 hover:bg-blue-50 hover:text-[#0099ff] hover:translate-x-1.5 aria-[current=true]:bg-blue-50 aria-[current=true]:text-[#0099ff] aria-[current=true]:translate-x-1.5 aria-[current=true]:font-semibold">
+                                    <span class="flex items-center gap-2.5">
+                                        <i class="fa-regular fa-file-lines w-4 text-center text-[#45464D] group-hover:text-[#0099ff] [.active_&]:text-[#0099ff]"></i>
+                                        {{ __('gcg.nav_docs') }}
+                                    </span>
+                                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-300 group-hover:text-[#0099ff] group-hover:translate-x-0.5 [.active_&]:text-[#0099ff] transition-transform"></i>
                                 </a>
 
                                 <a href="#rups"
-                                    class="flex items-start gap-3 p-2.5 rounded-lg text-slate-700 hover:bg-slate-50 text-xs transition-colors sidebar-nav-link"
-                                    data-target="rups">
-                                    <span class="text-xs font-bold text-slate-400 w-5">03</span>
-                                    <div>
-                                        <p class="text-xs font-semibold leading-tight">{{ __('gcg.nav_rups') }}</p>
-                                        <p class="text-[11px] font-normal text-slate-500 mt-0.5">
-                                            {{ __('gcg.nav_rups_desc') }}</p>
-                                    </div>
+                                    class="sidebar-link group flex items-center justify-between px-3.5 py-2.5 text-xs md:text-sm text-[#45464D] rounded-xl transition-all duration-200 hover:bg-blue-50 hover:text-[#0099ff] hover:translate-x-1.5 aria-[current=true]:bg-blue-50 aria-[current=true]:text-[#0099ff] aria-[current=true]:translate-x-1.5 aria-[current=true]:font-semibold">
+                                    <span class="flex items-center gap-2.5">
+                                        <i class="fa-solid fa-users-rectangle w-4 text-center text-[#45464D] group-hover:text-[#0099ff] [.active_&]:text-[#0099ff]"></i>
+                                        {{ __('gcg.nav_rups') }}
+                                    </span>
+                                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-300 group-hover:text-[#0099ff] group-hover:translate-x-0.5 [.active_&]:text-[#0099ff] transition-transform"></i>
                                 </a>
 
                                 <a href="#komite-wbs"
-                                    class="flex items-start gap-3 p-2.5 rounded-lg text-slate-700 hover:bg-slate-50 text-xs transition-colors sidebar-nav-link"
-                                    data-target="komite-wbs">
-                                    <span class="text-xs font-bold text-slate-400 w-5">04</span>
-                                    <div>
-                                        <p class="text-xs font-semibold leading-tight">{{ __('gcg.nav_audit') }}</p>
-                                        <p class="text-[11px] font-normal text-slate-500 mt-0.5">
-                                            {{ __('gcg.nav_audit_desc') }}</p>
-                                    </div>
+                                    class="sidebar-link group flex items-center justify-between px-3.5 py-2.5 text-xs md:text-sm text-[#45464D] rounded-xl transition-all duration-200 hover:bg-blue-50 hover:text-[#0099ff] hover:translate-x-1.5 aria-[current=true]:bg-blue-50 aria-[current=true]:text-[#0099ff] aria-[current=true]:translate-x-1.5 aria-[current=true]:font-semibold">
+                                    <span class="flex items-center gap-2.5">
+                                        <i class="fa-solid fa-shield-halved w-4 text-center text-[#45464D] group-hover:text-[#0099ff] [.active_&]:text-[#0099ff]"></i>
+                                        {{ __('gcg.nav_audit') }}
+                                    </span>
+                                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-300 group-hover:text-[#0099ff] group-hover:translate-x-0.5 [.active_&]:text-[#0099ff] transition-transform"></i>
                                 </a>
                             </nav>
 
                             <!-- Contact Corporate Secretary Box -->
-                            <div
-                                class="mt-6 pt-4 border-t border-slate-100 bg-slate-50 rounded-xl p-3.5 text-xs text-slate-700">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
-                                    {{ __('gcg.corp_sec_label') }}
-                                </span>
-                                <p class="text-[11px] text-slate-500 mb-2 leading-relaxed">
-                                    {{ __('gcg.corp_sec_desc') }}
-                                </p>
-                                <div class="space-y-1.5 text-xs">
-                                    <a href="mailto:{{ $bagan->EmailSekretariat }}"
-                                        class="flex items-center gap-2 text-[#0051d5] font-semibold hover:underline">
-                                        <i class="fa-regular fa-envelope text-[11px]"></i> {{ $bagan->EmailSekretariat }}
-                                    </a>
-                                    <p class="flex items-center gap-2 text-slate-600">
-                                        <i class="fa-solid fa-phone text-[11px] text-slate-400"></i>
-                                        {{ $bagan->TeleponSekretariat }}
+                            @if (!empty($bagan->EmailSekretariat) || !empty($bagan->TeleponSekretariat))
+                                <div class="mt-4 pt-3.5 border-t border-slate-100 bg-slate-50 rounded-xl p-3.5 text-xs text-slate-700">
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
+                                        {{ __('gcg.corp_sec_label') }}
+                                    </span>
+                                    <p class="text-[11px] text-slate-500 mb-2 leading-relaxed">
+                                        {{ __('gcg.corp_sec_desc') }}
                                     </p>
+                                    <div class="space-y-1.5 text-xs">
+                                        @if (!empty($bagan->EmailSekretariat))
+                                            <a href="mailto:{{ $bagan->EmailSekretariat }}"
+                                                class="flex items-center gap-2 text-[#0099ff] font-semibold hover:underline">
+                                                <i class="fa-regular fa-envelope text-[11px]"></i> {{ $bagan->EmailSekretariat }}
+                                            </a>
+                                        @endif
+                                        @if (!empty($bagan->TeleponSekretariat))
+                                            <p class="flex items-center gap-2 text-slate-600">
+                                                <i class="fa-solid fa-phone text-[11px] text-slate-400"></i>
+                                                {{ $bagan->TeleponSekretariat }}
+                                            </p>
+                                        @endif
+                                    </div>
                                 </div>
-                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -157,7 +163,7 @@
                 <!-- ========================================== -->
                 <!-- RIGHT CONTENT AREA -->
                 <!-- ========================================== -->
-                <div class="lg:col-span-8 xl:col-span-9 space-y-12">
+                <div class="lg:col-span-9 space-y-12">
 
                     <!-- SECTION 01: BAGAN & MANAJEMEN -->
                     <section id="bagan-manajemen" class="scroll-mt-40">
@@ -878,25 +884,40 @@
                         });
                 };
 
-                // SCROLLSPY
-                const navLinks = document.querySelectorAll('#tata-kelola-nav .sidebar-nav-link');
-                const sections = document.querySelectorAll('section[id]');
-                window.addEventListener('scroll', function() {
-                    let current = '';
-                    sections.forEach(section => {
-                        const sectionTop = section.offsetTop - 175;
-                        if (window.scrollY >= sectionTop) current = section.getAttribute('id');
+                // SCROLLSPY & ACTIVE LINK
+                const sidebarLinks = document.querySelectorAll('#sidebar-nav .sidebar-link');
+                const sections = document.querySelectorAll('section[id], div[id]');
+
+                function setActiveLink(activeLink) {
+                    sidebarLinks.forEach(link => {
+                        link.classList.remove('active');
+                        link.removeAttribute('aria-current');
                     });
-                    navLinks.forEach(link => {
-                        const target = link.getAttribute('data-target');
-                        if (target === current) {
-                            link.classList.add('bg-blue-50', 'text-[#0051d5]', 'font-semibold');
-                            link.classList.remove('text-slate-700');
-                        } else {
-                            link.classList.remove('bg-blue-50', 'text-[#0051d5]', 'font-semibold');
-                            link.classList.add('text-slate-700');
+                    activeLink.classList.add('active');
+                    activeLink.setAttribute('aria-current', 'true');
+                }
+
+                sidebarLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        setActiveLink(this);
+                    });
+                });
+
+                window.addEventListener('scroll', function() {
+                    let currentSectionId = '';
+                    sections.forEach(section => {
+                        const sectionTop = section.offsetTop - 195;
+                        if (window.scrollY >= sectionTop) {
+                            currentSectionId = section.getAttribute('id');
                         }
                     });
+                    if (currentSectionId) {
+                        sidebarLinks.forEach(link => {
+                            if (link.getAttribute('href') === `#${currentSectionId}`) {
+                                setActiveLink(link);
+                            }
+                        });
+                    }
                 });
             });
         </script>

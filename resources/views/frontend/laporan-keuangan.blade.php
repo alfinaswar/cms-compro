@@ -75,6 +75,11 @@
                 background: #cbd5e1;
                 border-radius: 4px;
             }
+
+            /* Offset scroll agar teks tidak tertutup sticky header */
+            section[id], div[id].scroll-target, div#prospektus, div#laporan-tahunan, div#laporan-triwulanan, div#ringkasan-kinerja {
+                scroll-margin-top: 180px !important;
+            }
         </style>
     @endpush
 

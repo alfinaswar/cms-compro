@@ -2,18 +2,44 @@
 
 @push('styles')
     <style>
+        .sticky-sidebar {
+            position: sticky;
+            top: 160px;
+            max-height: calc(100vh - 180px);
+            overflow-y: auto;
+        }
+
+        .sticky-sidebar::-webkit-scrollbar,
         .custom-sidebar-scroll::-webkit-scrollbar {
             width: 4px;
         }
+
+        .sticky-sidebar::-webkit-scrollbar-track,
         .custom-sidebar-scroll::-webkit-scrollbar-track {
             background: transparent;
         }
+
+        .sticky-sidebar::-webkit-scrollbar-thumb,
         .custom-sidebar-scroll::-webkit-scrollbar-thumb {
             background: #cbd5e1;
             border-radius: 4px;
         }
+
+        .sticky-sidebar::-webkit-scrollbar-thumb:hover,
         .custom-sidebar-scroll::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
+        }
+
+        .sidebar-link.active {
+            background-color: #f0f7ff;
+            color: #0099ff;
+            font-weight: 600;
+            border-left: 3px solid #0099ff;
+        }
+
+        /* Offset scroll agar teks tidak tertutup sticky header */
+        section[id], div[id].scroll-target {
+            scroll-margin-top: 180px !important;
         }
     </style>
 @endpush
@@ -21,72 +47,68 @@
 @section('content-frontend')
     @include('frontend.investor.partials.hero-tabs')
 
-    <section class="py-12 bg-[#f8f9ff]">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section class="py-10 bg-[#f8fafc] min-h-screen">
+        <div class="container mx-auto max-w-[1420px] px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
                 <!-- LEFT STICKY SIDEBAR -->
-                <div class="lg:col-span-4 xl:col-span-3">
-                    <div class="sticky top-[160px] space-y-6 max-h-[calc(100vh-180px)] overflow-y-auto custom-sidebar-scroll pr-1">
-                        <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 p-5">
-                        <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
-                            <span class="text-[11px] font-bold text-slate-500 tracking-wider uppercase">
-                                {{ __('investor.on_this_page') }}
-                            </span>
-                            <i class="fa-solid fa-bars-staggered text-slate-400 text-xs"></i>
-                        </div>
-
-                        <nav class="space-y-1.5" id="investor-sidebar-nav">
-                            <a href="#struktur-kepemilikan"
-                                class="flex items-start gap-3 p-2.5 rounded-lg bg-blue-50 text-[#0051d5] font-semibold text-xs transition-colors sidebar-nav-link"
-                                data-target="struktur-kepemilikan">
-                                <span class="text-xs font-bold w-5">01</span>
-                                <div>
-                                    <p class="text-xs font-bold leading-tight">{{ __('investor.nav_ownership') }}</p>
-                                    <p class="text-[11px] font-normal text-slate-500 mt-0.5">
-                                        {{ __('investor.nav_ownership_desc') }}</p>
+                <div class="lg:col-span-3">
+                    <div class="sticky top-[160px] space-y-5 max-h-[calc(100vh-180px)] overflow-y-auto custom-sidebar-scroll pr-1">
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5">
+                            <div class="flex items-center gap-2.5 pb-3.5 mb-2 border-b border-slate-100">
+                                <div class="w-8 h-8 rounded-lg bg-blue-50 text-[#0099ff] flex items-center justify-center text-sm">
+                                    <i class="fa-solid fa-list-ul"></i>
                                 </div>
-                            </a>
-
-                            <a href="#pemegang-saham-utama"
-                                class="flex items-start gap-3 p-2.5 rounded-lg text-slate-700 hover:bg-slate-50 text-xs transition-colors sidebar-nav-link"
-                                data-target="pemegang-saham-utama">
-                                <span class="text-xs font-bold text-slate-400 w-5">02</span>
-                                <div>
-                                    <p class="text-xs font-semibold leading-tight">{{ __('investor.nav_controlling') }}</p>
-                                    <p class="text-[11px] font-normal text-slate-500 mt-0.5">
-                                        {{ __('investor.nav_controlling_desc') }}</p>
-                                </div>
-                            </a>
-
-                            <a href="#entitas-anak"
-                                class="flex items-start gap-3 p-2.5 rounded-lg text-slate-700 hover:bg-slate-50 text-xs transition-colors sidebar-nav-link"
-                                data-target="entitas-anak">
-                                <span class="text-xs font-bold text-slate-400 w-5">03</span>
-                                <div>
-                                    <p class="text-xs font-semibold leading-tight">{{ __('investor.nav_subsidiaries') }}</p>
-                                    <p class="text-[11px] font-normal text-slate-500 mt-0.5">
-                                        {{ __('investor.nav_subsidiaries_desc') }}</p>
-                                </div>
-                            </a>
-                        </nav>
-
-                        <div
-                            class="mt-6 pt-4 border-t border-slate-100 bg-sky-50/60 rounded-lg p-3 text-xs text-sky-900 border border-sky-100">
-                            <div class="flex items-center gap-2 font-bold mb-1 text-sky-800">
-                                <i class="fa-solid fa-shield-halved text-sky-600"></i>
-                                {{ __('investor.bei_ojk_title') }}
+                                <h3 class="font-bold text-slate-800 text-sm tracking-tight">
+                                    {{ __('investor.on_this_page') }}
+                                </h3>
                             </div>
-                            <p class="text-[11px] text-sky-700 leading-relaxed">
-                                {{ __('investor.bei_ojk_desc') }}
-                            </p>
-                        </div>
+
+                            <nav class="space-y-1.5" id="sidebar-nav">
+                                <a href="#struktur-kepemilikan"
+                                    class="sidebar-link active group flex items-center justify-between px-3.5 py-2.5 text-xs md:text-sm text-[#45464D] rounded-xl transition-all duration-200 hover:bg-blue-50 hover:text-[#0099ff] hover:translate-x-1.5 aria-[current=true]:bg-blue-50 aria-[current=true]:text-[#0099ff] aria-[current=true]:translate-x-1.5 aria-[current=true]:font-semibold"
+                                    aria-current="true">
+                                    <span class="flex items-center gap-2.5">
+                                        <i class="fa-solid fa-chart-pie w-4 text-center text-slate-400 group-hover:text-[#0099ff] [.active_&]:text-[#0099ff]"></i>
+                                        {{ __('investor.nav_ownership') }}
+                                    </span>
+                                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-300 group-hover:text-[#0099ff] group-hover:translate-x-0.5 [.active_&]:text-[#0099ff] transition-transform"></i>
+                                </a>
+
+                                <a href="#pemegang-saham-utama"
+                                    class="sidebar-link group flex items-center justify-between px-3.5 py-2.5 text-xs md:text-sm text-[#45464D] rounded-xl transition-all duration-200 hover:bg-blue-50 hover:text-[#0099ff] hover:translate-x-1.5 aria-[current=true]:bg-blue-50 aria-[current=true]:text-[#0099ff] aria-[current=true]:translate-x-1.5 aria-[current=true]:font-semibold">
+                                    <span class="flex items-center gap-2.5">
+                                        <i class="fa-solid fa-users-viewfinder w-4 text-center text-[#45464D] group-hover:text-[#0099ff] [.active_&]:text-[#0099ff]"></i>
+                                        {{ __('investor.nav_controlling') }}
+                                    </span>
+                                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-300 group-hover:text-[#0099ff] group-hover:translate-x-0.5 [.active_&]:text-[#0099ff] transition-transform"></i>
+                                </a>
+
+                                <a href="#entitas-anak"
+                                    class="sidebar-link group flex items-center justify-between px-3.5 py-2.5 text-xs md:text-sm text-[#45464D] rounded-xl transition-all duration-200 hover:bg-blue-50 hover:text-[#0099ff] hover:translate-x-1.5 aria-[current=true]:bg-blue-50 aria-[current=true]:text-[#0099ff] aria-[current=true]:translate-x-1.5 aria-[current=true]:font-semibold">
+                                    <span class="flex items-center gap-2.5">
+                                        <i class="fa-solid fa-sitemap w-4 text-center text-[#45464D] group-hover:text-[#0099ff] [.active_&]:text-[#0099ff]"></i>
+                                        {{ __('investor.nav_subsidiaries') }}
+                                    </span>
+                                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-300 group-hover:text-[#0099ff] group-hover:translate-x-0.5 [.active_&]:text-[#0099ff] transition-transform"></i>
+                                </a>
+                            </nav>
+
+                            <div class="mt-4 pt-3.5 border-t border-slate-100 bg-sky-50/70 rounded-xl p-3 text-xs text-sky-900 border border-sky-100">
+                                <div class="flex items-center gap-2 font-bold mb-1 text-sky-800">
+                                    <i class="fa-solid fa-shield-halved text-sky-600"></i>
+                                    {{ __('investor.bei_ojk_title') }}
+                                </div>
+                                <p class="text-[11px] text-sky-700 leading-relaxed">
+                                    {{ __('investor.bei_ojk_desc') }}
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- RIGHT CONTENT AREA -->
-                <div class="lg:col-span-8 xl:col-span-9 space-y-12">
+                <div class="lg:col-span-9 space-y-12">
 
                     <!-- SECTION 01: STRUKTUR KEPEMILIKAN -->
                     <section id="struktur-kepemilikan" class="scroll-mt-40">
@@ -669,24 +691,39 @@
                 }
 
                 // 3. SCROLLSPY
-                const navLinks = document.querySelectorAll('.sidebar-nav-link');
-                const sections = document.querySelectorAll('section[id]');
-                window.addEventListener('scroll', function() {
-                    let current = '';
-                    sections.forEach(section => {
-                        const sectionTop = section.offsetTop - 175;
-                        if (window.scrollY >= sectionTop) current = section.getAttribute('id');
+                const sidebarLinks = document.querySelectorAll('#sidebar-nav .sidebar-link');
+                const sections = document.querySelectorAll('section[id], div[id]');
+
+                function setActiveLink(activeLink) {
+                    sidebarLinks.forEach(link => {
+                        link.classList.remove('active');
+                        link.removeAttribute('aria-current');
                     });
-                    navLinks.forEach(link => {
-                        const target = link.getAttribute('data-target');
-                        if (target === current) {
-                            link.classList.add('bg-blue-50', 'text-[#0051d5]', 'font-semibold');
-                            link.classList.remove('text-slate-700');
-                        } else {
-                            link.classList.remove('bg-blue-50', 'text-[#0051d5]', 'font-semibold');
-                            link.classList.add('text-slate-700');
+                    activeLink.classList.add('active');
+                    activeLink.setAttribute('aria-current', 'true');
+                }
+
+                sidebarLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        setActiveLink(this);
+                    });
+                });
+
+                window.addEventListener('scroll', function() {
+                    let currentSectionId = '';
+                    sections.forEach(section => {
+                        const sectionTop = section.offsetTop - 195;
+                        if (window.scrollY >= sectionTop) {
+                            currentSectionId = section.getAttribute('id');
                         }
                     });
+                    if (currentSectionId) {
+                        sidebarLinks.forEach(link => {
+                            if (link.getAttribute('href') === `#${currentSectionId}`) {
+                                setActiveLink(link);
+                            }
+                        });
+                    }
                 });
             });
         </script>

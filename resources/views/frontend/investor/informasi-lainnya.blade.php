@@ -2,18 +2,44 @@
 
 @push('styles')
     <style>
+        .sticky-sidebar {
+            position: sticky;
+            top: 160px;
+            max-height: calc(100vh - 180px);
+            overflow-y: auto;
+        }
+
+        .sticky-sidebar::-webkit-scrollbar,
         .custom-sidebar-scroll::-webkit-scrollbar {
             width: 4px;
         }
+
+        .sticky-sidebar::-webkit-scrollbar-track,
         .custom-sidebar-scroll::-webkit-scrollbar-track {
             background: transparent;
         }
+
+        .sticky-sidebar::-webkit-scrollbar-thumb,
         .custom-sidebar-scroll::-webkit-scrollbar-thumb {
             background: #cbd5e1;
             border-radius: 4px;
         }
+
+        .sticky-sidebar::-webkit-scrollbar-thumb:hover,
         .custom-sidebar-scroll::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
+        }
+
+        .sidebar-link.active {
+            background-color: #f0f7ff;
+            color: #0099ff;
+            font-weight: 600;
+            border-left: 3px solid #0099ff;
+        }
+
+        /* Offset scroll agar teks tidak tertutup sticky header */
+        section[id], div[id].scroll-target {
+            scroll-margin-top: 180px !important;
         }
     </style>
 @endpush
@@ -24,84 +50,77 @@
     <!-- ========================================== -->
     <!-- MAIN CONTENT SECTION -->
     <!-- ========================================== -->
-    <section class="py-12 bg-[#f8f9ff]">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section class="py-10 bg-[#f8fafc] min-h-screen">
+        <div class="container mx-auto max-w-[1420px] px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
                 <!-- ========================================== -->
                 <!-- LEFT SIDEBAR -->
                 <!-- ========================================== -->
-                <div class="lg:col-span-4 xl:col-span-3">
-                    <div class="sticky top-[160px] space-y-6 max-h-[calc(100vh-180px)] overflow-y-auto custom-sidebar-scroll pr-1">
-                        <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 p-5">
-                        <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
-                            <span class="text-[11px] font-bold text-slate-500 tracking-wider uppercase">
-                                {{ __('investor.on_this_page') }}
-                            </span>
-                            <i class="fa-solid fa-bars-staggered text-slate-400 text-xs"></i>
-                        </div>
-
-                        <nav class="space-y-1.5" id="informasi-lainnya-nav">
-                            <a href="#lembaga-penunjang"
-                                class="flex items-start gap-3 p-2.5 rounded-lg bg-blue-50 text-[#0051d5] font-semibold text-xs transition-colors sidebar-nav-link"
-                                data-target="lembaga-penunjang">
-                                <span class="text-xs font-bold w-5">01</span>
-                                <div>
-                                    <p class="text-xs font-bold leading-tight">{{ __('investor.other_nav_capital_market') }}
-                                    </p>
-                                    <p class="text-[11px] font-normal text-slate-500 mt-0.5">
-                                        {{ __('investor.other_nav_capital_market_desc') }}</p>
+                <div class="lg:col-span-3">
+                    <div class="sticky top-[160px] space-y-5 max-h-[calc(100vh-180px)] overflow-y-auto custom-sidebar-scroll pr-1">
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5">
+                            <div class="flex items-center gap-2.5 pb-3.5 mb-2 border-b border-slate-100">
+                                <div class="w-8 h-8 rounded-lg bg-blue-50 text-[#0099ff] flex items-center justify-center text-sm">
+                                    <i class="fa-solid fa-list-ul"></i>
                                 </div>
-                            </a>
-
-                            <a href="#keterbukaan-informasi"
-                                class="flex items-start gap-3 p-2.5 rounded-lg text-slate-700 hover:bg-slate-50 text-xs transition-colors sidebar-nav-link"
-                                data-target="keterbukaan-informasi">
-                                <span class="text-xs font-bold text-slate-400 w-5">02</span>
-                                <div>
-                                    <p class="text-xs font-semibold leading-tight">{{ __('investor.other_nav_disclosure') }}
-                                    </p>
-                                    <p class="text-[11px] font-normal text-slate-500 mt-0.5">
-                                        {{ __('investor.other_nav_disclosure_desc') }}</p>
-                                </div>
-                            </a>
-
-                            <a href="#hubungi-investor"
-                                class="flex items-start gap-3 p-2.5 rounded-lg text-slate-700 hover:bg-slate-50 text-xs transition-colors sidebar-nav-link"
-                                data-target="hubungi-investor">
-                                <span class="text-xs font-bold text-slate-400 w-5">03</span>
-                                <div>
-                                    <p class="text-xs font-semibold leading-tight">{{ __('investor.other_nav_ir') }}</p>
-                                    <p class="text-[11px] font-normal text-slate-500 mt-0.5">
-                                        {{ __('investor.other_nav_ir_desc') }}</p>
-                                </div>
-                            </a>
-                        </nav>
-
-                        <div
-                            class="mt-6 pt-4 border-t border-slate-100 bg-sky-50/60 rounded-xl p-3.5 text-xs text-sky-950 border border-sky-100">
-                            <div class="flex items-center gap-2 font-bold mb-1 text-sky-800">
-                                <i class="fa-solid fa-file-circle-check text-sky-600"></i>
-                                {{ __('investor.mandatory_title') }}
+                                <h3 class="font-bold text-slate-800 text-sm tracking-tight">
+                                    {{ __('investor.on_this_page') }}
+                                </h3>
                             </div>
-                            <p class="text-[11px] text-sky-700 leading-relaxed">
-                                {!! __('investor.mandatory_desc') !!}
-                            </p>
-                        </div>
 
-                        <div class="mt-4 bg-[#0b1c30] text-white rounded-xl p-4 shadow-sm">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
-                                {{ __('investor.commitment_label') }}
-                            </span>
-                            <div class="flex items-baseline gap-2 mb-1">
-                                <span class="text-3xl font-extrabold text-white">100%</span>
-                                <span
-                                    class="text-xs font-medium text-emerald-400">{{ __('investor.commitment_stat') }}</span>
+                            <nav class="space-y-1.5" id="sidebar-nav">
+                                <a href="#lembaga-penunjang"
+                                    class="sidebar-link active group flex items-center justify-between px-3.5 py-2.5 text-xs md:text-sm text-[#45464D] rounded-xl transition-all duration-200 hover:bg-blue-50 hover:text-[#0099ff] hover:translate-x-1.5 aria-[current=true]:bg-blue-50 aria-[current=true]:text-[#0099ff] aria-[current=true]:translate-x-1.5 aria-[current=true]:font-semibold"
+                                    aria-current="true">
+                                    <span class="flex items-center gap-2.5">
+                                        <i class="fa-solid fa-building-columns w-4 text-center text-slate-400 group-hover:text-[#0099ff] [.active_&]:text-[#0099ff]"></i>
+                                        {{ __('investor.other_nav_capital_market') }}
+                                    </span>
+                                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-300 group-hover:text-[#0099ff] group-hover:translate-x-0.5 [.active_&]:text-[#0099ff] transition-transform"></i>
+                                </a>
+
+                                <a href="#keterbukaan-informasi"
+                                    class="sidebar-link group flex items-center justify-between px-3.5 py-2.5 text-xs md:text-sm text-[#45464D] rounded-xl transition-all duration-200 hover:bg-blue-50 hover:text-[#0099ff] hover:translate-x-1.5 aria-[current=true]:bg-blue-50 aria-[current=true]:text-[#0099ff] aria-[current=true]:translate-x-1.5 aria-[current=true]:font-semibold">
+                                    <span class="flex items-center gap-2.5">
+                                        <i class="fa-solid fa-bullhorn w-4 text-center text-[#45464D] group-hover:text-[#0099ff] [.active_&]:text-[#0099ff]"></i>
+                                        {{ __('investor.other_nav_disclosure') }}
+                                    </span>
+                                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-300 group-hover:text-[#0099ff] group-hover:translate-x-0.5 [.active_&]:text-[#0099ff] transition-transform"></i>
+                                </a>
+
+                                <a href="#hubungi-investor"
+                                    class="sidebar-link group flex items-center justify-between px-3.5 py-2.5 text-xs md:text-sm text-[#45464D] rounded-xl transition-all duration-200 hover:bg-blue-50 hover:text-[#0099ff] hover:translate-x-1.5 aria-[current=true]:bg-blue-50 aria-[current=true]:text-[#0099ff] aria-[current=true]:translate-x-1.5 aria-[current=true]:font-semibold">
+                                    <span class="flex items-center gap-2.5">
+                                        <i class="fa-solid fa-headset w-4 text-center text-[#45464D] group-hover:text-[#0099ff] [.active_&]:text-[#0099ff]"></i>
+                                        {{ __('investor.other_nav_ir') }}
+                                    </span>
+                                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-300 group-hover:text-[#0099ff] group-hover:translate-x-0.5 [.active_&]:text-[#0099ff] transition-transform"></i>
+                                </a>
+                            </nav>
+
+                            <div class="mt-4 pt-3.5 border-t border-slate-100 bg-sky-50/70 rounded-xl p-3.5 text-xs text-sky-950 border border-sky-100">
+                                <div class="flex items-center gap-2 font-bold mb-1 text-sky-800">
+                                    <i class="fa-solid fa-file-circle-check text-sky-600"></i>
+                                    {{ __('investor.mandatory_title') }}
+                                </div>
+                                <p class="text-[11px] text-sky-700 leading-relaxed">
+                                    {!! __('investor.mandatory_desc') !!}
+                                </p>
                             </div>
-                            <p class="text-[11px] text-slate-300 leading-relaxed">
-                                {{ __('investor.commitment_desc') }}
-                            </p>
-                        </div>
+
+                            <div class="mt-3.5 bg-[#0b1c30] text-white rounded-xl p-4 shadow-sm">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+                                    {{ __('investor.commitment_label') }}
+                                </span>
+                                <div class="flex items-baseline gap-2 mb-1">
+                                    <span class="text-3xl font-extrabold text-white">100%</span>
+                                    <span class="text-xs font-medium text-emerald-400">{{ __('investor.commitment_stat') }}</span>
+                                </div>
+                                <p class="text-[11px] text-slate-300 leading-relaxed">
+                                    {{ __('investor.commitment_desc') }}
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -109,7 +128,7 @@
                 <!-- ========================================== -->
                 <!-- RIGHT CONTENT AREA -->
                 <!-- ========================================== -->
-                <div class="lg:col-span-8 xl:col-span-9 space-y-12">
+                <div class="lg:col-span-9 space-y-12">
 
                     <!-- ------------------------------------------ -->
                     <!-- SECTION 01: LEMBAGA PENUNJANG PASAR MODAL -->
@@ -544,25 +563,40 @@
                     });
                 }
 
-                // SCROLLSPY
-                const navLinks = document.querySelectorAll('#informasi-lainnya-nav .sidebar-nav-link');
-                const sections = document.querySelectorAll('section[id]');
-                window.addEventListener('scroll', function() {
-                    let current = '';
-                    sections.forEach(section => {
-                        const sectionTop = section.offsetTop - 175;
-                        if (window.scrollY >= sectionTop) current = section.getAttribute('id');
+                // SCROLLSPY & ACTIVE LINK
+                const sidebarLinks = document.querySelectorAll('#sidebar-nav .sidebar-link');
+                const sections = document.querySelectorAll('section[id], div[id]');
+
+                function setActiveLink(activeLink) {
+                    sidebarLinks.forEach(link => {
+                        link.classList.remove('active');
+                        link.removeAttribute('aria-current');
                     });
-                    navLinks.forEach(link => {
-                        const target = link.getAttribute('data-target');
-                        if (target === current) {
-                            link.classList.add('bg-blue-50', 'text-[#0051d5]', 'font-semibold');
-                            link.classList.remove('text-slate-700');
-                        } else {
-                            link.classList.remove('bg-blue-50', 'text-[#0051d5]', 'font-semibold');
-                            link.classList.add('text-slate-700');
+                    activeLink.classList.add('active');
+                    activeLink.setAttribute('aria-current', 'true');
+                }
+
+                sidebarLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        setActiveLink(this);
+                    });
+                });
+
+                window.addEventListener('scroll', function() {
+                    let currentSectionId = '';
+                    sections.forEach(section => {
+                        const sectionTop = section.offsetTop - 195;
+                        if (window.scrollY >= sectionTop) {
+                            currentSectionId = section.getAttribute('id');
                         }
                     });
+                    if (currentSectionId) {
+                        sidebarLinks.forEach(link => {
+                            if (link.getAttribute('href') === `#${currentSectionId}`) {
+                                setActiveLink(link);
+                            }
+                        });
+                    }
                 });
             });
         </script>
