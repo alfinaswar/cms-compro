@@ -137,13 +137,69 @@ class InvestorFrontendController extends Controller
             'KapitalisasiPasar' => 'Rp 4,08 Triliun',
         ]);
 
+        // 12 Bulan Standar
+        $daftarBulan = [
+            'Januari' => 'Januari',
+            'Februari' => 'Februari',
+            'Maret' => 'Maret',
+            'April' => 'April',
+            'Mei' => 'Mei',
+            'Juni' => 'Juni',
+            'Juli' => 'Juli',
+            'Agustus' => 'Agustus',
+            'September' => 'September',
+            'Oktober' => 'Oktober',
+            'November' => 'November',
+            'Desember' => 'Desember',
+        ];
+
+        $daftarBulanEn = [
+            'Januari' => 'January',
+            'Februari' => 'February',
+            'Maret' => 'March',
+            'April' => 'April',
+            'Mei' => 'May',
+            'Juni' => 'June',
+            'Juli' => 'July',
+            'Agustus' => 'August',
+            'September' => 'September',
+            'Oktober' => 'October',
+            'November' => 'November',
+            'Desember' => 'December',
+        ];
+
+        // Daftar tahun descending
+        $dbYears = StrukturKepemilikan::where('Status', 'Aktif')
+            ->whereNotNull('PeriodeTahun')
+            ->select('PeriodeTahun')
+            ->distinct()
+            ->pluck('PeriodeTahun')
+            ->toArray();
+
+        $allYears = array_unique(array_merge($dbYears, ['2026', '2025', '2024']));
+        rsort($allYears);
+        $periodeTahunList = collect($allYears);
+
+        // Cari record terakhir yang ada di database untuk default
+        $latestRecord = StrukturKepemilikan::where('Status', 'Aktif')
+            ->orderBy('PeriodeTahun', 'desc')
+            ->orderBy('id', 'desc')
+            ->first();
+
+        $selectedTahunKepemilikan = request('tahun_kepemilikan', $latestRecord?->PeriodeTahun ?? ($periodeTahunList->first() ?? '2024'));
+        $selectedBulanKepemilikan = request('bulan_kepemilikan', $latestRecord?->PeriodeBulan ?? 'Maret');
+
         $strukturNasional = StrukturKepemilikan::where('Status', 'Aktif')
             ->where('TipePemodal', 'Pemodal Nasional')
+            ->where('PeriodeTahun', $selectedTahunKepemilikan)
+            ->where('PeriodeBulan', $selectedBulanKepemilikan)
             ->orderBy('Urutan', 'asc')
             ->get();
 
         $strukturAsing = StrukturKepemilikan::where('Status', 'Aktif')
             ->where('TipePemodal', 'Pemodal Asing')
+            ->where('PeriodeTahun', $selectedTahunKepemilikan)
+            ->where('PeriodeBulan', $selectedBulanKepemilikan)
             ->orderBy('Urutan', 'asc')
             ->get();
 
@@ -158,6 +214,7 @@ class InvestorFrontendController extends Controller
         $skema = SkemaPengendali::first() ?? new SkemaPengendali();
 
         $entitasAnak = EntitasAnak::where('Status', 'Aktif')
+            ->orderBy('TahunBergabung', 'asc')
             ->orderBy('Urutan', 'asc')
             ->get();
 
@@ -174,7 +231,12 @@ class InvestorFrontendController extends Controller
             'totalModalDisetor',
             'skema',
             'entitasAnak',
-            'activeTab'
+            'activeTab',
+            'daftarBulan',
+            'daftarBulanEn',
+            'periodeTahunList',
+            'selectedTahunKepemilikan',
+            'selectedBulanKepemilikan'
         ));
     }
 
@@ -232,6 +294,7 @@ class InvestorFrontendController extends Controller
             ->get();
 
         $activeTab = 'tata-kelola';
+        $kantor = MasterKantor::orderByRaw("FIELD(TipeKantor, 'Pusat') DESC")->first();
 
         return view('frontend.investor.tata-kelola', compact(
             'bagan',
@@ -243,7 +306,8 @@ class InvestorFrontendController extends Controller
             'rupsTahun',
             'selectedTahun',
             'rupsDokumen',
-            'activeTab'
+            'activeTab',
+            'kantor'
         ));
     }
 
@@ -315,11 +379,12 @@ class InvestorFrontendController extends Controller
             'NamaPelapor' => 'nullable|string|max:255',
             'EmailPelapor' => 'nullable|email|max:255',
             'TeleponPelapor' => 'nullable|string|max:50',
-            'BuktiFile' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx,zip|max:10240',
+            'BuktiFile' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:10240',
         ]);
 
         if ($request->hasFile('BuktiFile')) {
-            $validated['PathBukti'] = $request->file('BuktiFile')->store('wbs-bukti', 'public');
+            // Simpan di disk private 'local' agar tidak terekspos di public storage
+            $validated['PathBukti'] = $request->file('BuktiFile')->store('wbs-bukti', 'local');
         }
 
         $validated['NomorTiket'] = 'WBS-' . date('Ymd') . '-' . strtoupper(Str::random(5));

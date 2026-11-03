@@ -132,7 +132,11 @@
                             </nav>
 
                             <!-- Contact Corporate Secretary Box -->
-                            @if (!empty($bagan->EmailSekretariat) || !empty($bagan->TeleponSekretariat))
+                            @php
+                                $emailSekretariat = $kantor?->HubunganInvestorEmail ?: ($kantor?->AlamatEmail ?: $bagan->EmailSekretariat);
+                                $teleponSekretariat = $kantor?->NomorTelepon ?: $bagan->TeleponSekretariat;
+                            @endphp
+                            @if (!empty($emailSekretariat) || !empty($teleponSekretariat))
                                 <div class="mt-4 pt-3.5 border-t border-slate-100 bg-slate-50 rounded-xl p-3.5 text-xs text-slate-700">
                                     <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
                                         {{ __('gcg.corp_sec_label') }}
@@ -141,16 +145,16 @@
                                         {{ __('gcg.corp_sec_desc') }}
                                     </p>
                                     <div class="space-y-1.5 text-xs">
-                                        @if (!empty($bagan->EmailSekretariat))
-                                            <a href="mailto:{{ $bagan->EmailSekretariat }}"
+                                        @if (!empty($emailSekretariat))
+                                            <a href="mailto:{{ $emailSekretariat }}"
                                                 class="flex items-center gap-2 text-[#0099ff] font-semibold hover:underline">
-                                                <i class="fa-regular fa-envelope text-[11px]"></i> {{ $bagan->EmailSekretariat }}
+                                                <i class="fa-regular fa-envelope text-[11px]"></i> {{ $emailSekretariat }}
                                             </a>
                                         @endif
-                                        @if (!empty($bagan->TeleponSekretariat))
+                                        @if (!empty($teleponSekretariat))
                                             <p class="flex items-center gap-2 text-slate-600">
                                                 <i class="fa-solid fa-phone text-[11px] text-slate-400"></i>
-                                                {{ $bagan->TeleponSekretariat }}
+                                                {{ $teleponSekretariat }}
                                             </p>
                                         @endif
                                     </div>
@@ -447,28 +451,34 @@
                         </div>
 
                         <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
-                            <div
-                                class="flex items-center gap-2 overflow-x-auto pb-3 border-b border-slate-100 mb-6 no-scrollbar">
-                                <span
-                                    class="text-xs font-bold text-slate-400 mr-2 uppercase tracking-wider whitespace-nowrap">
-                                    {{ __('gcg.s3_pick_year') }}
-                                </span>
-                                @foreach ($rupsTahun as $th)
-                                    <!-- REVISI 4: Menggunakan JS untuk filter tanpa reload/jump -->
-                                    <button type="button" onclick="filterRups('{{ $th }}', this)"
-                                        class="rups-year-pill px-4 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-colors {{ $selectedTahun == $th ? 'bg-[#0099ff] text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
-                                        {{ $th }}
-                                    </button>
-                                @endforeach
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 mb-6 border-b border-slate-100">
+                                <div class="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                    <span>{{ __('gcg.s3_docs_label') }} <span id="rups-year-label">{{ $selectedTahun }}</span></span>
+                                </div>
+
+                                {{-- Year Dropdown Filter untuk RUPS --}}
+                                <div class="flex items-center gap-2">
+                                    <label for="rupsYearSelect"
+                                        class="text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                                        {{ $en ? 'Year:' : 'Tahun:' }}
+                                    </label>
+                                    <div class="relative inline-block">
+                                        <select id="rupsYearSelect" onchange="filterRups(this.value)"
+                                            class="pl-4 pr-10 py-1.5 text-xs md:text-sm font-semibold text-slate-800 bg-[#EEF4FF] hover:bg-[#e1edff] border border-slate-300 rounded-xl outline-none focus:border-[#0099ff] focus:ring-1 focus:ring-[#0099ff] cursor-pointer appearance-none transition-colors">
+                                            @foreach ($rupsTahun as $th)
+                                                <option value="{{ $th }}" {{ $selectedTahun == $th ? 'selected' : '' }}>
+                                                    {{ $th }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-500">
+                                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="space-y-3">
-                                <div
-                                    class="flex items-center justify-between text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-                                    <span>{{ __('gcg.s3_docs_label') }} {{ $selectedTahun }}</span>
-                                    <!-- REVISI 3: Pill "Terjadwal / Selesai" dihapus -->
-                                </div>
-
                                 <!-- Container ini akan di-replace oleh JS saat filter -->
                                 <div id="rups-list-container" class="space-y-3">
                                     @forelse($rupsDokumen as $item)
@@ -705,7 +715,7 @@
                 </div>
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">{{ __('gcg.wbs_attachment_label') }}</label>
-                    <input type="file" name="BuktiFile"
+                    <input type="file" name="BuktiFile" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
                         class="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-[#0051d5] hover:file:bg-blue-100">
                     <p class="text-[10px] text-slate-400 mt-1">{{ __('gcg.wbs_attachment_note') }}</p>
                 </div>
@@ -838,29 +848,25 @@
                     });
                 }
 
-                // REVISI 4: Smooth Filter RUPS tanpa reload/jump ke atas
-                window.filterRups = function(tahun, element) {
-                    // 1. Update UI tombol aktif segera
-                    document.querySelectorAll('.rups-year-pill').forEach(p => {
-                        p.classList.remove('bg-[#0099ff]', 'text-white');
-                        p.classList.add('bg-slate-100', 'text-slate-600');
-                    });
-                    element.classList.remove('bg-slate-100', 'text-slate-600');
-                    element.classList.add('bg-[#0099ff]', 'text-white');
+                // Smooth Filter RUPS dengan dropdown tanpa reload
+                window.filterRups = function(tahun) {
+                    const label = document.getElementById('rups-year-label');
+                    if (label) label.innerText = tahun;
 
-                    // 2. Tampilkan loading di container list
+                    // 1. Tampilkan loading di container list
                     const container = document.getElementById('rups-list-container');
-                    const originalContent = container.innerHTML;
-                    container.innerHTML = `
-                        <div class="p-8 text-center bg-slate-50 rounded-xl">
-                            <i class="fa-solid fa-circle-notch fa-spin text-2xl text-[#0099ff] mb-2"></i>
-                            <p class="text-xs text-slate-500">Memuat data tahun ${tahun}...</p>
-                        </div>`;
+                    const originalContent = container ? container.innerHTML : '';
+                    if (container) {
+                        container.innerHTML = `
+                            <div class="p-8 text-center bg-slate-50 rounded-xl">
+                                <i class="fa-solid fa-circle-notch fa-spin text-2xl text-[#0099ff] mb-2"></i>
+                                <p class="text-xs text-slate-500">Memuat data tahun ${tahun}...</p>
+                            </div>`;
+                    }
 
-                    // 3. Fetch halaman saat ini dengan parameter tahun baru
+                    // 2. Fetch halaman saat ini dengan parameter tahun baru
                     const url = new URL(window.location.href);
                     url.searchParams.set('tahun_rups', tahun);
-                    // Hapus hash agar tidak jump saat fetch
                     url.hash = '';
 
                     fetch(url.toString())
@@ -870,16 +876,15 @@
                             const doc = parser.parseFromString(html, 'text/html');
                             const newContainer = doc.getElementById('rups-list-container');
 
-                            if (newContainer) {
+                            if (newContainer && container) {
                                 container.innerHTML = newContainer.innerHTML;
-                                // Update URL browser tanpa reload
                                 window.history.pushState({}, '', url.toString() + '#rups');
-                            } else {
-                                container.innerHTML = originalContent; // Fallback jika gagal
+                            } else if (container) {
+                                container.innerHTML = originalContent;
                             }
                         })
                         .catch(() => {
-                            container.innerHTML = originalContent;
+                            if (container) container.innerHTML = originalContent;
                             alert('Gagal memuat data. Silakan coba lagi.');
                         });
                 };

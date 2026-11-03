@@ -554,25 +554,10 @@
 
                     @php
                         $currentLocale = app()->getLocale();
-                        $segments = request()->segments();
-
-                        // Bangun URL untuk Bahasa Indonesia
-                        $idSegments = $segments;
-                        if (in_array($idSegments[0] ?? '', ['id', 'en'])) {
-                            $idSegments[0] = 'id';
-                        } else {
-                            array_unshift($idSegments, 'id');
-                        }
-                        $urlId = url(implode('/', $idSegments));
-
-                        // Bangun URL untuk Bahasa Inggris
-                        $enSegments = $segments;
-                        if (in_array($enSegments[0] ?? '', ['id', 'en'])) {
-                            $enSegments[0] = 'en';
-                        } else {
-                            array_unshift($enSegments, 'en');
-                        }
-                        $urlEn = url(implode('/', $enSegments));
+                        $fullPath = request()->path();
+                        $queryString = request()->getQueryString() ? '?' . request()->getQueryString() : '';
+                        $urlId = \App\Services\LocalizedUrlService::switchLocale($fullPath, 'id') . $queryString;
+                        $urlEn = \App\Services\LocalizedUrlService::switchLocale($fullPath, 'en') . $queryString;
                     @endphp
 
                     <!-- Language Switcher Desktop -->

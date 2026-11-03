@@ -60,7 +60,7 @@
                                 <th class="bg-light">File Bukti Lampiran</th>
                                 <td>
                                     @if($laporan->PathBukti)
-                                        <a href="{{ asset('storage/' . $laporan->PathBukti) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <a href="{{ route('admin.investor.tata-kelola.wbs-download-bukti', $laporan->id) }}" class="btn btn-sm btn-outline-primary">
                                             <i class="fas fa-download mr-1"></i> Unduh Lampiran Bukti
                                         </a>
                                     @else

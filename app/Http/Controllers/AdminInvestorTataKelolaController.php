@@ -14,7 +14,7 @@ class AdminInvestorTataKelolaController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:investor.view')->only(['index', 'wbsIndex', 'wbsShow']);
+        $this->middleware('permission:investor.view')->only(['index', 'wbsIndex', 'wbsShow', 'wbsDownloadBukti']);
         $this->middleware('permission:investor.create')->only(['storeManajemen', 'storeDokumen', 'storeRups']);
         $this->middleware('permission:investor.edit')->only(['updateBagan', 'updateManajemen', 'updateDokumen', 'updateRups', 'wbsUpdateStatus']);
         $this->middleware('permission:investor.delete')->only(['destroyManajemen', 'destroyDokumen', 'destroyRups']);
@@ -315,6 +315,25 @@ class AdminInvestorTataKelolaController extends Controller
     {
         $laporan = WbsLaporan::findOrFail($id);
         return view('master.investor.tata-kelola.wbs-show', compact('laporan'));
+    }
+
+    public function wbsDownloadBukti($id)
+    {
+        $laporan = WbsLaporan::findOrFail($id);
+        if (!$laporan->PathBukti) {
+            abort(404, 'Bukti tidak ditemukan.');
+        }
+
+        // Cek disk private 'local' terlebih dahulu, fallback ke disk 'public' untuk data lama
+        if (Storage::disk('local')->exists($laporan->PathBukti)) {
+            return Storage::disk('local')->download($laporan->PathBukti);
+        }
+
+        if (Storage::disk('public')->exists($laporan->PathBukti)) {
+            return Storage::disk('public')->download($laporan->PathBukti);
+        }
+
+        abort(404, 'File bukti fisik tidak ditemukan di server.');
     }
 
     public function wbsUpdateStatus(Request $request, $id)

@@ -31,8 +31,7 @@
 
             <!-- Main Heading -->
             <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight">
-                {{ __('investor.hero_title') }} <br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-cyan-300">Jasuindo</span>
+                {{ __('investor.hero_title') }}
             </h1>
 
             <!-- Description -->

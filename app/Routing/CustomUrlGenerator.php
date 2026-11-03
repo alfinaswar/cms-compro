@@ -31,6 +31,22 @@ class CustomUrlGenerator extends UrlGenerator
      */
     public function format($root, $path, $route = null)
     {
+        // Localize path jika dipanggil dari route() generator ($route !== null)
+        if ($route !== null) {
+            $cleanPath = ltrim($path, '/');
+            if (preg_match('#^(id|en)(/.*)?$#', $cleanPath, $matches)) {
+                $loc = $matches[1];
+                $sub = isset($matches[2]) ? ltrim($matches[2], '/') : '';
+                $queryPart = '';
+                if (str_contains($sub, '?')) {
+                    [$sub, $queryPart] = explode('?', $sub, 2);
+                    $queryPart = '?' . $queryPart;
+                }
+                $localizedSub = \App\Services\LocalizedUrlService::localizeSubPath($sub, $loc);
+                $path = '/' . $loc . ($localizedSub !== '' ? '/' . $localizedSub : '') . $queryPart;
+            }
+        }
+
         $formatted = parent::format($root, $path, $route);
 
         $fragment = '';

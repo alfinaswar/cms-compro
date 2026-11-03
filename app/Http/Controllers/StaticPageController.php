@@ -78,12 +78,13 @@ class StaticPageController extends Controller
     public function show(Request $request, $locale, $slug)
     {
         $locale = app()->getLocale();
+        $dbSlug = \App\Services\LocalizedUrlService::resolveStaticPageSlug($slug);
         $page = StaticPage::with([
             'translations' => function ($q) use ($locale) {
                 $q->where('Locale', $locale);
             }
         ])
-            ->where('Slug', $slug)
+            ->where('Slug', $dbSlug)
             ->where('IsPublished', true)
             ->firstOrFail();
 

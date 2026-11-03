@@ -59,38 +59,70 @@ Route::get('/admin/home/', [App\Http\Controllers\HomeController::class, 'index']
 
 Route::group(['prefix' => '{locale}', 'where' => ['locale' => 'id|en']], function () {
     Route::get('/', [LandingPageController::class, 'index'])->name('frontend.main');
+
+    // === BERITA / NEWS ===
+    Route::get('/berita/', [BeritaController::class, 'news'])->name('frontend.news.id');
+    Route::get('/berita/{slug}/', [BeritaController::class, 'newsDetail'])->name('frontend.detail.id');
     Route::get('/news/', [BeritaController::class, 'news'])->name('frontend.news');
     Route::get('/news/{slug}/', [BeritaController::class, 'newsDetail'])->name('frontend.detail');
+
     Route::get('/halaman/{slug}/', [CustomPagesController::class, 'show'])->name('frontend.halaman-custom');
-    // === INVESTOR RELATIONS (4 TABS) ===
+
+    // === INVESTOR RELATIONS (4 TABS) - ID ===
     Route::get('/laporan-investor/', [InvestorFrontendController::class, 'laporanKeuangan'])->name('frontend.laporan-keuangan');
     Route::get('/laporan-investor/informasi-finansial/', [InvestorFrontendController::class, 'informasiFinansial'])->name('frontend.investor.informasi-finansial');
     Route::get('/laporan-investor/tata-kelola-perusahaan/', [InvestorFrontendController::class, 'tataKelola'])->name('frontend.investor.tata-kelola');
     Route::get('/laporan-investor/informasi-lainnya/', [InvestorFrontendController::class, 'informasiLainnya'])->name('frontend.investor.informasi-lainnya');
-    Route::post('/laporan-investor/kirim-wbs/', [InvestorFrontendController::class, 'submitWbs'])->name('frontend.investor.wbs.store');
+    Route::post('/laporan-investor/kirim-wbs/', [InvestorFrontendController::class, 'submitWbs'])
+        ->middleware('throttle:5,1')
+        ->name('frontend.investor.wbs.store');
     Route::post('/laporan-investor/permintaan-dokumen/', [InvestorFrontendController::class, 'submitPermintaanDokumen'])->name('frontend.investor.permintaan-dokumen.store');
+
+    // === INVESTOR RELATIONS (4 TABS) - EN ===
+    Route::get('/investor-relations/', [InvestorFrontendController::class, 'laporanKeuangan'])->name('frontend.laporan-keuangan.en');
+    Route::get('/investor-relations/financial-information/', [InvestorFrontendController::class, 'informasiFinansial'])->name('frontend.investor.informasi-finansial.en');
+    Route::get('/investor-relations/corporate-governance/', [InvestorFrontendController::class, 'tataKelola'])->name('frontend.investor.tata-kelola.en');
+    Route::get('/investor-relations/other-information/', [InvestorFrontendController::class, 'informasiLainnya'])->name('frontend.investor.informasi-lainnya.en');
+    Route::post('/investor-relations/submit-wbs/', [InvestorFrontendController::class, 'submitWbs'])
+        ->middleware('throttle:5,1')
+        ->name('frontend.investor.wbs.store.en');
+    Route::post('/investor-relations/request-document/', [InvestorFrontendController::class, 'submitPermintaanDokumen'])->name('frontend.investor.permintaan-dokumen.store.en');
+
+    // === ABOUT US ===
     Route::get('/about-us/', [AboutUsController::class, 'show'])->name('frontend.about-us');
+    Route::get('/tentang-kami/', [AboutUsController::class, 'show'])->name('frontend.about-us.id');
     Route::post('/about-us/download-profile/', [AboutUsController::class, 'submitDownloadProfile'])->name('frontend.about-us.download-profile');
+
+    // === CAREER ===
     Route::get('/career/', [LowonganKerjaController::class, 'career'])->name('frontend.career');
     Route::get('/career/{id}-{slug}/', [LowonganKerjaController::class, 'careerDetail'])->name('frontend.career.detail');
     Route::post('/career/{id}/apply/', [LowonganKerjaController::class, 'apply'])->name('frontend.career.apply');
+    Route::get('/karir/', [LowonganKerjaController::class, 'career'])->name('frontend.career.id');
+    Route::get('/karir/{id}-{slug}/', [LowonganKerjaController::class, 'careerDetail'])->name('frontend.career.detail.id');
+
+    // === CONTACT US ===
     Route::get('/contact-us/', [ContactUsController::class, 'index'])->name('frontend.contact.index');
+    Route::get('/hubungi-kami/', [ContactUsController::class, 'index'])->name('frontend.contact.index.id');
     Route::post('/store-contact-us/', [ContactUsController::class, 'store'])->name('frontend.contact.store');
+
+    // === SOLUSI / SOLUTIONS ===
     Route::get('/solusi/{id}/', [HalamanSolusiController::class, 'show'])->name('halaman-solusi.show');
     Route::get('/solusi/{parent}/{sub}/', [HalamanSolusiController::class, 'showSub'])->name('halaman-solusi.sub-show');
+    Route::get('/solutions/{id}/', [HalamanSolusiController::class, 'show'])->name('halaman-solusi.show.en');
+    Route::get('/solutions/{parent}/{sub}/', [HalamanSolusiController::class, 'showSub'])->name('halaman-solusi.sub-show.en');
+
+    // === SITEMAP ===
+    Route::get('/peta-situs/', [SitemapPageController::class, 'index'])->name('frontend.sitemap');
+    Route::get('/sitemap/', [SitemapPageController::class, 'index'])->name('frontend.sitemap.en');
+
+    // === STATIC PAGES ===
     Route::get('/{slug}/', [StaticPageController::class, 'show'])
         ->name('static-pages.show')
-        ->where('slug', 'kebijakan-privasi|syarat-ketentuan|tentang-kami|faq');
+        ->where('slug', 'kebijakan-privasi|syarat-ketentuan|tentang-kami|faq|privacy-policy|terms-conditions|about-us');
+
     Route::get('/api/search-articles/', [BeritaController::class, 'searchArticles'])
         ->name('frontend.api.search-articles');
     Route::get('/landing-page/solusi/show/{id}/', [HalamanSolusiController::class, 'show'])->name('halaman-solusi.admin.show');
-    //SITEMAP
-    Route::get('/peta-situs/', [SitemapPageController::class, 'index'])
-        ->name('frontend.sitemap');
-    Route::get('/sitemap/', function () {
-        return redirect()->route('frontend.sitemap', ['locale' => app()->getLocale()]);
-    });
-
 });
 
 Route::middleware('auth')->group(function () {
@@ -324,6 +356,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
             // WBS Inbox
             Route::get('/wbs/', [AdminInvestorTataKelolaController::class, 'wbsIndex'])->name('wbs-index');
             Route::get('/wbs/{id}/', [AdminInvestorTataKelolaController::class, 'wbsShow'])->name('wbs-show');
+            Route::get('/wbs/{id}/download-bukti/', [AdminInvestorTataKelolaController::class, 'wbsDownloadBukti'])->name('wbs-download-bukti');
             Route::post('/wbs/{id}/update-status/', [AdminInvestorTataKelolaController::class, 'wbsUpdateStatus'])->name('wbs-update-status');
         });
 

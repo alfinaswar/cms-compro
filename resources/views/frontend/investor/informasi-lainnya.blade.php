@@ -152,7 +152,7 @@
                             @foreach ($lembagaList as $lembaga)
                                 <div
                                     class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 hover:border-[#0099ff] transition-all">
-                                    <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-4">
+                                    <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-3">
                                         <div class="flex items-start gap-3.5">
                                             <div
                                                 class="w-10 h-10 rounded-xl bg-blue-50 text-[#0051d5] flex items-center justify-center flex-shrink-0 text-base">
@@ -164,7 +164,7 @@
                                                     class="text-[10px] font-bold uppercase tracking-wider text-[#0051d5] block mb-0.5">
                                                     {{ $lembaga->Kategori === 'Biro Administrasi Efek (BAE)' ? __('investor.other_cat_bae') : __('investor.other_cat_auditor') }}
                                                 </span>
-                                                <h3 class="font-bold text-slate-900 text-base md:text-lg leading-snug">
+                                                <h3 class="font-bold text-slate-900 text-base leading-snug">
                                                     {{ $lembaga->NamaInstitusi }}</h3>
                                                 @if ($lembaga->Afiliasi)
                                                     <p class="text-xs text-slate-500 mt-0.5">{{ $lembaga->Afiliasi }}</p>
@@ -182,29 +182,29 @@
                                     </div>
 
                                     <div
-                                        class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-slate-100 text-xs text-slate-600">
+                                        class="grid grid-cols-1 {{ $lembaga->Cabang || $lembaga->Layanan ? 'md:grid-cols-2' : '' }} gap-4 text-base text-slate-600">
                                         @if ($lembaga->KantorPusat)
-                                            <div class="bg-slate-50/70 p-3.5 rounded-xl border border-slate-100">
-                                                <span class="font-bold text-slate-800 block mb-1">
-                                                    {{ $lembaga->Kategori === 'Biro Administrasi Efek (BAE)' ? __('investor.other_address_operational') : __('investor.other_address_hq') }}
+                                            <div class="bg-slate-50/70 p-4 sm:p-5 rounded-xl border border-slate-100">
+                                                <span class="font-bold text-slate-900 block mb-2 text-base">
+                                                    {{ $lembaga->Kategori === 'Biro Administrasi Efek (BAE)' ? __('investor.other_address_operational') : __('investor.other_address_hq') }}:
                                                 </span>
-                                                <p class="whitespace-pre-line leading-relaxed text-slate-600 text-[11px]">
+                                                <p class="whitespace-pre-line leading-relaxed text-slate-600 text-base">
                                                     {{ $lembaga->KantorPusat }}</p>
                                             </div>
                                         @endif
 
                                         @if ($lembaga->Cabang)
-                                            <div class="bg-slate-50/70 p-3.5 rounded-xl border border-slate-100">
+                                            <div class="bg-slate-50/70 p-4 sm:p-5 rounded-xl border border-slate-100">
                                                 <span
-                                                    class="font-bold text-slate-800 block mb-1">{{ __('investor.other_address_branch') }}:</span>
-                                                <p class="whitespace-pre-line leading-relaxed text-slate-600 text-[11px]">
+                                                    class="font-bold text-slate-900 block mb-2 text-base">{{ __('investor.other_address_branch') }}:</span>
+                                                <p class="whitespace-pre-line leading-relaxed text-slate-600 text-base">
                                                     {{ $lembaga->Cabang }}</p>
                                             </div>
                                         @elseif($lembaga->Layanan)
-                                            <div class="bg-slate-50/70 p-3.5 rounded-xl border border-slate-100">
+                                            <div class="bg-slate-50/70 p-4 sm:p-5 rounded-xl border border-slate-100">
                                                 <span
-                                                    class="font-bold text-slate-800 block mb-1">{{ __('investor.other_scope_label') }}:</span>
-                                                <p class="text-[11px] text-slate-600 leading-relaxed">
+                                                    class="font-bold text-slate-900 block mb-2 text-base">{{ __('investor.other_scope_label') }}:</span>
+                                                <p class="text-base text-slate-600 leading-relaxed">
                                                     {{ $lembaga->Layanan }}</p>
                                             </div>
                                         @endif
@@ -250,29 +250,39 @@
                                 </div>
 
                                 <div class="sm:col-span-3">
-                                    <select name="tahun"
-                                        class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 outline-none">
-                                        <option value="all">{{ __('investor.other_s2_all_years') }}</option>
-                                        @foreach ($tahunList as $th)
-                                            <option value="{{ $th }}"
-                                                {{ request('tahun') == $th ? 'selected' : '' }}>
-                                                {{ __('investor.other_s2_year_prefix') }} {{ $th }}</option>
-                                        @endforeach
-                                    </select>
+                                    <div class="relative">
+                                        <select name="tahun"
+                                            class="w-full pl-3.5 pr-8 py-2 bg-[#EEF4FF] hover:bg-[#e1edff] border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 outline-none focus:border-[#0099ff] focus:ring-1 focus:ring-[#0099ff] appearance-none cursor-pointer transition-colors">
+                                            <option value="all">{{ __('investor.other_s2_all_years') }}</option>
+                                            @foreach ($tahunList as $th)
+                                                <option value="{{ $th }}"
+                                                    {{ request('tahun') == $th ? 'selected' : '' }}>
+                                                    {{ __('investor.other_s2_year_prefix') }} {{ $th }}</option>
+                                            @endforeach
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500">
+                                            <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="sm:col-span-3 flex gap-2">
-                                    <select name="kategori"
-                                        class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 outline-none">
-                                        <option value="all">{{ __('investor.other_s2_all_categories') }}</option>
-                                        @foreach ($kategoriList as $kat)
-                                            <option value="{{ $kat }}"
-                                                {{ request('kategori') == $kat ? 'selected' : '' }}>{{ __($kat) }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                    <div class="relative w-full">
+                                        <select name="kategori"
+                                            class="w-full pl-3.5 pr-8 py-2 bg-[#EEF4FF] hover:bg-[#e1edff] border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 outline-none focus:border-[#0099ff] focus:ring-1 focus:ring-[#0099ff] appearance-none cursor-pointer transition-colors">
+                                            <option value="all">{{ __('investor.other_s2_all_categories') }}</option>
+                                            @foreach ($kategoriList as $kat)
+                                                <option value="{{ $kat }}"
+                                                    {{ request('kategori') == $kat ? 'selected' : '' }}>{{ __($kat) }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500">
+                                            <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                                        </div>
+                                    </div>
                                     <button type="submit"
-                                        class="px-4 py-2 bg-[#0099ff] hover:bg-blue-600 text-white rounded-xl text-xs font-bold transition-colors">
+                                        class="px-4 py-2 bg-[#0099ff] hover:bg-blue-600 text-white rounded-xl text-xs font-bold transition-colors shrink-0">
                                         {{ __('Filter') }}
                                     </button>
                                 </div>
@@ -398,6 +408,7 @@
                             </div>
                         </div>
 
+                        {{-- SEMENTARA DI-COMMENT SESUAI PERMINTAAN
                         <div
                             class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-4">
                             <div>
@@ -416,6 +427,7 @@
                                 <i class="fa-solid fa-paper-plane mr-1.5"></i> {{ __('investor.other_s3_physical_btn') }}
                             </button>
                         </div>
+                        --}}
                     </section>
 
 

@@ -47,6 +47,26 @@ class SetLocale
         // locale default dari config).
         URL::defaults(['locale' => $locale]);
 
+        // Redirect 301 ke canonical localized URL jika URL non-canonical diakses via GET
+        if ($request->isMethod('GET') && !$request->ajax()) {
+            $rawPath = trim($request->path(), '/');
+            $segments = explode('/', $rawPath);
+            if (!empty($segments[0]) && in_array($segments[0], self::SUPPORTED, true)) {
+                $urlLocale = array_shift($segments);
+                $subPath = implode('/', $segments);
+                if ($subPath !== '') {
+                    $canonicalSub = \App\Services\LocalizedUrlService::localizeSubPath($subPath, $urlLocale);
+                    if ($canonicalSub !== $subPath) {
+                        $canonicalUrl = url('/' . $urlLocale . '/' . $canonicalSub . '/');
+                        if ($request->getQueryString()) {
+                            $canonicalUrl .= '?' . $request->getQueryString();
+                        }
+                        return redirect($canonicalUrl, 301);
+                    }
+                }
+            }
+        }
+
         return $next($request);
     }
 }

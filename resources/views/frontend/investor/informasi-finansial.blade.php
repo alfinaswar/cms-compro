@@ -112,15 +112,79 @@
 
                     <!-- SECTION 01: STRUKTUR KEPEMILIKAN -->
                     <section id="struktur-kepemilikan" class="scroll-mt-40">
-                        <div class="mb-4">
-                            <span
-                                class="text-[10px] font-bold tracking-wider uppercase text-[#0051d5] bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
-                                {{ __('investor.ownership_badge') }}
-                            </span>
-                            <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-2">
-                                {{ __('investor.ownership_title') }}
-                            </h2>
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                            <div>
+                                <span
+                                    class="text-[10px] font-bold tracking-wider uppercase text-[#0051d5] bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
+                                    {{ __('investor.ownership_badge') }}
+                                </span>
+                                <h2 class="text-2xl md:text-3xl font-bold text-slate-900 mt-2">
+                                    {{ __('investor.ownership_title') }}
+                                </h2>
+                            </div>
+
+                            {{-- Filter Periode Bulan & Tahun --}}
+                            <div class="flex items-center gap-2 flex-wrap">
+                                {{-- Dropdown Bulan --}}
+                                <div class="flex items-center gap-1.5">
+                                    <label for="kepemilikanBulanSelect"
+                                        class="text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                                        {{ app()->getLocale() === 'en' ? 'Month:' : 'Bulan:' }}
+                                    </label>
+                                    <div class="relative inline-block">
+                                        <select id="kepemilikanBulanSelect" onchange="filterKepemilikan()"
+                                            class="pl-4 pr-10 py-1.5 text-xs md:text-sm font-semibold text-slate-800 bg-[#EEF4FF] hover:bg-[#e1edff] border border-slate-300 rounded-xl outline-none focus:border-[#0099ff] focus:ring-1 focus:ring-[#0099ff] cursor-pointer appearance-none transition-colors">
+                                            @foreach ($daftarBulan as $key => $namaBulan)
+                                                <option value="{{ $key }}" {{ $selectedBulanKepemilikan == $key ? 'selected' : '' }}>
+                                                    {{ app()->getLocale() === 'en' ? ($daftarBulanEn[$key] ?? $namaBulan) : $namaBulan }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-500">
+                                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- Dropdown Tahun --}}
+                                <div class="flex items-center gap-1.5">
+                                    <label for="kepemilikanTahunSelect"
+                                        class="text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                                        {{ app()->getLocale() === 'en' ? 'Year:' : 'Tahun:' }}
+                                    </label>
+                                    <div class="relative inline-block">
+                                        <select id="kepemilikanTahunSelect" onchange="filterKepemilikan()"
+                                            class="pl-4 pr-10 py-1.5 text-xs md:text-sm font-semibold text-slate-800 bg-[#EEF4FF] hover:bg-[#e1edff] border border-slate-300 rounded-xl outline-none focus:border-[#0099ff] focus:ring-1 focus:ring-[#0099ff] cursor-pointer appearance-none transition-colors">
+                                            @foreach ($periodeTahunList as $th)
+                                                <option value="{{ $th }}" {{ $selectedTahunKepemilikan == $th ? 'selected' : '' }}>
+                                                    {{ $th }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-500">
+                                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
+                        <div id="kepemilikan-container">
+                            @if ($strukturNasional->isEmpty() && $strukturAsing->isEmpty())
+                                <div class="bg-white rounded-2xl p-10 text-center border border-slate-200/80 shadow-sm">
+                                    <div class="w-12 h-12 rounded-full bg-blue-50 text-[#0099ff] flex items-center justify-center mx-auto mb-3 text-xl">
+                                        <i class="fa-regular fa-folder-open"></i>
+                                    </div>
+                                    <h4 class="font-bold text-slate-800 text-sm mb-1">
+                                        {{ app()->getLocale() === 'en' ? 'No Data Available' : 'Data Tidak Tersedia' }}
+                                    </h4>
+                                    <p class="text-xs text-slate-500">
+                                        {{ app()->getLocale() === 'en'
+                                            ? "Shareholders distribution data for " . ($daftarBulanEn[$selectedBulanKepemilikan] ?? $selectedBulanKepemilikan) . " {$selectedTahunKepemilikan} has not been published yet."
+                                            : "Data struktur kepemilikan saham untuk periode {$selectedBulanKepemilikan} {$selectedTahunKepemilikan} belum dipublikasikan." }}
+                                    </p>
+                                </div>
+                            @else
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                             <div
@@ -267,6 +331,8 @@
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+                        @endif
                         </div>
                     </section>
 
@@ -462,18 +528,29 @@
                                     <thead class="bg-slate-100 border-b border-slate-200 text-slate-700 font-bold uppercase tracking-wider text-[11px]">
                                         <tr>
                                             <th class="py-3.5 px-4 text-center w-12">#</th>
-                                            <th class="py-3.5 px-4 min-w-[200px]">Nama Entitas</th>
+                                            <th class="py-3.5 px-4 min-w-[200px]">
+                                                <button type="button" onclick="sortEntitasTable('nama')"
+                                                    class="inline-flex items-center gap-1.5 font-bold uppercase hover:text-[#0099ff] transition-colors focus:outline-none">
+                                                    <span>Nama Entitas</span>
+                                                    <i id="sortIconNama" class="fa-solid fa-sort text-xs text-slate-400"></i>
+                                                </button>
+                                            </th>
                                             <th class="py-3.5 px-4 min-w-[120px]">Tipe Entitas</th>
-                                            <th class="py-3.5 px-4 min-w-[150px]" title="Tahun resmi bergabung atau didirikan dalam kelompok usaha perseroan">
-                                                Tahun Bergabung / Pendirian <i class="fa-solid fa-circle-info text-slate-400 text-[10px] ml-1"></i>
+                                            <th class="py-3.5 px-4 min-w-[150px]">
+                                                <button type="button" onclick="sortEntitasTable('tahun')"
+                                                    class="inline-flex items-center gap-1.5 font-bold uppercase text-[#0099ff] hover:text-[#0099ff] transition-colors focus:outline-none"
+                                                    title="Tahun resmi bergabung atau didirikan dalam kelompok usaha perseroan">
+                                                    <span>Tahun Bergabung / Pendirian</span>
+                                                    <i id="sortIconTahun" class="fa-solid fa-sort-up text-xs text-[#0099ff]"></i>
+                                                </button>
                                             </th>
                                             <th class="py-3.5 px-4 min-w-[120px]">Domisili</th>
                                             <th class="py-3.5 px-4 min-w-[220px]">Bidang Usaha</th>
                                             <th class="py-3.5 px-4 text-right min-w-[170px]">
-                                                <button type="button" id="btnSortKepemilikan" onclick="toggleSortKepemilikan()"
+                                                <button type="button" onclick="sortEntitasTable('persen')"
                                                     class="inline-flex items-center gap-1.5 font-bold uppercase hover:text-[#0099ff] transition-colors focus:outline-none">
                                                     <span>Kepemilikan Saham</span>
-                                                    <i id="sortIcon" class="fa-solid fa-sort text-xs text-slate-400"></i>
+                                                    <i id="sortIconPersen" class="fa-solid fa-sort text-xs text-slate-400"></i>
                                                 </button>
                                             </th>
                                             <th class="py-3.5 px-4 text-center w-24">Tautan</th>
@@ -484,6 +561,7 @@
                                             <tr class="entitas-table-row hover:bg-slate-50/70 transition-colors"
                                                 data-name="{{ strtolower($anak->NamaEntitas) }}"
                                                 data-type="{{ $anak->Tipe }}"
+                                                data-tahun="{{ $anak->TahunBergabung ? (int)$anak->TahunBergabung : 0 }}"
                                                 data-bidang="{{ strtolower($anak->BidangUsaha) }}"
                                                 data-persen="{{ (float)$anak->PersentaseKepemilikan }}">
                                                 <td class="py-3.5 px-4 text-center text-slate-400 font-medium row-num">{{ $loop->iteration }}</td>
@@ -572,26 +650,77 @@
 
     @push('scripts')
         <script>
-            let currentSortOrder = 'none'; // 'asc', 'desc', 'none'
+            // State sorting kolom entitas: default urut tahun asc
+            const sortStateEntitas = {
+                currentCol: 'tahun',
+                order: 'asc'
+            };
 
-            // Sort Entitas Anak by Kepemilikan Saham
-            function toggleSortKepemilikan() {
+            function sortEntitasTable(column) {
                 const tbody = document.getElementById('entitas-tbody');
                 if (!tbody) return;
 
                 const rows = Array.from(tbody.querySelectorAll('.entitas-table-row'));
-                const icon = document.getElementById('sortIcon');
+                if (rows.length === 0) return;
 
-                if (currentSortOrder === 'none' || currentSortOrder === 'asc') {
-                    currentSortOrder = 'desc';
-                    icon.className = 'fa-solid fa-sort-down text-xs text-[#0099ff]';
-                    rows.sort((a, b) => parseFloat(b.dataset.persen) - parseFloat(a.dataset.persen));
+                // Toggle order if clicking the same column, else default to 'asc'
+                if (sortStateEntitas.currentCol === column) {
+                    sortStateEntitas.order = (sortStateEntitas.order === 'asc') ? 'desc' : 'asc';
                 } else {
-                    currentSortOrder = 'asc';
-                    icon.className = 'fa-solid fa-sort-up text-xs text-[#0099ff]';
-                    rows.sort((a, b) => parseFloat(a.dataset.persen) - parseFloat(b.dataset.persen));
+                    sortStateEntitas.currentCol = column;
+                    sortStateEntitas.order = (column === 'persen' || column === 'tahun') ? 'desc' : 'asc';
                 }
 
+                // Reset all sort icons
+                const iconNama = document.getElementById('sortIconNama');
+                const iconTahun = document.getElementById('sortIconTahun');
+                const iconPersen = document.getElementById('sortIconPersen');
+
+                if (iconNama) {
+                    iconNama.className = 'fa-solid fa-sort text-xs text-slate-400';
+                    iconNama.parentElement.classList.remove('text-[#0099ff]');
+                }
+                if (iconTahun) {
+                    iconTahun.className = 'fa-solid fa-sort text-xs text-slate-400';
+                    iconTahun.parentElement.classList.remove('text-[#0099ff]');
+                }
+                if (iconPersen) {
+                    iconPersen.className = 'fa-solid fa-sort text-xs text-slate-400';
+                    iconPersen.parentElement.classList.remove('text-[#0099ff]');
+                }
+
+                // Set active sort icon
+                let activeIcon = null;
+                if (column === 'nama') activeIcon = iconNama;
+                else if (column === 'tahun') activeIcon = iconTahun;
+                else if (column === 'persen') activeIcon = iconPersen;
+
+                if (activeIcon) {
+                    const iconClass = (sortStateEntitas.order === 'asc') ? 'fa-solid fa-sort-up text-xs text-[#0099ff]' : 'fa-solid fa-sort-down text-xs text-[#0099ff]';
+                    activeIcon.className = iconClass;
+                    activeIcon.parentElement.classList.add('text-[#0099ff]');
+                }
+
+                // Sort comparison
+                const isAsc = (sortStateEntitas.order === 'asc');
+                rows.sort((a, b) => {
+                    if (column === 'nama') {
+                        const valA = (a.dataset.name || '').trim();
+                        const valB = (b.dataset.name || '').trim();
+                        return isAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                    } else if (column === 'tahun') {
+                        const valA = parseInt(a.dataset.tahun || 0, 10);
+                        const valB = parseInt(b.dataset.tahun || 0, 10);
+                        return isAsc ? (valA - valB) : (valB - valA);
+                    } else if (column === 'persen') {
+                        const valA = parseFloat(a.dataset.persen || 0);
+                        const valB = parseFloat(b.dataset.persen || 0);
+                        return isAsc ? (valA - valB) : (valB - valA);
+                    }
+                    return 0;
+                });
+
+                // Re-append rows in sorted order and re-index row numbers
                 rows.forEach((row, idx) => {
                     tbody.appendChild(row);
                     const rowNum = row.querySelector('.row-num');
@@ -599,8 +728,8 @@
                 });
             }
 
-            document.addEventListener('DOMContentLoaded', function() {
-                // 1. FILTER & SEARCH STRUKTUR KEPEMILIKAN
+            // 1. FILTER & SEARCH STRUKTUR KEPEMILIKAN
+            function initOwnershipFilter() {
                 const ownershipFilterBtns = document.querySelectorAll('.filter-ownership-btn');
                 const ownershipSearch = document.getElementById('search-ownership');
                 const ownershipRows = document.querySelectorAll('.ownership-row');
@@ -645,6 +774,51 @@
                 if (ownershipSearch) {
                     ownershipSearch.addEventListener('input', filterOwnership);
                 }
+            }
+
+            // AJAX Filter Bulan & Tahun Kepemilikan tanpa reload
+            window.filterKepemilikan = function() {
+                const bulan = document.getElementById('kepemilikanBulanSelect')?.value || '';
+                const tahun = document.getElementById('kepemilikanTahunSelect')?.value || '';
+
+                const container = document.getElementById('kepemilikan-container');
+                const originalContent = container ? container.innerHTML : '';
+                if (container) {
+                    container.innerHTML = `
+                        <div class="p-12 text-center bg-white rounded-2xl border border-slate-200/80 shadow-sm">
+                            <i class="fa-solid fa-circle-notch fa-spin text-2xl text-[#0099ff] mb-2"></i>
+                            <p class="text-xs text-slate-500">Memuat data periode ${bulan} ${tahun}...</p>
+                        </div>`;
+                }
+
+                const url = new URL(window.location.href);
+                url.searchParams.set('bulan_kepemilikan', bulan);
+                url.searchParams.set('tahun_kepemilikan', tahun);
+                url.hash = '';
+
+                fetch(url.toString())
+                    .then(response => response.text())
+                    .then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const newContainer = doc.getElementById('kepemilikan-container');
+
+                        if (newContainer && container) {
+                            container.innerHTML = newContainer.innerHTML;
+                            window.history.pushState({}, '', url.toString() + '#struktur-kepemilikan');
+                            initOwnershipFilter();
+                        } else if (container) {
+                            container.innerHTML = originalContent;
+                        }
+                    })
+                    .catch(() => {
+                        if (container) container.innerHTML = originalContent;
+                        alert('Gagal memuat data kepemilikan. Silakan coba lagi.');
+                    });
+            };
+
+            document.addEventListener('DOMContentLoaded', function() {
+                initOwnershipFilter();
 
                 // 2. FILTER & SEARCH ENTITAS ANAK
                 const filterBtns = document.querySelectorAll('.filter-entitas-btn');

@@ -287,7 +287,7 @@
 
                                     <!-- Download Button -->
                                     <a href="{{ asset('assets/documents/prospektus-jtpe.pdf') }}" target="_blank" download
-                                        class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-[#0052CC] bg-white hover:bg-blue-50 rounded-xl transition-all shadow-sm border border-slate-100">
+                                        class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-[#0052CC] bg-white hover:bg-[#0052CC] hover:text-white rounded-xl transition-all shadow-sm border border-blue-200 hover:border-[#0052CC] hover:shadow-md">
                                         <i class="fa-solid fa-download text-sm"></i>
                                         Unduh Berkas
                                     </a>
@@ -342,7 +342,7 @@
 
                                     <!-- Download Button -->
                                     <a href="{{ asset('assets/documents/prospektus-jtpe.pdf') }}" target="_blank" download
-                                        class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-[#0052CC] bg-white hover:bg-blue-50 rounded-xl transition-all shadow-sm border border-slate-100">
+                                        class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-[#0052CC] bg-white hover:bg-[#0052CC] hover:text-white rounded-xl transition-all shadow-sm border border-blue-200 hover:border-[#0052CC] hover:shadow-md">
                                         <i class="fa-solid fa-download text-sm"></i>
                                         Unduh Berkas
                                     </a>
@@ -693,26 +693,22 @@
                                 </div>
                             </div>
 
-                            {{-- Year Filter untuk Quarterly Report --}}
-                            <div class="flex items-center gap-3">
-                                <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+                            {{-- Year Dropdown Filter untuk Quarterly Report --}}
+                            <div class="flex items-center gap-2">
+                                <label for="quarterYearSelect"
+                                    class="text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap">
                                     {{ $currentLocale === 'en' ? 'Year:' : 'Tahun:' }}
                                 </label>
-
-                                {{-- High contrast buttons: Inactive is clearly visible bg-slate-200 / slate-100 with border and dark text --}}
-                                <div class="inline-flex p-1 bg-slate-200 rounded-xl border border-slate-300 gap-1.5" id="quarterYearPills">
-                                    <button type="button" onclick="filterQuarterReport('2026', this)"
-                                        class="quarter-pill-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-[#0099ff] text-white shadow-sm">
-                                        2026
-                                    </button>
-                                    <button type="button" onclick="filterQuarterReport('2025', this)"
-                                        class="quarter-pill-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-slate-100 hover:bg-white text-slate-800 border border-slate-300 shadow-2xs">
-                                        2025
-                                    </button>
-                                    <button type="button" onclick="filterQuarterReport('2024', this)"
-                                        class="quarter-pill-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-slate-100 hover:bg-white text-slate-800 border border-slate-300 shadow-2xs">
-                                        2024
-                                    </button>
+                                <div class="relative inline-block">
+                                    <select id="quarterYearSelect" onchange="filterQuarterReport(this.value)"
+                                        class="pl-4 pr-10 py-1.5 text-xs md:text-sm font-semibold text-slate-800 bg-[#EEF4FF] hover:bg-[#e1edff] border border-slate-300 rounded-xl outline-none focus:border-[#0099ff] focus:ring-1 focus:ring-[#0099ff] cursor-pointer appearance-none transition-colors">
+                                        <option value="2026" selected>2026</option>
+                                        <option value="2025">2025</option>
+                                        <option value="2024">2024</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-500">
+                                        <i class="fa-solid fa-chevron-down text-xs"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1215,20 +1211,12 @@
                 }
             }
 
-            // Filter Quarterly Reports by Year & toggle active pill button
-            function filterQuarterReport(year, btn) {
+            // Filter Quarterly Reports by Year
+            function filterQuarterReport(year) {
                 document.querySelectorAll('.quarter-report-grid').forEach(grid => grid.classList.add('hidden'));
                 const target = document.getElementById('quarter-grid-' + year);
                 if (target) {
                     target.classList.remove('hidden');
-                }
-
-                // Update active state on buttons
-                if (btn) {
-                    document.querySelectorAll('#quarterYearPills .quarter-pill-btn').forEach(b => {
-                        b.className = 'quarter-pill-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-slate-100 hover:bg-white text-slate-800 border border-slate-300 shadow-2xs';
-                    });
-                    btn.className = 'quarter-pill-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-[#0099ff] text-white shadow-sm';
                 }
             }
 

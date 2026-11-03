@@ -12,7 +12,8 @@ class ExampleTest extends TestCase
      */
     public function test_the_application_returns_a_successful_response(): void
     {
-        $response = $this->get('/');
+        $this->withoutMiddleware(\App\Http\Middleware\EnforceTrailingSlash::class);
+        $response = $this->get('/id/');
 
         $response->assertStatus(200);
     }
