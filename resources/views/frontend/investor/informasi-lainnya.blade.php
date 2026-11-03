@@ -89,13 +89,13 @@
                                     <i class="fa-solid fa-chevron-right text-[10px] text-slate-300 group-hover:text-[#0099ff] group-hover:translate-x-0.5 [.active_&]:text-[#0099ff] transition-transform"></i>
                                 </a>
 
-                                <a href="#hubungi-investor"
-                                    class="sidebar-link group flex items-center justify-between px-3.5 py-2.5 text-xs md:text-sm text-[#45464D] rounded-xl transition-all duration-200 hover:bg-blue-50 hover:text-[#0099ff] hover:translate-x-1.5 aria-[current=true]:bg-blue-50 aria-[current=true]:text-[#0099ff] aria-[current=true]:translate-x-1.5 aria-[current=true]:font-semibold">
+                                <a href="{{ route('frontend.contact.index', ['locale' => app()->getLocale()]) }}"
+                                    class="sidebar-link group flex items-center justify-between px-3.5 py-2.5 text-xs md:text-sm text-[#45464D] rounded-xl transition-all duration-200 hover:bg-blue-50 hover:text-[#0099ff] hover:translate-x-1.5">
                                     <span class="flex items-center gap-2.5">
-                                        <i class="fa-solid fa-headset w-4 text-center text-[#45464D] group-hover:text-[#0099ff] [.active_&]:text-[#0099ff]"></i>
+                                        <i class="fa-solid fa-headset w-4 text-center text-[#45464D] group-hover:text-[#0099ff]"></i>
                                         {{ __('investor.other_nav_ir') }}
                                     </span>
-                                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-300 group-hover:text-[#0099ff] group-hover:translate-x-0.5 [.active_&]:text-[#0099ff] transition-transform"></i>
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-300 group-hover:text-[#0099ff] transition-transform"></i>
                                 </a>
                             </nav>
 
@@ -406,6 +406,13 @@
                                 <p class="text-xs text-slate-500 leading-relaxed">{{ __('investor.other_s3_phone_desc') }}
                                 </p>
                             </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <a href="{{ route('frontend.contact.index', ['locale' => app()->getLocale()]) }}"
+                                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0051d5] hover:bg-[#003ea8] text-white font-bold text-xs transition-colors shadow-sm">
+                                <i class="fa-solid fa-paper-plane text-xs"></i> {{ __('Contact Us') }}
+                            </a>
                         </div>
 
                         {{-- SEMENTARA DI-COMMENT SESUAI PERMINTAAN

@@ -240,10 +240,10 @@
             <div class="max-w-4xl mx-auto text-center">
                 <span
                     class="inline-block py-1.5 px-4 rounded-full bg-brand-500/20 text-brand-100 text-sm font-semibold tracking-wide mb-6 border border-brand-500/30 backdrop-blur-sm">
-                    <i class="fa-solid fa-envelope-open-text mr-2"></i> {{ __('Get In Touch') }}
+                    <i class="fa-solid fa-envelope-open-text mr-2"></i> {{ __('contact.hero_badge') }}
                 </span>
                 <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight">
-                    {{ __('Contact Us') }}
+                    {{ __('contact.hero_title') }}
                 </h1>
                 <p class="text-xl text-slate-300 max-w-2xl mx-auto">
                     {{ __('We are ready to help you. Our team will respond within 1x24 working hours.') }}
@@ -597,8 +597,6 @@
                                 <div>
                                     <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900">
                                         {{ __('Send Us a Message') }}</h2>
-                                    <p class="text-slate-500 text-sm mt-1">
-                                        {{ __('Fill in the form below and we will contact you shortly') }}</p>
                                 </div>
                             </div>
                         </div>

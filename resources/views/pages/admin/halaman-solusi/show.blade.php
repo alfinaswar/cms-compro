@@ -449,10 +449,10 @@
                 <div class="text-center mb-12">
                     <span
                         class="inline-flex items-center gap-1.5 py-1.5 px-4 rounded-full bg-brand-50 text-brand-700 text-xs font-bold uppercase tracking-wider mb-4 border border-brand-200">
-                        <i class="fa-solid fa-circle-question text-brand-600"></i> FAQ &amp; Knowledge Base
+                        <i class="fa-solid fa-circle-question text-brand-600"></i> {{ __('FAQ & Knowledge Base') }}
                     </span>
                     <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
-                        {{ $locale === 'en' ? 'Frequently Asked Questions' : 'Pertanyaan yang Sering Diajukan' }}
+                        {{ __('Frequently Asked Questions (FAQ)') }}
                     </h2>
                     <p class="text-slate-500 text-sm md:text-base mt-2.5">
                         {{ $locale === 'en' ? 'Everything you need to know about this solution, security certifications, and implementation.' : 'Informasi mendalam seputar implementasi solusi, spesifikasi teknis, dan sertifikasi keamanan kami.' }}

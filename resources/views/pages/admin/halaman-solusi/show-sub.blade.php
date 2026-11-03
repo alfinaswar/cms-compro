@@ -338,7 +338,7 @@
                     <div class="text-center mb-12">
                         <span
                             class="inline-flex items-center gap-1.5 py-1.5 px-4 rounded-full bg-brand-50 text-brand-700 text-xs font-bold uppercase tracking-wider mb-4 border border-brand-200">
-                            <i class="fa-solid fa-circle-question text-brand-600"></i> FAQ &amp; Knowledge Base
+                            <i class="fa-solid fa-circle-question text-brand-600"></i> {{ __('FAQ & Knowledge Base') }}
                         </span>
                         @if (filled($subpage->t('FaqJudul')))
                             <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">{{ $subpage->t('FaqJudul') }}</h2>

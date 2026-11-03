@@ -662,23 +662,9 @@
                     </div>
                 @endforeach
             </div>
-        </div>
-    </section>
 
-    <!-- ========================================== -->
-    <!-- KAPABILITAS & PENDEKATAN UNIK -->
-    <!-- ========================================== -->
-    <section class="py-20 bg-white p-[40px]">
-        <div class="container mx-auto px-6">
-            <div class="mb-12">
-                <span
-                    class="text-xs font-bold text-brand-600 uppercase tracking-widest">{{ __('Jasuindo Advantages & Capabilities') }}</span>
-                <h2 class="text-[36px] md:text-4xl font-extrabold text-slate-900 mt-3 leading-tight">
-                    {{ __('More Than Just Printing. We Safeguard What You Entrust.') }}
-                </h2>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{-- Gabung kapabilitas ke dalam Mengapa Memilih Kami --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 px-[40px] pt-4">
                 @foreach ($capabilities as $c)
                     <div
                         class="bg-white border border-slate-200 rounded-xl p-7 hover:shadow-lg hover:border-brand-300 transition-all duration-300">
