@@ -1,5 +1,16 @@
 @extends('frontend.index')
 
+@php
+    $careerLocale = app()->getLocale();
+    $pageTitle = ($careerLocale === 'en' ? 'Careers & Opportunities' : 'Karir & Lowongan Kerja') . ' - ' . ($websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk');
+    $pageDesc = $careerLocale === 'en'
+        ? 'Join our team at PT Jasuindo Tiga Perkasa Tbk. Explore career opportunities and grow with us in security printing and digital identity solutions.'
+        : 'Bergabunglah bersama PT Jasuindo Tiga Perkasa Tbk. Temukan peluang karir dan berkembang bersama kami di industri sekuriti dan identitas digital.';
+@endphp
+
+@section('title', $pageTitle)
+@section('meta_description', $pageDesc)
+
 @section('content-frontend')
     @push('styles')
         <style>

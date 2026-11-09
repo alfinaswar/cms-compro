@@ -1,219 +1,2051 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
     <url>
-    <loc>http://localhost</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
+    <loc>https://localhost/id/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/" />
+    <lastmod>2026-11-09T02:22:01+00:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
             </url>
     <url>
-    <loc>http://localhost/id/kontak</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
+    <loc>https://localhost/en/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/" />
+    <lastmod>2026-11-09T02:22:01+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/tentang-kami/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/tentang-kami/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/about-us/" />
+    <lastmod>2026-11-09T02:22:01+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/about-us/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/tentang-kami/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/about-us/" />
+    <lastmod>2026-11-09T02:22:01+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/hubungi-kami/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/hubungi-kami/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/contact-us/" />
+    <lastmod>2026-11-09T02:22:01+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/contact-us/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/hubungi-kami/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/contact-us/" />
+    <lastmod>2026-11-09T02:22:01+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/" />
+    <lastmod>2026-11-09T02:22:01+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/" />
+    <lastmod>2026-11-09T02:22:01+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/karir/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/karir/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/career/" />
+    <lastmod>2026-11-09T02:22:01+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/career/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/karir/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/career/" />
+    <lastmod>2026-11-09T02:22:01+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/laporan-investor/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/laporan-investor/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/investor-relations/" />
+    <lastmod>2026-11-09T02:22:01+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/investor-relations/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/laporan-investor/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/investor-relations/" />
+    <lastmod>2026-11-09T02:22:01+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/laporan-investor/informasi-finansial/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/laporan-investor/informasi-finansial/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/investor-relations/financial-information/" />
+    <lastmod>2026-11-09T02:22:01+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/investor-relations/financial-information/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/laporan-investor/informasi-finansial/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/investor-relations/financial-information/" />
+    <lastmod>2026-11-09T02:22:01+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/laporan-investor/tata-kelola-perusahaan/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/laporan-investor/tata-kelola-perusahaan/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/investor-relations/corporate-governance/" />
+    <lastmod>2026-11-09T02:22:01+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/investor-relations/corporate-governance/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/laporan-investor/tata-kelola-perusahaan/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/investor-relations/corporate-governance/" />
+    <lastmod>2026-11-09T02:22:01+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/laporan-investor/informasi-lainnya/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/laporan-investor/informasi-lainnya/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/investor-relations/other-information/" />
+    <lastmod>2026-11-09T02:22:01+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
             </url>
     <url>
-    <loc>http://localhost/id/berita/mengenal-perbedaan-paspor-biasa-dan-paspor-elektronik-1791603926</loc>
-    <lastmod>2026-10-10T03:45:26+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://localhost/en/investor-relations/other-information/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/laporan-investor/informasi-lainnya/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/investor-relations/other-information/" />
+    <lastmod>2026-11-09T02:22:01+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
             </url>
     <url>
-    <loc>http://localhost/id/karir/123123-6</loc>
-    <lastmod>2026-10-05T04:20:27+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost/id/karir/web-developer-7</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost/id/karir/frontend-developer-8</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost/id/karir/backend-developer-9</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost/id/karir/uiux-designer-10</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost/id/karir/it-support-11</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost/id/karir/digital-marketing-12</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost/id/karir/social-media-specialist-13</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost/id/karir/graphic-designer-14</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost/id/karir/content-writer-15</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost/id/karir/data-analyst-16</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost/id/karir/hr-staff-17</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost/id/karir/hr-development-18</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost/id/karir/staff-administrasi-19</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost/id/karir/finance-staff-20</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost/id/karir/accounting-staff-21</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost/id/karir/customer-service-22</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost/id/karir/sales-executive-23</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost/id/karir/business-development-24</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost/id/karir/project-manager-25</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost/id/karir/qa-tester-26</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost/id/karir/mobile-developer-27</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost/id/karir/system-administrator-28</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost/id/karir/purchasing-staff-29</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost/id/karir/operational-supervisor-30</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost/id/karir/management-trainee-31</loc>
-    <lastmod>2026-10-12T03:26:38+00:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-            </url>
-    <url>
-    <loc>http://localhost/id/kebijakan-privasi</loc>
-    <lastmod>2026-10-12T03:13:13+00:00</lastmod>
+    <loc>https://localhost/id/peta-situs/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/peta-situs/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/sitemap/" />
+    <lastmod>2026-11-09T02:22:01+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
             </url>
     <url>
-    <loc>http://localhost/id/syarat-ketentuan</loc>
-    <lastmod>2026-10-06T01:59:39+00:00</lastmod>
+    <loc>https://localhost/en/sitemap/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/peta-situs/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/sitemap/" />
+    <lastmod>2026-11-09T02:22:01+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
             </url>
     <url>
-    <loc>http://localhost/id/tentang-kami</loc>
-    <lastmod>2026-10-06T01:59:39+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <loc>https://localhost/id/solusi/identitas/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/identitas/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/identitas/" />
+    <lastmod>2026-10-09T14:25:16+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
             </url>
     <url>
-    <loc>http://localhost/id/faq</loc>
-    <lastmod>2026-10-06T01:59:39+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <loc>https://localhost/en/solutions/identitas/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/identitas/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/identitas/" />
+    <lastmod>2026-10-09T14:25:16+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
             </url>
     <url>
-    <loc>http://localhost/id/page/jasuindo-memenangkan-bisnis-indonesia-award-2026-dalam-kategori-jasa-industri</loc>
-    <lastmod>2026-09-25T05:01:14+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://localhost/id/solusi/pembayaran/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/pembayaran/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/pembayaran/" />
+    <lastmod>2026-10-31T02:54:02+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
             </url>
     <url>
-    <loc>http://localhost/id/page/1</loc>
-    <lastmod>2026-09-25T03:21:34+00:00</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <loc>https://localhost/en/solutions/pembayaran/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/pembayaran/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/pembayaran/" />
+    <lastmod>2026-10-31T02:54:02+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
             </url>
     <url>
-    <loc>http://localhost/en/news/mengenal-perbedaan-paspor-biasa-dan-paspor-elektronik-1791603926</loc>
-    <lastmod>2026-10-10T03:45:26+00:00</lastmod>
+    <loc>https://localhost/id/solusi/perlindungan-merek/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/perlindungan-merek/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/perlindungan-merek/" />
+    <lastmod>2026-10-15T04:27:48+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/solutions/perlindungan-merek/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/perlindungan-merek/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/perlindungan-merek/" />
+    <lastmod>2026-10-15T04:27:48+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/solusi/percetakan-komersil/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/percetakan-komersil/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/percetakan-komersil/" />
+    <lastmod>2026-10-15T04:09:24+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/solutions/percetakan-komersil/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/percetakan-komersil/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/percetakan-komersil/" />
+    <lastmod>2026-10-15T04:09:24+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/solusi/Culpa iure architec/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/Culpa iure architec/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/Culpa iure architec/" />
+    <lastmod>2026-10-31T02:49:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/solutions/Culpa iure architec/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/Culpa iure architec/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/Culpa iure architec/" />
+    <lastmod>2026-10-31T02:49:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/solusi/Culpa iure architec2/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/Culpa iure architec2/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/Culpa iure architec2/" />
+    <lastmod>2026-10-31T02:50:47+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/solutions/Culpa iure architec2/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/Culpa iure architec2/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/Culpa iure architec2/" />
+    <lastmod>2026-10-31T02:50:47+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/solusi/culpa-iure-architec2/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/culpa-iure-architec2/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/culpa-iure-architec2/" />
+    <lastmod>2026-10-31T02:52:36+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/solutions/culpa-iure-architec2/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/culpa-iure-architec2/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/culpa-iure-architec2/" />
+    <lastmod>2026-10-31T02:52:36+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/solusi/percetakan-komersil/pasport/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/percetakan-komersil/pasport/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/percetakan-komersil/pasport/" />
+    <lastmod>2026-10-21T09:02:17+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/solutions/percetakan-komersil/pasport/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/percetakan-komersil/pasport/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/percetakan-komersil/pasport/" />
+    <lastmod>2026-10-21T09:02:17+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/solusi/identitas/paspor/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/identitas/paspor/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/identitas/paspor/" />
+    <lastmod>2026-10-21T14:04:24+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/solutions/identitas/paspor/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/identitas/paspor/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/identitas/paspor/" />
+    <lastmod>2026-10-21T14:04:24+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/solusi/pembayaran/cheque/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/pembayaran/cheque/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/pembayaran/cheque/" />
+    <lastmod>2026-10-31T02:47:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/solutions/pembayaran/cheque/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/pembayaran/cheque/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/pembayaran/cheque/" />
+    <lastmod>2026-10-31T02:47:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/solusi/pembayaran/banking-cards/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/pembayaran/banking-cards/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/pembayaran/banking-cards/" />
+    <lastmod>2026-10-31T02:47:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/solutions/pembayaran/banking-cards/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/pembayaran/banking-cards/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/pembayaran/banking-cards/" />
+    <lastmod>2026-10-31T02:47:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/solusi/pembayaran/other-payment/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/pembayaran/other-payment/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/pembayaran/other-payment/" />
+    <lastmod>2026-10-31T02:47:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/solutions/pembayaran/other-payment/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/pembayaran/other-payment/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/pembayaran/other-payment/" />
+    <lastmod>2026-10-31T02:47:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/solusi/identitas/id-cards/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/identitas/id-cards/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/identitas/id-cards/" />
+    <lastmod>2026-10-31T02:47:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/solutions/identitas/id-cards/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/identitas/id-cards/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/identitas/id-cards/" />
+    <lastmod>2026-10-31T02:47:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/solusi/identitas/certificates-diplomas/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/identitas/certificates-diplomas/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/identitas/certificates-diplomas/" />
+    <lastmod>2026-10-31T02:47:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/solutions/identitas/certificates-diplomas/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/identitas/certificates-diplomas/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/identitas/certificates-diplomas/" />
+    <lastmod>2026-10-31T02:47:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/solusi/perlindungan-merek/vouchers-and-coupons-with-security-features/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/perlindungan-merek/vouchers-and-coupons-with-security-features/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/perlindungan-merek/vouchers-and-coupons-with-security-features/" />
+    <lastmod>2026-10-31T02:47:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/solutions/perlindungan-merek/vouchers-and-coupons-with-security-features/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/perlindungan-merek/vouchers-and-coupons-with-security-features/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/perlindungan-merek/vouchers-and-coupons-with-security-features/" />
+    <lastmod>2026-10-31T02:47:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/solusi/perlindungan-merek/security-holograms-optical-protection/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/perlindungan-merek/security-holograms-optical-protection/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/perlindungan-merek/security-holograms-optical-protection/" />
+    <lastmod>2026-10-31T02:47:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/solutions/perlindungan-merek/security-holograms-optical-protection/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/perlindungan-merek/security-holograms-optical-protection/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/perlindungan-merek/security-holograms-optical-protection/" />
+    <lastmod>2026-10-31T02:47:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/solusi/perlindungan-merek/specialized-packaging/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/perlindungan-merek/specialized-packaging/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/perlindungan-merek/specialized-packaging/" />
+    <lastmod>2026-10-31T02:47:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/solutions/perlindungan-merek/specialized-packaging/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/perlindungan-merek/specialized-packaging/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/perlindungan-merek/specialized-packaging/" />
+    <lastmod>2026-10-31T02:47:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/solusi/perlindungan-merek/protective-labels-smart-tracking-systems/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/perlindungan-merek/protective-labels-smart-tracking-systems/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/perlindungan-merek/protective-labels-smart-tracking-systems/" />
+    <lastmod>2026-10-31T02:47:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/solutions/perlindungan-merek/protective-labels-smart-tracking-systems/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/perlindungan-merek/protective-labels-smart-tracking-systems/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/perlindungan-merek/protective-labels-smart-tracking-systems/" />
+    <lastmod>2026-10-31T02:47:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/solusi/perlindungan-merek/tax-stamps/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/perlindungan-merek/tax-stamps/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/perlindungan-merek/tax-stamps/" />
+    <lastmod>2026-10-31T02:47:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/solutions/perlindungan-merek/tax-stamps/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/perlindungan-merek/tax-stamps/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/perlindungan-merek/tax-stamps/" />
+    <lastmod>2026-10-31T02:47:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/solusi/percetakan-komersil/game-plus-trading-cards-board-games/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/percetakan-komersil/game-plus-trading-cards-board-games/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/percetakan-komersil/game-plus-trading-cards-board-games/" />
+    <lastmod>2026-10-31T02:47:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/solutions/percetakan-komersil/game-plus-trading-cards-board-games/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/percetakan-komersil/game-plus-trading-cards-board-games/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/percetakan-komersil/game-plus-trading-cards-board-games/" />
+    <lastmod>2026-10-31T02:47:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/solusi/percetakan-komersil/lainnya-gelang-tangan-specialty-packaging/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/percetakan-komersil/lainnya-gelang-tangan-specialty-packaging/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/percetakan-komersil/lainnya-gelang-tangan-specialty-packaging/" />
+    <lastmod>2026-10-31T02:47:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/solutions/percetakan-komersil/lainnya-gelang-tangan-specialty-packaging/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/solusi/percetakan-komersil/lainnya-gelang-tangan-specialty-packaging/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/solutions/percetakan-komersil/lainnya-gelang-tangan-specialty-packaging/" />
+    <lastmod>2026-10-31T02:47:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/lebih-dari-sekadar-berkilau-mengapa-hologram-keamanan-adalah-kunci-otentikasi-produk-yang-tak-terbantahkan-1790047851/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/lebih-dari-sekadar-berkilau-mengapa-hologram-keamanan-adalah-kunci-otentikasi-produk-yang-tak-terbantahkan-1790047851/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/lebih-dari-sekadar-berkilau-mengapa-hologram-keamanan-adalah-kunci-otentikasi-produk-yang-tak-terbantahkan-1790047851/" />
+    <lastmod>2026-10-16T09:15:47+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/lebih-dari-sekadar-berkilau-mengapa-hologram-keamanan-adalah-kunci-otentikasi-produk-yang-tak-terbantahkan-1790047851/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/lebih-dari-sekadar-berkilau-mengapa-hologram-keamanan-adalah-kunci-otentikasi-produk-yang-tak-terbantahkan-1790047851/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/lebih-dari-sekadar-berkilau-mengapa-hologram-keamanan-adalah-kunci-otentikasi-produk-yang-tak-terbantahkan-1790047851/" />
+    <lastmod>2026-10-16T09:15:47+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/tanggung-jawab-sosial-perusahaan-pada-lingkungan-komitmen-kami-terhadap-operasional-berkelanjutan-1791605713/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/tanggung-jawab-sosial-perusahaan-pada-lingkungan-komitmen-kami-terhadap-operasional-berkelanjutan-1791605713/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/tanggung-jawab-sosial-perusahaan-pada-lingkungan-komitmen-kami-terhadap-operasional-berkelanjutan-1791605713/" />
+    <lastmod>2026-10-15T08:23:30+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/tanggung-jawab-sosial-perusahaan-pada-lingkungan-komitmen-kami-terhadap-operasional-berkelanjutan-1791605713/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/tanggung-jawab-sosial-perusahaan-pada-lingkungan-komitmen-kami-terhadap-operasional-berkelanjutan-1791605713/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/tanggung-jawab-sosial-perusahaan-pada-lingkungan-komitmen-kami-terhadap-operasional-berkelanjutan-1791605713/" />
+    <lastmod>2026-10-15T08:23:30+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/jasuindo-menyambut-toppan-gravity-sebagai-pemegang-saham-baru-1791797692/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/jasuindo-menyambut-toppan-gravity-sebagai-pemegang-saham-baru-1791797692/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/jasuindo-menyambut-toppan-gravity-sebagai-pemegang-saham-baru-1791797692/" />
+    <lastmod>2026-10-16T08:54:34+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/jasuindo-menyambut-toppan-gravity-sebagai-pemegang-saham-baru-1791797692/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/jasuindo-menyambut-toppan-gravity-sebagai-pemegang-saham-baru-1791797692/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/jasuindo-menyambut-toppan-gravity-sebagai-pemegang-saham-baru-1791797692/" />
+    <lastmod>2026-10-16T08:54:34+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/jasuindo-tiga-perkasa-1791797834/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/jasuindo-tiga-perkasa-1791797834/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/jasuindo-tiga-perkasa-1791797834/" />
+    <lastmod>2026-10-16T08:54:34+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/jasuindo-tiga-perkasa-1791797834/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/jasuindo-tiga-perkasa-1791797834/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/jasuindo-tiga-perkasa-1791797834/" />
+    <lastmod>2026-10-16T08:54:34+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/terima-kasih-1791797916/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/terima-kasih-1791797916/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/terima-kasih-1791797916/" />
+    <lastmod>2026-10-16T08:54:33+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/terima-kasih-1791797916/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/terima-kasih-1791797916/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/terima-kasih-1791797916/" />
+    <lastmod>2026-10-16T08:54:33+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/jasuindo-digital-1791798109/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/jasuindo-digital-1791798109/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/jasuindo-digital-1791798109/" />
+    <lastmod>2026-10-16T08:54:32+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/jasuindo-digital-1791798109/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/jasuindo-digital-1791798109/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/jasuindo-digital-1791798109/" />
+    <lastmod>2026-10-16T08:54:32+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/perangkat-terintegrasi-1791798158/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/perangkat-terintegrasi-1791798158/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/perangkat-terintegrasi-1791798158/" />
+    <lastmod>2026-10-16T08:54:32+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/perangkat-terintegrasi-1791798158/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/perangkat-terintegrasi-1791798158/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/perangkat-terintegrasi-1791798158/" />
+    <lastmod>2026-10-16T08:54:32+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/pameran-smart-city-1791798193/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/pameran-smart-city-1791798193/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/pameran-smart-city-1791798193/" />
+    <lastmod>2026-10-16T08:54:31+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/pameran-smart-city-1791798193/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/pameran-smart-city-1791798193/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/pameran-smart-city-1791798193/" />
+    <lastmod>2026-10-16T08:54:31+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/rapat-pemegang-saham-1791798214/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/rapat-pemegang-saham-1791798214/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/rapat-pemegang-saham-1791798214/" />
+    <lastmod>2026-10-16T08:54:30+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/rapat-pemegang-saham-1791798214/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/rapat-pemegang-saham-1791798214/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/rapat-pemegang-saham-1791798214/" />
+    <lastmod>2026-10-16T08:54:30+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/percetakan-keamanan-global-1791798234/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/percetakan-keamanan-global-1791798234/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/percetakan-keamanan-global-1791798234/" />
+    <lastmod>2026-10-16T08:54:30+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/percetakan-keamanan-global-1791798234/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/percetakan-keamanan-global-1791798234/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/percetakan-keamanan-global-1791798234/" />
+    <lastmod>2026-10-16T08:54:30+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/buletin-investor-1791798253/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/buletin-investor-1791798253/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/buletin-investor-1791798253/" />
+    <lastmod>2026-10-16T08:54:29+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/buletin-investor-1791798253/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/buletin-investor-1791798253/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/buletin-investor-1791798253/" />
+    <lastmod>2026-10-16T08:54:29+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/buletin-investor-q3-2023-1791798278/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/buletin-investor-q3-2023-1791798278/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/buletin-investor-q3-2023-1791798278/" />
+    <lastmod>2026-10-16T08:54:28+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/buletin-investor-q3-2023-1791798278/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/buletin-investor-q3-2023-1791798278/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/buletin-investor-q3-2023-1791798278/" />
+    <lastmod>2026-10-16T08:54:28+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/apa-itu-smart-card-1791798305/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/apa-itu-smart-card-1791798305/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/apa-itu-smart-card-1791798305/" />
+    <lastmod>2026-10-16T08:56:47+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/apa-itu-smart-card-1791798305/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/apa-itu-smart-card-1791798305/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/apa-itu-smart-card-1791798305/" />
+    <lastmod>2026-10-16T08:56:47+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/apa-itu-brand-protection-1791798324/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/apa-itu-brand-protection-1791798324/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/apa-itu-brand-protection-1791798324/" />
+    <lastmod>2026-10-16T08:57:10+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/apa-itu-brand-protection-1791798324/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/apa-itu-brand-protection-1791798324/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/apa-itu-brand-protection-1791798324/" />
+    <lastmod>2026-10-16T08:57:10+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/apa-itu-security-label-1791798344/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/apa-itu-security-label-1791798344/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/apa-itu-security-label-1791798344/" />
+    <lastmod>2026-10-16T08:57:16+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/apa-itu-security-label-1791798344/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/apa-itu-security-label-1791798344/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/apa-itu-security-label-1791798344/" />
+    <lastmod>2026-10-16T08:57:16+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/apa-itu-stiker-hologram-1791798363/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/apa-itu-stiker-hologram-1791798363/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/apa-itu-stiker-hologram-1791798363/" />
+    <lastmod>2026-10-16T09:21:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/apa-itu-stiker-hologram-1791798363/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/apa-itu-stiker-hologram-1791798363/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/apa-itu-stiker-hologram-1791798363/" />
+    <lastmod>2026-10-16T09:21:59+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/apa-itu-rfid-label-1791798397/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/apa-itu-rfid-label-1791798397/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/apa-itu-rfid-label-1791798397/" />
+    <lastmod>2026-10-16T08:57:29+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/apa-itu-rfid-label-1791798397/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/apa-itu-rfid-label-1791798397/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/apa-itu-rfid-label-1791798397/" />
+    <lastmod>2026-10-16T08:57:29+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/jenis-jenis-kartu-bank-1791798418/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/jenis-jenis-kartu-bank-1791798418/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/jenis-jenis-kartu-bank-1791798418/" />
+    <lastmod>2026-10-16T08:57:35+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/jenis-jenis-kartu-bank-1791798418/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/jenis-jenis-kartu-bank-1791798418/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/jenis-jenis-kartu-bank-1791798418/" />
+    <lastmod>2026-10-16T08:57:35+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/cara-agar-produk-tidak-mudah-ditiru-1791798442/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/cara-agar-produk-tidak-mudah-ditiru-1791798442/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/cara-agar-produk-tidak-mudah-ditiru-1791798442/" />
+    <lastmod>2026-10-16T08:57:42+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/cara-agar-produk-tidak-mudah-ditiru-1791798442/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/cara-agar-produk-tidak-mudah-ditiru-1791798442/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/cara-agar-produk-tidak-mudah-ditiru-1791798442/" />
+    <lastmod>2026-10-16T08:57:42+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/pentingnya-label-untuk-kemasan-produk-anda-1791798462/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/pentingnya-label-untuk-kemasan-produk-anda-1791798462/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/pentingnya-label-untuk-kemasan-produk-anda-1791798462/" />
+    <lastmod>2026-10-16T08:57:48+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/pentingnya-label-untuk-kemasan-produk-anda-1791798462/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/pentingnya-label-untuk-kemasan-produk-anda-1791798462/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/pentingnya-label-untuk-kemasan-produk-anda-1791798462/" />
+    <lastmod>2026-10-16T08:57:48+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/apa-itu-security-packaging-1791798482/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/apa-itu-security-packaging-1791798482/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/apa-itu-security-packaging-1791798482/" />
+    <lastmod>2026-10-16T08:57:54+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/apa-itu-security-packaging-1791798482/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/apa-itu-security-packaging-1791798482/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/apa-itu-security-packaging-1791798482/" />
+    <lastmod>2026-10-16T08:57:54+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/apa-itu-kemasan-produk-fungsi-manfaat-dan-jenis-jenisnya-1791798502/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/apa-itu-kemasan-produk-fungsi-manfaat-dan-jenis-jenisnya-1791798502/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/apa-itu-kemasan-produk-fungsi-manfaat-dan-jenis-jenisnya-1791798502/" />
+    <lastmod>2026-10-16T08:58:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/apa-itu-kemasan-produk-fungsi-manfaat-dan-jenis-jenisnya-1791798502/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/apa-itu-kemasan-produk-fungsi-manfaat-dan-jenis-jenisnya-1791798502/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/apa-itu-kemasan-produk-fungsi-manfaat-dan-jenis-jenisnya-1791798502/" />
+    <lastmod>2026-10-16T08:58:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/apa-itu-biometrik-1791798523/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/apa-itu-biometrik-1791798523/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/apa-itu-biometrik-1791798523/" />
+    <lastmod>2026-10-16T08:54:24+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/apa-itu-biometrik-1791798523/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/apa-itu-biometrik-1791798523/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/apa-itu-biometrik-1791798523/" />
+    <lastmod>2026-10-16T08:54:24+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/mengenal-perbedaan-kartu-atm-chip-dan-magnetic-1791798545/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-perbedaan-kartu-atm-chip-dan-magnetic-1791798545/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-perbedaan-kartu-atm-chip-dan-magnetic-1791798545/" />
+    <lastmod>2026-10-16T08:54:23+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/mengenal-perbedaan-kartu-atm-chip-dan-magnetic-1791798545/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-perbedaan-kartu-atm-chip-dan-magnetic-1791798545/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-perbedaan-kartu-atm-chip-dan-magnetic-1791798545/" />
+    <lastmod>2026-10-16T08:54:23+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/apa-itu-kode-otp-1791798564/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/apa-itu-kode-otp-1791798564/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/apa-itu-kode-otp-1791798564/" />
+    <lastmod>2026-10-16T08:54:23+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/apa-itu-kode-otp-1791798564/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/apa-itu-kode-otp-1791798564/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/apa-itu-kode-otp-1791798564/" />
+    <lastmod>2026-10-16T08:54:23+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/apa-itu-cek-bank-1791798591/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/apa-itu-cek-bank-1791798591/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/apa-itu-cek-bank-1791798591/" />
+    <lastmod>2026-10-16T08:54:19+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/apa-itu-cek-bank-1791798591/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/apa-itu-cek-bank-1791798591/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/apa-itu-cek-bank-1791798591/" />
+    <lastmod>2026-10-16T08:54:19+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/buletin-investor-april-2024-1791798612/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/buletin-investor-april-2024-1791798612/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/buletin-investor-april-2024-1791798612/" />
+    <lastmod>2026-10-16T08:54:18+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/buletin-investor-april-2024-1791798612/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/buletin-investor-april-2024-1791798612/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/buletin-investor-april-2024-1791798612/" />
+    <lastmod>2026-10-16T08:54:18+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/buletin-investor-q1-2024-1791798632/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/buletin-investor-q1-2024-1791798632/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/buletin-investor-q1-2024-1791798632/" />
+    <lastmod>2026-10-16T08:54:17+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/buletin-investor-q1-2024-1791798632/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/buletin-investor-q1-2024-1791798632/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/buletin-investor-q1-2024-1791798632/" />
+    <lastmod>2026-10-16T08:54:17+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/security-printing-untuk-kemasan-kosmetik-1791798654/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/security-printing-untuk-kemasan-kosmetik-1791798654/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/security-printing-untuk-kemasan-kosmetik-1791798654/" />
+    <lastmod>2026-10-16T08:54:17+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/security-printing-untuk-kemasan-kosmetik-1791798654/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/security-printing-untuk-kemasan-kosmetik-1791798654/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/security-printing-untuk-kemasan-kosmetik-1791798654/" />
+    <lastmod>2026-10-16T08:54:17+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/kartu-metal-jasuindo-1791798687/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/kartu-metal-jasuindo-1791798687/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/kartu-metal-jasuindo-1791798687/" />
+    <lastmod>2026-10-16T08:54:16+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/kartu-metal-jasuindo-1791798687/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/kartu-metal-jasuindo-1791798687/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/kartu-metal-jasuindo-1791798687/" />
+    <lastmod>2026-10-16T08:54:16+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/stamp-hologram-vs-label-hologram-1791798706/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/stamp-hologram-vs-label-hologram-1791798706/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/stamp-hologram-vs-label-hologram-1791798706/" />
+    <lastmod>2026-10-16T08:54:16+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/stamp-hologram-vs-label-hologram-1791798706/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/stamp-hologram-vs-label-hologram-1791798706/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/stamp-hologram-vs-label-hologram-1791798706/" />
+    <lastmod>2026-10-16T08:54:16+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/jtpe-rapat-umum-pemegang-saham-2024-1791798725/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/jtpe-rapat-umum-pemegang-saham-2024-1791798725/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/jtpe-rapat-umum-pemegang-saham-2024-1791798725/" />
+    <lastmod>2026-10-16T08:54:15+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/jtpe-rapat-umum-pemegang-saham-2024-1791798725/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/jtpe-rapat-umum-pemegang-saham-2024-1791798725/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/jtpe-rapat-umum-pemegang-saham-2024-1791798725/" />
+    <lastmod>2026-10-16T08:54:15+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/paspor-adalah-1791798745/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/paspor-adalah-1791798745/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/paspor-adalah-1791798745/" />
+    <lastmod>2026-10-16T08:54:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/paspor-adalah-1791798745/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/paspor-adalah-1791798745/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/paspor-adalah-1791798745/" />
+    <lastmod>2026-10-16T08:54:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/jasuindo-raih-penghargaan-di-bisnis-indonesia-award-2024-1791798765/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/jasuindo-raih-penghargaan-di-bisnis-indonesia-award-2024-1791798765/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/jasuindo-raih-penghargaan-di-bisnis-indonesia-award-2024-1791798765/" />
+    <lastmod>2026-10-16T08:54:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/jasuindo-raih-penghargaan-di-bisnis-indonesia-award-2024-1791798765/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/jasuindo-raih-penghargaan-di-bisnis-indonesia-award-2024-1791798765/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/jasuindo-raih-penghargaan-di-bisnis-indonesia-award-2024-1791798765/" />
+    <lastmod>2026-10-16T08:54:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/fungsi-fitur-keamanan-tips-sertifikat-dan-ijasah-1791798784/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/fungsi-fitur-keamanan-tips-sertifikat-dan-ijasah-1791798784/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/fungsi-fitur-keamanan-tips-sertifikat-dan-ijasah-1791798784/" />
+    <lastmod>2026-10-16T08:54:13+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/fungsi-fitur-keamanan-tips-sertifikat-dan-ijasah-1791798784/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/fungsi-fitur-keamanan-tips-sertifikat-dan-ijasah-1791798784/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/fungsi-fitur-keamanan-tips-sertifikat-dan-ijasah-1791798784/" />
+    <lastmod>2026-10-16T08:54:13+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/tiket-permainan-fungsi-jenis-dan-bahan-1791798804/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/tiket-permainan-fungsi-jenis-dan-bahan-1791798804/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/tiket-permainan-fungsi-jenis-dan-bahan-1791798804/" />
+    <lastmod>2026-10-16T08:54:12+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/tiket-permainan-fungsi-jenis-dan-bahan-1791798804/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/tiket-permainan-fungsi-jenis-dan-bahan-1791798804/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/tiket-permainan-fungsi-jenis-dan-bahan-1791798804/" />
+    <lastmod>2026-10-16T08:54:12+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/cetak-security-voucher-1791798824/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/cetak-security-voucher-1791798824/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/cetak-security-voucher-1791798824/" />
+    <lastmod>2026-10-16T08:54:12+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/cetak-security-voucher-1791798824/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/cetak-security-voucher-1791798824/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/cetak-security-voucher-1791798824/" />
+    <lastmod>2026-10-16T08:54:12+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/keunggulan-stiker-hologram-1791798843/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/keunggulan-stiker-hologram-1791798843/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/keunggulan-stiker-hologram-1791798843/" />
+    <lastmod>2026-10-16T08:54:11+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/keunggulan-stiker-hologram-1791798843/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/keunggulan-stiker-hologram-1791798843/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/keunggulan-stiker-hologram-1791798843/" />
+    <lastmod>2026-10-16T08:54:11+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/percetakan-security-printing-terpercaya-di-indonesia-1791798863/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/percetakan-security-printing-terpercaya-di-indonesia-1791798863/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/percetakan-security-printing-terpercaya-di-indonesia-1791798863/" />
+    <lastmod>2026-10-16T08:54:10+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/percetakan-security-printing-terpercaya-di-indonesia-1791798863/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/percetakan-security-printing-terpercaya-di-indonesia-1791798863/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/percetakan-security-printing-terpercaya-di-indonesia-1791798863/" />
+    <lastmod>2026-10-16T08:54:10+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/voucher-gosok-1791798883/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/voucher-gosok-1791798883/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/voucher-gosok-1791798883/" />
+    <lastmod>2026-10-16T08:54:10+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/voucher-gosok-1791798883/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/voucher-gosok-1791798883/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/voucher-gosok-1791798883/" />
+    <lastmod>2026-10-16T08:54:10+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/gelang-tiket-wristband-jenis-penggunaan-dan-manfaat-1791798903/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/gelang-tiket-wristband-jenis-penggunaan-dan-manfaat-1791798903/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/gelang-tiket-wristband-jenis-penggunaan-dan-manfaat-1791798903/" />
+    <lastmod>2026-10-16T08:54:09+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/gelang-tiket-wristband-jenis-penggunaan-dan-manfaat-1791798903/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/gelang-tiket-wristband-jenis-penggunaan-dan-manfaat-1791798903/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/gelang-tiket-wristband-jenis-penggunaan-dan-manfaat-1791798903/" />
+    <lastmod>2026-10-16T08:54:09+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/sertifikat-pendidikan-ijazah-1791798925/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/sertifikat-pendidikan-ijazah-1791798925/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/sertifikat-pendidikan-ijazah-1791798925/" />
+    <lastmod>2026-10-16T08:54:08+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/sertifikat-pendidikan-ijazah-1791798925/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/sertifikat-pendidikan-ijazah-1791798925/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/sertifikat-pendidikan-ijazah-1791798925/" />
+    <lastmod>2026-10-16T08:54:08+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/sticky-note-atau-notes-tempel-1791798946/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/sticky-note-atau-notes-tempel-1791798946/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/sticky-note-atau-notes-tempel-1791798946/" />
+    <lastmod>2026-10-16T08:54:08+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/sticky-note-atau-notes-tempel-1791798946/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/sticky-note-atau-notes-tempel-1791798946/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/sticky-note-atau-notes-tempel-1791798946/" />
+    <lastmod>2026-10-16T08:54:08+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/jasuindo-raih-penghargaan-forbes-asia-best-under-a-billion-2024-1791798965/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/jasuindo-raih-penghargaan-forbes-asia-best-under-a-billion-2024-1791798965/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/jasuindo-raih-penghargaan-forbes-asia-best-under-a-billion-2024-1791798965/" />
+    <lastmod>2026-10-16T08:54:07+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/jasuindo-raih-penghargaan-forbes-asia-best-under-a-billion-2024-1791798965/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/jasuindo-raih-penghargaan-forbes-asia-best-under-a-billion-2024-1791798965/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/jasuindo-raih-penghargaan-forbes-asia-best-under-a-billion-2024-1791798965/" />
+    <lastmod>2026-10-16T08:54:07+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/gift-voucher-untuk-bisnis-dengan-fitur-keamanan-dari-jasuindo-1791798985/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/gift-voucher-untuk-bisnis-dengan-fitur-keamanan-dari-jasuindo-1791798985/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/gift-voucher-untuk-bisnis-dengan-fitur-keamanan-dari-jasuindo-1791798985/" />
+    <lastmod>2026-10-16T08:54:06+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/gift-voucher-untuk-bisnis-dengan-fitur-keamanan-dari-jasuindo-1791798985/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/gift-voucher-untuk-bisnis-dengan-fitur-keamanan-dari-jasuindo-1791798985/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/gift-voucher-untuk-bisnis-dengan-fitur-keamanan-dari-jasuindo-1791798985/" />
+    <lastmod>2026-10-16T08:54:06+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/kupon-undian-jasuindo-1791799007/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/kupon-undian-jasuindo-1791799007/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/kupon-undian-jasuindo-1791799007/" />
+    <lastmod>2026-10-16T08:54:06+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/kupon-undian-jasuindo-1791799007/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/kupon-undian-jasuindo-1791799007/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/kupon-undian-jasuindo-1791799007/" />
+    <lastmod>2026-10-16T08:54:06+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/mengenal-perbedaan-paspor-biasa-dan-paspor-elektronik-1791799026/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-perbedaan-paspor-biasa-dan-paspor-elektronik-1791799026/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-perbedaan-paspor-biasa-dan-paspor-elektronik-1791799026/" />
+    <lastmod>2026-10-16T08:54:05+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/mengenal-perbedaan-paspor-biasa-dan-paspor-elektronik-1791799026/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-perbedaan-paspor-biasa-dan-paspor-elektronik-1791799026/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-perbedaan-paspor-biasa-dan-paspor-elektronik-1791799026/" />
+    <lastmod>2026-10-16T08:54:05+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/mengenal-qr-code-fungsi-bagian-jenis-dan-penerapannya-1791799046/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-qr-code-fungsi-bagian-jenis-dan-penerapannya-1791799046/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-qr-code-fungsi-bagian-jenis-dan-penerapannya-1791799046/" />
+    <lastmod>2026-10-16T08:54:04+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/mengenal-qr-code-fungsi-bagian-jenis-dan-penerapannya-1791799046/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-qr-code-fungsi-bagian-jenis-dan-penerapannya-1791799046/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-qr-code-fungsi-bagian-jenis-dan-penerapannya-1791799046/" />
+    <lastmod>2026-10-16T08:54:04+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/mengenal-fungsi-id-card-jenis-dan-ukuran-yang-sesuai-standar-1791799067/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-fungsi-id-card-jenis-dan-ukuran-yang-sesuai-standar-1791799067/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-fungsi-id-card-jenis-dan-ukuran-yang-sesuai-standar-1791799067/" />
+    <lastmod>2026-10-16T08:54:04+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/mengenal-fungsi-id-card-jenis-dan-ukuran-yang-sesuai-standar-1791799067/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-fungsi-id-card-jenis-dan-ukuran-yang-sesuai-standar-1791799067/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-fungsi-id-card-jenis-dan-ukuran-yang-sesuai-standar-1791799067/" />
+    <lastmod>2026-10-16T08:54:04+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/jenis-kertas-yang-sering-digunakan-dalam-percetakan-1791799086/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/jenis-kertas-yang-sering-digunakan-dalam-percetakan-1791799086/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/jenis-kertas-yang-sering-digunakan-dalam-percetakan-1791799086/" />
+    <lastmod>2026-10-16T08:54:03+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/jenis-kertas-yang-sering-digunakan-dalam-percetakan-1791799086/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/jenis-kertas-yang-sering-digunakan-dalam-percetakan-1791799086/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/jenis-kertas-yang-sering-digunakan-dalam-percetakan-1791799086/" />
+    <lastmod>2026-10-16T08:54:03+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/mengenal-apa-itu-pin-fungsi-cara-kerja-dan-keunggulannya-1791799106/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-apa-itu-pin-fungsi-cara-kerja-dan-keunggulannya-1791799106/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-apa-itu-pin-fungsi-cara-kerja-dan-keunggulannya-1791799106/" />
+    <lastmod>2026-10-16T08:54:02+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/mengenal-apa-itu-pin-fungsi-cara-kerja-dan-keunggulannya-1791799106/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-apa-itu-pin-fungsi-cara-kerja-dan-keunggulannya-1791799106/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-apa-itu-pin-fungsi-cara-kerja-dan-keunggulannya-1791799106/" />
+    <lastmod>2026-10-16T08:54:02+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/jenis-jenis-alat-pembayaran-non-tunai-dan-manfaatnya-1791799126/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/jenis-jenis-alat-pembayaran-non-tunai-dan-manfaatnya-1791799126/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/jenis-jenis-alat-pembayaran-non-tunai-dan-manfaatnya-1791799126/" />
+    <lastmod>2026-10-16T08:53:57+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/jenis-jenis-alat-pembayaran-non-tunai-dan-manfaatnya-1791799126/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/jenis-jenis-alat-pembayaran-non-tunai-dan-manfaatnya-1791799126/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/jenis-jenis-alat-pembayaran-non-tunai-dan-manfaatnya-1791799126/" />
+    <lastmod>2026-10-16T08:53:57+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/mengenal-jenis-jenis-voucher-dan-manfaatnya-1791799147/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-jenis-jenis-voucher-dan-manfaatnya-1791799147/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-jenis-jenis-voucher-dan-manfaatnya-1791799147/" />
+    <lastmod>2026-10-16T08:53:56+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/mengenal-jenis-jenis-voucher-dan-manfaatnya-1791799147/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-jenis-jenis-voucher-dan-manfaatnya-1791799147/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-jenis-jenis-voucher-dan-manfaatnya-1791799147/" />
+    <lastmod>2026-10-16T08:53:56+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/manfaat-sticky-note-1791799167/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/manfaat-sticky-note-1791799167/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/manfaat-sticky-note-1791799167/" />
+    <lastmod>2026-10-16T08:53:55+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/manfaat-sticky-note-1791799167/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/manfaat-sticky-note-1791799167/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/manfaat-sticky-note-1791799167/" />
+    <lastmod>2026-10-16T08:53:55+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/cetak-gift-voucher-berkualitas-1791799186/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/cetak-gift-voucher-berkualitas-1791799186/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/cetak-gift-voucher-berkualitas-1791799186/" />
+    <lastmod>2026-10-16T08:53:55+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/cetak-gift-voucher-berkualitas-1791799186/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/cetak-gift-voucher-berkualitas-1791799186/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/cetak-gift-voucher-berkualitas-1791799186/" />
+    <lastmod>2026-10-16T08:53:55+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/kupon-undian-eksklusif-1791799211/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/kupon-undian-eksklusif-1791799211/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/kupon-undian-eksklusif-1791799211/" />
+    <lastmod>2026-10-16T08:53:54+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/kupon-undian-eksklusif-1791799211/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/kupon-undian-eksklusif-1791799211/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/kupon-undian-eksklusif-1791799211/" />
+    <lastmod>2026-10-16T08:53:54+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/mengenal-apa-itu-watermark-1791799232/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-apa-itu-watermark-1791799232/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-apa-itu-watermark-1791799232/" />
+    <lastmod>2026-10-16T08:53:53+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/mengenal-apa-itu-watermark-1791799232/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-apa-itu-watermark-1791799232/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-apa-itu-watermark-1791799232/" />
+    <lastmod>2026-10-16T08:53:53+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/mengenal-jenis-jenis-tinta-keamanan-1791799252/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-jenis-jenis-tinta-keamanan-1791799252/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-jenis-jenis-tinta-keamanan-1791799252/" />
+    <lastmod>2026-10-16T08:53:53+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/mengenal-jenis-jenis-tinta-keamanan-1791799252/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-jenis-jenis-tinta-keamanan-1791799252/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-jenis-jenis-tinta-keamanan-1791799252/" />
+    <lastmod>2026-10-16T08:53:53+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/mengenal-barcode-1791799273/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-barcode-1791799273/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-barcode-1791799273/" />
+    <lastmod>2026-10-16T08:53:52+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/mengenal-barcode-1791799273/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-barcode-1791799273/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-barcode-1791799273/" />
+    <lastmod>2026-10-16T08:53:52+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/mengenal-jenis-autentikasi-1791799293/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-jenis-autentikasi-1791799293/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-jenis-autentikasi-1791799293/" />
+    <lastmod>2026-10-16T08:53:51+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/mengenal-jenis-autentikasi-1791799293/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-jenis-autentikasi-1791799293/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-jenis-autentikasi-1791799293/" />
+    <lastmod>2026-10-16T08:53:51+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/kemasan-produk-yang-menarik-1791799314/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/kemasan-produk-yang-menarik-1791799314/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/kemasan-produk-yang-menarik-1791799314/" />
+    <lastmod>2026-10-16T08:53:51+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/kemasan-produk-yang-menarik-1791799314/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/kemasan-produk-yang-menarik-1791799314/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/kemasan-produk-yang-menarik-1791799314/" />
+    <lastmod>2026-10-16T08:53:51+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/6-manfaat-buku-agenda-1791799335/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/6-manfaat-buku-agenda-1791799335/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/6-manfaat-buku-agenda-1791799335/" />
+    <lastmod>2026-10-16T08:53:50+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/6-manfaat-buku-agenda-1791799335/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/6-manfaat-buku-agenda-1791799335/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/6-manfaat-buku-agenda-1791799335/" />
+    <lastmod>2026-10-16T08:53:50+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/7-manfaat-kalender-1791799356/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/7-manfaat-kalender-1791799356/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/7-manfaat-kalender-1791799356/" />
+    <lastmod>2026-10-16T08:53:49+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/7-manfaat-kalender-1791799356/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/7-manfaat-kalender-1791799356/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/7-manfaat-kalender-1791799356/" />
+    <lastmod>2026-10-16T08:53:49+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/e-money-1791799375/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/e-money-1791799375/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/e-money-1791799375/" />
+    <lastmod>2026-10-16T08:53:49+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/e-money-1791799375/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/e-money-1791799375/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/e-money-1791799375/" />
+    <lastmod>2026-10-16T08:53:49+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/perbedaan-emboss-dan-deboss-1791799395/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/perbedaan-emboss-dan-deboss-1791799395/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/perbedaan-emboss-dan-deboss-1791799395/" />
+    <lastmod>2026-10-16T08:53:48+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/perbedaan-emboss-dan-deboss-1791799395/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/perbedaan-emboss-dan-deboss-1791799395/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/perbedaan-emboss-dan-deboss-1791799395/" />
+    <lastmod>2026-10-16T08:53:48+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/apa-itu-microtext-1791799417/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/apa-itu-microtext-1791799417/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/apa-itu-microtext-1791799417/" />
+    <lastmod>2026-10-16T08:53:48+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/apa-itu-microtext-1791799417/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/apa-itu-microtext-1791799417/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/apa-itu-microtext-1791799417/" />
+    <lastmod>2026-10-16T08:53:48+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/jenis-bahan-stiker-1791799436/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/jenis-bahan-stiker-1791799436/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/jenis-bahan-stiker-1791799436/" />
+    <lastmod>2026-10-16T08:53:47+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/jenis-bahan-stiker-1791799436/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/jenis-bahan-stiker-1791799436/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/jenis-bahan-stiker-1791799436/" />
+    <lastmod>2026-10-16T08:53:47+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/membangun-brand-identity-1791799457/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/membangun-brand-identity-1791799457/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/membangun-brand-identity-1791799457/" />
+    <lastmod>2026-10-16T08:53:46+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/membangun-brand-identity-1791799457/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/membangun-brand-identity-1791799457/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/membangun-brand-identity-1791799457/" />
+    <lastmod>2026-10-16T08:53:46+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/mengenal-qris-1791799478/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-qris-1791799478/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-qris-1791799478/" />
+    <lastmod>2026-10-16T08:53:46+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/mengenal-qris-1791799478/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-qris-1791799478/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-qris-1791799478/" />
+    <lastmod>2026-10-16T08:53:46+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/pemalsuan-produk-1791799498/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/pemalsuan-produk-1791799498/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/pemalsuan-produk-1791799498/" />
+    <lastmod>2026-10-16T08:53:45+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/pemalsuan-produk-1791799498/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/pemalsuan-produk-1791799498/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/pemalsuan-produk-1791799498/" />
+    <lastmod>2026-10-16T08:53:45+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/beda-best-before-dan-expired-1791799519/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/beda-best-before-dan-expired-1791799519/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/beda-best-before-dan-expired-1791799519/" />
+    <lastmod>2026-10-16T08:53:44+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/beda-best-before-dan-expired-1791799519/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/beda-best-before-dan-expired-1791799519/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/beda-best-before-dan-expired-1791799519/" />
+    <lastmod>2026-10-16T08:53:44+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/jenis-finishing-cetak-1791799543/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/jenis-finishing-cetak-1791799543/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/jenis-finishing-cetak-1791799543/" />
+    <lastmod>2026-10-16T08:53:44+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/jenis-finishing-cetak-1791799543/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/jenis-finishing-cetak-1791799543/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/jenis-finishing-cetak-1791799543/" />
+    <lastmod>2026-10-16T08:53:44+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/beda-laminasi-glossy-dan-doff-1791799706/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/beda-laminasi-glossy-dan-doff-1791799706/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/beda-laminasi-glossy-dan-doff-1791799706/" />
+    <lastmod>2026-10-16T08:53:43+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/beda-laminasi-glossy-dan-doff-1791799706/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/beda-laminasi-glossy-dan-doff-1791799706/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/beda-laminasi-glossy-dan-doff-1791799706/" />
+    <lastmod>2026-10-16T08:53:43+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/tips-memilih-font-1791799727/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/tips-memilih-font-1791799727/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/tips-memilih-font-1791799727/" />
+    <lastmod>2026-10-16T08:53:42+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/tips-memilih-font-1791799727/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/tips-memilih-font-1791799727/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/tips-memilih-font-1791799727/" />
+    <lastmod>2026-10-16T08:53:42+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/mengenal-perbedaan-e-money-dan-e-wallet-1791799749/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-perbedaan-e-money-dan-e-wallet-1791799749/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-perbedaan-e-money-dan-e-wallet-1791799749/" />
+    <lastmod>2026-10-16T08:53:42+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/mengenal-perbedaan-e-money-dan-e-wallet-1791799749/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-perbedaan-e-money-dan-e-wallet-1791799749/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-perbedaan-e-money-dan-e-wallet-1791799749/" />
+    <lastmod>2026-10-16T08:53:42+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/mengenal-teknologi-nfc-fungsi-dan-penerapannya-1791799766/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-teknologi-nfc-fungsi-dan-penerapannya-1791799766/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-teknologi-nfc-fungsi-dan-penerapannya-1791799766/" />
+    <lastmod>2026-10-16T08:53:41+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/mengenal-teknologi-nfc-fungsi-dan-penerapannya-1791799766/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-teknologi-nfc-fungsi-dan-penerapannya-1791799766/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-teknologi-nfc-fungsi-dan-penerapannya-1791799766/" />
+    <lastmod>2026-10-16T08:53:41+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/kunci-kamar-hotel-berbentuk-kartu-1791799798/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/kunci-kamar-hotel-berbentuk-kartu-1791799798/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/kunci-kamar-hotel-berbentuk-kartu-1791799798/" />
+    <lastmod>2026-10-16T08:53:41+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/kunci-kamar-hotel-berbentuk-kartu-1791799798/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/kunci-kamar-hotel-berbentuk-kartu-1791799798/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/kunci-kamar-hotel-berbentuk-kartu-1791799798/" />
+    <lastmod>2026-10-16T08:53:41+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/beda-hot-stamping-dan-label-hologram/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/beda-hot-stamping-dan-label-hologram/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/beda-hot-stamping-dan-label-hologram/" />
+    <lastmod>2026-10-16T09:38:05+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/beda-hot-stamping-dan-label-hologram/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/beda-hot-stamping-dan-label-hologram/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/beda-hot-stamping-dan-label-hologram/" />
+    <lastmod>2026-10-16T09:38:05+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/cetak-stiker-hologram-custom-berkualitas/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/cetak-stiker-hologram-custom-berkualitas/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/cetak-stiker-hologram-custom-berkualitas/" />
+    <lastmod>2026-10-16T09:38:06+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/cetak-stiker-hologram-custom-berkualitas/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/cetak-stiker-hologram-custom-berkualitas/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/cetak-stiker-hologram-custom-berkualitas/" />
+    <lastmod>2026-10-16T09:38:06+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/mengenal-pita-cukai-fungsi-dan-spesifikasi/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-pita-cukai-fungsi-dan-spesifikasi/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-pita-cukai-fungsi-dan-spesifikasi/" />
+    <lastmod>2026-10-16T09:38:07+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/mengenal-pita-cukai-fungsi-dan-spesifikasi/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/mengenal-pita-cukai-fungsi-dan-spesifikasi/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/mengenal-pita-cukai-fungsi-dan-spesifikasi/" />
+    <lastmod>2026-10-16T09:38:07+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/perbedaan-voucher-dan-kupon/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/perbedaan-voucher-dan-kupon/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/perbedaan-voucher-dan-kupon/" />
+    <lastmod>2026-10-16T09:38:08+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/perbedaan-voucher-dan-kupon/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/perbedaan-voucher-dan-kupon/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/perbedaan-voucher-dan-kupon/" />
+    <lastmod>2026-10-16T09:38:08+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/apa-itu-pin-mailer/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/apa-itu-pin-mailer/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/apa-itu-pin-mailer/" />
+    <lastmod>2026-10-16T09:38:09+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/apa-itu-pin-mailer/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/apa-itu-pin-mailer/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/apa-itu-pin-mailer/" />
+    <lastmod>2026-10-16T09:38:09+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/label-serial-number-mencegah-pemalsuan/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/label-serial-number-mencegah-pemalsuan/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/label-serial-number-mencegah-pemalsuan/" />
+    <lastmod>2026-10-16T09:38:09+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/label-serial-number-mencegah-pemalsuan/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/label-serial-number-mencegah-pemalsuan/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/label-serial-number-mencegah-pemalsuan/" />
+    <lastmod>2026-10-16T09:38:09+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/hologram-security-teknologi-keamanan-produk/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/hologram-security-teknologi-keamanan-produk/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/hologram-security-teknologi-keamanan-produk/" />
+    <lastmod>2026-10-16T09:38:10+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/hologram-security-teknologi-keamanan-produk/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/hologram-security-teknologi-keamanan-produk/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/hologram-security-teknologi-keamanan-produk/" />
+    <lastmod>2026-10-16T09:38:10+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/tinta-uv-dalam-security-printing/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/tinta-uv-dalam-security-printing/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/tinta-uv-dalam-security-printing/" />
+    <lastmod>2026-10-16T09:38:11+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/tinta-uv-dalam-security-printing/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/tinta-uv-dalam-security-printing/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/tinta-uv-dalam-security-printing/" />
+    <lastmod>2026-10-16T09:38:11+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/fungsi-gelang-tiket-dalam-berbagai-jenis-acara/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/fungsi-gelang-tiket-dalam-berbagai-jenis-acara/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/fungsi-gelang-tiket-dalam-berbagai-jenis-acara/" />
+    <lastmod>2026-10-16T09:38:12+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/fungsi-gelang-tiket-dalam-berbagai-jenis-acara/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/fungsi-gelang-tiket-dalam-berbagai-jenis-acara/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/fungsi-gelang-tiket-dalam-berbagai-jenis-acara/" />
+    <lastmod>2026-10-16T09:38:12+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/smart-packaging/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/smart-packaging/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/smart-packaging/" />
+    <lastmod>2026-10-16T09:38:12+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/smart-packaging/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/smart-packaging/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/smart-packaging/" />
+    <lastmod>2026-10-16T09:38:12+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/peran-chip-emv-dalam-transaksi-kartu-modern/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/peran-chip-emv-dalam-transaksi-kartu-modern/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/peran-chip-emv-dalam-transaksi-kartu-modern/" />
+    <lastmod>2026-10-16T09:38:13+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/peran-chip-emv-dalam-transaksi-kartu-modern/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/peran-chip-emv-dalam-transaksi-kartu-modern/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/peran-chip-emv-dalam-transaksi-kartu-modern/" />
+    <lastmod>2026-10-16T09:38:13+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/apa-itu-commercial-printing/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/apa-itu-commercial-printing/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/apa-itu-commercial-printing/" />
+    <lastmod>2026-10-16T09:38:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/apa-itu-commercial-printing/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/apa-itu-commercial-printing/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/apa-itu-commercial-printing/" />
+    <lastmod>2026-10-16T09:38:14+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/inovasi-security-printing-terdepan/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/inovasi-security-printing-terdepan/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/inovasi-security-printing-terdepan/" />
+    <lastmod>2026-10-16T09:38:15+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/inovasi-security-printing-terdepan/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/inovasi-security-printing-terdepan/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/inovasi-security-printing-terdepan/" />
+    <lastmod>2026-10-16T09:38:15+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/serialisasi-dan-track-and-trace/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/serialisasi-dan-track-and-trace/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/serialisasi-dan-track-and-trace/" />
+    <lastmod>2026-10-16T09:38:15+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/serialisasi-dan-track-and-trace/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/serialisasi-dan-track-and-trace/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/serialisasi-dan-track-and-trace/" />
+    <lastmod>2026-10-16T09:38:15+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/teknologi-tag-rfid/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/teknologi-tag-rfid/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/teknologi-tag-rfid/" />
+    <lastmod>2026-10-16T09:38:16+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/teknologi-tag-rfid/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/teknologi-tag-rfid/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/teknologi-tag-rfid/" />
+    <lastmod>2026-10-16T09:38:16+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/cetak-ijazah-dengan-fitur-pengaman/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/cetak-ijazah-dengan-fitur-pengaman/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/cetak-ijazah-dengan-fitur-pengaman/" />
+    <lastmod>2026-10-16T09:38:17+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/cetak-ijazah-dengan-fitur-pengaman/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/cetak-ijazah-dengan-fitur-pengaman/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/cetak-ijazah-dengan-fitur-pengaman/" />
+    <lastmod>2026-10-16T09:38:17+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/berita/raih-bisnis-indonesia-awards-2026/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/raih-bisnis-indonesia-awards-2026/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/raih-bisnis-indonesia-awards-2026/" />
+    <lastmod>2026-10-16T09:38:17+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/news/raih-bisnis-indonesia-awards-2026/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/berita/raih-bisnis-indonesia-awards-2026/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/news/raih-bisnis-indonesia-awards-2026/" />
+    <lastmod>2026-10-16T09:38:17+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/kebijakan-privasi/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/kebijakan-privasi/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/privacy-policy/" />
+    <lastmod>2026-10-15T04:46:01+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/privacy-policy/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/kebijakan-privasi/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/privacy-policy/" />
+    <lastmod>2026-10-15T04:46:01+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/syarat-ketentuan/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/syarat-ketentuan/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/terms-conditions/" />
+    <lastmod>2026-10-15T04:47:58+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/terms-conditions/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/syarat-ketentuan/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/terms-conditions/" />
+    <lastmod>2026-10-15T04:47:58+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+            </url>
+    <url>
+    <loc>https://localhost/id/faq/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/faq/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/faq/" />
+    <lastmod>2026-10-06T07:01:46+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+            </url>
+    <url>
+    <loc>https://localhost/en/faq/</loc>
+    <xhtml:link rel="alternate" hreflang="id" href="https://localhost/id/faq/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://localhost/en/faq/" />
+    <lastmod>2026-10-06T07:01:46+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
             </url>
 </urlset>

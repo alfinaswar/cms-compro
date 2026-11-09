@@ -1,10 +1,18 @@
 @extends('frontend.index')
 
+@php
+    $locale = app()->getLocale();
+    $subJudul = $subpage->t('Judul') ?: 'Sub Solusi';
+    $subDesc = Str::limit(strip_tags($subpage->t('Deskripsi')), 160);
+    $siteName = $websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk';
+@endphp
+
+@section('title', $subJudul . ' - ' . $siteName)
+@section('meta_description', $subDesc)
+
 @section('content-frontend')
 
     @php
-        $locale = app()->getLocale();
-
         $itemsBy = function ($section) use ($subpage) {
             return $subpage->items->where('Section', $section)->values();
         };

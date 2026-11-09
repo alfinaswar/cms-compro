@@ -1,25 +1,38 @@
 @extends('frontend.index')
 
+@php
+    $locale = app()->getLocale();
+
+    $tr = function ($model, $field) use ($locale) {
+        if (!$model) return null;
+        if (method_exists($model, 'translate')) {
+            $t = $model->translate($locale);
+            if ($t && !empty($t->$field)) {
+                return $t->$field;
+            }
+        }
+        $enField = $field . 'En';
+        if ($locale === 'en' && !empty($model->$enField)) {
+            return $model->$enField;
+        }
+        return $model->$field;
+    };
+
+    $solusiJudul = $tr($halamanSolusi, 'Judul') ?: 'Solusi';
+    $solusiKonten = $tr($halamanSolusi, 'Konten') ?: '';
+    $solusiDesc = Str::limit(strip_tags($solusiKonten), 160);
+    $siteName = $websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk';
+@endphp
+
+@section('title', $solusiJudul . ' - ' . $siteName)
+@section('meta_description', $solusiDesc)
+@if(!empty($halamanSolusi->Thumbnail))
+    @section('og_image', asset('storage/' . $halamanSolusi->Thumbnail))
+@endif
+
 @section('content-frontend')
 
     @php
-        $locale = app()->getLocale();
-
-        // Helper terjemahan defensif: pakai translate() jika ada, fallback kolom *En, lalu kolom utama
-        $tr = function ($model, $field) use ($locale) {
-            if (method_exists($model, 'translate')) {
-                $t = $model->translate($locale);
-                if ($t && !empty($t->$field)) {
-                    return $t->$field;
-                }
-            }
-            $enField = $field . 'En';
-            if ($locale === 'en' && !empty($model->$enField)) {
-                return $model->$enField;
-            }
-            return $model->$field;
-        };
-
         // URL breadcrumb "Solusi" (aman jika route index tidak ada)
         try {
             $solusiIndexUrl = route('halaman-solusi.index');

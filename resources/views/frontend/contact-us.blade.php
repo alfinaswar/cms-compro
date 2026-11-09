@@ -1,5 +1,17 @@
 @extends('frontend.index')
 
+@php
+    $contactLocale = app()->getLocale();
+    $siteName = $websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk';
+    $contactTitle = ($contactLocale === 'en' ? 'Contact Us - Office Locations & Inquiries' : 'Hubungi Kami - Lokasi Kantor & Kontak') . ' - ' . $siteName;
+    $contactDesc = $contactLocale === 'en'
+        ? 'Get in touch with PT Jasuindo Tiga Perkasa Tbk. Reach out to our offices in Jakarta, Surabaya, or contact our support team.'
+        : 'Hubungi PT Jasuindo Tiga Perkasa Tbk. Temukan informasi kantor kami di Jakarta dan Surabaya, atau kirimkan pertanyaan Anda melalui formulir kontak.';
+@endphp
+
+@section('title', $contactTitle)
+@section('meta_description', $contactDesc)
+
 @push('styles')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <style>

@@ -1,5 +1,17 @@
 @extends('frontend.index')
 
+@php
+    $aboutLocale = app()->getLocale();
+    $siteName = $websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk';
+    $aboutTitle = ($aboutLocale === 'en' ? 'About Us - History, Vision & Quality Standards' : 'Tentang Kami - Sejarah, Visi & Standar Kualitas') . ' - ' . $siteName;
+    $aboutDesc = $aboutLocale === 'en'
+        ? 'Learn about PT Jasuindo Tiga Perkasa Tbk, since 1996 leading the security printing, high-security documents, and payment cards industry in Indonesia.'
+        : 'Mengenal PT Jasuindo Tiga Perkasa Tbk, berdiri sejak 1996 sebagai penyedia dokumen sekuriti berstandar tinggi, kartu pembayaran, dan identitas digital di Indonesia.';
+@endphp
+
+@section('title', $aboutTitle)
+@section('meta_description', $aboutDesc)
+
 @section('content-frontend')
 
     @php

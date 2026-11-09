@@ -1,5 +1,17 @@
 @extends('frontend.index')
 
+@php
+    $cLocale = app()->getLocale();
+    $siteName = $websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk';
+    $othTitle = ($cLocale === 'en' ? 'Other Investor Information & Disclosures' : 'Informasi Lainnya & Keterbukaan Investor') . ' - ' . $siteName;
+    $othDesc = $cLocale === 'en'
+        ? 'Public disclosures, general meeting of shareholders (GMS/RUPS) announcements, and investor document requests.'
+        : 'Keterbukaan informasi publik, pengumuman RUPS, dan formulir permintaan dokumen investor PT Jasuindo Tiga Perkasa Tbk.';
+@endphp
+
+@section('title', $othTitle)
+@section('meta_description', $othDesc)
+
 @push('styles')
     <style>
         .sticky-sidebar {

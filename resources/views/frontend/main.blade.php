@@ -137,19 +137,35 @@
                                             {{ $hSubJudul }}
                                         </span>
                                     @endif
-                                    <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6">
-                                        {{ $hJudul }}
-                                        @if (!empty($hHighlight))
-                                            <br>
-                                            <span
-                                                class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-cyan-300">
-                                                {{ $hHighlight }}
-                                            </span>
-                                        @endif
-                                        @if (!empty($hTeksPenuh))
-                                            <span> {{ $hTeksPenuh }} </span>
-                                        @endif
-                                    </h1>
+                                    @if ($loop->first)
+                                        <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6">
+                                            {{ $hJudul }}
+                                            @if (!empty($hHighlight))
+                                                <br>
+                                                <span
+                                                    class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-cyan-300">
+                                                    {{ $hHighlight }}
+                                                </span>
+                                            @endif
+                                            @if (!empty($hTeksPenuh))
+                                                <span> {{ $hTeksPenuh }} </span>
+                                            @endif
+                                        </h1>
+                                    @else
+                                        <h2 class="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6">
+                                            {{ $hJudul }}
+                                            @if (!empty($hHighlight))
+                                                <br>
+                                                <span
+                                                    class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-cyan-300">
+                                                    {{ $hHighlight }}
+                                                </span>
+                                            @endif
+                                            @if (!empty($hTeksPenuh))
+                                                <span> {{ $hTeksPenuh }} </span>
+                                            @endif
+                                        </h2>
+                                    @endif
                                     @if (!empty($hDeskripsi))
                                         <p class="text-lg md:text-xl text-slate-300 mb-8 leading-relaxed max-w-2xl mx-auto">
                                             {{ $hDeskripsi }}
@@ -235,7 +251,7 @@
                             <div
                                 class="w-16 h-16 mx-auto bg-brand-50 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-brand-600 transition-colors duration-300">
                                 @if (!empty($figure->Icon))
-                                    <img src="{{ asset('storage/' . $figure->Icon) }}" alt="Icon"
+                                    <img src="{{ asset('storage/' . $figure->Icon) }}" alt="{{ $fKeterangan ?? 'Key Figure' }}"
                                         class="w-10 h-10 object-contain" />
                                 @else
                                     <i

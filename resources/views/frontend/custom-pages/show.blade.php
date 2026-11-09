@@ -1,14 +1,19 @@
 @extends('frontend.index')
 
+@php
+    $trans = $page->translate($locale);
+    $displayJudul = $trans->Judul ?: $page->Judul;
+    $displayKonten = $trans->Konten ?: $page->Konten;
+    $displayDesc = $trans->DeskripsiSingkat ?: ($page->DeskripsiSingkat ?: Str::limit(strip_tags($displayKonten), 160));
+    $thumbnailUrl = $page->Thumbnail ? asset('storage/' . $page->Thumbnail) : asset('img/no-image.png');
+@endphp
+
+@section('title', $displayJudul . ' - ' . ($websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk'))
+@section('meta_description', $displayDesc)
+@section('og_image', $thumbnailUrl)
+
 @section('content-frontend')
     @php
-        // Helper untuk halaman custom
-        $trans = $page->translate($locale);
-        $displayJudul = $trans->Judul ?: $page->Judul;
-        $displayKonten = $trans->Konten ?: $page->Konten;
-        $displayDesc = $trans->DeskripsiSingkat ?: $page->DeskripsiSingkat;
-        $thumbnailUrl = $page->Thumbnail ? asset('storage/' . $page->Thumbnail) : asset('img/no-image.png');
-
         // Build Breadcrumbs secara dinamis berdasarkan hirarki
         $breadcrumbs = [];
         $breadcrumbs[] = ['title' => __('Home'), 'url' => url('/')];
@@ -18,6 +23,13 @@
         while ($currentPage) {
             $crumbTrans = $currentPage->translate($locale);
             $tempCrumbs[] = [
+                'title' => $crumbTrans->Judul ?: $currentPage->Judul,
+                'url' => $currentPage->Slug ? url('page/' . $currentPage->Slug) : '#',
+            ];
+            $currentPage = $currentPage->parent;
+        }
+        $breadcrumbs = array_merge($breadcrumbs, array_reverse($tempCrumbs));
+    @endphp
                 'title' => $crumbTrans->Judul ?: $currentPage->Judul,
                 'url' => $currentPage->Slug ? url('page/' . $currentPage->Slug) : '#',
             ];

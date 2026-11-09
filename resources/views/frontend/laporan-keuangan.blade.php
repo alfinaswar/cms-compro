@@ -1,9 +1,16 @@
 @php
     $currentLocale = app()->getLocale();
+    $siteName = $websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk';
+    $invTitle = ($currentLocale === 'en' ? 'Financial Reports - Investor Relations' : 'Laporan Keuangan - Hubungan Investor') . ' - ' . $siteName;
+    $invDesc = $currentLocale === 'en'
+        ? 'Access audited financial statements, annual reports, and investor disclosures of PT Jasuindo Tiga Perkasa Tbk.'
+        : 'Laporan keuangan audit, laporan tahunan, dan keterbukaan informasi investor PT Jasuindo Tiga Perkasa Tbk.';
 @endphp
 
-
 @extends('frontend.index')
+
+@section('title', $invTitle)
+@section('meta_description', $invDesc)
 
 @section('content-frontend')
     @push('styles')

@@ -1,9 +1,48 @@
 @extends('frontend.index')
 
+@php
+    $cLocale = $locale ?? app()->getLocale();
+    $trans = $lowongan->translate($cLocale);
+    $posisi = $trans?->Posisi ?: ($lowongan->Posisi ?: 'Lowongan');
+    $deskripsi = $trans?->Deskripsi ?: ($lowongan->Deskripsi ?: '');
+    $descClean = Str::limit(strip_tags($deskripsi), 160);
+    $siteName = $websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk';
+    $pageTitle = $posisi . ' (' . ($lowongan->Kota ?: 'Indonesia') . ') - Karir ' . $siteName;
+    $datePosted = $lowongan->created_at ? $lowongan->created_at->toDateString() : now()->toDateString();
+@endphp
+
+@section('title', $pageTitle)
+@section('meta_description', $descClean)
+@section('og_title', $posisi . ' - ' . $siteName)
+@section('og_description', $descClean)
+
+@section('schema_json')
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "JobPosting",
+      "title": "{{ addslashes($posisi) }}",
+      "description": "{{ addslashes($deskripsi) }}",
+      "datePosted": "{{ $datePosted }}",
+      @if($lowongan->BatasWaktu)"validThrough": "{{ $lowongan->BatasWaktu->toDateString() }}",@endif
+      "hiringOrganization": {
+        "@type": "Organization",
+        "name": "{{ $siteName }}",
+        "sameAs": "{{ url('/') }}/"
+      },
+      "jobLocation": {
+        "@type": "Place",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "{{ $lowongan->Kota ?: 'Sidoarjo' }}",
+          "addressCountry": "ID"
+        }
+      }
+    }
+    </script>
+@endsection
+
 @section('content-frontend')
-    @php
-        $trans = $lowongan->translate($locale ?? 'id');
-    @endphp
     @push('style')
         <style>
             /* Zona Drag & Drop Kustom */

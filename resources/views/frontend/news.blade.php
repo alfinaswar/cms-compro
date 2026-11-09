@@ -1,5 +1,16 @@
 @extends('frontend.index')
 
+@php
+    $newsLocale = app()->getLocale();
+    $pageTitle = ($newsLocale === 'en' ? 'Latest News & Articles' : 'Berita & Artikel Terkini') . ' - ' . ($websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk');
+    $pageDesc = $newsLocale === 'en'
+        ? 'Get the latest information, corporate updates, and industry insights from PT Jasuindo Tiga Perkasa Tbk.'
+        : 'Dapatkan informasi terbaru, kabar perusahaan, dan wawasan industri keamanan digital dari PT Jasuindo Tiga Perkasa Tbk.';
+@endphp
+
+@section('title', $pageTitle)
+@section('meta_description', $pageDesc)
+
 @push('styles')
     <style>
         /* Pagination news tetap terang walau OS/Chrome dark mode.

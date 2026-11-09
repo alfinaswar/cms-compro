@@ -1,12 +1,54 @@
 @extends('frontend.index')
 
+@php
+    $trans = $news->translate($locale) ?? ($news->translate('id') ?? $news->translations->first());
+    $displayJudul = $trans?->Judul ?: ($news->Judul ?: 'Berita');
+    $displayKonten = $trans?->Konten ?: ($news->Konten ?: '');
+    $displayDesc = Str::limit(strip_tags($displayKonten), 160);
+    $thumbnailUrl = $news->PathThumbnail ? asset('storage/' . $news->PathThumbnail) : asset('img/no-image.png');
+    $siteName = $websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk';
+    $publishedDate = $news->TanggalPublikasi ? $news->TanggalPublikasi->toIso8601String() : $news->created_at->toIso8601String();
+    $modifiedDate = $news->updated_at ? $news->updated_at->toIso8601String() : $publishedDate;
+@endphp
+
+@section('title', $displayJudul . ' - ' . $siteName)
+@section('meta_description', $displayDesc)
+@section('og_type', 'article')
+@section('og_title', $displayJudul)
+@section('og_description', $displayDesc)
+@section('og_image', $thumbnailUrl)
+
+@section('schema_json')
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "NewsArticle",
+      "headline": "{{ addslashes($displayJudul) }}",
+      "description": "{{ addslashes($displayDesc) }}",
+      "image": ["{{ $thumbnailUrl }}"],
+      "datePublished": "{{ $publishedDate }}",
+      "dateModified": "{{ $modifiedDate }}",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "{{ request()->url() }}/"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "{{ $news->Penulis ?: $siteName }}"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "{{ $siteName }}",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "{{ !empty($websiteSettings?->PathLogo) ? asset('storage/' . $websiteSettings->PathLogo) : asset('favicon.ico') }}"
+        }
+      }
+    }
+    </script>
+@endsection
+
 @section('content-frontend')
-    @php
-        $trans = $news->translate($locale) ?? ($news->translate('id') ?? $news->translations->first());
-        $displayJudul = $trans?->Judul ?: ($news->Judul ?: 'Berita');
-        $displayKonten = $trans?->Konten ?: ($news->Konten ?: '');
-        $thumbnailUrl = $news->PathThumbnail ? asset('storage/' . $news->PathThumbnail) : asset('img/no-image.png');
-    @endphp
 
     <!-- Hero Section -->
     <section class="relative pt-32 pb-20 bg-gradient-to-br from-brand-900 via-brand-800 to-brand-900 overflow-hidden">
@@ -28,7 +70,7 @@
                     <i class="fa-solid fa-newspaper mr-2"></i> {{ __('FOR THIS NEWS') }}
                 </span>
                 <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight">
-                    {{ Str::limit($displayJudul, 60) }}
+                    {{ $displayJudul }}
                 </h1>
                 <p class="text-xl text-slate-300 max-w-2xl mx-auto">
                     {{ __('Get the latest information, updates and company insights here.') }}

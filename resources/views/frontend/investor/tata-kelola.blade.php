@@ -1,5 +1,17 @@
 @extends('frontend.index')
 
+@php
+    $cLocale = app()->getLocale();
+    $siteName = $websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk';
+    $govTitle = ($cLocale === 'en' ? 'Good Corporate Governance (GCG)' : 'Tata Kelola Perusahaan (GCG)') . ' - ' . $siteName;
+    $govDesc = $cLocale === 'en'
+        ? 'Corporate governance framework, board charters, code of conduct, and whistleblowing system of PT Jasuindo Tiga Perkasa Tbk.'
+        : 'Struktur tata kelola, piagam dewan, kode etik, dan sistem pelaporan pelanggaran (WBS) PT Jasuindo Tiga Perkasa Tbk.';
+@endphp
+
+@section('title', $govTitle)
+@section('meta_description', $govDesc)
+
 @section('content-frontend')
     @php
         $locale = app()->getLocale();

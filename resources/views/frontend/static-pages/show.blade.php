@@ -1,15 +1,19 @@
 @extends('frontend.index')
 
+@php
+    $displayJudul = $translation->Judul ?: $page->Label;
+    $displayKonten = $translation->Konten ?: '';
+    $displayDesc = $translation->SEODescription ?: Str::limit(strip_tags($displayKonten), 160);
+    $wordCount = str_word_count(strip_tags($displayKonten));
+    $readingTime = max(1, ceil($wordCount / 200));
+    $breadcrumbs = [['title' => __('Home'), 'url' => url('/')], ['title' => $displayJudul, 'url' => null]];
+    $shareUrl = url()->current();
+@endphp
+
+@section('title', $displayJudul . ' - ' . ($websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk'))
+@section('meta_description', $displayDesc)
+
 @section('content-frontend')
-    @php
-        $displayJudul = $translation->Judul ?: $page->Label;
-        $displayKonten = $translation->Konten ?: '';
-        $displayDesc = $translation->SEODescription ?: Str::limit(strip_tags($displayKonten), 120);
-        $wordCount = str_word_count(strip_tags($displayKonten));
-        $readingTime = max(1, ceil($wordCount / 200));
-        $breadcrumbs = [['title' => __('Home'), 'url' => url('/')], ['title' => $displayJudul, 'url' => null]];
-        $shareUrl = url()->current();
-    @endphp
     <section
         class="relative pt-24 pb-10 md:pt-32 md:pb-20 bg-gradient-to-br from-brand-900 via-brand-800 to-brand-900 overflow-hidden">
         <div class="absolute inset-0 opacity-10">

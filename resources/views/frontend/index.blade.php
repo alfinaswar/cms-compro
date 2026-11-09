@@ -4,7 +4,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jasuindo - Transformasi Digital Identitas & Pembayaran Nasional</title>
+
+    @php
+        $siteLocale = app()->getLocale();
+        $siteName = $websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk';
+        $defaultTagline = $siteLocale === 'en'
+            ? 'Integrated Digital Identity & Security Document Solutions'
+            : ($websiteSettings->TaglineWebsite ?? 'Transformasi Digital Identitas & Pembayaran Nasional');
+        $defaultTitle = $siteName . ' - ' . $defaultTagline;
+
+        $defaultDescription = $siteLocale === 'en'
+            ? 'PT Jasuindo Tiga Perkasa Tbk is a leading security printing, digital identity, and card personalization company in Southeast Asia.'
+            : ($websiteSettings->DeskripsiSingkat ?? 'Perusahaan percetakan keamanan dan teknologi identitas terkemuka di Indonesia untuk dokumen sekuriti, kartu pembayaran, dan solusi digital.');
+
+        $defaultKeywords = $websiteSettings->KataKunciSEO ?? 'Jasuindo, identity, payment, security printing, card personalization, digital certificate, e-passport';
+        $pageAuthor = $websiteSettings->PenulisMeta ?? $siteName;
+
+        $currentCanonical = request()->url();
+        if (!str_ends_with($currentCanonical, '/')) {
+            $currentCanonical .= '/';
+        }
+
+        $fullUrlWithQuery = request()->fullUrl();
+        $hreflangId = \App\Services\LocalizedUrlService::switchLocale($fullUrlWithQuery, 'id');
+        $hreflangEn = \App\Services\LocalizedUrlService::switchLocale($fullUrlWithQuery, 'en');
+
+        $ogImage = !empty($websiteSettings?->PathOgImage)
+            ? asset('storage/' . $websiteSettings->PathOgImage)
+            : (!empty($websiteSettings?->PathLogo)
+                ? asset('storage/' . $websiteSettings->PathLogo)
+                : asset('favicon.ico'));
+    @endphp
+
+    <title>@yield('title', $defaultTitle)</title>
+    <meta name="description" content="@yield('meta_description', $defaultDescription)">
+    <meta name="keywords" content="@yield('meta_keywords', $defaultKeywords)">
+    <meta name="author" content="{{ $pageAuthor }}">
+    <meta name="robots" content="@yield('meta_robots', 'index, follow')">
+
+    <!-- Canonical & Alternate Hreflang -->
+    <link rel="canonical" href="@yield('canonical_url', $currentCanonical)">
+    <link rel="alternate" hreflang="id" href="{{ $hreflangId }}">
+    <link rel="alternate" hreflang="en" href="{{ $hreflangEn }}">
+    <link rel="alternate" hreflang="x-default" href="{{ $hreflangId }}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="@yield('og_type', 'website')">
+    <meta property="og:locale" content="{{ $siteLocale === 'en' ? 'en_US' : 'id_ID' }}">
+    <meta property="og:locale:alternate" content="{{ $siteLocale === 'en' ? 'id_ID' : 'en_US' }}">
+    <meta property="og:site_name" content="{{ $siteName }}">
+    <meta property="og:title" content="{!! htmlspecialchars_decode(trim(View::yieldContent('og_title', View::yieldContent('title') ?: $defaultTitle)), ENT_QUOTES) !!}">
+    <meta property="og:description" content="{!! htmlspecialchars_decode(trim(View::yieldContent('og_description', View::yieldContent('meta_description') ?: $defaultDescription)), ENT_QUOTES) !!}">
+    <meta property="og:url" content="@yield('canonical_url', $currentCanonical)">
+    <meta property="og:image" content="@yield('og_image', $ogImage)">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{!! htmlspecialchars_decode(trim(View::yieldContent('og_title', View::yieldContent('title') ?: $defaultTitle)), ENT_QUOTES) !!}">
+    <meta name="twitter:description" content="{!! htmlspecialchars_decode(trim(View::yieldContent('og_description', View::yieldContent('meta_description') ?: $defaultDescription)), ENT_QUOTES) !!}">
+    <meta name="twitter:image" content="@yield('og_image', $ogImage)">
+
+    <!-- Favicon -->
+    @if (!empty($websiteSettings?->PathFavicon))
+        <link rel="icon" type="image/x-icon" href="{{ asset('storage/' . $websiteSettings->PathFavicon) }}">
+        <link rel="apple-touch-icon" href="{{ asset('storage/' . $websiteSettings->PathFavicon) }}">
+    @else
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    @endif
 
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -255,9 +321,91 @@
     </style>
     <!-- GLightbox CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
+
+    <!-- JSON-LD Structured Data: Organization & WebSite -->
+    @php
+        $orgSchema = [
+            '@type' => 'Organization',
+            '@id' => url('/') . '/#organization',
+            'name' => $siteName,
+            'url' => url('/') . '/',
+            'logo' => [
+                '@type' => 'ImageObject',
+                'url' => !empty($websiteSettings?->PathLogo) ? asset('storage/' . $websiteSettings->PathLogo) : asset('favicon.ico'),
+            ],
+            'sameAs' => array_values(array_filter([
+                $websiteSettings?->SosialLinkedIn ?? null,
+                $websiteSettings?->SosialFacebook ?? null,
+                $websiteSettings?->SosialInstagram ?? null,
+                $websiteSettings?->SosialYoutube ?? null,
+                $websiteSettings?->SosialTwitter ?? null,
+            ])),
+        ];
+
+        if (!empty($websiteSettings?->AlamatEmail) || !empty($websiteSettings?->NomorTelepon)) {
+            $contactPoint = [
+                '@type' => 'ContactPoint',
+                'contactType' => 'customer service',
+            ];
+            if (!empty($websiteSettings?->NomorTelepon)) {
+                $contactPoint['telephone'] = $websiteSettings->NomorTelepon;
+            }
+            if (!empty($websiteSettings?->AlamatEmail)) {
+                $contactPoint['email'] = $websiteSettings->AlamatEmail;
+            }
+            $orgSchema['contactPoint'] = [$contactPoint];
+        }
+
+        $websiteSchema = [
+            '@type' => 'WebSite',
+            '@id' => url('/') . '/#website',
+            'url' => url('/') . '/',
+            'name' => $siteName,
+            'inLanguage' => $siteLocale,
+            'publisher' => [
+                '@id' => url('/') . '/#organization',
+            ],
+        ];
+
+        $globalSchema = [
+            '@context' => 'https://schema.org',
+            '@graph' => [$orgSchema, $websiteSchema],
+        ];
+    @endphp
+    <script type="application/ld+json">
+    {!! json_encode($globalSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}
+    </script>
+    @yield('schema_json')
+
+    @if (!empty($websiteSettings?->IdGoogleTagManager))
+        <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','{{ $websiteSettings->IdGoogleTagManager }}');</script>
+        <!-- End Google Tag Manager -->
+    @endif
+    @if (!empty($websiteSettings?->IdGoogleAnalytics))
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ $websiteSettings->IdGoogleAnalytics }}"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '{{ $websiteSettings->IdGoogleAnalytics }}');
+        </script>
+    @endif
+    @if (!empty($websiteSettings?->ScriptHeaderCustom))
+        {!! $websiteSettings->ScriptHeaderCustom !!}
+    @endif
 </head>
 
 <body class="font-sans text-slate-600 antialiased bg-white">
+    @if (!empty($websiteSettings?->IdGoogleTagManager))
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $websiteSettings->IdGoogleTagManager }}"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    @endif
     @php
         $currentLocale = app()->getLocale();
 
@@ -1442,6 +1590,9 @@
     </script>
     @stack('scripts')
     @include('frontend.cookie-consent')
+    @if (!empty($websiteSettings?->ScriptFooterCustom))
+        {!! $websiteSettings->ScriptFooterCustom !!}
+    @endif
 </body>
 
 </html>

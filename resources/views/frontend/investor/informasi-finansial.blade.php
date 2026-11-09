@@ -1,5 +1,17 @@
 @extends('frontend.index')
 
+@php
+    $cLocale = app()->getLocale();
+    $siteName = $websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk';
+    $finTitle = ($cLocale === 'en' ? 'Financial Information & Shareholder Structure' : 'Informasi Finansial & Struktur Kepemilikan') . ' - ' . $siteName;
+    $finDesc = $cLocale === 'en'
+        ? 'Shareholder composition, subsidiaries, stock listings, and key financial information of PT Jasuindo Tiga Perkasa Tbk.'
+        : 'Komposisi pemegang saham, profil entitas anak, pencatatan saham BEI, dan informasi finansial PT Jasuindo Tiga Perkasa Tbk.';
+@endphp
+
+@section('title', $finTitle)
+@section('meta_description', $finDesc)
+
 @push('styles')
     <style>
         .sticky-sidebar {
