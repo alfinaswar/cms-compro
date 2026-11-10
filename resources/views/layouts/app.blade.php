@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ asset('') }}assets/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- overlayScrollbars -->
@@ -197,14 +198,22 @@
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto align-items-center">
                 <li class="nav-item d-flex align-items-center">
-                    <span class="mr-3 font-weight-semibold" style="font-size: 1rem;">
+                    <span class="mr-3 font-weight-semibold" style="font-size: 0.92rem; color: #475569;">
                         {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y H:i') }}
                     </span>
+
+                    <a href="{{ route('profile.edit') }}"
+                        class="btn btn-sm mr-2 d-inline-flex align-items-center {{ request()->routeIs('profile.*') ? 'btn-primary' : 'btn-light border' }}"
+                        style="border-radius: 6px; font-weight: 600; gap: 6px; {{ request()->routeIs('profile.*') ? '' : 'color: #1e293b; border-color: #cbd5e1 !important;' }}"
+                        title="Edit Profile">
+                        <i class="fas fa-user-edit"></i>
+                        <span class="d-none d-sm-inline">Edit Profile</span>
+                    </a>
 
                     <form action="{{ route('logout') }}" method="POST" style="margin-bottom: 0;">
                         @csrf
                         <button type="submit" class="btn btn-danger btn-sm"
-                            style="background-color: #dc3545; border-color: #dc3545;">
+                            style="background-color: #dc3545; border-color: #dc3545; border-radius: 6px; font-weight: 600;">
                             <i class="fas fa-sign-out-alt"></i> Logout
                         </button>
                     </form>
@@ -371,6 +380,7 @@
             resetIdle();
         })();
     </script>
+    @include('partials.icon-picker-assets')
     @stack('scripts')
 </body>
 

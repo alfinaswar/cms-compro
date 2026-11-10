@@ -21,8 +21,7 @@
     <section class="content">
         <div class="row justify-content-center">
             <div class="col-lg-12">
-                <form action="{{ route('pengaturan-key-figure.update', $keyFigure->id) }}" method="POST"
-                    enctype="multipart/form-data">
+                <form action="{{ route('pengaturan-key-figure.update', $keyFigure->id) }}" method="POST">
                     @csrf
                     @method('PUT')
                     <div class="card card-outline card-primary shadow-sm">
@@ -33,23 +32,18 @@
                         </div>
                         <div class="card-body">
                             <div class="form-group">
-                                <label for="Icon"><strong>Icon (Upload Gambar/Optional)</strong></label>
-                                <input type="file" name="Icon" id="Icon"
-                                    class="form-control-file @error('Icon') is-invalid @enderror" accept="image/*">
+                                <label for="Icon"><strong>Icon (FontAwesome / Optional)</strong></label>
+                                @include('partials.icon-picker', [
+                                    'id' => 'Icon',
+                                    'name' => 'Icon',
+                                    'value' => old('Icon', $keyFigure->Icon),
+                                    'placeholder' => 'fa-solid fa-award',
+                                    'invalid' => $errors->has('Icon'),
+                                ])
                                 @error('Icon')
                                     <span class="invalid-feedback d-block">{{ $message }}</span>
                                 @enderror
-
-                                @if ($keyFigure->Icon)
-                                    <div class="mt-2">
-                                        <img src="{{ asset('storage/' . $keyFigure->Icon) }}" alt="Current Icon"
-                                            style="height:60px;max-width:80px;object-fit:contain;">
-                                        <p class="text-muted mb-0">Icon Saat Ini</p>
-                                    </div>
-                                @endif
-
-                                <small class="text-muted">Upload gambar icon untuk menampilkan icon di atas angka/key figure
-                                    (Opsional). Biarkan kosong jika tidak ingin mengganti.</small>
+                                <small class="text-muted">Pilih icon FontAwesome atau ketik class icon (Opsional). Kosongkan bila tidak ingin menampilkan icon.</small>
                             </div>
                             {{-- KONTEN MULTI BAHASA --}}
                             <ul class="nav nav-tabs mb-3" id="keyFigureLangTab" role="tablist">

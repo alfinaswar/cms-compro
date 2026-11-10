@@ -31,6 +31,7 @@ class AboutUsDetail extends Model
         if (!$trans) {
             $fallback = new AboutUsDetailTranslation();
             $fallback->Locale = $locale;
+            $fallback->SubJudul = $this->SubJudul;
             $fallback->Judul = $this->Judul;
             $fallback->Deskripsi = $this->Deskripsi;
             return $fallback;

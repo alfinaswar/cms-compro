@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\KeyFigures;
+use App\Support\IconHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
@@ -45,11 +46,15 @@ class KeyFiguresController extends Controller
                 })
                 ->addColumn('Icon', function ($row) {
                     if ($row->Icon) {
-                        $url = asset('storage/' . $row->Icon);
-                        return '<img src="' . $url . '" alt="Icon" style="height:40px;max-width:60px;object-fit:contain;">';
-                    } else {
-                        return '<span class="text-muted">-</span>';
+                        if (IconHelper::isFontAwesome($row->Icon)) {
+                            return '<i class="' . e($row->Icon) . ' fa-2x text-primary" title="' . e($row->Icon) . '"></i>';
+                        }
+                        if (Storage::disk('public')->exists($row->Icon)) {
+                            $url = asset('storage/' . $row->Icon);
+                            return '<img src="' . $url . '" alt="Icon" style="height:40px;max-width:60px;object-fit:contain;">';
+                        }
                     }
+                    return '<span class="text-muted">-</span>';
                 })
                 ->addColumn('Keterangan', function ($row) {
                     $html = '<div><span class="badge badge-primary mr-1">ID</span> ' . e($row->Keterangan ?? '-') . '</div>';
@@ -84,12 +89,15 @@ class KeyFiguresController extends Controller
             'Keterangan' => 'required|string',
             'KontenEn' => 'nullable|string|max:255',
             'KeteranganEn' => 'nullable|string|max:255',
-            'Icon' => 'nullable|file|image|max:1024',
+            'Icon' => 'nullable|string|max:150',
         ]);
 
-        $iconPath = null;
-        if ($request->hasFile('Icon')) {
-            $iconPath = $request->file('Icon')->store('key-figures/icons', 'public');
+        $iconValue = null;
+        if ($request->filled('Icon')) {
+            $iconValue = IconHelper::sanitizeClass($request->input('Icon'));
+            if ($iconValue === null) {
+                return back()->withInput()->withErrors(['Icon' => 'Format class icon FontAwesome tidak valid.']);
+            }
         }
 
         $data = [
@@ -97,7 +105,7 @@ class KeyFiguresController extends Controller
             'Keterangan' => $request->Keterangan,
             'KontenEn' => $request->filled('KontenEn') ? $request->KontenEn : $request->Konten,
             'KeteranganEn' => $request->filled('KeteranganEn') ? $request->KeteranganEn : null,
-            'Icon' => $iconPath,
+            'Icon' => $iconValue,
             'UserCreate' => auth()->user() ? auth()->user()->name : null,
         ];
 
@@ -138,18 +146,30 @@ class KeyFiguresController extends Controller
             'Keterangan' => 'required|string',
             'KontenEn' => 'nullable|string|max:255',
             'KeteranganEn' => 'nullable|string|max:255',
-            'Icon' => 'nullable|file|image|max:1024',
+            'Icon' => 'nullable|string|max:150',
         ]);
 
         $data = KeyFigures::findOrFail($id);
 
-        $iconPath = $data->Icon;
-
-        if ($request->hasFile('Icon')) {
-            if ($iconPath && Storage::disk('public')->exists($iconPath)) {
-                Storage::disk('public')->delete($iconPath);
+        $oldIcon = $data->Icon;
+        if (!$request->exists('Icon')) {
+            $iconValue = $oldIcon;
+        } else {
+            $rawIcon = trim((string) $request->input('Icon', ''));
+            if ($rawIcon === '') {
+                $iconValue = null;
+            } elseif ($rawIcon === (string) $oldIcon && !IconHelper::isFontAwesome($oldIcon)) {
+                $iconValue = $oldIcon;
+            } else {
+                $iconValue = IconHelper::sanitizeClass($rawIcon);
+                if ($iconValue === null) {
+                    return back()->withInput()->withErrors(['Icon' => 'Format class icon FontAwesome tidak valid.']);
+                }
             }
-            $iconPath = $request->file('Icon')->store('key-figures/icons', 'public');
+        }
+
+        if ($iconValue !== $oldIcon && $oldIcon && !IconHelper::isFontAwesome($oldIcon) && Storage::disk('public')->exists($oldIcon)) {
+            Storage::disk('public')->delete($oldIcon);
         }
 
         $data->update([
@@ -157,7 +177,7 @@ class KeyFiguresController extends Controller
             'Keterangan' => $request->Keterangan,
             'KontenEn' => $request->filled('KontenEn') ? $request->KontenEn : $request->Konten,
             'KeteranganEn' => $request->filled('KeteranganEn') ? $request->KeteranganEn : null,
-            'Icon' => $iconPath,
+            'Icon' => $iconValue,
             'UserUpdate' => auth()->user() ? auth()->user()->name : null,
         ]);
 
@@ -174,8 +194,8 @@ class KeyFiguresController extends Controller
         try {
             $keyFigure = KeyFigures::findOrFail($id);
 
-            // Hapus icon jika ada
-            if ($keyFigure->Icon && Storage::disk('public')->exists($keyFigure->Icon)) {
+            // Hapus icon jika berupa file storage
+            if ($keyFigure->Icon && !IconHelper::isFontAwesome($keyFigure->Icon) && Storage::disk('public')->exists($keyFigure->Icon)) {
                 Storage::disk('public')->delete($keyFigure->Icon);
             }
 

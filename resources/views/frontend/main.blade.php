@@ -246,7 +246,9 @@
                         <div class="p-4 group cursor-default">
                             <div
                                 class="w-16 h-16 mx-auto bg-brand-50 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-brand-600 transition-colors duration-300">
-                                @if (!empty($figure->Icon))
+                                @if (!empty($figure->Icon) && \App\Support\IconHelper::isFontAwesome($figure->Icon))
+                                    <i class="{{ $figure->Icon }} text-2xl text-brand-600 group-hover:text-white transition-colors"></i>
+                                @elseif (!empty($figure->Icon) && \Illuminate\Support\Facades\Storage::disk('public')->exists($figure->Icon))
                                     <img src="{{ asset('storage/' . $figure->Icon) }}" alt="{{ $fKeterangan ?? 'Key Figure' }}"
                                         class="w-10 h-10 object-contain" />
                                 @else
@@ -502,23 +504,21 @@
                     $trans = $item->translate($locale);
                     $wJudul = $trans->Judul ?: $item->Judul;
                     $wDeskripsi = $trans->Deskripsi ?: $item->Deskripsi;
-                    // Cek jika icon berupa gambar, apakah file nya ada
-                    $showImg = false;
-                    if (!empty($item->Icon) && !\Illuminate\Support\Str::startsWith($item->Icon, 'fa-')) {
-                        $showImg = Storage::disk('public')->exists($item->Icon);
-                    }
+                    // Cek apakah icon berupa class FontAwesome atau file gambar yang tersedia di storage
+                    $isFaIcon = \App\Support\IconHelper::isFontAwesome($item->Icon);
+                    $showImg = !empty($item->Icon) && !$isFaIcon && Storage::disk('public')->exists($item->Icon);
                 @endphp
 
                 <div class="bg-white rounded-xl shadow-lg p-8 flex flex-col items-center text-center hover:shadow-xl transition-all duration-300">
 
                     {{-- LOGIKA ICON: Cek apakah berupa class FA atau path gambar --}}
                     @if (!empty($item->Icon))
-                        @if(\Illuminate\Support\Str::startsWith($item->Icon, 'fa-'))
+                        @if ($isFaIcon)
                             <!-- Render sebagai Font Awesome Icon -->
                             <div class="text-brand-600 mb-4 text-4xl">
                                 <i class="{{ $item->Icon }}"></i>
                             </div>
-                        @elseif($showImg)
+                        @elseif ($showImg)
                             <!-- Render sebagai Gambar jika file ada -->
                             <img src="{{ asset('storage/' . $item->Icon) }}" alt="{{ $wJudul }}" class="w-16 h-16 object-contain mb-4">
                         @endif

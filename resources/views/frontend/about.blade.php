@@ -3,10 +3,16 @@
 @php
     $aboutLocale = app()->getLocale();
     $siteName = $websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk';
-    $aboutTitle = ($aboutLocale === 'en' ? 'About Us - History, Vision & Quality Standards' : 'Tentang Kami - Sejarah, Visi & Standar Kualitas') . ' - ' . $siteName;
-    $aboutDesc = $aboutLocale === 'en'
-        ? 'Learn about PT Jasuindo Tiga Perkasa Tbk, since 1996 leading the security printing, high-security documents, and payment cards industry in Indonesia.'
-        : 'Mengenal PT Jasuindo Tiga Perkasa Tbk, berdiri sejak 1996 sebagai penyedia dokumen sekuriti berstandar tinggi, kartu pembayaran, dan identitas digital di Indonesia.';
+    $aboutTitle =
+        ($aboutLocale === 'en'
+            ? 'About Us - History, Vision & Quality Standards'
+            : 'Tentang Kami - Sejarah, Visi & Standar Kualitas') .
+        ' - ' .
+        $siteName;
+    $aboutDesc =
+        $aboutLocale === 'en'
+            ? 'Learn about PT Jasuindo Tiga Perkasa Tbk, since 1996 leading the security printing, high-security documents, and payment cards industry in Indonesia.'
+            : 'Mengenal PT Jasuindo Tiga Perkasa Tbk, berdiri sejak 1996 sebagai penyedia dokumen sekuriti berstandar tinggi, kartu pembayaran, dan identitas digital di Indonesia.';
 @endphp
 
 @section('title', $aboutTitle)
@@ -51,10 +57,7 @@
         };
 
         $isFaIcon = function (?string $val) {
-            if (!$val) {
-                return false;
-            }
-            return str_starts_with($val, 'fa-') || str_starts_with($val, 'fa ') || str_contains($val, ' fa-');
+            return \App\Support\IconHelper::isFontAwesome($val);
         };
 
         $tabs = [
@@ -89,7 +92,7 @@
         $videoTagline = $mediaMeta['video_tagline'] ?? 'IDENTITAS • PEMBAYARAN • PROTEKSI MEREK';
         $videoUrl = $mediaMeta['video_url'] ?? null;
         $pdfFile = $mediaMeta['pdf_file'] ?? null;
-        $pdfUrl = !empty($pdfFile) ? asset('storage/' . $pdfFile) : ($mediaMeta['pdf_url'] ?? null);
+        $pdfUrl = !empty($pdfFile) ? asset('storage/' . $pdfFile) : $mediaMeta['pdf_url'] ?? null;
         $quoteSubtitle =
             $mediaMeta['quote_subtitle'] ??
             ($en ? 'Executive Governance Leadership' : 'Kepemimpinan & Tata Kelola Eksekutif');
@@ -143,8 +146,18 @@
 
             if ($timelineDetails->count() > 0) {
                 foreach ($timelineDetails as $item) {
-                    [$tTitle, $tDesc] = $split($tr($item, 'Deskripsi'));
-                    $year = trim($tr($item, 'Judul') ?? '');
+                    $rawSubJudul = trim((string) ($tr($item, 'SubJudul') ?? ''));
+                    $rawDeskripsi = $tr($item, 'Deskripsi');
+
+                    if ($rawSubJudul !== '' || !str_contains((string) $rawDeskripsi, '|||')) {
+                        $year = $rawSubJudul;
+                        $tTitle = trim((string) ($tr($item, 'Judul') ?? ''));
+                        $tDesc = trim((string) ($rawDeskripsi ?? ''));
+                    } else {
+                        [$tTitle, $tDesc] = $split($rawDeskripsi);
+                        $year = trim((string) ($tr($item, 'Judul') ?? ''));
+                    }
+
                     $cleanYear = preg_replace('/[^0-9]/', '', $year); // ambil angka tahun saja untuk matching
                     $fallback = $timelineFallback[$cleanYear] ?? null;
 
@@ -229,7 +242,7 @@
             /* Add the default font for timeline titles to match 'International Strategic Partnership' */
             .timeline-title-font {
                 font-family: inherit;
-                font-weight: 800;
+                font-weight: 500;
                 color: #0f172a;
             }
 
@@ -266,19 +279,26 @@
     <!-- ========================================== -->
     <!-- 1. HERO + STATS -->
     <!-- ========================================== -->
-    <section class="relative pt-28 pb-16 overflow-hidden">
-        {{-- Background Image + Blue Overlay --}}
-        <div class="absolute inset-0 z-0">
+    <section class="relative pt-28 pb-16 bg-gradient-to-br from-brand-900 via-brand-800 to-brand-900 overflow-hidden">
+        <!-- Background Image with Opacity -->
+        <div class="absolute inset-0 opacity-10">
             <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=2069&auto=format&fit=crop"
                 alt="{{ $en ? 'About Jasuindo' : 'Tentang Jasuindo' }}" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-gradient-to-br from-cyan-700/90 via-brand-700/90 to-brand-900/95"></div>
+        </div>
+
+        <!-- Decorative Glowing Blobs -->
+        <div
+            class="absolute top-0 right-0 w-96 h-96 bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10">
+        </div>
+        <div
+            class="absolute bottom-0 left-0 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10">
         </div>
 
         <div class="container mx-auto px-6 relative z-10">
             <div class="max-w-6xl mx-auto text-center">
 
                 <span
-                    class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-xs font-semibold text-white tracking-wide mb-6">
+                    class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-500/20 text-brand-100 backdrop-blur-sm border border-brand-500/30 text-xs font-semibold tracking-wide mb-6">
                     <i class="fa-solid fa-building"></i>
                     {{ $en ? 'About Us' : 'Tentang Kami' }}
                 </span>
@@ -349,7 +369,7 @@
     <section id="profil" class="py-20 bg-white scroll-mt-24">
         <div class="container mx-auto px-6">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-                <div class="space-y-6">
+                <div class="space-y-6 lg:sticky lg:top-44">
                     <div class="rounded-xl overflow-hidden border border-slate-200 shadow-lg group">
                         <div class="relative aspect-video bg-slate-900 overflow-hidden">
                             {{-- <span
@@ -393,8 +413,7 @@
                                 <i class="fa-regular fa-file-pdf text-blue-600"></i>
                                 {{ $en ? 'Download Company Profile' : 'Download Profil Perusahaan' }}
                             </span>
-                            <button type="button"
-                                onclick="openDownloadModal()"
+                            <button type="button" onclick="openDownloadModal()"
                                 class="inline-flex items-center px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-lg transition-colors cursor-pointer">
                                 <i class="fa-solid fa-download mr-2"></i> {{ $en ? 'Download Profile' : 'Unduh Profil' }}
                             </button>
@@ -415,8 +434,8 @@
                         @if ($tr($Media, 'Deskripsi'))
                             <div class="text-sm text-slate-600 leading-relaxed italic mb-5">{!! $tr($Media, 'Deskripsi') !!}</div>
                         @endif
-                        <p class="text-sm font-bold text-slate-900">{{ $quoteAuthor }}</p>
-                        <p class="text-xs text-slate-500">{{ $quoteCompany }}</p>
+                        <p class="text-sm font-bold text-slate-900 leading-relaxed">{{ $quoteAuthor }}</p>
+                        <p class="text-xs text-slate-500 leading-relaxed mt-1">{{ $quoteCompany }}</p>
                     </div>
                 </div>
 
@@ -477,7 +496,7 @@
                             <div class="w-12 h-12 rounded-lg bg-blue-50 flex items-center justify-center mb-5">
                                 @if ($isFaIcon($detail->Gambar))
                                     <i class="{{ $detail->Gambar }} text-xl text-blue-600"></i>
-                                @elseif (!empty($detail->Gambar))
+                                @elseif (!empty($detail->Gambar) && \Illuminate\Support\Facades\Storage::disk('public')->exists($detail->Gambar))
                                     <img src="{{ asset('storage/' . $detail->Gambar) }}" alt=""
                                         class="w-6 h-6 object-contain">
                                 @else
@@ -520,7 +539,7 @@
                         <div
                             class="bg-white rounded-xl border border-slate-200 overflow-hidden flex flex-col sm:flex-row shadow-sm hover:shadow-lg hover:border-blue-200 transition-all group">
                             <div class="sm:w-44 h-40 sm:h-auto flex-shrink-0 overflow-hidden">
-                                @if (!empty($detail->Gambar) && !$isFaIcon($detail->Gambar))
+                                @if (!empty($detail->Gambar) && !$isFaIcon($detail->Gambar) && \Illuminate\Support\Facades\Storage::disk('public')->exists($detail->Gambar))
                                     <img src="{{ asset('storage/' . $detail->Gambar) }}"
                                         alt="{{ $tr($detail, 'Judul') }}"
                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
@@ -568,7 +587,7 @@
                         <div
                             class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm hover:shadow-lg hover:border-blue-200 transition-all flex flex-col">
                             <div class="flex items-start justify-between gap-3 mb-4">
-                                @if (!empty($cert->Gambar) && !$isFaIcon($cert->Gambar))
+                                @if (!empty($cert->Gambar) && !$isFaIcon($cert->Gambar) && \Illuminate\Support\Facades\Storage::disk('public')->exists($cert->Gambar))
                                     <img src="{{ asset('storage/' . $cert->Gambar) }}" alt="{{ $tr($cert, 'Judul') }}"
                                         class="h-8 object-contain">
                                 @else
@@ -590,7 +609,8 @@
                     </div>
                     <div class="relative z-10">
                         <div class="flex items-start gap-4 mb-6">
-                            <div class="w-10 h-10 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center flex-shrink-0">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center flex-shrink-0">
                                 <i class="fa-solid fa-certificate text-cyan-400"></i>
                             </div>
                             <div>
@@ -638,7 +658,7 @@
                         <div
                             class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm hover:shadow-lg hover:border-blue-200 transition-all flex flex-col">
                             <div class="flex items-start justify-between gap-3 mb-4">
-                                @if (!empty($cert->Gambar) && !$isFaIcon($cert->Gambar))
+                                @if (!empty($cert->Gambar) && !$isFaIcon($cert->Gambar) && \Illuminate\Support\Facades\Storage::disk('public')->exists($cert->Gambar))
                                     <img src="{{ asset('storage/' . $cert->Gambar) }}" alt="{{ $tr($cert, 'Judul') }}"
                                         class="h-8 object-contain">
                                 @else
@@ -658,7 +678,8 @@
     <!-- 7. CTA -->
     <section class="py-16 bg-[#f3f4f8]">
         <div class="container mx-auto px-6">
-            <div class="bg-[#f8faff] rounded-2xl p-8 md:p-14 border border-slate-200/90 shadow-sm relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-10">
+            <div
+                class="bg-[#f8faff] rounded-2xl p-8 md:p-14 border border-slate-200/90 shadow-sm relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-10">
                 <div class="relative z-10 max-w-2xl">
                     <span
                         class="inline-flex items-center gap-1.5 mono-label text-[10px] font-bold text-brand-700 bg-brand-50 border border-brand-200/80 px-3 py-1.5 rounded uppercase tracking-wider mb-5">
@@ -699,9 +720,9 @@
                 </div>
 
                 {{-- Gambar Icon Shield Lock PNG --}}
-                <div class="relative z-10 flex-shrink-0 flex items-center justify-center w-52 h-52 md:w-60 md:h-60 lg:w-64 lg:h-64">
-                    <img src="{{ asset('assets/dist/icon/icon-cta.png') }}"
-                        alt="Security Credential"
+                <div
+                    class="relative z-10 flex-shrink-0 flex items-center justify-center w-52 h-52 md:w-60 md:h-60 lg:w-64 lg:h-64">
+                    <img src="{{ asset('assets/dist/icon/icon-cta.png') }}" alt="Security Credential"
                         class="w-full h-full object-contain drop-shadow-sm select-none pointer-events-none">
                 </div>
             </div>
@@ -709,12 +730,15 @@
     </section>
 
     <!-- Modal Collect Data Visitor untuk Download Company Profile -->
-    <div id="modalDownloadProfile" style="display: none;" class="fixed inset-0 z-50 items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm opacity-0 transition-opacity duration-300 ease-out">
-        <div class="bg-white rounded-2xl shadow-xl max-w-lg w-full overflow-hidden border border-slate-200/80 transform transition-all duration-300 ease-out opacity-0 translate-y-3 scale-[0.98]" id="modalDownloadContent">
+    <div id="modalDownloadProfile" style="display: none;"
+        class="fixed inset-0 z-50 items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm opacity-0 transition-opacity duration-300 ease-out">
+        <div class="bg-white rounded-2xl shadow-xl max-w-lg w-full overflow-hidden border border-slate-200/80 transform transition-all duration-300 ease-out opacity-0 translate-y-3 scale-[0.98]"
+            id="modalDownloadContent">
             <!-- Modal Header: clean & professional -->
             <div class="px-7 py-5 bg-white border-b border-slate-100 flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200/60 flex items-center justify-center text-slate-700">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200/60 flex items-center justify-center text-slate-700">
                         <i class="fa-regular fa-file-pdf text-lg text-blue-600"></i>
                     </div>
                     <div>
@@ -726,7 +750,8 @@
                         </p>
                     </div>
                 </div>
-                <button type="button" onclick="closeDownloadModal()" class="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 flex items-center justify-center transition-colors">
+                <button type="button" onclick="closeDownloadModal()"
+                    class="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 flex items-center justify-center transition-colors">
                     <i class="fa-solid fa-xmark text-base"></i>
                 </button>
             </div>
@@ -771,7 +796,8 @@
                     </div>
                 </div>
 
-                <div id="dlErrorMessage" class="hidden p-3 rounded-lg bg-rose-50 border border-rose-200 text-xs text-rose-600"></div>
+                <div id="dlErrorMessage"
+                    class="hidden p-3 rounded-lg bg-rose-50 border border-rose-200 text-xs text-rose-600"></div>
 
                 <div class="pt-2">
                     <button type="submit" id="btnSubmitDownload"
@@ -901,44 +927,46 @@
                     const formData = new FormData(form);
 
                     fetch("{{ route('frontend.about-us.download-profile', ['locale' => $locale]) }}", {
-                        method: 'POST',
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: formData
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        btn.disabled = false;
-                        btn.innerHTML = originalHtml;
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: formData
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            btn.disabled = false;
+                            btn.innerHTML = originalHtml;
 
-                        if (data.success) {
-                            closeDownloadModal();
-                            form.reset();
+                            if (data.success) {
+                                closeDownloadModal();
+                                form.reset();
 
-                            if (data.download_url) {
-                                const link = document.createElement('a');
-                                link.href = data.download_url;
-                                link.target = '_blank';
-                                link.download = '';
-                                document.body.appendChild(link);
-                                link.click();
-                                document.body.removeChild(link);
+                                if (data.download_url) {
+                                    const link = document.createElement('a');
+                                    link.href = data.download_url;
+                                    link.target = '_blank';
+                                    link.download = '';
+                                    document.body.appendChild(link);
+                                    link.click();
+                                    document.body.removeChild(link);
+                                } else {
+                                    alert(
+                                        "{{ $en ? 'Thank you! The company profile file is currently being updated by our team.' : 'Terima kasih! File profil perusahaan sedang dalam proses pembaruan oleh tim kami.' }}"
+                                    );
+                                }
                             } else {
-                                alert("{{ $en ? 'Thank you! The company profile file is currently being updated by our team.' : 'Terima kasih! File profil perusahaan sedang dalam proses pembaruan oleh tim kami.' }}");
+                                errBox.textContent = data.message || 'Terjadi kesalahan.';
+                                errBox.classList.remove('hidden');
                             }
-                        } else {
-                            errBox.textContent = data.message || 'Terjadi kesalahan.';
+                        })
+                        .catch(err => {
+                            btn.disabled = false;
+                            btn.innerHTML = originalHtml;
+                            errBox.textContent = 'Terjadi kesalahan jaringan. Silakan coba kembali.';
                             errBox.classList.remove('hidden');
-                        }
-                    })
-                    .catch(err => {
-                        btn.disabled = false;
-                        btn.innerHTML = originalHtml;
-                        errBox.textContent = 'Terjadi kesalahan jaringan. Silakan coba kembali.';
-                        errBox.classList.remove('hidden');
-                    });
+                        });
                 });
             }
         });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Menu;
+use App\Support\IconHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Yajra\DataTables\DataTables;
@@ -40,7 +41,7 @@ class MenuController extends Controller
                     $namaEn = $enTrans ? $enTrans->NamaMenu : '';
 
                     $icon = $row->Icon
-                        ? '<i class="' . $row->Icon . ' mr-2 text-primary"></i>'
+                        ? '<i class="' . e($row->Icon) . ' mr-2 text-primary"></i>'
                         : '<i class="fa fa-circle mr-2 text-muted" style="font-size:8px;"></i>';
 
                     $indent = $row->ParentId ? '&nbsp;&nbsp;&nbsp;&nbsp;' : '';
@@ -124,13 +125,21 @@ class MenuController extends Controller
             'Url' => 'nullable|string',
             'RouteName' => 'nullable|string',
             'ParentId' => 'nullable|exists:menu,id',
-            'Icon' => 'nullable|string',
+            'Icon' => 'nullable|string|max:150',
             'Urutan' => 'nullable|integer',
             'StatusAktif' => 'nullable|boolean',
             'TampilkanDiHeader' => 'nullable|boolean',
             'TampilkanDiFooter' => 'nullable|boolean',
             'Target' => 'nullable|string|in:_self,_blank',
         ]);
+
+        $iconValue = null;
+        if ($request->filled('Icon')) {
+            $iconValue = IconHelper::sanitizeClass($request->input('Icon'));
+            if ($iconValue === null) {
+                return back()->withInput()->withErrors(['Icon' => 'Format class icon FontAwesome tidak valid.']);
+            }
+        }
 
         // Generate SlugMenu unik
         $slug = Str::slug($validated['translations']['id']['NamaMenu']);
@@ -146,7 +155,7 @@ class MenuController extends Controller
             'JenisLink' => $validated['JenisLink'],
             'Url' => $validated['Url'] ?? null,
             'RouteName' => $validated['RouteName'] ?? null,
-            'Icon' => $validated['Icon'] ?? null,
+            'Icon' => $iconValue,
             'Urutan' => $validated['Urutan'] ?? 0,
             'StatusAktif' => $request->has('StatusAktif'),
             'TampilkanDiHeader' => $request->has('TampilkanDiHeader'),
@@ -199,7 +208,7 @@ class MenuController extends Controller
             'Url' => 'nullable|string',
             'RouteName' => 'nullable|string',
             'ParentId' => 'nullable|exists:menu,id',
-            'Icon' => 'nullable|string',
+            'Icon' => 'nullable|string|max:150',
             'Urutan' => 'nullable|integer',
             'StatusAktif' => 'nullable|boolean',
             'TampilkanDiHeader' => 'nullable|boolean',
@@ -210,8 +219,23 @@ class MenuController extends Controller
         $menu = Menu::findOrFail($id);
 
         // Cegah circular reference
-        if ($validated['ParentId'] == $menu->id) {
+        if (($validated['ParentId'] ?? null) == $menu->id) {
             return back()->with('error', 'Menu tidak bisa menjadi parent dari dirinya sendiri.');
+        }
+
+        $oldIcon = $menu->Icon;
+        if (!$request->exists('Icon')) {
+            $iconValue = $oldIcon;
+        } else {
+            $rawIcon = trim((string) $request->input('Icon', ''));
+            if ($rawIcon === '') {
+                $iconValue = null;
+            } else {
+                $iconValue = IconHelper::sanitizeClass($rawIcon);
+                if ($iconValue === null) {
+                    return back()->withInput()->withErrors(['Icon' => 'Format class icon FontAwesome tidak valid.']);
+                }
+            }
         }
 
         $menu->update([
@@ -219,7 +243,7 @@ class MenuController extends Controller
             'JenisLink' => $validated['JenisLink'],
             'Url' => $validated['Url'] ?? null,
             'RouteName' => $validated['RouteName'] ?? null,
-            'Icon' => $validated['Icon'] ?? null,
+            'Icon' => $iconValue,
             'Urutan' => $validated['Urutan'] ?? 0,
             'StatusAktif' => $request->has('StatusAktif'),
             'TampilkanDiHeader' => $request->has('TampilkanDiHeader'),

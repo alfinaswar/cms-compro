@@ -256,6 +256,7 @@
                                     @php
                                         $dl = $config['detail_labels'];
                                         $hasIcon = !empty($dl['has_icon']);
+                                        $hasSubJudul = !empty($dl['SubJudul']);
                                     @endphp
                                     <hr>
                                     <div class="d-flex justify-content-between align-items-center mb-2">
@@ -263,6 +264,7 @@
                                         <button type="button" class="btn btn-sm btn-primary btn-tambah-detail"
                                             data-section="{{ $id }}"
                                             data-has-icon="{{ $hasIcon ? '1' : '0' }}"
+                                            data-label-subjudul="{{ $dl['SubJudul'] ?? '' }}"
                                             data-label-judul="{{ $dl['Judul'] }}"
                                             data-label-deskripsi="{{ $dl['Deskripsi'] }}">
                                             <i class="fa fa-plus"></i> Tambah Item
@@ -273,7 +275,10 @@
                                             <thead class="bg-light">
                                                 <tr>
                                                     <th style="width:5%" class="text-center">#</th>
-                                                    <th style="width:22%">Gambar{{ $hasIcon ? ' / Icon FA' : '' }}</th>
+                                                    <th style="width:{{ $hasSubJudul ? '18%' : '22%' }}">Gambar{{ $hasIcon ? ' / Icon FA' : '' }}</th>
+                                                    @if ($hasSubJudul)
+                                                        <th style="width:14%">{{ $dl['SubJudul'] }}</th>
+                                                    @endif
                                                     <th style="width:22%">{{ $dl['Judul'] }}</th>
                                                     <th>{{ $dl['Deskripsi'] }}</th>
                                                     <th style="width:5%"></th>
@@ -282,9 +287,7 @@
                                             <tbody class="detail-container" data-section="{{ $id }}">
                                                 @foreach ($details as $idx => $detail)
                                                     @php
-                                                        $isFa =
-                                                            $detail->Gambar &&
-                                                            str_contains((string) $detail->Gambar, 'fa-');
+                                                        $isFa = \App\Support\IconHelper::isFontAwesome($detail->Gambar);
                                                         $dtId = $detail->translations->firstWhere('Locale', 'id');
                                                         $dtEn = $detail->translations->firstWhere('Locale', 'en');
                                                     @endphp
@@ -314,17 +317,42 @@
                                                                         class="form-control-file input-gambar mb-1"
                                                                         accept="image/*">
                                                                     @if ($hasIcon)
-                                                                        <input type="text"
-                                                                            name="sections[{{ $id }}][details][{{ $idx }}][IconFa]"
-                                                                            class="form-control form-control-sm"
-                                                                            placeholder="fa-solid fa-gem"
-                                                                            value="{{ $isFa ? $detail->Gambar : '' }}">
-                                                                        <small class="text-muted">Isi class FA ATAU upload
+                                                                        <div class="mt-1">
+                                                                            @include('partials.icon-picker', [
+                                                                                'name' => "sections[{$id}][details][{$idx}][IconFa]",
+                                                                                'value' => old("sections.{$id}.details.{$idx}.IconFa", $isFa ? $detail->Gambar : ''),
+                                                                                'placeholder' => 'fa-solid fa-gem',
+                                                                                'size' => 'sm',
+                                                                                'invalid' => $errors->has("sections.{$id}.details.{$idx}.IconFa"),
+                                                                            ])
+                                                                        </div>
+                                                                        @error("sections.{$id}.details.{$idx}.IconFa")
+                                                                            <span class="invalid-feedback d-block">{{ $message }}</span>
+                                                                        @enderror
+                                                                        <small class="text-muted">Pilih icon FA ATAU upload
                                                                             gambar</small>
                                                                     @endif
                                                                 </div>
                                                             </div>
                                                         </td>
+                                                        @if ($hasSubJudul)
+                                                            <td>
+                                                                <div class="lang-field active" data-lang="id">
+                                                                    <input type="text"
+                                                                        name="sections[{{ $id }}][details][{{ $idx }}][translations][id][SubJudul]"
+                                                                        class="form-control form-control-sm"
+                                                                        value="{{ $dtId->SubJudul ?? ($detail->SubJudul ?? '') }}"
+                                                                        placeholder="{{ $dl['SubJudul'] }} (ID)">
+                                                                </div>
+                                                                <div class="lang-field" data-lang="en">
+                                                                    <input type="text"
+                                                                        name="sections[{{ $id }}][details][{{ $idx }}][translations][en][SubJudul]"
+                                                                        class="form-control form-control-sm"
+                                                                        value="{{ $dtEn->SubJudul ?? '' }}"
+                                                                        placeholder="{{ $dl['SubJudul'] }} (EN)">
+                                                                </div>
+                                                            </td>
+                                                        @endif
                                                         <td>
                                                             <div class="lang-field active" data-lang="id">
                                                                 <input type="text"
@@ -376,6 +404,18 @@
                 </div>
             </div>
         </form>
+
+        <template id="tpl-about-icon-picker">
+            <div class="mt-1">
+                @include('partials.icon-picker', [
+                    'name' => 'sections[__SEC__][details][__IDX__][IconFa]',
+                    'value' => '',
+                    'placeholder' => 'fa-solid fa-gem',
+                    'size' => 'sm',
+                ])
+            </div>
+            <small class="text-muted">Pilih icon FA ATAU upload gambar</small>
+        </template>
     </section>
 @endsection
 
@@ -459,6 +499,7 @@
             $('.btn-tambah-detail').on('click', function() {
                 const sectionId = $(this).data('section');
                 const hasIcon = $(this).data('has-icon') == '1';
+                const labelSubJudul = $(this).data('label-subjudul') || '';
                 const labelJudul = $(this).data('label-judul');
                 const labelDeskripsi = $(this).data('label-deskripsi');
                 const idx = rowCounters[sectionId] || 0;
@@ -468,9 +509,25 @@
 
                 let iconField = '';
                 if (hasIcon) {
-                    iconField = `<input type="text" name="sections[${sectionId}][details][${idx}][IconFa]"
-                        class="form-control form-control-sm" placeholder="fa-solid fa-gem">
-                        <small class="text-muted">Isi class FA ATAU upload gambar</small>`;
+                    const tpl = document.getElementById('tpl-about-icon-picker');
+                    iconField = tpl
+                        ? tpl.innerHTML.split('__SEC__').join(sectionId).split('__IDX__').join(idx)
+                        : '';
+                }
+
+                let subJudulCell = '';
+                if (labelSubJudul) {
+                    subJudulCell = `
+                        <td>
+                            <div class="lang-field ${currentLang === 'id' ? 'active' : ''}" data-lang="id">
+                                <input type="text" name="sections[${sectionId}][details][${idx}][translations][id][SubJudul]"
+                                    class="form-control form-control-sm" placeholder="${labelSubJudul} (ID)">
+                            </div>
+                            <div class="lang-field ${currentLang === 'en' ? 'active' : ''}" data-lang="en">
+                                <input type="text" name="sections[${sectionId}][details][${idx}][translations][en][SubJudul]"
+                                    class="form-control form-control-sm" placeholder="${labelSubJudul} (EN)">
+                            </div>
+                        </td>`;
                 }
 
                 const row = `
@@ -489,6 +546,7 @@
                                 </div>
                             </div>
                         </td>
+                        ${subJudulCell}
                         <td>
                             <div class="lang-field ${currentLang === 'id' ? 'active' : ''}" data-lang="id">
                                 <input type="text" name="sections[${sectionId}][details][${idx}][translations][id][Judul]"
@@ -542,12 +600,28 @@
                     $(this).val('');
                     return;
                 }
+                const $faInput = cell.find('.fa-icon-picker-input');
+                if ($faInput.length && $faInput.val() !== '') {
+                    $faInput.val('');
+                    if (window.refreshIconPickerPreview) {
+                        window.refreshIconPickerPreview($faInput);
+                    }
+                }
                 const reader = new FileReader();
                 reader.onload = e => {
                     preview.attr('src', e.target.result).show();
                     placeholder.hide();
                 };
                 reader.readAsDataURL(file);
+            });
+
+            $('body').on('input change', '.detail-row .fa-icon-picker-input', function() {
+                if ($.trim($(this).val() || '') !== '') {
+                    const cell = $(this).closest('td');
+                    cell.find('.input-gambar').val('');
+                    cell.find('.img-preview').hide().attr('src', '');
+                    cell.find('.preview-placeholder').show();
+                }
             });
         });
     </script>

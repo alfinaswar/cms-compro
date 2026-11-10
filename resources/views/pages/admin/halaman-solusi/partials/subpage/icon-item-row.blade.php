@@ -7,24 +7,23 @@
         <input type="hidden" name="{{ $prefix }}[{{ $i }}][Id]" value="{{ $item->id }}">
     @endif
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="form-group">
-                <label>Icon (Gambar)</label>
-                <input type="file" name="{{ $prefix }}[{{ $i }}][Icon]" class="form-control-file img-input"
-                    accept="image/*">
-                @if ($item && $item->Icon)
-                    <small class="text-muted d-block">Kosongkan jika tetap memakai icon lama.</small>
-                @endif
-                <div class="img-preview-box icon-box">
-                    @if ($item && $item->Icon)
-                        <img src="{{ asset('storage/' . $item->Icon) }}" alt="preview">
-                    @else
-                        <i class="fa fa-image placeholder-icon"></i>
-                    @endif
-                </div>
+                <label>Icon (FontAwesome)</label>
+                @include('partials.icon-picker', [
+                    'name' => $prefix . '[' . $i . '][Icon]',
+                    'value' => old($prefix . '.' . $i . '.Icon', $item->Icon ?? ''),
+                    'placeholder' => 'fa-solid fa-shield-halved',
+                    'size' => 'sm',
+                    'invalid' => $errors->has($prefix . '.' . $i . '.Icon'),
+                ])
+                @error($prefix . '.' . $i . '.Icon')
+                    <span class="invalid-feedback d-block">{{ $message }}</span>
+                @enderror
+                <small class="text-muted d-block mt-1">Pilih icon FontAwesome atau ketik class (opsional).</small>
             </div>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-8">
             {{-- Tab bahasa untuk konten teks --}}
             <ul class="nav nav-tabs mb-2" role="tablist">
                 <li class="nav-item">

@@ -414,15 +414,13 @@
                                     @php $active = $kantor->first(); @endphp
 
                                     {{-- Phone --}}
-                                    <div class="contact-item flex items-start group cursor-pointer">
+                                    <div class="contact-item flex items-center group cursor-pointer">
                                         <div
                                             class="contact-icon-wrapper flex-shrink-0 w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center mr-4 transition-all">
                                             <i
                                                 class="fa-solid fa-headphones-simple text-brand-400 text-lg transition-colors"></i>
                                         </div>
                                         <div class="flex-1 min-w-0">
-                                            <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-1">
-                                                {{ __('Call Us For Query') }}</p>
                                             <a id="detailTelp"
                                                 href="tel:{{ preg_replace('/[^0-9+]/', '', $active->NomorTelepon ?? '+62318910919') }}"
                                                 class="text-white font-semibold hover:text-brand-400 transition-colors block">
@@ -432,15 +430,13 @@
                                     </div>
 
                                     {{-- WhatsApp --}}
-                                    <div class="contact-item flex items-start group cursor-pointer">
+                                    <div class="contact-item flex items-center group cursor-pointer">
                                         <div
                                             class="contact-icon-wrapper flex-shrink-0 w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center mr-4 transition-all">
                                             <i
                                                 class="fa-brands fa-whatsapp text-emerald-400 text-lg transition-colors"></i>
                                         </div>
                                         <div class="flex-1 min-w-0">
-                                            <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-1">
-                                                WhatsApp</p>
                                             <a id="detailWa"
                                                 href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $active->NomorWhatsApp ?? '6281234567890') }}"
                                                 target="_blank"
@@ -451,14 +447,12 @@
                                     </div>
 
                                     {{-- Email --}}
-                                    <div class="contact-item flex items-start group cursor-pointer">
+                                    <div class="contact-item flex items-center group cursor-pointer">
                                         <div
                                             class="contact-icon-wrapper flex-shrink-0 w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center mr-4 transition-all">
                                             <i class="fa-solid fa-envelope text-brand-400 text-lg transition-colors"></i>
                                         </div>
                                         <div class="flex-1 min-w-0">
-                                            <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-1">
-                                                {{ __('Email Us Anytime') }}</p>
                                             <a id="detailEmail"
                                                 href="mailto:{{ $active->AlamatEmail ?? 'info@jasuindo.co.id' }}"
                                                 class="text-white font-semibold hover:text-brand-400 transition-colors block break-all">
@@ -475,10 +469,6 @@
                                                 class="fa-solid fa-location-dot text-brand-400 text-lg transition-colors"></i>
                                         </div>
                                         <div class="flex-1 min-w-0">
-                                            <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-1">
-                                                <span
-                                                    id="detailTipe">{{ $active->TipeKantor === 'Pusat' ? ($en ? 'Head Office' : 'Kantor Pusat') : ($en ? 'Branch Office' : 'Kantor Cabang') }}</span>
-                                            </p>
                                             <a id="detailMaps" href="{{ $active->TautanGoogleMaps ?? '#' }}"
                                                 target="_blank"
                                                 class="text-white font-semibold hover:text-brand-400 transition-colors block leading-relaxed">
@@ -993,9 +983,6 @@
             const detailEmail = document.getElementById('detailEmail');
             const detailMaps = document.getElementById('detailMaps');
             const detailAlamat = document.getElementById('detailAlamat');
-            const detailTipe = document.getElementById('detailTipe');
-
-            const en = {{ $en ? 'true' : 'false' }};
 
             officeTabs.forEach(tab => {
                 tab.addEventListener('click', function() {
@@ -1004,7 +991,6 @@
                     this.classList.add('active');
 
                     // Update detail
-                    const tipe = this.dataset.tipe;
                     const alamat = this.dataset.alamat || '';
                     const kota = this.dataset.kota || '';
                     const provinsi = this.dataset.provinsi || '';
@@ -1034,11 +1020,6 @@
                     }
                     if (detailAlamat) {
                         detailAlamat.textContent = alamatText;
-                    }
-                    if (detailTipe) {
-                        detailTipe.textContent = tipe === 'Pusat' ?
-                            (en ? 'Head Office' : 'Kantor Pusat') :
-                            (en ? 'Branch Office' : 'Kantor Cabang');
                     }
 
                     // Scroll to map section if embed available

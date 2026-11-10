@@ -21,25 +21,29 @@
     <section class="content">
         <div class="row justify-content-center">
             <div class="col-lg-12">
-                <form action="{{ route('pengaturan-key-figure.store') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="card card-outline card-primary shadow-sm">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <i class="fa fa-plus mr-2"></i> Form Tambah Key Figure
-                            </h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="form-group">
-                                <label for="Icon"><strong>Icon (Upload Gambar/Optional)</strong></label>
-                                <input type="file" name="Icon" id="Icon"
-                                    class="form-control-file @error('Icon') is-invalid @enderror" accept="image/*">
-                                @error('Icon')
-                                    <span class="invalid-feedback d-block">{{ $message }}</span>
-                                @enderror
-                                <small class="text-muted">Upload gambar icon untuk menampilkan icon di atas angka/key figure
-                                    (Opsional).</small>
+                    <form action="{{ route('pengaturan-key-figure.store') }}" method="POST">
+                        @csrf
+                        <div class="card card-outline card-primary shadow-sm">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="fa fa-plus mr-2"></i> Form Tambah Key Figure
+                                </h3>
                             </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="Icon"><strong>Icon (FontAwesome / Optional)</strong></label>
+                                    @include('partials.icon-picker', [
+                                        'id' => 'Icon',
+                                        'name' => 'Icon',
+                                        'value' => old('Icon'),
+                                        'placeholder' => 'fa-solid fa-award',
+                                        'invalid' => $errors->has('Icon'),
+                                    ])
+                                    @error('Icon')
+                                        <span class="invalid-feedback d-block">{{ $message }}</span>
+                                    @enderror
+                                    <small class="text-muted">Pilih icon FontAwesome atau ketik class icon (Opsional), contoh: <code>fa-solid fa-award</code>.</small>
+                                </div>
 
                             {{-- KONTEN MULTI BAHASA --}}
                             <ul class="nav nav-tabs mb-3" id="keyFigureLangTab" role="tablist">

@@ -27,7 +27,7 @@ class JasuindoOfficeSeeder extends Seeder
                 'KodePos' => '61253',
                 'TautanGoogleMaps' => 'https://goo.gl',
                 'EmbedGoogleMaps' => '<iframe src="https://google.com!" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>',
-                'NomorTelepon' => '+62 31 8910919',
+                'NomorTelepon' => '(031) 891 0919',
                 'NomorWhatsApp' => null,
                 'AlamatEmail' => 'corporate@jasuindo.co.id',
                 'UserCreate' => 'SystemAdmin',

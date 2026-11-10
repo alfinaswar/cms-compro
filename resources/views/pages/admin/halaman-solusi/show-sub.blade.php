@@ -259,7 +259,9 @@
                             <article class="bg-white rounded-2xl border border-slate-200 p-7 hover:shadow-lg hover:border-brand-300 transition-all duration-300">
                                 <div class="flex items-start gap-5">
                                     <div class="w-14 h-14 rounded-xl bg-brand-50 flex items-center justify-center flex-shrink-0 overflow-hidden">
-                                        @if ($item->Icon)
+                                        @if ($item->Icon && \App\Support\IconHelper::isFontAwesome($item->Icon))
+                                            <i class="{{ $item->Icon }} text-xl text-brand-600"></i>
+                                        @elseif ($item->Icon && \Illuminate\Support\Facades\Storage::disk('public')->exists($item->Icon))
                                             <img src="{{ asset('storage/' . $item->Icon) }}" alt="{{ $item->t('Judul') }}"
                                                 class="w-full h-full object-cover">
                                         @else
@@ -314,7 +316,9 @@
                         @foreach ($sec3Items as $item)
                             <article class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-7 hover:bg-white/10 transition-all duration-300">
                                 <div class="w-12 h-12 rounded-xl bg-brand-500/20 flex items-center justify-center mb-5 overflow-hidden">
-                                    @if ($item->Icon)
+                                    @if ($item->Icon && \App\Support\IconHelper::isFontAwesome($item->Icon))
+                                        <i class="{{ $item->Icon }} text-lg text-brand-300"></i>
+                                    @elseif ($item->Icon && \Illuminate\Support\Facades\Storage::disk('public')->exists($item->Icon))
                                         <img src="{{ asset('storage/' . $item->Icon) }}" alt="{{ $item->t('Judul') }}"
                                             class="w-full h-full object-cover">
                                     @else

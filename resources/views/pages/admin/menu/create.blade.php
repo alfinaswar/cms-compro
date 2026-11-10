@@ -107,14 +107,17 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="Icon"><strong>Icon (Optional)</strong></label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text"><i class="fa fa-icons"></i></span>
-                                            </div>
-                                            <input type="text" name="Icon" id="Icon" class="form-control"
-                                                placeholder="fa fa-home" value="{{ old('Icon') }}">
-                                        </div>
-                                        <small class="text-muted">Contoh: fa fa-home, fab fa-facebook</small>
+                                        @include('partials.icon-picker', [
+                                            'id' => 'Icon',
+                                            'name' => 'Icon',
+                                            'value' => old('Icon'),
+                                            'placeholder' => 'fa-solid fa-house',
+                                            'invalid' => $errors->has('Icon'),
+                                        ])
+                                        @error('Icon')
+                                            <span class="invalid-feedback d-block">{{ $message }}</span>
+                                        @enderror
+                                        <small class="text-muted">Pilih icon FontAwesome atau ketik class, contoh: <code>fa-solid fa-house</code></small>
                                     </div>
                                 </div>
                             </div>

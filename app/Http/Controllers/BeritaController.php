@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Berita;
 use App\Models\KategoriBerita;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -193,6 +194,7 @@ class BeritaController extends Controller
             'Status' => $validated['Status'],
             'TanggalPublikasi' => $validated['TanggalPublikasi'],
             'Penulis' => $validated['Penulis'] ?? (auth()->user() ? auth()->user()->name : null),
+            'user_id' => auth()->id(),
             'UserCreate' => (auth()->user() ? auth()->user()->name : null),
             'Slug' => $slug,
         ];
@@ -349,6 +351,7 @@ class BeritaController extends Controller
             'Status' => $validated['Status'],
             'TanggalPublikasi' => $validated['TanggalPublikasi'],
             'Penulis' => $validated['Penulis'],
+            'user_id' => $berita->user_id ?? auth()->id(),
             'UserUpdate' => auth()->user() ? auth()->user()->name : null,
             // Slug tidak diubah pada update
         ];
@@ -549,7 +552,20 @@ class BeritaController extends Controller
     public function newsDetail($locale, $slug)
     {
         $locale = app()->getLocale();
-        $news = Berita::with('translations')->where('Slug', $slug)->firstOrFail();
+        $news = Berita::with(['translations', 'author'])->where('Slug', $slug)->firstOrFail();
+
+        // Fallback bertingkat untuk artikel lama/seed sebelum user_id tersimpan
+        $authorUser = $news->author;
+        if (!$authorUser && !empty($news->Penulis)) {
+            $authorUser = User::where('name', $news->Penulis)->first();
+        }
+        if (!$authorUser && !empty($news->UserCreate)) {
+            $authorUser = User::where('name', $news->UserCreate)->first();
+        }
+        if (!$authorUser) {
+            $authorUser = User::orderBy('id')->first();
+        }
+
         $recentNews = Berita::with('translations')
             ->where('id', '!=', $news->id)
             ->where('Status', 'Diterbitkan')
@@ -559,18 +575,54 @@ class BeritaController extends Controller
 
         $categories = KategoriBerita::pluck('NamaKategori');
 
-        $prevPost = Berita::with('translations')
-            ->where('Status', 'Diterbitkan')
-            ->when($news->TanggalPublikasi, function ($query) use ($news) {
-                $query->where('TanggalPublikasi', '<', $news->TanggalPublikasi);
-            })
-            ->latest('TanggalPublikasi')
-            ->first();
-        $nextPost = Berita::with('translations')
-            ->where('TanggalPublikasi', '>', $news->TanggalPublikasi)
-            ->where('Status', 'Diterbitkan')
-            ->oldest('TanggalPublikasi')
-            ->first();
+        if ($news->TanggalPublikasi) {
+            $prevPost = Berita::with('translations')
+                ->where('Status', 'Diterbitkan')
+                ->where(function ($query) use ($news) {
+                    $query->where('TanggalPublikasi', '<', $news->TanggalPublikasi)
+                        ->orWhere(function ($tieQuery) use ($news) {
+                            $tieQuery->where('TanggalPublikasi', $news->TanggalPublikasi)
+                                ->where('id', '<', $news->id);
+                        });
+                })
+                ->orderByDesc('TanggalPublikasi')
+                ->orderByDesc('id')
+                ->first();
+
+            $nextPost = Berita::with('translations')
+                ->where('Status', 'Diterbitkan')
+                ->where(function ($query) use ($news) {
+                    $query->where('TanggalPublikasi', '>', $news->TanggalPublikasi)
+                        ->orWhere(function ($tieQuery) use ($news) {
+                            $tieQuery->where('TanggalPublikasi', $news->TanggalPublikasi)
+                                ->where('id', '>', $news->id);
+                        });
+                })
+                ->orderBy('TanggalPublikasi')
+                ->orderBy('id')
+                ->first();
+        } else {
+            $prevPost = Berita::with('translations')
+                ->where('Status', 'Diterbitkan')
+                ->whereNull('TanggalPublikasi')
+                ->where('id', '<', $news->id)
+                ->orderByDesc('id')
+                ->first();
+
+            $nextPost = Berita::with('translations')
+                ->where('Status', 'Diterbitkan')
+                ->where(function ($query) use ($news) {
+                    $query->whereNotNull('TanggalPublikasi')
+                        ->orWhere(function ($tieQuery) use ($news) {
+                            $tieQuery->whereNull('TanggalPublikasi')
+                                ->where('id', '>', $news->id);
+                        });
+                })
+                ->orderByRaw('CASE WHEN TanggalPublikasi IS NULL THEN 0 ELSE 1 END')
+                ->orderBy('TanggalPublikasi')
+                ->orderBy('id')
+                ->first();
+        }
         $relatedPosts = Berita::with('translations')
             ->where('Kategori', $news->Kategori)
             ->where('id', '!=', $news->id)
@@ -581,6 +633,7 @@ class BeritaController extends Controller
 
         return view('frontend.news-detail', compact(
             'news',
+            'authorUser',
             'recentNews',
             'categories',
             'prevPost',

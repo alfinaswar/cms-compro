@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\WhyChooseUs;
+use App\Support\IconHelper;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Storage;
@@ -46,10 +47,10 @@ class WhyChooseUsController extends Controller
                 })
                 ->addColumn('Icon', function ($row) {
                     if ($row->Icon) {
-                        if (\Illuminate\Support\Str::startsWith($row->Icon, 'fa-')) {
-                            return '<i class="' . e($row->Icon) . ' fa-2x text-primary"></i>';
+                        if (IconHelper::isFontAwesome($row->Icon)) {
+                            return '<i class="' . e($row->Icon) . ' fa-2x text-primary" title="' . e($row->Icon) . '"></i>';
                         }
-                        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($row->Icon)) {
+                        if (Storage::disk('public')->exists($row->Icon)) {
                             $url = asset('storage/' . $row->Icon);
                             return '<img src="' . $url . '" alt="Icon" style="height:40px; max-width:60px; object-fit:contain;" onerror="this.onerror=null; this.parentElement.innerHTML=\'<i class=\\\'fa fa-award fa-2x text-primary\\\'></i>\';">';
                         }
@@ -72,7 +73,7 @@ class WhyChooseUsController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'Icon' => 'required|image|mimes:png,jpg,jpeg,svg,webp|max:2048',
+            'Icon' => 'required|string|max:150',
             'Urutan' => 'required|integer|min:0',
             'Status' => 'required|boolean',
 
@@ -83,10 +84,13 @@ class WhyChooseUsController extends Controller
             'translations.en.Deskripsi' => 'nullable|string',
         ]);
 
-        $iconPath = $request->file('Icon')->store('why-choose-us/icons', 'public');
+        $iconValue = IconHelper::sanitizeClass($request->input('Icon'));
+        if ($iconValue === null) {
+            return back()->withInput()->withErrors(['Icon' => 'Format class icon FontAwesome tidak valid.']);
+        }
 
         $mainData = [
-            'Icon' => $iconPath,
+            'Icon' => $iconValue,
             'Urutan' => $request->Urutan,
             'Status' => $request->Status,
         ];
@@ -129,7 +133,7 @@ class WhyChooseUsController extends Controller
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'Icon' => 'nullable|image|mimes:png,jpg,jpeg,svg,webp|max:2048',
+            'Icon' => 'nullable|string|max:150',
             'Urutan' => 'required|integer|min:0',
             'Status' => 'required|boolean',
 
@@ -142,24 +146,34 @@ class WhyChooseUsController extends Controller
 
         $item = WhyChooseUs::findOrFail($id);
 
-        // Handle Icon Update
-        if ($request->hasFile('Icon')) {
-            if ($item->Icon && \Storage::disk('public')->exists($item->Icon)) {
-                \Storage::disk('public')->delete($item->Icon);
+        $oldIcon = $item->Icon;
+        if (!$request->exists('Icon')) {
+            $iconValue = $oldIcon;
+        } else {
+            $rawIcon = trim((string) $request->input('Icon', ''));
+            if ($rawIcon === '') {
+                $iconValue = null;
+            } elseif ($rawIcon === (string) $oldIcon && !IconHelper::isFontAwesome($oldIcon)) {
+                $iconValue = $oldIcon;
+            } else {
+                $iconValue = IconHelper::sanitizeClass($rawIcon);
+                if ($iconValue === null) {
+                    return back()->withInput()->withErrors(['Icon' => 'Format class icon FontAwesome tidak valid.']);
+                }
             }
-            $item->Icon = $request->file('Icon')->store('why-choose-us/icons', 'public');
+        }
+
+        if ($iconValue !== $oldIcon && $oldIcon && !IconHelper::isFontAwesome($oldIcon) && Storage::disk('public')->exists($oldIcon)) {
+            Storage::disk('public')->delete($oldIcon);
         }
 
         $mainData = [
             'Urutan' => $request->Urutan,
             'Status' => $request->Status,
-            'Icon' => $item->Icon, // ambil icon yang baru jika diupdate, atau lama jika tidak
+            'Icon' => $iconValue,
         ];
 
-        $item->update([
-            'Urutan' => $request->Urutan,
-            'Status' => $request->Status,
-        ]);
+        $item->update($mainData);
 
         // Update/Create Translations
         $translationsData = [];
@@ -174,16 +188,16 @@ class WhyChooseUsController extends Controller
             );
             $translationsData[$locale] = $trans;
         }
-        $trans =
-            // Logging activity untuk update
-            activity()
-                ->causedBy(auth()->user())
-                ->performedOn($item)
-                ->withProperties([
-                    'attributes' => $mainData,
-                    'translations' => $translationsData
-                ])
-                ->log('Mengupdate data keunggulan: ' . ($validated['translations']['id']['Judul'] ?? ''));
+
+        // Logging activity untuk update
+        activity()
+            ->causedBy(auth()->user())
+            ->performedOn($item)
+            ->withProperties([
+                'attributes' => $mainData,
+                'translations' => $translationsData
+            ])
+            ->log('Mengupdate data keunggulan: ' . ($validated['translations']['id']['Judul'] ?? ''));
 
         return redirect()->route('why-choose-us.index')->with('success', 'Data keunggulan berhasil diperbarui.');
     }
@@ -194,7 +208,7 @@ class WhyChooseUsController extends Controller
             $item = WhyChooseUs::findOrFail($id);
 
             // Hapus file icon dari storage
-            if ($item->Icon && Storage::disk('public')->exists($item->Icon)) {
+            if ($item->Icon && !IconHelper::isFontAwesome($item->Icon) && Storage::disk('public')->exists($item->Icon)) {
                 Storage::disk('public')->delete($item->Icon);
             }
 

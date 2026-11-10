@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ClientLogo;
+use App\Models\MasterKantor;
 use App\Models\MasterProduk;
 use App\Models\HalamanSolusi;
 use App\Models\HeroSlider;
@@ -40,8 +41,11 @@ class LandingPageController extends Controller
             }])
             ->orderBy('Urutan', 'asc')
             ->get();
-        // dd($Why);
-        return view('frontend.main-alt', compact('logo', 'heroSliders', 'websiteSettings', 'KeyFigures', 'Solution', 'Why', 'securityTiers', 'masterProdukList'));
+        $kantorUtama = MasterKantor::where('Status', 'Aktif')
+            ->where('TipeKantor', 'Pusat')
+            ->first() ?? MasterKantor::where('Status', 'Aktif')->first();
+
+        return view('frontend.main-alt', compact('logo', 'heroSliders', 'websiteSettings', 'KeyFigures', 'Solution', 'Why', 'securityTiers', 'masterProdukList', 'kantorUtama'));
     }
 
     /**

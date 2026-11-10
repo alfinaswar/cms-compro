@@ -5,8 +5,6 @@
         <style>
             .invalid-feedback { animation: fadeIn .3s ease-in-out; }
             @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
-            .custom-file-label::after { content: "Browse"; }
-            .preview-img { max-height: 120px; object-fit: contain; border: 1px dashed #ccc; padding: 5px; border-radius: 4px; }
         </style>
     @endpush
 
@@ -28,7 +26,7 @@
     <section class="content">
         <div class="row justify-content-center">
             <div class="col-xl-12 col-lg-10">
-                <form action="{{ route('why-choose-us.update', $item->id) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('why-choose-us.update', $item->id) }}" method="POST">
                     @csrf
                     @method('PUT')
                     <div class="card shadow-sm border-0">
@@ -37,25 +35,18 @@
                         </div>
                         <div class="card-body">
 
-                            {{-- UPLOAD ICON / GAMBAR --}}
+                            {{-- ICON FONTAWESOME --}}
                             <div class="form-group">
-                                <label><strong>Upload Icon / Gambar</strong></label>
-                                <div class="custom-file">
-                                    <input type="file" name="Icon" class="custom-file-input @error('Icon') is-invalid @enderror" id="Icon" accept="image/*">
-                                    <label class="custom-file-label" for="Icon">Pilih file gambar baru (kosongkan jika tidak ingin mengubah)</label>
-                                </div>
+                                <label for="Icon"><strong>Icon (FontAwesome)</strong></label>
+                                @include('partials.icon-picker', [
+                                    'id' => 'Icon',
+                                    'name' => 'Icon',
+                                    'value' => old('Icon', $item->Icon),
+                                    'placeholder' => 'fa-solid fa-shield-halved',
+                                    'invalid' => $errors->has('Icon'),
+                                ])
                                 @error('Icon') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
-                                <small class="text-muted">Format: PNG, JPG, JPEG, SVG, WEBP. Maksimal 2MB.</small>
-
-                                {{-- Tampilkan gambar lama --}}
-                                <div id="previewIcon" class="mt-2">
-                                    @if($item->Icon)
-                                        <p class="text-muted mb-1" style="font-size: 12px;">Icon saat ini:</p>
-                                        <img src="{{ asset('storage/' . $item->Icon) }}" class="preview-img" alt="Icon Lama">
-                                    @else
-                                        <img src="" class="preview-img" alt="Preview" style="display:none;">
-                                    @endif
-                                </div>
+                                <small class="text-muted">Pilih icon FontAwesome atau ketik class icon (contoh: <code>fa-solid fa-shield-halved</code>).</small>
                             </div>
 
                             <hr class="my-4">
@@ -161,34 +152,3 @@
         </div>
     </section>
 @endsection
-
-@push('scripts')
-<script>
-    $(document).ready(function() {
-        // Custom file label & preview logic
-        $('#Icon').on('change', function() {
-            let fileName = $(this).val().split('\\').pop();
-            $(this).siblings('.custom-file-label').addClass('selected').html(fileName || 'Pilih file gambar baru (kosongkan jika tidak ingin mengubah)');
-
-            if (this.files && this.files[0]) {
-                let reader = new FileReader();
-                reader.onload = function(e) {
-                    // Jika belum ada tag img, buat dulu (untuk kasus icon lama berupa class font-awesome)
-                    if ($('#previewIcon img').length === 0) {
-                        $('#previewIcon').html('<p class="text-muted mb-1" style="font-size: 12px;">Preview gambar baru:</p><img src="" class="preview-img">');
-                    }
-                    $('#previewIcon img').attr('src', e.target.result).show();
-                }
-                reader.readAsDataURL(this.files[0]);
-            } else {
-                // Jika user membatalkan pilihan file, kembalikan ke preview lama (jika ada)
-                @if($item->Icon && !\Illuminate\Support\Str::startsWith($item->Icon, 'fa-'))
-                    $('#previewIcon').html('<p class="text-muted mb-1" style="font-size: 12px;">Icon saat ini:</p><img src="{{ asset('storage/' . $item->Icon) }}" class="preview-img" alt="Icon Lama">');
-                @else
-                    $('#previewIcon').html('<img src="" class="preview-img" alt="Preview" style="display:none;">');
-                @endif
-            }
-        });
-    });
-</script>
-@endpush

@@ -19,7 +19,7 @@
 @section('schema_json')
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
+      "@@context": "https://schema.org",
       "@type": "JobPosting",
       "title": "{{ addslashes($posisi) }}",
       "description": "{{ addslashes($deskripsi) }}",

@@ -5,8 +5,6 @@
         <style>
             .invalid-feedback { animation: fadeIn .3s ease-in-out; }
             @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
-            .custom-file-label::after { content: "Browse"; }
-            .preview-img { max-height: 120px; object-fit: contain; border: 1px dashed #ccc; padding: 5px; border-radius: 4px; }
         </style>
     @endpush
 
@@ -28,7 +26,7 @@
     <section class="content">
         <div class="row justify-content-center">
             <div class="col-xl-12 col-lg-10">
-                <form action="{{ route('why-choose-us.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('why-choose-us.store') }}" method="POST">
                     @csrf
                     <div class="card shadow-sm border-0">
                         <div class="card-header bg-white border-bottom">
@@ -36,18 +34,19 @@
                         </div>
                         <div class="card-body">
 
-                            {{-- UPLOAD ICON/GAMBAR --}}
+                            {{-- ICON FONTAWESOME --}}
                             <div class="form-group">
-                                <label><strong>Upload Icon / Gambar</strong> <span class="text-danger">*</span></label>
-                                <div class="custom-file">
-                                    <input type="file" name="Icon" class="custom-file-input @error('Icon') is-invalid @enderror" id="Icon" accept="image/*" required>
-                                    <label class="custom-file-label" for="Icon" placeholder="Pilih file gambar...">Pilih file gambar...</label>
-                                </div>
+                                <label for="Icon"><strong>Icon (FontAwesome)</strong> <span class="text-danger">*</span></label>
+                                @include('partials.icon-picker', [
+                                    'id' => 'Icon',
+                                    'name' => 'Icon',
+                                    'value' => old('Icon'),
+                                    'placeholder' => 'fa-solid fa-shield-halved',
+                                    'required' => true,
+                                    'invalid' => $errors->has('Icon'),
+                                ])
                                 @error('Icon') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
-                                <small class="text-muted">Format: PNG, JPG, JPEG, SVG, WEBP. Maksimal 2MB.</small>
-                                <div id="previewIcon" class="mt-2" style="display:none;">
-                                    <img src="" class="preview-img" alt="Preview Icon">
-                                </div>
+                                <small class="text-muted">Pilih icon FontAwesome atau ketik class icon, contoh: <code>fa-solid fa-shield-halved</code>.</small>
                             </div>
 
                             <hr class="my-4">
@@ -130,23 +129,3 @@
         </div>
     </section>
 @endsection
-
-@push('scripts')
-<script>
-    $(document).ready(function() {
-        $('#Icon').on('change', function() {
-            let fileName = $(this).val().split('\\').pop();
-            $(this).siblings('.custom-file-label').addClass('selected').html(fileName);
-
-            if (this.files && this.files[0]) {
-                let reader = new FileReader();
-                reader.onload = function(e) {
-                    $('#previewIcon img').attr('src', e.target.result);
-                    $('#previewIcon').show();
-                }
-                reader.readAsDataURL(this.files[0]);
-            }
-        });
-    });
-</script>
-@endpush

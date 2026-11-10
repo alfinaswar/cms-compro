@@ -260,9 +260,17 @@
                             <!-- Icon -->
                             <div class="form-group">
                                 <label for="Icon">Icon (Optional):</label>
-                                <input type="text" class="form-control" id="Icon" name="Icon"
-                                    placeholder="fa fa-home" value="{{ old('Icon') }}">
-                                <small class="text-muted">Contoh: fa fa-home, fa fa-users</small>
+                                @include('partials.icon-picker', [
+                                    'id' => 'Icon',
+                                    'name' => 'Icon',
+                                    'value' => old('Icon'),
+                                    'placeholder' => 'fa-solid fa-house',
+                                    'invalid' => $errors->has('Icon'),
+                                ])
+                                @error('Icon')
+                                    <span class="invalid-feedback d-block">{{ $message }}</span>
+                                @enderror
+                                <small class="text-muted">Pilih icon FontAwesome atau ketik class, contoh: <code>fa-solid fa-house</code></small>
                             </div>
 
                             <!-- Urutan -->
@@ -358,6 +366,24 @@
                     $('#groupPilihHalaman').hide();
                     $('#groupUrlKustom').hide();
                     $('#groupRoute').show();
+                }
+            }
+
+            window.resetForm = function() {
+                const form = document.getElementById('formMenu');
+                if (form) {
+                    form.reset();
+                    form.action = "{{ route('menu.store') }}";
+                }
+                $('#formMethod').val('POST');
+                $('#menuId').val('');
+                $('#editModeBadge').text('Baru').removeClass('badge-info').addClass('badge-secondary');
+                $('#ParentId, #Url, #RouteName').val('').trigger('change');
+                $('#jenisHalamanCMS').prop('checked', true);
+                toggleLinkType();
+                $('#Icon').val('');
+                if (window.refreshIconPickerPreview) {
+                    window.refreshIconPickerPreview($('#Icon'));
                 }
             }
 

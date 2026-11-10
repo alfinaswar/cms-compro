@@ -6,6 +6,7 @@ use App\Models\HalamanSolusi;
 use App\Models\HalamanSolusiDetail;
 use App\Models\HalamanSolusiSubpage;
 use App\Models\HalamanSolusiSubpageItem;
+use App\Support\IconHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\DataTables;
@@ -312,7 +313,9 @@ class HalamanSolusiController extends Controller
             // Repeater item
             'komponen'      => 'nullable|array',
             'solusi_items'  => 'nullable|array',
+            'solusi_items.*.Icon'   => 'nullable|string|max:150',
             'security_items' => 'nullable|array',
+            'security_items.*.Icon' => 'nullable|string|max:150',
             'faqs'          => 'nullable|array',
         ];
         foreach (['id', 'en'] as $locale) {
@@ -327,6 +330,28 @@ class HalamanSolusiController extends Controller
         }
 
         $request->validate($rules);
+
+        $existingIcons = $subpage->exists
+            ? HalamanSolusiSubpageItem::where('HalamanSolusiSubpageId', $subpage->id)
+                ->whereIn('Section', ['section2', 'section3'])
+                ->pluck('Icon', 'id')
+            : collect();
+
+        foreach (['solusi_items', 'security_items'] as $inputKey) {
+            foreach ((array) $request->input($inputKey, []) as $i => $row) {
+                $rawIcon = trim((string) ($row['Icon'] ?? ''));
+                if ($rawIcon === '') {
+                    continue;
+                }
+                $oldIcon = !empty($row['Id']) ? ($existingIcons[(int) $row['Id']] ?? null) : null;
+                if ($oldIcon !== null && $rawIcon === (string) $oldIcon && !IconHelper::isFontAwesome($oldIcon)) {
+                    continue;
+                }
+                if (IconHelper::sanitizeClass($rawIcon) === null) {
+                    return back()->withInput()->withErrors(["$inputKey.$i.Icon" => 'Format class icon FontAwesome tidak valid.']);
+                }
+            }
+        }
 
         $trans   = $request->input('translations', []);
         $idTrans = $trans['id'] ?? [];
@@ -423,26 +448,35 @@ class HalamanSolusiController extends Controller
                     $item->Items = null;
                 }
 
-                // Upload gambar komponen (section1) / icon (section2 & 3)
-                $fileInput = $section === 'section1'
-                    ? "$inputKey.$i.Gambar"
-                    : (in_array($section, ['section2', 'section3']) ? "$inputKey.$i.Icon" : null);
-
-                if ($fileInput && $request->hasFile($fileInput)) {
-                    $folder = $section === 'section1' ? 'halaman-solusi/subpage/komponen' : 'halaman-solusi/subpage/icon';
-                    // Hapus file lama jika ada
-                    foreach (['Gambar', 'Icon'] as $field) {
-                        if ($item->$field && Storage::disk('public')->exists($item->$field)) {
-                            Storage::disk('public')->delete($item->$field);
+                // Upload gambar komponen (section1) / icon FontAwesome (section2 & 3)
+                if ($section === 'section1') {
+                    if ($request->hasFile("$inputKey.$i.Gambar")) {
+                        if ($item->Gambar && Storage::disk('public')->exists($item->Gambar)) {
+                            Storage::disk('public')->delete($item->Gambar);
+                        }
+                        $file = $request->file("$inputKey.$i.Gambar");
+                        $item->Gambar = $file->storeAs('halaman-solusi/subpage/komponen', $file->hashName(), 'public');
+                    }
+                } elseif (in_array($section, ['section2', 'section3'])) {
+                    $oldIcon = $item->Icon;
+                    if (!array_key_exists('Icon', $row)) {
+                        $iconValue = $oldIcon;
+                    } else {
+                        $rawIcon = trim((string) ($row['Icon'] ?? ''));
+                        if ($rawIcon === '') {
+                            $iconValue = null;
+                        } elseif ($rawIcon === (string) $oldIcon && !IconHelper::isFontAwesome($oldIcon)) {
+                            $iconValue = $oldIcon;
+                        } else {
+                            $iconValue = IconHelper::sanitizeClass($rawIcon);
                         }
                     }
-                    $file = $request->file($fileInput);
-                    $stored = $file->storeAs($folder, $file->hashName(), 'public');
-                    if ($section === 'section1') {
-                        $item->Gambar = $stored;
-                    } else {
-                        $item->Icon = $stored;
+
+                    if ($iconValue !== $oldIcon && $oldIcon && !IconHelper::isFontAwesome($oldIcon) && Storage::disk('public')->exists($oldIcon)) {
+                        Storage::disk('public')->delete($oldIcon);
                     }
+
+                    $item->Icon = $iconValue;
                 }
 
                 $item->SortOrder = $i;
@@ -470,10 +504,11 @@ class HalamanSolusiController extends Controller
                 ->when(!empty($keepIds), fn ($q) => $q->whereNotIn('id', $keepIds))
                 ->get();
             foreach ($deleted as $old) {
-                foreach (['Gambar', 'Icon'] as $field) {
-                    if ($old->$field && Storage::disk('public')->exists($old->$field)) {
-                        Storage::disk('public')->delete($old->$field);
-                    }
+                if ($old->Gambar && Storage::disk('public')->exists($old->Gambar)) {
+                    Storage::disk('public')->delete($old->Gambar);
+                }
+                if ($old->Icon && !IconHelper::isFontAwesome($old->Icon) && Storage::disk('public')->exists($old->Icon)) {
+                    Storage::disk('public')->delete($old->Icon);
                 }
                 $old->translations()->delete();
                 $old->delete();

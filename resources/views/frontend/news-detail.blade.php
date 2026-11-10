@@ -9,6 +9,13 @@
     $siteName = $websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk';
     $publishedDate = $news->TanggalPublikasi ? $news->TanggalPublikasi->toIso8601String() : $news->created_at->toIso8601String();
     $modifiedDate = $news->updated_at ? $news->updated_at->toIso8601String() : $publishedDate;
+    $authorName = $news->author?->name ?: ($news->Penulis ?: ($authorUser?->name ?? 'Admin'));
+    $authorBio = filled($authorUser?->bio_penulis)
+        ? $authorUser->bio_penulis
+        : \App\Models\User::DEFAULT_AUTHOR_BIO;
+    $newsRoute = $locale === 'id' ? 'frontend.news.id' : 'frontend.news';
+    $detailRoute = $locale === 'id' ? 'frontend.detail.id' : 'frontend.detail';
+    $contactRoute = $locale === 'id' ? 'frontend.contact.index.id' : 'frontend.contact.index';
 @endphp
 
 @section('title', $displayJudul . ' - ' . $siteName)
@@ -21,7 +28,7 @@
 @section('schema_json')
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
+      "@@context": "https://schema.org",
       "@type": "NewsArticle",
       "headline": "{{ addslashes($displayJudul) }}",
       "description": "{{ addslashes($displayDesc) }}",
@@ -34,7 +41,7 @@
       },
       "author": {
         "@type": "Organization",
-        "name": "{{ $news->Penulis ?: $siteName }}"
+        "name": "{{ $authorName ?: $siteName }}"
       },
       "publisher": {
         "@type": "Organization",
@@ -78,11 +85,11 @@
 
                 <!-- Breadcrumb -->
                 <nav class="mt-8 flex items-center justify-center space-x-2 text-sm text-slate-300">
-                    <a href="{{ url('/') }}" class="hover:text-white transition-colors">
+                    <a href="{{ route('frontend.main', ['locale' => $locale]) }}" class="hover:text-white transition-colors">
                         <i class="fa-solid fa-house mr-1"></i> {{ __('Home') }}
                     </a>
                     <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
-                    <a href="{{ url('news') }}" class="hover:text-white transition-colors">{{ __('News') }}</a>
+                    <a href="{{ route($newsRoute, ['locale' => $locale]) }}" class="hover:text-white transition-colors">{{ __('News') }}</a>
                     <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
                     <span class="text-white font-semibold">{{ Str::limit($displayJudul, 30) }}</span>
                 </nav>
@@ -112,10 +119,12 @@
                                     <i class="fa-regular fa-calendar mr-1"></i>
                                     {{ $news->TanggalPublikasi ? \Carbon\Carbon::parse($news->TanggalPublikasi)->isoFormat('D MMM, Y') : '-' }}
                                 </span>
-                                <a href="{{ url('news?kategori=' . urlencode($news->Kategori)) }}"
-                                    class="px-2 py-1 bg-brand-50 text-brand-700 text-xs font-semibold rounded hover:bg-brand-100 transition-colors">
-                                    {{ $news->kategori->NamaKategori }}
-                                </a>
+                                @if ($news->kategori)
+                                    <a href="{{ route($newsRoute, ['locale' => $locale, 'kategori' => $news->kategori->NamaKategori]) }}"
+                                        class="px-2 py-1 bg-brand-50 text-brand-700 text-xs font-semibold rounded hover:bg-brand-100 transition-colors">
+                                        {{ $news->kategori->NamaKategori }}
+                                    </a>
+                                @endif
                             </div>
 
                             <!-- Title -->
@@ -141,7 +150,7 @@
                                                 class="text-sm font-semibold text-slate-700 mr-2">{{ __('Popular Tags') }}:</span>
                                             <div class="inline-flex flex-wrap gap-2 mt-2">
                                                 @foreach ($tags as $tag)
-                                                    <a href="{{ url('news?tag=' . urlencode($tag)) }}"
+                                                    <a href="{{ route($newsRoute, ['locale' => $locale, 'tag' => $tag]) }}"
                                                         class="px-3 py-1 bg-slate-100 hover:bg-brand-600 text-slate-700 hover:text-white text-sm rounded transition-colors">
                                                         {{ $tag }}
                                                     </a>
@@ -199,7 +208,7 @@
                                         ($prevPost->translate('id') ?? $prevPost->translations->first());
                                     $prevJudul = $prevTrans?->Judul ?: ($prevPost->Judul ?: 'Berita');
                                 @endphp
-                                <a href="{{ url('news/' . $prevPost->Slug) }}"
+                                <a href="{{ route($detailRoute, ['locale' => $locale, 'slug' => $prevPost->Slug]) }}"
                                     class="bg-white rounded-xl p-5 border border-slate-200 hover:border-brand-500 hover:shadow-md transition-all group">
                                     <div class="flex items-center">
                                         <i
@@ -224,7 +233,7 @@
                                         ($nextPost->translate('id') ?? $nextPost->translations->first());
                                     $nextJudul = $nextTrans?->Judul ?: ($nextPost->Judul ?: 'Berita');
                                 @endphp
-                                <a href="{{ url('news/' . $nextPost->Slug) }}"
+                                <a href="{{ route($detailRoute, ['locale' => $locale, 'slug' => $nextPost->Slug]) }}"
                                     class="bg-white rounded-xl p-5 border border-slate-200 hover:border-brand-500 hover:shadow-md transition-all group">
                                     <div class="flex items-center text-right md:flex-row-reverse">
                                         <i
@@ -245,14 +254,11 @@
                     <!-- Author Box -->
                     <div class="bg-white rounded-xl p-6 border border-slate-200 mt-6">
                         <div class="flex items-start gap-4">
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode($news->Penulis ?? 'Admin') }}&background=0284c7&color=fff"
-                                alt="Author" class="w-16 h-16 rounded-full object-cover flex-shrink-0">
+                            <img src="https://ui-avatars.com/api/?name={{ urlencode($authorName) }}&background=0284c7&color=fff"
+                                alt="{{ $authorName }}" class="w-16 h-16 rounded-full object-cover flex-shrink-0">
                             <div class="flex-1">
-                                {{-- <h3 class="text-lg font-bold text-slate-900 mb-2">{{ $news->Penulis ?? 'Admin' }}</h3> --}}
-                                <p class="text-sm text-slate-600 mb-3">
-                                    Penulis artikel ini telah berpengalaman di bidang IT dan teknologi.
-                                    Ikuti tulisan-tulisannya untuk insight terbaru seputar dunia digital.
-                                </p>
+                                <h3 class="text-lg font-bold text-slate-900 mb-2">{{ $authorName }}</h3>
+                                <p class="text-sm text-slate-600 mb-3 whitespace-pre-line">{{ $authorBio }}</p>
                             </div>
                         </div>
                     </div>
@@ -274,7 +280,7 @@
                                     @endphp
                                     <article
                                         class="bg-white rounded-xl overflow-hidden border border-slate-200 hover:shadow-md transition-shadow">
-                                        <a href="{{ url('news/' . $related->Slug) }}" class="block overflow-hidden">
+                                        <a href="{{ route($detailRoute, ['locale' => $locale, 'slug' => $related->Slug]) }}" class="block overflow-hidden">
                                             <img src="{{ $relThumb }}" alt="{{ $relJudul }}"
                                                 class="w-full h-40 object-cover hover:scale-105 transition-transform duration-300">
                                         </a>
@@ -284,7 +290,7 @@
                                                 {{ $related->TanggalPublikasi ? \Carbon\Carbon::parse($related->TanggalPublikasi)->isoFormat('D MMM, Y') : '-' }}
                                             </p>
                                             <h4 class="text-sm font-bold text-slate-900 hover:text-brand-600 line-clamp-2">
-                                                <a href="{{ url('news/' . $related->Slug) }}">
+                                                <a href="{{ route($detailRoute, ['locale' => $locale, 'slug' => $related->Slug]) }}">
                                                     {{ Str::limit($relJudul, 50) }}
                                                 </a>
                                             </h4>
@@ -303,7 +309,7 @@
                         <!-- Search Widget -->
                         <div class="bg-white rounded-xl p-6 border border-slate-200">
                             <h3 class="text-lg font-bold text-slate-900 mb-4">{{ __('Search') }}</h3>
-                            <form action="{{ route('frontend.news', ['locale' => app()->getLocale()]) }}" method="GET"
+                            <form action="{{ route($newsRoute, ['locale' => $locale]) }}" method="GET"
                                 class="relative">
                                 <input type="text" name="search" value="{{ request('search') }}"
                                     placeholder="{{ __('Search news...') }}"
@@ -322,7 +328,7 @@
                             <ul class="space-y-2">
                                 @foreach ($categories as $category)
                                     <li>
-                                        <a href="{{ route('frontend.news', ['locale' => app()->getLocale(), 'kategori' => $category]) }}"
+                                        <a href="{{ route($newsRoute, ['locale' => $locale, 'kategori' => $category]) }}"
                                             class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-slate-50 transition-colors group">
                                             <span
                                                 class="text-slate-700 group-hover:text-brand-600">{{ __($category) }}</span>
@@ -350,7 +356,7 @@
                                             : asset('img/no-image.png');
                                     @endphp
                                     <div class="flex gap-3">
-                                        <a href="{{ url('news/' . $recent->Slug) }}" class="flex-shrink-0">
+                                        <a href="{{ route($detailRoute, ['locale' => $locale, 'slug' => $recent->Slug]) }}" class="flex-shrink-0">
                                             <img src="{{ $recentThumb }}" alt="{{ $recentJudul }}"
                                                 class="w-20 h-20 object-cover rounded-lg">
                                         </a>
@@ -361,7 +367,7 @@
                                             </p>
                                             <h4
                                                 class="text-sm font-semibold text-slate-900 hover:text-brand-600 line-clamp-2">
-                                                <a href="{{ url('news/' . $recent->Slug) }}">
+                                                <a href="{{ route($detailRoute, ['locale' => $locale, 'slug' => $recent->Slug]) }}">
                                                     {{ Str::limit($recentJudul, 40) }}
                                                 </a>
                                             </h4>
@@ -389,7 +395,7 @@
                                 @endphp
 
                                 @forelse($allTags as $tag)
-                                    <a href="{{ url('news?tag=' . urlencode($tag)) }}"
+                                    <a href="{{ route($newsRoute, ['locale' => $locale, 'tag' => $tag]) }}"
                                         class="px-3 py-1.5 bg-slate-100 hover:bg-brand-600 text-slate-700 hover:text-white text-sm rounded-lg transition-colors">
                                         {{ $tag }}
                                     </a>
@@ -409,7 +415,7 @@
                             <a href="tel:+62318910919" class="block text-xl font-bold mb-4 hover:text-brand-200">
                                 +62 31 8910919
                             </a>
-                            <a href="{{ url('contact') }}"
+                            <a href="{{ route($contactRoute, ['locale' => $locale]) }}"
                                 class="inline-flex items-center px-6 py-2.5 bg-white text-brand-700 font-semibold rounded-lg hover:bg-brand-50 transition-colors">
                                 {{ __('Contact Us') }}
                                 <i class="fa-solid fa-arrow-right ml-2"></i>

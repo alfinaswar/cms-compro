@@ -331,7 +331,9 @@
                         @endphp
                         <div class="flex flex-col items-center">
                             <div class="w-10 h-10 rounded-lg bg-brand-50 flex items-center justify-center mb-3">
-                                @if (!empty($figure->Icon))
+                                @if (!empty($figure->Icon) && \App\Support\IconHelper::isFontAwesome($figure->Icon))
+                                    <i class="{{ $figure->Icon }} text-brand-600"></i>
+                                @elseif (!empty($figure->Icon) && Storage::disk('public')->exists($figure->Icon))
                                     <img src="{{ asset('storage/' . $figure->Icon) }}" alt="Icon"
                                         class="w-5 h-5 object-contain">
                                 @else
@@ -498,11 +500,13 @@
                                     {{ $t['tier'] }}
                                 </span>
                                 @if (!empty($t['icon']))
-                                    @if (\Illuminate\Support\Str::startsWith($t['icon'], 'fa-') || \Illuminate\Support\Str::contains($t['icon'], 'fa-'))
+                                    @if (\App\Support\IconHelper::isFontAwesome($t['icon']))
                                         <i class="{{ $t['icon'] }} text-lg text-slate-800"></i>
-                                    @else
+                                    @elseif (Storage::disk('public')->exists($t['icon']))
                                         <img src="{{ asset('storage/' . $t['icon']) }}"
                                             alt="Icon Tier {{ $t['tier'] }}" class="w-7 h-7 object-contain">
+                                    @else
+                                        <i class="fa-regular fa-eye text-lg text-slate-800"></i>
                                     @endif
                                 @endif
                             </div>
@@ -561,18 +565,16 @@
                         $trans = $item->translate($locale);
                         $wJudul = $trans->Judul ?: $item->Judul;
                         $wDeskripsi = $trans->Deskripsi ?: $item->Deskripsi;
-                        $showImg = false;
-                        if (!empty($item->Icon) && !\Illuminate\Support\Str::startsWith($item->Icon, 'fa-')) {
-                            $showImg = Storage::disk('public')->exists($item->Icon);
-                        }
+                        $isFaIcon = \App\Support\IconHelper::isFontAwesome($item->Icon);
+                        $showImg = !empty($item->Icon) && !$isFaIcon && Storage::disk('public')->exists($item->Icon);
                     @endphp
                     <div
                         class="bg-slate-50 border border-slate-200 rounded-xl p-6 text-left hover:border-brand-300 hover:bg-white hover:shadow-lg transition-all duration-300">
                         <div
                             class="w-11 h-11 rounded-lg bg-brand-100 text-brand-600 flex items-center justify-center mb-4">
-                            @if (!empty($item->Icon) && \Illuminate\Support\Str::startsWith($item->Icon, 'fa-'))
+                            @if ($isFaIcon)
                                 <i class="{{ $item->Icon }} text-lg"></i>
-                            @elseif($showImg)
+                            @elseif ($showImg)
                                 <img src="{{ asset('storage/' . $item->Icon) }}" alt="{{ $wJudul }}"
                                     class="w-6 h-6 object-contain">
                             @else
@@ -825,27 +827,30 @@
                             <div class="flex items-start gap-4 p-3.5 rounded-xl bg-slate-50/80 border border-slate-100">
                                 <div
                                     class="w-9 h-9 rounded-lg bg-blue-50 border border-blue-100 text-[#0F2854] flex items-center justify-center flex-shrink-0">
-                                    <i class="fa-solid fa-box-open"></i>
+                                    <i class="fa-solid fa-shield-halved"></i>
                                 </div>
                                 <div>
                                     <p class="text-sm font-bold text-slate-900 mb-0.5">
-                                        {{ __('Official Physical Sample Delivery') }}</p>
-                                    <p class="text-xs text-slate-500 leading-relaxed">We send specimen samples of security
-                                        documents for
-                                        your
-                                        evaluation.</p>
+                                        {{ __('Kerahasiaan Data Terjamin') }}</p>
+                                    <p class="text-xs text-slate-500 leading-relaxed">
+                                        {{ __('Seluruh data dan spesifikasi proyek Anda ditangani secara rahasia dan aman.') }}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="flex-1"></div>
+                    @php
+                        $kantorUtama = $kantorUtama ?? \App\Models\MasterKantor::where('Status', 'Aktif')->where('TipeKantor', 'Pusat')->first();
+                        $hotlineNo = $kantorUtama?->NomorTelepon ?: '(031) 891 0919';
+                        $hotlineTel = preg_replace('/[^0-9+]/', '', $hotlineNo);
+                    @endphp
                     <div class="pt-6 border-t border-slate-200 flex items-center gap-3 mt-6">
                         <i class="fa-solid fa-headset text-blue-600"></i>
                         <p class="text-xs text-slate-600">{{ __('Prefer direct communication?') }} <a
-                                href="tel:{{ $websiteSettings->NomorTelepon ?? '+62318910919' }}"
+                                href="tel:{{ $hotlineTel }}"
                                 class="text-[#0F2854] font-bold hover:text-blue-700">{{ __('Hotline') }}:
-                                {{ $websiteSettings->TelpPerusahaan ?? '(021) 526-1020' }}</a></p>
+                                {{ $hotlineNo }}</a></p>
                     </div>
                 </div>
 

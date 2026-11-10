@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SecurityTier;
+use App\Support\IconHelper;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
@@ -30,7 +31,7 @@ class SecurityTierController extends Controller
                 })
                 ->addColumn('Icon', function ($row) {
                     if ($row->Icon) {
-                        if (Str::startsWith($row->Icon, 'fa-')) {
+                        if (IconHelper::isFontAwesome($row->Icon)) {
                             return '<i class="' . e($row->Icon) . ' fa-2x text-primary" title="' . e($row->Icon) . '"></i>';
                         }
                         if (Storage::disk('public')->exists($row->Icon)) {
@@ -98,7 +99,7 @@ class SecurityTierController extends Controller
     {
         $validated = $request->validate([
             'NomorTier' => 'required|string|max:20',
-            'Icon' => 'required|image|mimes:png,jpg,jpeg,svg,webp|max:2048',
+            'Icon' => 'required|string|max:150',
             'Urutan' => 'required|integer|min:0',
             'Status' => 'required|boolean',
 
@@ -115,11 +116,14 @@ class SecurityTierController extends Controller
             'translations.en.features.*.d' => 'nullable|string|max:255',
         ]);
 
-        $iconPath = $request->file('Icon')->store('security-tiers/icons', 'public');
+        $iconValue = IconHelper::sanitizeClass($request->input('Icon'));
+        if ($iconValue === null) {
+            return back()->withInput()->withErrors(['Icon' => 'Format class icon FontAwesome tidak valid.']);
+        }
 
         $tier = SecurityTier::create([
             'NomorTier' => $request->NomorTier,
-            'Icon' => $iconPath,
+            'Icon' => $iconValue,
             'Urutan' => $request->Urutan,
             'Status' => $request->Status,
         ]);
@@ -167,7 +171,7 @@ class SecurityTierController extends Controller
     {
         $validated = $request->validate([
             'NomorTier' => 'required|string|max:20',
-            'Icon' => 'nullable|image|mimes:png,jpg,jpeg,svg,webp|max:2048',
+            'Icon' => 'nullable|string|max:150',
             'Urutan' => 'required|integer|min:0',
             'Status' => 'required|boolean',
 
@@ -186,16 +190,30 @@ class SecurityTierController extends Controller
 
         $tier = SecurityTier::findOrFail($id);
 
-        if ($request->hasFile('Icon')) {
-            if ($tier->Icon && Storage::disk('public')->exists($tier->Icon)) {
-                Storage::disk('public')->delete($tier->Icon);
+        $oldIcon = $tier->Icon;
+        if (!$request->exists('Icon')) {
+            $iconValue = $oldIcon;
+        } else {
+            $rawIcon = trim((string) $request->input('Icon', ''));
+            if ($rawIcon === '') {
+                $iconValue = null;
+            } elseif ($rawIcon === (string) $oldIcon && !IconHelper::isFontAwesome($oldIcon)) {
+                $iconValue = $oldIcon;
+            } else {
+                $iconValue = IconHelper::sanitizeClass($rawIcon);
+                if ($iconValue === null) {
+                    return back()->withInput()->withErrors(['Icon' => 'Format class icon FontAwesome tidak valid.']);
+                }
             }
-            $tier->Icon = $request->file('Icon')->store('security-tiers/icons', 'public');
+        }
+
+        if ($iconValue !== $oldIcon && $oldIcon && !IconHelper::isFontAwesome($oldIcon) && Storage::disk('public')->exists($oldIcon)) {
+            Storage::disk('public')->delete($oldIcon);
         }
 
         $tier->update([
             'NomorTier' => $request->NomorTier,
-            'Icon' => $tier->Icon,
+            'Icon' => $iconValue,
             'Urutan' => $request->Urutan,
             'Status' => $request->Status,
         ]);
@@ -237,7 +255,7 @@ class SecurityTierController extends Controller
     {
         try {
             $item = SecurityTier::findOrFail($id);
-            if ($item->Icon && Storage::disk('public')->exists($item->Icon)) {
+            if ($item->Icon && !IconHelper::isFontAwesome($item->Icon) && Storage::disk('public')->exists($item->Icon)) {
                 Storage::disk('public')->delete($item->Icon);
             }
             $item->delete();

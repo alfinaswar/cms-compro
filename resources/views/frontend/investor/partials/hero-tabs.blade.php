@@ -1,5 +1,12 @@
 @php
     $currentLocale = app()->getLocale();
+    $investorHomeRoute = $currentLocale === 'en' ? 'frontend.laporan-keuangan.en' : 'frontend.laporan-keuangan';
+    $childBreadcrumbs = [
+        'informasi-finansial' => __('investor.tab_financial_info'),
+        'tata-kelola' => __('investor.tab_governance'),
+        'informasi-lainnya' => __('investor.tab_other_info'),
+    ];
+    $currentChildBreadcrumb = $childBreadcrumbs[$activeTab ?? ''] ?? null;
 @endphp
 
 <!-- ========================================== -->
@@ -40,12 +47,20 @@
             </p>
 
             <!-- Breadcrumb (Moved to Bottom) -->
-            <nav class="mt-8 flex items-center justify-center space-x-2 text-sm text-slate-300">
+            <nav class="mt-8 flex flex-wrap items-center justify-center gap-2 text-sm text-slate-300">
                 <a href="{{ url('/' . $currentLocale) }}" class="hover:text-white transition-colors">
                     <i class="fa-solid fa-house mr-1"></i> {{ __('Home') }}
                 </a>
                 <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
-                <span class="text-white font-semibold">{{ __('investor.breadcrumb') }}</span>
+                @if ($currentChildBreadcrumb)
+                    <a href="{{ route($investorHomeRoute, ['locale' => $currentLocale]) }}" class="hover:text-white transition-colors">
+                        {{ __('investor.breadcrumb') }}
+                    </a>
+                    <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
+                    <span class="text-white font-semibold">{{ $currentChildBreadcrumb }}</span>
+                @else
+                    <span class="text-white font-semibold">{{ __('investor.breadcrumb') }}</span>
+                @endif
             </nav>
         </div>
     </div>

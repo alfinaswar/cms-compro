@@ -317,7 +317,7 @@
                         <div class="tab-pane fade" id="tab-solusi">
                             <div class="alert alert-info">
                                 <i class="fa fa-info-circle mr-2"></i>
-                                Section solusi berisi tabel detail berupa <strong>Icon (gambar), Judul dan
+                                Section solusi berisi tabel detail berupa <strong>Icon (FontAwesome), Judul dan
                                     Deskripsi</strong> tiap poin.
                             </div>
 
@@ -347,7 +347,7 @@
                             <div class="alert alert-info">
                                 <i class="fa fa-info-circle mr-2"></i>
                                 Section keamanan, strukturnya sama seperti Section 2: tabel detail berupa
-                                <strong>Icon (gambar), Judul dan Deskripsi</strong>.
+                                <strong>Icon (FontAwesome), Judul dan Deskripsi</strong>.
                             </div>
 
                             <div class="section-divider">Sub Judul, Judul & Deskripsi</div>

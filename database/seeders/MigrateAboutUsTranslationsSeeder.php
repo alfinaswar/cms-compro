@@ -30,6 +30,7 @@ class MigrateAboutUsTranslationsSeeder extends Seeder
             DB::table('AboutUsDetailTranslations')->updateOrInsert(
                 ['IdAboutUsDetail' => $detail->id, 'Locale' => 'id'],
                 [
+                    'SubJudul' => $detail->SubJudul ?? null,
                     'Judul' => $detail->Judul,
                     'Deskripsi' => $detail->Deskripsi,
                     'created_at' => now(),

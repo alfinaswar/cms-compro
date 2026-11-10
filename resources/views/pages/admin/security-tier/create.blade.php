@@ -6,9 +6,6 @@
             .invalid-feedback { animation: fadeIn .3s ease-in-out; }
             @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
             .subfeature-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 12px; }
-            .preview-img-box { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: #f1f5f9; border: 1px dashed #cbd5e1; border-radius: 8px; overflow: hidden; flex-shrink: 0; }
-            .preview-img-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
-            .custom-file-label::after { content: "Pilih"; }
         </style>
     @endpush
 
@@ -30,7 +27,7 @@
     <section class="content">
         <div class="row justify-content-center">
             <div class="col-xl-12 col-lg-12">
-                <form action="{{ route('security-tier.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('security-tier.store') }}" method="POST">
                     @csrf
                     <div class="card shadow-sm border-0">
                         <div class="card-header bg-white border-bottom">
@@ -38,7 +35,7 @@
                         </div>
                         <div class="card-body">
 
-                            {{-- PENGATURAN UMUM: NOMOR TIER, UPLOAD GAMBAR, URUTAN & STATUS --}}
+                            {{-- PENGATURAN UMUM: NOMOR TIER, ICON FONTAWESOME, URUTAN & STATUS --}}
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-group">
@@ -50,21 +47,17 @@
                                 </div>
                                 <div class="col-md-5">
                                     <div class="form-group">
-                                        <label><strong>Upload Icon / Gambar</strong> <span class="text-danger">*</span></label>
-                                        <div class="d-flex align-items-center">
-                                            <div class="preview-img-box mr-3" id="iconPreviewContainer">
-                                                <i class="fa fa-image text-muted" id="placeholderIcon"></i>
-                                                <img src="" id="iconPreview" style="display: none;" alt="Preview Icon">
-                                            </div>
-                                            <div class="flex-grow-1">
-                                                <div class="custom-file">
-                                                    <input type="file" name="Icon" class="custom-file-input @error('Icon') is-invalid @enderror" id="iconInput" accept="image/*" required>
-                                                    <label class="custom-file-label" id="iconLabel" for="iconInput">Pilih file gambar...</label>
-                                                </div>
-                                                @error('Icon') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
-                                                <small class="text-muted">Format: PNG, SVG, JPG, WEBP. Maks 2MB.</small>
-                                            </div>
-                                        </div>
+                                        <label for="Icon"><strong>Icon (FontAwesome)</strong> <span class="text-danger">*</span></label>
+                                        @include('partials.icon-picker', [
+                                            'id' => 'Icon',
+                                            'name' => 'Icon',
+                                            'value' => old('Icon'),
+                                            'placeholder' => 'fa-solid fa-shield-halved',
+                                            'required' => true,
+                                            'invalid' => $errors->has('Icon'),
+                                        ])
+                                        @error('Icon') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
+                                        <small class="text-muted">Pilih icon FontAwesome atau ketik class, contoh: <code>fa-regular fa-eye</code>.</small>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
@@ -191,26 +184,3 @@
         </div>
     </section>
 @endsection
-
-@push('scripts')
-<script>
-    $(document).ready(function() {
-        $('#iconInput').on('change', function() {
-            var file = this.files[0];
-            if (file) {
-                $('#iconLabel').text(file.name);
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    $('#iconPreview').attr('src', e.target.result).show();
-                    $('#placeholderIcon').hide();
-                };
-                reader.readAsDataURL(file);
-            } else {
-                $('#iconLabel').text('Pilih file gambar...');
-                $('#iconPreview').hide();
-                $('#placeholderIcon').show();
-            }
-        });
-    });
-</script>
-@endpush

@@ -31,6 +31,7 @@ use App\Http\Controllers\NotificationEmailRecipientController;
 use App\Http\Controllers\PengaturanWebsiteController;
 use App\Http\Controllers\PenghargaanPerusahaanController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SecurityTierController;
 use App\Http\Controllers\SitemapPageController;
@@ -133,6 +134,12 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
+    // === PROFILE PENGGUNA ===
+    Route::get('/profile/', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile/', [ProfileController::class, 'update'])
+        ->middleware('throttle:10,1')
+        ->name('profile.update');
+
     // === GROUP DASHBOARD ===
     Route::resource('manajemen-akun/roles', RoleController::class)->names('roles');
     Route::get('roles/{id}/edit/', fn($id) => redirect()->route('roles.edit', $id));

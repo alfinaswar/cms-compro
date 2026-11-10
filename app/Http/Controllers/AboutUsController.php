@@ -6,6 +6,7 @@ use App\Models\AboutUs;
 use App\Models\AboutUsDetail;
 use App\Models\AboutUsDetailTranslation;
 use App\Models\AboutUsTranslation;
+use App\Support\IconHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -34,8 +35,12 @@ class AboutUsController extends Controller
         1 => [
             'key' => 'profil',
             'label' => 'Profil & Timeline',
-            'hint' => 'Header sejarah perusahaan. Detail = timeline (Judul=tahun, Deskripsi=judul peristiwa|||deskripsi).',
-            'detail_labels' => ['Judul' => 'Tahun', 'Deskripsi' => 'Judul|||Deskripsi'],
+            'hint' => 'Header sejarah perusahaan. Detail = timeline (Tahun, Judul, Deskripsi).',
+            'detail_labels' => [
+                'SubJudul' => 'Tahun',
+                'Judul' => 'Judul',
+                'Deskripsi' => 'Deskripsi',
+            ],
         ],
         6 => [
             'key' => 'media',
@@ -291,8 +296,20 @@ class AboutUsController extends Controller
             'sections.*.Gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'sections.6.meta.pdf_file' => 'nullable|file|mimes:pdf|max:20480',
             'sections.*.details' => 'nullable|array',
+            'sections.*.details.*.IconFa' => 'nullable|string|max:150',
             'sections.*.meta' => 'nullable|array',
         ]);
+
+        foreach ($request->input('sections', []) as $sectionId => $data) {
+            foreach ($data['details'] ?? [] as $index => $detail) {
+                $rawIconFa = trim((string) ($detail['IconFa'] ?? ''));
+                if ($rawIconFa !== '' && IconHelper::sanitizeClass($rawIconFa) === null) {
+                    return back()->withInput()->withErrors([
+                        "sections.{$sectionId}.details.{$index}.IconFa" => 'Format class icon FontAwesome tidak valid.',
+                    ]);
+                }
+            }
+        }
 
         DB::beginTransaction();
         try {
@@ -484,14 +501,16 @@ class AboutUsController extends Controller
             $idTrans = $translations['id'] ?? [];
             $enTrans = $translations['en'] ?? [];
 
+            $subJudul = trim($idTrans['SubJudul'] ?? '');
             $judul = trim($idTrans['Judul'] ?? '');
             $deskripsi = $idTrans['Deskripsi'] ?? null;
-            $iconFa = trim($detail['IconFa'] ?? '');
+            $rawIconFa = trim((string) ($detail['IconFa'] ?? ''));
+            $iconFa = $rawIconFa !== '' ? (IconHelper::sanitizeClass($rawIconFa) ?? '') : '';
 
             // Skip baris kosong
-            $hasAnyContent = !empty($judul) || !empty($deskripsi) || !empty($iconFa);
+            $hasAnyContent = !empty($subJudul) || !empty($judul) || !empty($deskripsi) || !empty($iconFa);
             foreach ($translations as $t) {
-                if (!empty(trim($t['Judul'] ?? '')) || !empty($t['Deskripsi'] ?? '')) {
+                if (!empty(trim($t['SubJudul'] ?? '')) || !empty(trim($t['Judul'] ?? '')) || !empty($t['Deskripsi'] ?? '')) {
                     $hasAnyContent = true;
                     break;
                 }
@@ -506,19 +525,22 @@ class AboutUsController extends Controller
 
             // Handle Icon FA vs upload gambar
             if ($iconFa !== '') {
-                if ($gambarPath && !str_starts_with((string) $gambarPath, 'fa') && Storage::disk('public')->exists($gambarPath)) {
+                if ($gambarPath && !IconHelper::isFontAwesome($gambarPath) && Storage::disk('public')->exists($gambarPath)) {
                     Storage::disk('public')->delete($gambarPath);
                 }
                 $gambarPath = $iconFa;
             } elseif ($request->hasFile("sections.{$sectionId}.details.{$index}.Gambar")) {
-                if ($gambarPath && !str_starts_with((string) $gambarPath, 'fa') && Storage::disk('public')->exists($gambarPath)) {
+                if ($gambarPath && !IconHelper::isFontAwesome($gambarPath) && Storage::disk('public')->exists($gambarPath)) {
                     Storage::disk('public')->delete($gambarPath);
                 }
                 $gambarPath = $request->file("sections.{$sectionId}.details.{$index}.Gambar")->store('about-us/details', 'public');
+            } elseif (array_key_exists('IconFa', $detail) && IconHelper::isFontAwesome($gambarPath)) {
+                $gambarPath = null;
             }
 
             if ($existing) {
                 $existing->update([
+                    'SubJudul' => $subJudul ?: null,
                     'Judul' => $judul ?: null,
                     'Deskripsi' => $deskripsi,
                     'Gambar' => $gambarPath,
@@ -527,6 +549,7 @@ class AboutUsController extends Controller
             } else {
                 $created = AboutUsDetail::create([
                     'IdAbout' => $about->id,
+                    'SubJudul' => $subJudul ?: null,
                     'Judul' => $judul ?: null,
                     'Deskripsi' => $deskripsi,
                     'Gambar' => $gambarPath,
@@ -540,6 +563,7 @@ class AboutUsController extends Controller
                 AboutUsDetailTranslation::updateOrCreate(
                     ['IdAboutUsDetail' => $existing->id, 'Locale' => $locale],
                     [
+                        'SubJudul' => $trans['SubJudul'] ?? null,
                         'Judul' => $trans['Judul'] ?? null,
                         'Deskripsi' => $trans['Deskripsi'] ?? null,
                     ]
@@ -553,7 +577,7 @@ class AboutUsController extends Controller
             ->get();
 
         foreach ($toDelete as $row) {
-            if ($row->Gambar && !str_contains((string) $row->Gambar, 'fa-') && Storage::disk('public')->exists($row->Gambar)) {
+            if ($row->Gambar && !IconHelper::isFontAwesome($row->Gambar) && Storage::disk('public')->exists($row->Gambar)) {
                 Storage::disk('public')->delete($row->Gambar);
             }
             $row->delete();

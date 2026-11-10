@@ -53,6 +53,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public const DEFAULT_AUTHOR_BIO = 'Penulis artikel ini telah berpengalaman di bidang IT dan teknologi. Ikuti tulisan-tulisannya untuk insight terbaru seputar dunia digital.';
+
     /**
      * Send the password reset notification using a custom email template.
      *
@@ -62,5 +64,10 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token));
+    }
+
+    public function beritas()
+    {
+        return $this->hasMany(Berita::class, 'user_id');
     }
 }
