@@ -418,6 +418,7 @@
             // ============================================
             $('#globalLangToggle button').on('click', function() {
                 const lang = $(this).data('lang');
+                sessionStorage.setItem('about_lang_toggle', lang);
                 $('#globalLangToggle button').removeClass('active');
                 $(this).addClass('active');
 
@@ -434,6 +435,12 @@
                     });
                 }, 50);
             });
+
+            // Restore bahasa jika sebelumnya tersimpan
+            const savedLang = sessionStorage.getItem('about_lang_toggle');
+            if (savedLang && $(`#globalLangToggle button[data-lang="${savedLang}"]`).length) {
+                $(`#globalLangToggle button[data-lang="${savedLang}"]`).trigger('click');
+            }
 
             // ============================================
             // DETAIL REPEATER

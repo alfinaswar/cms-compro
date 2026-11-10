@@ -32,6 +32,7 @@ use App\Http\Controllers\PengaturanWebsiteController;
 use App\Http\Controllers\PenghargaanPerusahaanController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SecurityTierController;
 use App\Http\Controllers\SitemapPageController;
 use App\Http\Controllers\StaticPageController;
 use App\Http\Controllers\StrukturOrganisasiController;
@@ -232,6 +233,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         Route::get('/landing-page/about-us/downloads/export/', [AboutUsController::class, 'exportDownloadLeads'])->name('about-us.downloads.export');
 
         Route::resource('/landing-page/why-choose-us', WhyChooseUsController::class);
+        Route::resource('/landing-page/security-tier', SecurityTierController::class);
         Route::resource('/landing-page/client-logo', ClientLogoController::class)->names('client-logo');
         Route::get('/landing-page/client-logo/create-detail/{id}/', [ClientLogoController::class, 'createDetail'])->name('client-logo.create-detail');
         Route::post('/landing-page/client-logo/store-detail/{id}/', [ClientLogoController::class, 'storeDetail'])->name('client-logo.store-detail');

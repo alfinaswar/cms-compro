@@ -58,20 +58,20 @@
                                 {{-- PANEL BAHASA INDONESIA --}}
                                 <div class="tab-pane fade show active" id="panel-id" role="tabpanel">
                                     <div class="form-group">
-                                        <label for="Konten"><strong>Angka</strong> <span class="text-danger">*</span></label>
-                                        <input type="number" name="Konten" id="Konten"
-                                            class="form-control @error('Konten') is-invalid @enderror" placeholder="contoh: 1000"
+                                        <label for="Konten"><strong>Angka / Nilai</strong> <span class="text-danger">*</span></label>
+                                        <input type="text" name="Konten" id="Konten"
+                                            class="form-control @error('Konten') is-invalid @enderror" placeholder="contoh: 1990, 800+, 9"
                                             value="{{ old('Konten') }}" required>
                                         @error('Konten')
                                             <span class="invalid-feedback d-block">{{ $message }}</span>
                                         @enderror
                                     </div>
                                     <div class="form-group">
-                                        <label for="Keterangan"><strong>Deskripsi</strong> <span
+                                        <label for="Keterangan"><strong>Deskripsi (ID)</strong> <span
                                                 class="text-danger">*</span></label>
                                         <input type="text" name="Keterangan" id="Keterangan"
                                             class="form-control @error('Keterangan') is-invalid @enderror"
-                                            placeholder="contoh: Pelanggan Puas" value="{{ old('Keterangan') }}" required>
+                                            placeholder="contoh: SEJAK 1990, Lebih dari 800 Karyawan" value="{{ old('Keterangan') }}" required>
                                         @error('Keterangan')
                                             <span class="invalid-feedback d-block">{{ $message }}</span>
                                         @enderror
@@ -86,10 +86,10 @@
                                         Jika kosong, sistem akan menampilkan teks Bahasa Indonesia (fallback).
                                     </div>
                                     <div class="form-group">
-                                        <label for="KontenEn"><strong>Number (English)</strong></label>
-                                        <input type="number" name="KontenEn" id="KontenEn"
+                                        <label for="KontenEn"><strong>Number / Value (English)</strong></label>
+                                        <input type="text" name="KontenEn" id="KontenEn"
                                             class="form-control @error('KontenEn') is-invalid @enderror"
-                                            placeholder="e.g. 1000" value="{{ old('KontenEn') }}">
+                                            placeholder="e.g. 1990, 800+, 9" value="{{ old('KontenEn') }}">
                                         @error('KontenEn')
                                             <span class="invalid-feedback d-block">{{ $message }}</span>
                                         @enderror
@@ -98,7 +98,7 @@
                                         <label for="KeteranganEn"><strong>Description (English)</strong></label>
                                         <input type="text" name="KeteranganEn" id="KeteranganEn"
                                             class="form-control @error('KeteranganEn') is-invalid @enderror"
-                                            placeholder="e.g. Satisfied Customers" value="{{ old('KeteranganEn') }}">
+                                            placeholder="e.g. SINCE 1990, OVER 800 EMPLOYEES" value="{{ old('KeteranganEn') }}">
                                         @error('KeteranganEn')
                                             <span class="invalid-feedback d-block">{{ $message }}</span>
                                         @enderror

@@ -47,12 +47,15 @@
                         <i class="fas fa-comments mr-1"></i> Komunikasi & Transaksi
                     </li>
 
-                    <li
-                        class="nav-item has-treeview
-                        {{ request()->is('admin/komunikasi-dan-transaksi/kotak-masuk*') || request()->is('admin/pengaturan/penerima-notif-email*') ? 'menu-open' : '' }}">
-                        <a href="#"
-                            class="nav-link
-                            {{ request()->is('admin/komunikasi-dan-transaksi/kotak-masuk*') || request()->is('admin/pengaturan/penerima-notif-email*') ? 'active' : '' }}">
+                    @php
+                        $kontakActive =
+                            request()->is('admin/komunikasi-dan-transaksi/kotak-masuk*') ||
+                            request()->is('admin/pengaturan/penerima-notif-email*') ||
+                            request()->routeIs('subjek.*') ||
+                            request()->routeIs('master-produk.*');
+                    @endphp
+                    <li class="nav-item has-treeview {{ $kontakActive ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ $kontakActive ? 'active' : '' }}">
                             <i class="nav-icon fas fa-envelope-open-text"></i>
                             <p>
                                 Kontak & RFQ
@@ -81,7 +84,7 @@
                             @can('pengaturan-form-kontak.view')
                                 <li class="nav-item">
                                     <a href="{{ route('subjek.index') }}"
-                                        class="nav-link {{ request()->routeIs('subjek.index') ? 'active' : '' }}">
+                                        class="nav-link {{ request()->routeIs('subjek.*') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Subjek Kontak</p>
                                     </a>
@@ -111,9 +114,10 @@
 
                     @php
                         $newsMenuActive =
-                            request()->is('admin/publikasi-dan-berita') ||
-                            request()->is('admin/publikasi-dan-berita/berita/create') ||
-                            request()->is('admin/data-master/kategori-berita*');
+                            request()->is('admin/publikasi-dan-berita*') ||
+                            request()->routeIs('berita.*') ||
+                            request()->is('admin/data-master/kategori-berita*') ||
+                            request()->routeIs('kategori-berita.*');
                     @endphp
                     <li class="nav-item has-treeview {{ $newsMenuActive ? 'menu-open' : '' }}">
                         <a href="#" class="nav-link {{ $newsMenuActive ? 'active' : '' }}">
@@ -127,7 +131,7 @@
                             @can('berita.view')
                                 <li class="nav-item">
                                     <a href="{{ route('berita.index') }}"
-                                        class="nav-link {{ request()->is('admin/publikasi-dan-berita') ? 'active' : '' }}">
+                                        class="nav-link {{ (request()->routeIs('berita.*') && !request()->routeIs('berita.create')) || request()->is('admin/publikasi-dan-berita') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Semua Artikel</p>
                                     </a>
@@ -137,7 +141,7 @@
                             @can('berita.create')
                                 <li class="nav-item">
                                     <a href="{{ route('berita.create') }}"
-                                        class="nav-link {{ request()->is('admin/publikasi-dan-berita/berita/create') ? 'active' : '' }}">
+                                        class="nav-link {{ request()->routeIs('berita.create') || request()->is('admin/publikasi-dan-berita/berita/create') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Tambah Artikel</p>
                                     </a>
@@ -147,7 +151,7 @@
                             @can('kategori-berita.view')
                                 <li class="nav-item">
                                     <a href="{{ route('kategori-berita.index') }}"
-                                        class="nav-link {{ request()->is('admin/data-master/kategori-berita*') ? 'active' : '' }}">
+                                        class="nav-link {{ request()->routeIs('kategori-berita.*') || request()->is('admin/data-master/kategori-berita*') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Kategori</p>
                                     </a>
@@ -178,12 +182,17 @@
                     @canany(['homepage.view', 'tentang-kami.view', 'solusi.view', 'investor.view', 'kebijakan-privasi.view',
                         'syarat-ketentuan.view'])
                         @php
-                            // Cek apakah salah satu submenu Manajemen Konten sedang active (biar parent juga open)
                             $menuKontenActive =
-                                in_array(request()->segment(3), ['about-us']) ||
-                                in_array(request()->segment(1), ['halaman-solusi', 'jenis-laporan']) ||
-                                request()->segment(2) == 'homepage' ||
-                                request()->is('admin/landing-page/about-us*');
+                                request()->is('admin/homepage*') ||
+                                request()->routeIs('homepage.*') ||
+                                request()->routeIs('security-tier.*') ||
+                                request()->is('admin/pengaturan/landing-page/security-tier*') ||
+                                request()->is('admin/landing-page/about-us*') ||
+                                request()->routeIs('about-us.*') ||
+                                request()->is('admin/landing-page/solusi*') ||
+                                request()->routeIs('halaman-solusi.*') ||
+                                request()->is('admin/buat-halaman/static-pages*') ||
+                                request()->routeIs('static-pages.*');
                         @endphp
                         <li class="nav-item has-treeview {{ $menuKontenActive ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link {{ $menuKontenActive ? 'active' : '' }}">
@@ -197,7 +206,7 @@
                                 @can('homepage.view')
                                     <li class="nav-item">
                                         <a href="{{ route('homepage.index') }}"
-                                            class="nav-link {{ request()->segment(2) == 'homepage' ? 'active' : '' }}">
+                                            class="nav-link {{ request()->routeIs('homepage.*') || request()->is('admin/homepage*') || request()->routeIs('security-tier.*') ? 'active' : '' }}">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>Homepage</p>
                                         </a>
@@ -223,7 +232,7 @@
                                 @can('solusi.view')
                                     <li class="nav-item">
                                         <a href="{{ route('halaman-solusi.index') }}"
-                                            class="nav-link {{ request()->segment(1) == 'halaman-solusi' ? 'active' : '' }}">
+                                            class="nav-link {{ request()->routeIs('halaman-solusi.*') || request()->is('admin/landing-page/solusi*') ? 'active' : '' }}">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>Solusi (Produk & Layanan)</p>
                                         </a>
@@ -244,7 +253,11 @@
                     {{-- Investor Relations (Laporan Keuangan & Publikasi) --}}
                     @can('investor.view')
                         @php
-                            $investorActive = request()->is('admin/jenis-laporan*') || request()->is('admin/investor*');
+                            $investorActive =
+                                request()->is('admin/jenis-laporan*') ||
+                                request()->is('admin/investor*') ||
+                                request()->routeIs('jenis-laporan.*') ||
+                                request()->routeIs('admin.investor.*');
                         @endphp
                         <li class="nav-item has-treeview {{ $investorActive ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link {{ $investorActive ? 'active' : '' }}">
@@ -257,49 +270,49 @@
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <a href="{{ route('jenis-laporan.index') }}"
-                                        class="nav-link {{ request()->is('admin/jenis-laporan*') ? 'active' : '' }}">
+                                        class="nav-link {{ request()->routeIs('jenis-laporan.*') || request()->is('admin/jenis-laporan*') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Laporan Keuangan</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('admin.investor.ringkasan-kinerja.index') }}"
-                                        class="nav-link {{ request()->is('admin/investor/ringkasan-kinerja*') ? 'active' : '' }}">
+                                        class="nav-link {{ request()->routeIs('admin.investor.ringkasan-kinerja.*') || request()->is('admin/investor/ringkasan-kinerja*') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon text-info"></i>
                                         <p>Ringkasan Kinerja 5 Thn</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('admin.investor.finansial.index') }}"
-                                        class="nav-link {{ request()->is('admin/investor/finansial*') ? 'active' : '' }}">
+                                        class="nav-link {{ request()->routeIs('admin.investor.finansial.*') || request()->is('admin/investor/finansial*') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Informasi Finansial</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('admin.investor.tata-kelola.index') }}"
-                                        class="nav-link {{ request()->is('admin/investor/tata-kelola') ? 'active' : '' }}">
+                                        class="nav-link {{ request()->routeIs('admin.investor.tata-kelola.index') || request()->is('admin/investor/tata-kelola') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Tata Kelola (GCG)</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('admin.investor.tata-kelola.wbs-index') }}"
-                                        class="nav-link {{ request()->is('admin/investor/tata-kelola/wbs*') ? 'active' : '' }}">
+                                        class="nav-link {{ request()->routeIs('admin.investor.tata-kelola.wbs*') || request()->is('admin/investor/tata-kelola/wbs*') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon text-danger"></i>
                                         <p>Laporan WBS</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('admin.investor.informasi-lainnya.index') }}"
-                                        class="nav-link {{ request()->is('admin/investor/informasi-lainnya') ? 'active' : '' }}">
+                                        class="nav-link {{ request()->routeIs('admin.investor.informasi-lainnya.index') || request()->is('admin/investor/informasi-lainnya') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Informasi Lainnya</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('admin.investor.informasi-lainnya.permintaan-index') }}"
-                                        class="nav-link {{ request()->is('admin/investor/informasi-lainnya/permintaan*') ? 'active' : '' }}">
+                                        class="nav-link {{ request()->routeIs('admin.investor.informasi-lainnya.permintaan*') || request()->is('admin/investor/informasi-lainnya/permintaan*') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon text-info"></i>
                                         <p>Permintaan Dokumen</p>
                                     </a>
@@ -311,7 +324,7 @@
                     {{-- Kelola Halaman --}}
                     @canany(['kelola-halaman.view', 'kelola-halaman.create'])
                         @php
-                            $menuHalamanActive = false;
+                            $menuHalamanActive = request()->routeIs('custom-pages.*') || request()->is('admin/buat-halaman/custom-pages*');
                         @endphp
                         <li class="nav-item has-treeview {{ $menuHalamanActive ? 'menu-open' : '' }}">
                             <a href="#" class="nav-link {{ $menuHalamanActive ? 'active' : '' }}">
@@ -324,7 +337,8 @@
                             <ul class="nav nav-treeview">
                                 @can('kelola-halaman.view')
                                     <li class="nav-item">
-                                        <a href="{{ route('custom-pages.index') }}" class="nav-link">
+                                        <a href="{{ route('custom-pages.index') }}"
+                                            class="nav-link {{ (request()->routeIs('custom-pages.*') && !request()->routeIs('custom-pages.create')) || (request()->is('admin/buat-halaman/custom-pages*') && !request()->is('admin/buat-halaman/custom-pages/create*')) ? 'active' : '' }}">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>Semua Halaman</p>
                                         </a>
@@ -332,7 +346,8 @@
                                 @endcan
                                 @can('kelola-halaman.create')
                                     <li class="nav-item">
-                                        <a href="#" class="nav-link">
+                                        <a href="{{ route('custom-pages.create') }}"
+                                            class="nav-link {{ request()->routeIs('custom-pages.create') || request()->is('admin/buat-halaman/custom-pages/create*') ? 'active' : '' }}">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>Tambah Halaman</p>
                                         </a>
@@ -346,8 +361,11 @@
 
                     {{-- Menu & Navigasi --}}
                     @can('menu.view')
-                        <li class="nav-item has-treeview {{ request()->segment(1) == 'menu' ? 'menu-open' : '' }}">
-                            <a href="#" class="nav-link {{ request()->segment(1) == 'menu' ? 'active' : '' }}">
+                        @php
+                            $menuNavActive = request()->routeIs('menu.*') || request()->is('admin/menu*');
+                        @endphp
+                        <li class="nav-item has-treeview {{ $menuNavActive ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ $menuNavActive ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-bars"></i>
                                 <p>
                                     Menu & Navigasi
@@ -357,7 +375,7 @@
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <a href="{{ route('menu.index') }}"
-                                        class="nav-link {{ request()->segment(1) == 'menu' && !request()->segment(2) ? 'active' : '' }}">
+                                        class="nav-link {{ $menuNavActive ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Menu List</p>
                                     </a>
@@ -370,7 +388,7 @@
                     @can('karir.view')
                         <li class="nav-item">
                             <a href="{{ route('karir.index') }}"
-                                class="nav-link {{ request()->segment(1) == 'karir' || request()->segment(1) == 'karir-dan-rekrutmen' ? 'active' : '' }}">
+                                class="nav-link {{ request()->routeIs('karir.*') || request()->is('admin/karir-dan-rekrutmen*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-briefcase"></i>
                                 <p>Karir & Rekrutmen</p>
                             </a>
@@ -389,10 +407,17 @@
 
                     {{-- Manajemen Akun --}}
                     @canany(['users.view', 'roles.view', 'permissions.view'])
-                        <li
-                            class="nav-item has-treeview {{ in_array(request()->segment(1), ['users', 'roles', 'permissions']) ? 'menu-open' : '' }}">
-                            <a href="#"
-                                class="nav-link {{ in_array(request()->segment(1), ['users', 'roles', 'permissions']) ? 'active' : '' }}">
+                        @php
+                            $manajemenAkunActive =
+                                request()->routeIs('users.*') ||
+                                request()->routeIs('roles.*') ||
+                                request()->routeIs('permissions.*') ||
+                                request()->is('admin/manajemen-akun*') ||
+                                request()->is('admin/permissions*') ||
+                                request()->is('admin/roles*');
+                        @endphp
+                        <li class="nav-item has-treeview {{ $manajemenAkunActive ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ $manajemenAkunActive ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-users-cog"></i>
                                 <p>
                                     Manajemen Akun
@@ -403,7 +428,7 @@
                                 @can('users.view')
                                     <li class="nav-item">
                                         <a href="{{ route('users.index') }}"
-                                            class="nav-link {{ request()->segment(1) == 'users' ? 'active' : '' }}">
+                                            class="nav-link {{ request()->routeIs('users.*') || request()->is('admin/manajemen-akun/users*') ? 'active' : '' }}">
                                             <i class="fas fa-user nav-icon"></i>
                                             <p>User (Pengguna)</p>
                                         </a>
@@ -412,7 +437,7 @@
                                 @can('roles.view')
                                     <li class="nav-item">
                                         <a href="{{ route('roles.index') }}"
-                                            class="nav-link {{ request()->segment(1) == 'roles' ? 'active' : '' }}">
+                                            class="nav-link {{ request()->routeIs('roles.*') || request()->is('admin/manajemen-akun/roles*') || request()->is('admin/roles*') ? 'active' : '' }}">
                                             <i class="fas fa-user-shield nav-icon"></i>
                                             <p>Role & Kapabilitas</p>
                                         </a>
@@ -421,7 +446,7 @@
                                 @can('permissions.view')
                                     <li class="nav-item">
                                         <a href="{{ route('permissions.index') }}"
-                                            class="nav-link {{ request()->segment(1) == 'permissions' ? 'active' : '' }}">
+                                            class="nav-link {{ request()->routeIs('permissions.*') || request()->is('admin/permissions*') ? 'active' : '' }}">
                                             <i class="fas fa-key nav-icon"></i>
                                             <p>Permission</p>
                                         </a>
@@ -433,10 +458,15 @@
 
                     {{-- Setting Sistem --}}
                     @canany(['pengaturan-website.view', 'informasi-kantor.view'])
-                        <li
-                            class="nav-item has-treeview {{ in_array(request()->segment(2), ['pengaturan-website', 'master-kantor']) ? 'menu-open' : '' }}">
-                            <a href="#"
-                                class="nav-link {{ in_array(request()->segment(2), ['pengaturan-website', 'master-kantor']) ? 'active' : '' }}">
+                        @php
+                            $settingSistemActive =
+                                request()->routeIs('pengaturan-website.*') ||
+                                request()->routeIs('master-kantor.*') ||
+                                request()->is('admin/pengaturan*') ||
+                                request()->is('admin/data-master/kantor*');
+                        @endphp
+                        <li class="nav-item has-treeview {{ $settingSistemActive ? 'menu-open' : '' }}">
+                            <a href="#" class="nav-link {{ $settingSistemActive ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-sliders-h"></i>
                                 <p>
                                     Setting Sistem
@@ -447,7 +477,7 @@
                                 @can('pengaturan-website.view')
                                     <li class="nav-item">
                                         <a href="{{ route('pengaturan-website.edit') }}"
-                                            class="nav-link {{ request()->segment(2) == 'pengaturan-website' ? 'active' : '' }}">
+                                            class="nav-link {{ request()->routeIs('pengaturan-website.*') || request()->is('admin/pengaturan*') ? 'active' : '' }}">
                                             <i class="fas fa-globe nav-icon"></i>
                                             <p>Pengaturan Website</p>
                                         </a>
@@ -456,7 +486,7 @@
                                 @can('informasi-kantor.view')
                                     <li class="nav-item">
                                         <a href="{{ route('master-kantor.index') }}"
-                                            class="nav-link {{ request()->segment(2) == 'master-kantor' ? 'active' : '' }}">
+                                            class="nav-link {{ request()->routeIs('master-kantor.*') || request()->is('admin/data-master/kantor*') ? 'active' : '' }}">
                                             <i class="fas fa-building nav-icon"></i>
                                             <p>Informasi Kantor</p>
                                         </a>
@@ -470,7 +500,7 @@
                     @can('log-aktivitas.view')
                         <li class="nav-item">
                             <a href="{{ route('log.index') }}"
-                                class="nav-link {{ request()->segment(2) == 'activity-log' ? 'active' : '' }}">
+                                class="nav-link {{ request()->routeIs('log.*') || request()->is('admin/activity-log*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-clipboard-list"></i>
                                 <p>Log Aktivitas</p>
                             </a>
@@ -486,10 +516,14 @@
                         <i class="fas fa-palette mr-1"></i> Landing Page
                     </li>
 
-                    <li
-                        class="nav-item has-treeview {{ in_array(request()->segment(2), ['hero', 'key-figures', 'why-choose-us', 'logo-sertifikasi', 'client-logo', 'struktur-organisasi']) ? 'menu-open' : '' }}">
-                        <a href="#"
-                            class="nav-link {{ in_array(request()->segment(2), ['hero', 'key-figures', 'why-choose-us', 'logo-sertifikasi', 'client-logo', 'struktur-organisasi']) ? 'active' : '' }}">
+                    @php
+                        $landingPageActive =
+                            request()->routeIs('struktur-organisasi.*') ||
+                            request()->is('admin/struktur-organisasi*') ||
+                            in_array(request()->segment(2), ['hero', 'key-figures', 'why-choose-us', 'logo-sertifikasi', 'client-logo', 'struktur-organisasi']);
+                    @endphp
+                    <li class="nav-item has-treeview {{ $landingPageActive ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ $landingPageActive ? 'active' : '' }}">
                             <i class="nav-icon fas fa-home"></i>
                             <p>
                                 Komponen Landing Page
@@ -534,7 +568,7 @@
                             </li> --}}
                             <li class="nav-item">
                                 <a href="{{ route('struktur-organisasi.index') }}"
-                                    class="nav-link {{ request()->segment(1) == 'struktur-organisasi' ? 'active' : '' }}">
+                                    class="nav-link {{ request()->routeIs('struktur-organisasi.*') || request()->is('admin/struktur-organisasi*') ? 'active' : '' }}">
                                     <i class="fas fa-sitemap nav-icon"></i>
                                     <p>Struktur Organisasi</p>
                                 </a>

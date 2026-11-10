@@ -240,12 +240,8 @@
                     class="grid grid-cols-{{ $figureCount < 2 ? 2 : $figureCount }} md:grid-cols-{{ $colBase }} gap-8 md:gap-12 text-center divide-x-0 md:divide-x divide-slate-100">
                     @foreach ($KeyFigures as $figure)
                         @php
-                            $fKonten =
-                                $locale === 'en' && !empty($figure->KontenEn) ? $figure->KontenEn : $figure->Konten;
-                            $fKeterangan =
-                                $locale === 'en' && !empty($figure->KeteranganEn)
-                                    ? $figure->KeteranganEn
-                                    : $figure->Keterangan;
+                            $fKonten = $figure->getKonten($locale);
+                            $fKeterangan = $figure->getKeterangan($locale);
                         @endphp
                         <div class="p-4 group cursor-default">
                             <div

@@ -263,6 +263,61 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+
+        $(function () {
+            // Pastikan menu parent terbuka jika ada submenu aktif
+            var $activeSubmenu = $('.nav-sidebar .nav-treeview .nav-link.active');
+            if ($activeSubmenu.length) {
+                var $parentTree = $activeSubmenu.parents('.has-treeview');
+                $parentTree.addClass('menu-open');
+                $parentTree.children('.nav-link').addClass('active');
+                $parentTree.children('.nav-treeview').show();
+            }
+
+            // Simpan tab aktif saat diklik
+            $(document).on('shown.bs.tab', 'a[data-toggle="tab"], a[data-toggle="pill"]', function () {
+                var hash = $(this).attr('href') || $(this).attr('data-target');
+                if (hash && hash.charAt(0) === '#') {
+                    var navId = $(this).closest('.nav-tabs, .nav-pills').attr('id') || 'default';
+                    sessionStorage.setItem('active_tab_' + window.location.pathname + '_' + navId, hash);
+                }
+            });
+
+            // Restore tab aktif saat reload atau setelah simpan data
+            $('.nav-tabs, .nav-pills').each(function () {
+                var navId = $(this).attr('id') || 'default';
+                var savedHash = sessionStorage.getItem('active_tab_' + window.location.pathname + '_' + navId);
+                if (savedHash) {
+                    var $tab = $(this).find('a[href="' + savedHash + '"], a[data-target="' + savedHash + '"]');
+                    if ($tab.length) {
+                        $tab.tab('show');
+                    }
+                }
+            });
+
+            // Jika ada field dengan error validasi, otomatis buka tab yang memuat error
+            var $firstInvalid = $('.is-invalid, .invalid-feedback:visible').first();
+            if ($firstInvalid.length) {
+                var $pane = $firstInvalid.closest('.tab-pane');
+                if ($pane.length) {
+                    var paneId = $pane.attr('id');
+                    $('a[href="#' + paneId + '"], a[data-target="#' + paneId + '"]').tab('show');
+                }
+            }
+
+            // Bersihkan riwayat tab saat berpindah ke halaman lain via sidebar
+            $('.main-sidebar .nav-link').on('click', function () {
+                var href = $(this).attr('href');
+                if (href && href !== '#' && href.indexOf('javascript:') !== 0) {
+                    for (var i = sessionStorage.length - 1; i >= 0; i--) {
+                        var key = sessionStorage.key(i);
+                        if (key && key.indexOf('active_tab_') === 0) {
+                            sessionStorage.removeItem(key);
+                        }
+                    }
+                }
+            });
+        });
     </script>
     <script>
         // Auto logout saat idle (durasi diatur di Pengaturan Website)

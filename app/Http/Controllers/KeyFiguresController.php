@@ -51,7 +51,14 @@ class KeyFiguresController extends Controller
                         return '<span class="text-muted">-</span>';
                     }
                 })
-                ->rawColumns(['action', 'Icon'])
+                ->addColumn('Keterangan', function ($row) {
+                    $html = '<div><span class="badge badge-primary mr-1">ID</span> ' . e($row->Keterangan ?? '-') . '</div>';
+                    if (!empty($row->KeteranganEn)) {
+                        $html .= '<div class="mt-1 text-muted"><span class="badge badge-secondary mr-1">EN</span> ' . e($row->KeteranganEn) . '</div>';
+                    }
+                    return $html;
+                })
+                ->rawColumns(['action', 'Icon', 'Keterangan'])
                 ->make(true);
         }
 
@@ -75,8 +82,8 @@ class KeyFiguresController extends Controller
         $request->validate([
             'Konten' => 'required|string|max:255',
             'Keterangan' => 'required|string',
-            'KontenEn' => 'nullable|string|max:255|required_with:KeteranganEn',
-            'KeteranganEn' => 'nullable|string|required_with:KontenEn',
+            'KontenEn' => 'nullable|string|max:255',
+            'KeteranganEn' => 'nullable|string|max:255',
             'Icon' => 'nullable|file|image|max:1024',
         ]);
 
@@ -88,9 +95,8 @@ class KeyFiguresController extends Controller
         $data = [
             'Konten' => $request->Konten,
             'Keterangan' => $request->Keterangan,
-            // Fallback ke Bahasa Indonesia jika kolom English dibiarkan kosong
             'KontenEn' => $request->filled('KontenEn') ? $request->KontenEn : $request->Konten,
-            'KeteranganEn' => $request->filled('KeteranganEn') ? $request->KeteranganEn : $request->Keterangan,
+            'KeteranganEn' => $request->filled('KeteranganEn') ? $request->KeteranganEn : null,
             'Icon' => $iconPath,
             'UserCreate' => auth()->user() ? auth()->user()->name : null,
         ];
@@ -130,8 +136,8 @@ class KeyFiguresController extends Controller
         $request->validate([
             'Konten' => 'required|string|max:255',
             'Keterangan' => 'required|string',
-            'KontenEn' => 'nullable|string|max:255|required_with:KeteranganEn',
-            'KeteranganEn' => 'nullable|string|required_with:KontenEn',
+            'KontenEn' => 'nullable|string|max:255',
+            'KeteranganEn' => 'nullable|string|max:255',
             'Icon' => 'nullable|file|image|max:1024',
         ]);
 
@@ -149,9 +155,8 @@ class KeyFiguresController extends Controller
         $data->update([
             'Konten' => $request->Konten,
             'Keterangan' => $request->Keterangan,
-            // Fallback ke Bahasa Indonesia jika kolom English dibiarkan kosong
             'KontenEn' => $request->filled('KontenEn') ? $request->KontenEn : $request->Konten,
-            'KeteranganEn' => $request->filled('KeteranganEn') ? $request->KeteranganEn : $request->Keterangan,
+            'KeteranganEn' => $request->filled('KeteranganEn') ? $request->KeteranganEn : null,
             'Icon' => $iconPath,
             'UserUpdate' => auth()->user() ? auth()->user()->name : null,
         ]);

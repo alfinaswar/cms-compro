@@ -20,4 +20,16 @@ class KeyFigures extends Model
     protected $table = 'key_figures';
 
     protected $guarded = ['id'];
+
+    public function getKonten($locale = null): string
+    {
+        $locale = $locale ?: app()->getLocale();
+        return ($locale === 'en' && !empty($this->KontenEn)) ? (string)$this->KontenEn : (string)($this->Konten ?? '');
+    }
+
+    public function getKeterangan($locale = null): string
+    {
+        $locale = $locale ?: app()->getLocale();
+        return ($locale === 'en' && !empty($this->KeteranganEn)) ? (string)$this->KeteranganEn : (string)($this->Keterangan ?? '');
+    }
 }

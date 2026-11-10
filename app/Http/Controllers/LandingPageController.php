@@ -8,6 +8,7 @@ use App\Models\HalamanSolusi;
 use App\Models\HeroSlider;
 use App\Models\KeyFigures;
 use App\Models\PengaturanWebsite;
+use App\Models\SecurityTier;
 use App\Models\WhyChooseUs;
 use Illuminate\Http\Request;
 
@@ -27,6 +28,10 @@ class LandingPageController extends Controller
         $KeyFigures = KeyFigures::get();
         $Solution = HalamanSolusi::get();
         $Why = WhyChooseUs::get();
+        $securityTiers = SecurityTier::where('Status', 1)
+            ->orderBy('Urutan', 'asc')
+            ->with('translations')
+            ->get();
         $logo = ClientLogo::with('details')->get();
         $masterProdukList = MasterProduk::whereNull('parent_id')
             ->where('StatusAktif', true)
@@ -36,7 +41,7 @@ class LandingPageController extends Controller
             ->orderBy('Urutan', 'asc')
             ->get();
         // dd($Why);
-        return view('frontend.main-alt', compact('logo', 'heroSliders', 'websiteSettings', 'KeyFigures', 'Solution', 'Why', 'masterProdukList'));
+        return view('frontend.main-alt', compact('logo', 'heroSliders', 'websiteSettings', 'KeyFigures', 'Solution', 'Why', 'securityTiers', 'masterProdukList'));
     }
 
     /**

@@ -65,11 +65,41 @@ class LandingPageSeeder extends Seeder
         // 4. Key Figures
         if (KeyFigures::count() === 0) {
             $figures = [
-                ['Konten' => '1990', 'Keterangan' => 'SINCE 1990', 'Icon' => 'key-figures/icons/5d1AT7lVxLnCtV9KceCcKzaBlcbXHjF41wDTBuhd.png'],
-                ['Konten' => '800', 'Keterangan' => 'OVER 800 EMPLOYEES', 'Icon' => 'key-figures/icons/1K3gsnjK3V3a2wuFSuOlfMs1MknPcaUlvj7nSv9b.png'],
-                ['Konten' => '100', 'Keterangan' => 'Trusted By Over 100 Government Institutions', 'Icon' => 'key-figures/icons/epEM0RtuRcxVzNKxyZ81egdvIMZ7n3mTvL6GDUb0.png'],
-                ['Konten' => '80', 'Keterangan' => 'Trusted By Over 80 Banks', 'Icon' => 'key-figures/icons/3IzDvurNPxvXeqwErSe4sPptEJJUOwnhCYRol5fH.png'],
-                ['Konten' => '9', 'Keterangan' => '9x recognition by Forbes Indonesia & Asia', 'Icon' => 'key-figures/icons/QfpA2bFxnwyADHgkJai6YD15VyghprIQwAyU4Q8s.png'],
+                [
+                    'Konten' => '1990',
+                    'KontenEn' => '1990',
+                    'Keterangan' => 'SEJAK 1990',
+                    'KeteranganEn' => 'SINCE 1990',
+                    'Icon' => 'key-figures/icons/5d1AT7lVxLnCtV9KceCcKzaBlcbXHjF41wDTBuhd.png',
+                ],
+                [
+                    'Konten' => '800',
+                    'KontenEn' => '800',
+                    'Keterangan' => 'LEBIH DARI 800 KARYAWAN',
+                    'KeteranganEn' => 'OVER 800 EMPLOYEES',
+                    'Icon' => 'key-figures/icons/1K3gsnjK3V3a2wuFSuOlfMs1MknPcaUlvj7nSv9b.png',
+                ],
+                [
+                    'Konten' => '100',
+                    'KontenEn' => '100',
+                    'Keterangan' => 'Dipercaya Lebih Dari 100 Institusi Pemerintah',
+                    'KeteranganEn' => 'Trusted By Over 100 Government Institutions',
+                    'Icon' => 'key-figures/icons/epEM0RtuRcxVzNKxyZ81egdvIMZ7n3mTvL6GDUb0.png',
+                ],
+                [
+                    'Konten' => '80',
+                    'KontenEn' => '80',
+                    'Keterangan' => 'Dipercaya Lebih Dari 80 Bank',
+                    'KeteranganEn' => 'Trusted By Over 80 Banks',
+                    'Icon' => 'key-figures/icons/3IzDvurNPxvXeqwErSe4sPptEJJUOwnhCYRol5fH.png',
+                ],
+                [
+                    'Konten' => '9',
+                    'KontenEn' => '9',
+                    'Keterangan' => '9x Pengakuan oleh Forbes Indonesia & Asia',
+                    'KeteranganEn' => '9x Recognition by Forbes Indonesia & Asia',
+                    'Icon' => 'key-figures/icons/QfpA2bFxnwyADHgkJai6YD15VyghprIQwAyU4Q8s.png',
+                ],
             ];
             foreach ($figures as $f) {
                 $f['UserCreate'] = 'System';

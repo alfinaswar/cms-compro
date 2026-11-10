@@ -15,105 +15,24 @@
         // Gabungan logo partner + sertifikasi untuk carousel
         $allLogos = $logo->where('Status', 'Aktif')->sortBy('Urutan');
 
-        // Data statis: Security Tiers (multi-bahasa inline)
-        $tiers = [
-            [
-                'tier' => 'TIER 01',
-                'icon' => 'fa-regular fa-eye',
-                'title' => $locale === 'en' ? 'Overt Security Features' : 'Fitur Keamanan Kasat Mata',
-                'desc' =>
-                    $locale === 'en'
-                        ? 'Visual security elements verifiable without special tools.'
-                        : 'Elemen keamanan visual yang dapat diverifikasi tanpa alat khusus.',
-                'features' => [
-                    [
-                        't' => 'Diffractive OVD Hologram',
-                        'd' =>
-                            $locale === 'en' ? '2D/3D kinetic images & microtext.' : 'Citra kinetik 2D/3D & microtext.',
-                    ],
-                    [
-                        't' => 'Visual Effect Ink / OVI',
-                        'd' =>
-                            $locale === 'en'
-                                ? 'Two-tone color shift when tilted.'
-                                : 'Perubahan warna dua nada saat dimiringkan.',
-                    ],
-                ],
-            ],
-            [
-                'tier' => 'TIER 02',
-                'icon' => 'fa-solid fa-sliders',
-                'title' => $locale === 'en' ? 'Covert Security Features' : 'Fitur Keamanan Tersembunyi',
-                'desc' =>
-                    $locale === 'en'
-                        ? 'Hidden features requiring simple detection tools.'
-                        : 'Fitur tersembunyi yang membutuhkan alat deteksi sederhana.',
-                'features' => [
-                    [
-                        't' => 'Fluorescent Ink / UV',
-                        'd' =>
-                            $locale === 'en'
-                                ? 'Glows under UV & IR wavelengths.'
-                                : 'Menyala di bawah panjang gelombang UV & IR.',
-                    ],
-                    [
-                        't' => 'High-Security Microtext',
-                        'd' =>
-                            $locale === 'en'
-                                ? 'Extremely small repeating text lines.'
-                                : 'Baris teks berulang yang sangat kecil.',
-                    ],
-                ],
-            ],
-            [
-                'tier' => 'TIER 03',
-                'icon' => 'fa-solid fa-qrcode',
-                'title' => $locale === 'en' ? 'Tracking & Traceability System' : 'Sistem Pelacakan & Rekam Jejak',
-                'desc' =>
-                    $locale === 'en'
-                        ? 'Machine-readable numbering for authentication & integration.'
-                        : 'Penomoran machine-readable untuk autentikasi & integrasi.',
-                'features' => [
-                    [
-                        't' => 'Serialization & QR Cryptoglyph',
-                        'd' =>
-                            $locale === 'en'
-                                ? 'Unique code per document, tamper-proof.'
-                                : 'Kode unik per dokumen, anti-pemalsuan.',
-                    ],
-                    [
-                        't' => 'RFID & NFC Auto Sync',
-                        'd' =>
-                            $locale === 'en' ? 'Real-time chip data verification.' : 'Verifikasi data chip real-time.',
-                    ],
-                ],
-            ],
-            [
-                'tier' => 'TIER 04',
-                'icon' => 'fa-solid fa-fingerprint',
-                'title' => $locale === 'en' ? 'Special & Forensic Security' : 'Fitur Keamanan Khusus & Forensik',
-                'desc' =>
-                    $locale === 'en'
-                        ? 'Laboratory-level features for legal enforcement.'
-                        : 'Fitur tingkat laboratorium untuk penegakan hukum.',
-                'features' => [
-                    [
-                        't' => 'Simulant Chemical Taggant',
-                        'd' =>
-                            $locale === 'en'
-                                ? 'Micro-chemistry unique to each institution.'
-                                : 'Mikro-kimia unik per institusi.',
-                    ],
-                    [
-                        't' => 'Kripto / SAM Enclaves',
-                        'd' =>
-                            $locale === 'en'
-                                ? 'Cryptographic keys in secure hardware.'
-                                : 'Kunci kriptografi dalam hardware aman.',
-                    ],
-                ],
-            ],
-        ];
+        // Data Security Tiers (Dinamis dari DB)
+        $tierSource = isset($securityTiers) && $securityTiers->isNotEmpty()
+            ? $securityTiers
+            : \App\Models\SecurityTier::where('Status', 1)->orderBy('Urutan', 'asc')->with('translations')->get();
+
+        $tiers = $tierSource->map(function ($st) use ($locale) {
+            $trans = $st->translate($locale);
+            if (empty($trans->Judul) && $locale !== 'id') {
+                $trans = $st->translate('id');
+            }
+            return [
+                'tier' => $st->NomorTier ?? '01',
+                'icon' => $st->Icon ?: 'fa-regular fa-eye',
+                'title' => $trans->Judul ?? '',
+                'desc' => $trans->Deskripsi ?? '',
+                'features' => is_array($trans->Features) ? $trans->Features : [],
+            ];
+        })->toArray();
 
         // Data statis: Kapabilitas
         $capabilities = [
@@ -404,12 +323,8 @@
                     class="grid grid-cols-2 md:grid-cols-{{ min($figureCount, 5) }} gap-8 text-center divide-x-0 md:divide-x divide-slate-100">
                     @foreach ($KeyFigures as $figure)
                         @php
-                            $fKonten =
-                                $locale === 'en' && !empty($figure->KontenEn) ? $figure->KontenEn : $figure->Konten;
-                            $fKeterangan =
-                                $locale === 'en' && !empty($figure->KeteranganEn)
-                                    ? $figure->KeteranganEn
-                                    : $figure->Keterangan;
+                            $fKonten = $figure->getKonten($locale);
+                            $fKeterangan = $figure->getKeterangan($locale);
                         @endphp
                         <div class="flex flex-col items-center">
                             <div class="w-10 h-10 rounded-lg bg-brand-50 flex items-center justify-center mb-3">
@@ -468,13 +383,7 @@
                             @endif
                         </div>
                         <div class="p-7 flex flex-col flex-grow">
-                            <div class="flex items-start justify-between mb-3">
-                                <h3 class="text-xl font-bold text-slate-900">{{ $sJudul }}</h3>
-                                <div
-                                    class="w-9 h-9 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center flex-shrink-0 ml-3">
-                                    <i class="fa-solid fa-arrow-right text-sm"></i>
-                                </div>
-                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 mb-3">{{ $sJudul }}</h3>
                             <p class="text-sm text-slate-600 leading-relaxed mb-[40px]">{{ $sDeskripsi }}</p>
 
                             <ul class="space-y-3 mb-[60px]">
@@ -570,20 +479,21 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 @foreach ($tiers as $idx => $t)
-                    @php
-                        // Sesuai gambar referensi: Tier 01 pill gelap (navy), Tier 02-04 pill soft blue
-                        $isFirst = $idx === 0;
-                        $pillClass = $isFirst ? 'bg-[#182338] text-white' : 'bg-blue-50/90 text-blue-600 border border-blue-100';
-                    @endphp
                     <div
                         class="bg-white border border-slate-200/80 rounded-2xl p-6 md:p-7 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col justify-between">
                         <div>
-                            {{-- Header Card: Badge Tier & Icon --}}
+                            {{-- Header Card: Nomor & Icon --}}
                             <div class="flex items-center justify-between mb-5">
-                                <span class="text-[11px] font-bold tracking-wider px-3 py-1 rounded {{ $pillClass }}">
+                                <span class="text-base font-extrabold tracking-wider text-blue-600">
                                     {{ $t['tier'] }}
                                 </span>
-                                <i class="{{ $t['icon'] }} text-lg text-slate-800"></i>
+                                @if(!empty($t['icon']))
+                                    @if(\Illuminate\Support\Str::startsWith($t['icon'], 'fa-') || \Illuminate\Support\Str::contains($t['icon'], 'fa-'))
+                                        <i class="{{ $t['icon'] }} text-lg text-slate-800"></i>
+                                    @else
+                                        <img src="{{ asset('storage/' . $t['icon']) }}" alt="Icon Tier {{ $t['tier'] }}" class="w-7 h-7 object-contain">
+                                    @endif
+                                @endif
                             </div>
 
                             {{-- Title & Desc --}}

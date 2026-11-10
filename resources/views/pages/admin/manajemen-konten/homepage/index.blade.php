@@ -77,6 +77,10 @@
                 border-top: 4px solid var(--accent-green);
             }
 
+            .card-modern.border-accent-indigo {
+                border-top: 4px solid #6366f1;
+            }
+
             .card-modern.border-accent-orange {
                 border-top: 4px solid var(--accent-orange);
             }
@@ -125,6 +129,11 @@
 
             .card-header-icon.bg-green {
                 background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                color: #fff;
+            }
+
+            .card-header-icon.bg-indigo {
+                background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
                 color: #fff;
             }
 
@@ -363,6 +372,47 @@
                                 <th>Slug</th>
                                 <th>Konten</th>
                                 <th style="width: 120px;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            {{-- ============================================
+             LAPISAN KEAMANAN (SECURITY TIERS)
+             ============================================ --}}
+            <div class="card-modern border-accent-indigo">
+                <div class="card-header-modern">
+                    <div class="card-header-left">
+                        <div class="card-header-icon bg-indigo">
+                            <i class="fa fa-shield-alt"></i>
+                        </div>
+                        <div class="card-header-info">
+                            <h3>Arsitektur Keamanan (Security Tiers)</h3>
+                            <p>Manajemen tingkat keamanan bertingkat (Tier 01 - 04) beserta sub-fitur multi-bahasa.</p>
+                        </div>
+                    </div>
+                    @can('homepage.create')
+                    <a href="{{ route('security-tier.create') }}" class="btn-modern btn-modern-primary">
+                        <i class="fa fa-plus"></i> Tambah Lapisan Keamanan
+                    </a>
+                    @endcan
+                </div>
+
+                <div class="card-body-table">
+                    <table id="tableSecurityTier" class="table table-bordered table-striped" style="width: 100%;">
+                        <thead class="bg-light">
+                            <tr>
+                                <th style="width: 5%" class="text-center">No</th>
+                                <th style="width: 8%" class="text-center">Tier</th>
+                                <th style="width: 8%" class="text-center">Icon</th>
+                                <th style="width: 20%">Judul</th>
+                                <th style="width: 22%">Deskripsi</th>
+                                <th style="width: 20%">Sub-Fitur</th>
+                                <th style="width: 5%" class="text-center">Urutan</th>
+                                <th style="width: 5%" class="text-center">Status</th>
+                                <th style="width: 7%" class="text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -760,6 +810,90 @@
                             error: function(xhr) {
                                 Swal.fire('Gagal!', xhr.responseJSON?.message ??
                                     'Terjadi kesalahan.', 'error');
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+    {{-- LAPISAN KEAMANAN (SECURITY TIERS) --}}
+    <script>
+        $(document).ready(function() {
+            var tableSecurityTier = $('#tableSecurityTier').DataTable({
+                responsive: true,
+                serverSide: true,
+                processing: true,
+                bDestroy: true,
+                ajax: {
+                    url: "{{ route('security-tier.index') }}"
+                },
+                language: {
+                    processing: '<i class="fa fa-spinner fa-spin fa-2x fa-fw"></i><span class="sr-only">Memuat...</span>',
+                    emptyTable: 'Tidak ada data Lapisan Keamanan',
+                    info: 'Menampilkan _START_ sampai _END_ dari _TOTAL_ data',
+                    search: 'Cari:',
+                    paginate: {
+                        next: '<i class="fa fa-angle-right"></i>',
+                        previous: '<i class="fa fa-angle-left"></i>'
+                    }
+                },
+                columns: [
+                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center' },
+                    { data: 'NomorTier', name: 'NomorTier', className: 'text-center' },
+                    { data: 'Icon', name: 'Icon', className: 'text-center' },
+                    { data: 'Judul', name: 'Judul' },
+                    { data: 'Deskripsi', name: 'Deskripsi' },
+                    { data: 'SubFitur', name: 'SubFitur' },
+                    { data: 'Urutan', name: 'Urutan', className: 'text-center' },
+                    { data: 'status', name: 'status', className: 'text-center' },
+                    { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center' }
+                ],
+                order: [
+                    [6, 'asc']
+                ]
+            });
+
+            $('#tableSecurityTier').on('click', '.btn-delete-tier', function() {
+                var id = $(this).data('id');
+                Swal.fire({
+                    title: 'Hapus Lapisan Keamanan?',
+                    html: 'Apakah Anda yakin ingin menghapus data lapisan keamanan ini?<br><small class="text-muted">Data yang dihapus tidak bisa dikembalikan.</small>',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true,
+                    confirmButtonColor: '#dc3545'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Menghapus...',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        $.ajax({
+                            url: "{{ url('admin/pengaturan/landing-page/security-tier') }}/" + id,
+                            type: 'DELETE',
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(res) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil!',
+                                    text: res.message,
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+                                tableSecurityTier.ajax.reload();
+                            },
+                            error: function(xhr) {
+                                Swal.fire('Gagal!', xhr.responseJSON?.message ?? 'Terjadi kesalahan.', 'error');
                             }
                         });
                     }
