@@ -16,23 +16,26 @@
         $allLogos = $logo->where('Status', 'Aktif')->sortBy('Urutan');
 
         // Data Security Tiers (Dinamis dari DB)
-        $tierSource = isset($securityTiers) && $securityTiers->isNotEmpty()
-            ? $securityTiers
-            : \App\Models\SecurityTier::where('Status', 1)->orderBy('Urutan', 'asc')->with('translations')->get();
+        $tierSource =
+            isset($securityTiers) && $securityTiers->isNotEmpty()
+                ? $securityTiers
+                : \App\Models\SecurityTier::where('Status', 1)->orderBy('Urutan', 'asc')->with('translations')->get();
 
-        $tiers = $tierSource->map(function ($st) use ($locale) {
-            $trans = $st->translate($locale);
-            if (empty($trans->Judul) && $locale !== 'id') {
-                $trans = $st->translate('id');
-            }
-            return [
-                'tier' => $st->NomorTier ?? '01',
-                'icon' => $st->Icon ?: 'fa-regular fa-eye',
-                'title' => $trans->Judul ?? '',
-                'desc' => $trans->Deskripsi ?? '',
-                'features' => is_array($trans->Features) ? $trans->Features : [],
-            ];
-        })->toArray();
+        $tiers = $tierSource
+            ->map(function ($st) use ($locale) {
+                $trans = $st->translate($locale);
+                if (empty($trans->Judul) && $locale !== 'id') {
+                    $trans = $st->translate('id');
+                }
+                return [
+                    'tier' => $st->NomorTier ?? '01',
+                    'icon' => $st->Icon ?: 'fa-regular fa-eye',
+                    'title' => $trans->Judul ?? '',
+                    'desc' => $trans->Deskripsi ?? '',
+                    'features' => is_array($trans->Features) ? $trans->Features : [],
+                ];
+            })
+            ->toArray();
 
         // Data statis: Kapabilitas
         $capabilities = [
@@ -214,7 +217,7 @@
                             @endif
                             {{-- Overlay navy agar teks terbaca --}}
                             <div
-                                class="absolute inset-0 z-10 pointer-events-none bg-gradient-to-b from-[#0B192E] via-[#0B192E]/85 to-[#0B192E]/54">
+                                class="absolute inset-0 z-10 pointer-events-none bg-gradient-to-b from-[#0B192E] via-[#0B192E]/0 to-[#0B192E]/0">
                             </div>
                         </div>
 
@@ -458,8 +461,8 @@
         {{-- Aksen polygonal diagonal tipis di latar belakang seperti di referensi --}}
         <div class="absolute inset-0 pointer-events-none opacity-40">
             <svg class="w-full h-full" viewBox="0 0 1440 800" fill="none" preserveAspectRatio="none">
-                <path d="M-100 0 L450 800 L-100 800 Z" fill="#E2E8F0" opacity="0.6"/>
-                <path d="M1200 800 L1600 700 L1600 800 Z" fill="#E2E8F0" opacity="0.5"/>
+                <path d="M-100 0 L450 800 L-100 800 Z" fill="#E2E8F0" opacity="0.6" />
+                <path d="M1200 800 L1600 700 L1600 800 Z" fill="#E2E8F0" opacity="0.5" />
             </svg>
         </div>
 
@@ -479,6 +482,13 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 @foreach ($tiers as $idx => $t)
+                    @php
+                        // Sesuai gambar referensi: Tier 01 pill gelap (navy), Tier 02-04 pill soft blue
+                        $isFirst = $idx === 0;
+                        $pillClass = $isFirst
+                            ? 'bg-[#182338] text-white'
+                            : 'bg-blue-50/90 text-blue-600 border border-blue-100';
+                    @endphp
                     <div
                         class="bg-white border border-slate-200/80 rounded-2xl p-6 md:p-7 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all flex flex-col justify-between">
                         <div>
@@ -487,11 +497,12 @@
                                 <span class="text-base font-extrabold tracking-wider text-blue-600">
                                     {{ $t['tier'] }}
                                 </span>
-                                @if(!empty($t['icon']))
-                                    @if(\Illuminate\Support\Str::startsWith($t['icon'], 'fa-') || \Illuminate\Support\Str::contains($t['icon'], 'fa-'))
+                                @if (!empty($t['icon']))
+                                    @if (\Illuminate\Support\Str::startsWith($t['icon'], 'fa-') || \Illuminate\Support\Str::contains($t['icon'], 'fa-'))
                                         <i class="{{ $t['icon'] }} text-lg text-slate-800"></i>
                                     @else
-                                        <img src="{{ asset('storage/' . $t['icon']) }}" alt="Icon Tier {{ $t['tier'] }}" class="w-7 h-7 object-contain">
+                                        <img src="{{ asset('storage/' . $t['icon']) }}"
+                                            alt="Icon Tier {{ $t['tier'] }}" class="w-7 h-7 object-contain">
                                     @endif
                                 @endif
                             </div>
@@ -557,7 +568,8 @@
                     @endphp
                     <div
                         class="bg-slate-50 border border-slate-200 rounded-xl p-6 text-left hover:border-brand-300 hover:bg-white hover:shadow-lg transition-all duration-300">
-                        <div class="w-11 h-11 rounded-lg bg-brand-100 text-brand-600 flex items-center justify-center mb-4">
+                        <div
+                            class="w-11 h-11 rounded-lg bg-brand-100 text-brand-600 flex items-center justify-center mb-4">
                             @if (!empty($item->Icon) && \Illuminate\Support\Str::startsWith($item->Icon, 'fa-'))
                                 <i class="{{ $item->Icon }} text-lg"></i>
                             @elseif($showImg)
@@ -675,7 +687,8 @@
                         $fTrans = $featured->translate($locale);
                     @endphp
                     <div class="lg:col-span-2">
-                        <div class="bg-white border border-slate-200/90 rounded-2xl p-8 h-full flex flex-col relative overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                        <div
+                            class="bg-white border border-slate-200/90 rounded-2xl p-8 h-full flex flex-col relative overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                             <div class="relative z-10 flex flex-col h-full">
                                 <div class="flex items-center justify-between mb-5">
                                     <span
@@ -773,7 +786,8 @@
                     <div>
                         <span
                             class="inline-block mb-4 text-[11px] font-bold text-[#0F2854] px-3 py-1 bg-blue-50 border border-blue-100 rounded-full">
-                            <i class="fa-solid fa-file-signature mr-1.5 text-blue-600"></i> {{ __('Permintaan & Penawaran (RFQ)') }}
+                            <i class="fa-solid fa-file-signature mr-1.5 text-blue-600"></i>
+                            {{ __('Permintaan & Penawaran (RFQ)') }}
                         </span>
 
                         <h2 class="text-3xl md:text-4xl font-extrabold text-[#111827] leading-tight mb-4">
@@ -816,7 +830,8 @@
                                 <div>
                                     <p class="text-sm font-bold text-slate-900 mb-0.5">
                                         {{ __('Official Physical Sample Delivery') }}</p>
-                                    <p class="text-xs text-slate-500 leading-relaxed">We send specimen samples of security documents for
+                                    <p class="text-xs text-slate-500 leading-relaxed">We send specimen samples of security
+                                        documents for
                                         your
                                         evaluation.</p>
                                 </div>
@@ -837,10 +852,12 @@
                 {{-- Right: Form --}}
                 <div class="relative z-10 flex flex-col h-full">
                     <div class="flex-1 flex flex-col">
-                        <div class="bg-slate-50/80 border border-slate-200/90 rounded-2xl p-7 flex flex-col h-full shadow-inner">
+                        <div
+                            class="bg-slate-50/80 border border-slate-200/90 rounded-2xl p-7 flex flex-col h-full shadow-inner">
                             <div class="flex items-center justify-between mb-5">
                                 <h3 class="text-lg font-extrabold text-slate-900">{{ __('Quotation Form') }}</h3>
-                                <span class="text-[10px] font-bold text-emerald-800 bg-emerald-100 border border-emerald-200/60 px-2.5 py-1 rounded-full"><i
+                                <span
+                                    class="text-[10px] font-bold text-emerald-800 bg-emerald-100 border border-emerald-200/60 px-2.5 py-1 rounded-full"><i
                                         class="fa-solid fa-bolt mr-1"></i>{{ __('Fast Response < 24 Hours') }}</span>
                             </div>
 
@@ -876,25 +893,43 @@
                                         @if (isset($masterProdukList) && count($masterProdukList) > 0)
                                             @foreach ($masterProdukList as $top)
                                                 @php
-                                                    $topTitle = $locale === 'en' && !empty($top->NamaTranslate) ? $top->NamaTranslate : $top->Nama;
+                                                    $topTitle =
+                                                        $locale === 'en' && !empty($top->NamaTranslate)
+                                                            ? $top->NamaTranslate
+                                                            : $top->Nama;
                                                 @endphp
                                                 @if ($top->activeChildren->count() > 0)
                                                     <optgroup label="{{ $topTitle }}">
                                                         @foreach ($top->activeChildren as $sub)
                                                             @php
-                                                                $subTitle = $locale === 'en' && !empty($sub->NamaTranslate) ? $sub->NamaTranslate : $sub->Nama;
+                                                                $subTitle =
+                                                                    $locale === 'en' && !empty($sub->NamaTranslate)
+                                                                        ? $sub->NamaTranslate
+                                                                        : $sub->Nama;
                                                             @endphp
                                                             @if ($sub->activeChildren->count() > 0)
-                                                                <option value="{{ $topTitle }} - {{ $subTitle }}" class="font-semibold text-slate-900" disabled>
+                                                                <option
+                                                                    value="{{ $topTitle }} - {{ $subTitle }}"
+                                                                    class="font-semibold text-slate-900" disabled>
                                                                     &nbsp;&nbsp;▸ {{ $subTitle }}
                                                                 </option>
                                                                 @foreach ($sub->activeChildren as $subSub)
                                                                     @php
-                                                                        $subSubTitle = $locale === 'en' && !empty($subSub->NamaTranslate) ? $subSub->NamaTranslate : $subSub->Nama;
-                                                                        $fullVal = $topTitle . ' - ' . $subTitle . ' - ' . $subSubTitle;
+                                                                        $subSubTitle =
+                                                                            $locale === 'en' &&
+                                                                            !empty($subSub->NamaTranslate)
+                                                                                ? $subSub->NamaTranslate
+                                                                                : $subSub->Nama;
+                                                                        $fullVal =
+                                                                            $topTitle .
+                                                                            ' - ' .
+                                                                            $subTitle .
+                                                                            ' - ' .
+                                                                            $subSubTitle;
                                                                     @endphp
                                                                     <option value="{{ $fullVal }}">
-                                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;• {{ $subSubTitle }}
+                                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;•
+                                                                        {{ $subSubTitle }}
                                                                     </option>
                                                                 @endforeach
                                                             @else
@@ -948,7 +983,8 @@
 
                                 <button type="submit"
                                     class="w-full flex items-center justify-center px-6 py-3.5 bg-[#0F2854] hover:bg-[#163a75] active:bg-[#0c1f42] text-white text-sm font-semibold rounded-lg transition-all shadow-md shadow-[#0F2854]/20 mt-auto">
-                                    {{ __('Send Quotation Request (RFQ)') }} <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                                    {{ __('Send Quotation Request (RFQ)') }} <i
+                                        class="fa-solid fa-arrow-right ml-2 text-xs"></i>
                                 </button>
                                 <p class="text-[10px] text-slate-500 text-center mt-3 leading-relaxed">
                                     {{ __('Your data will be processed confidentially and used only for the quotation process.') }}
