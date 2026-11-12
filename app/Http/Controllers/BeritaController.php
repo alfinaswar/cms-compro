@@ -679,7 +679,7 @@ class BeritaController extends Controller
                     'thumbnail' => $article->PathThumbnail
                         ? asset('storage/' . $article->PathThumbnail)
                         : null,
-                    'url' => route('frontend.detail', ['slug' => $article->Slug]),
+                    'url' => \App\Services\LocalizedUrlService::route('frontend.detail', ['slug' => $article->Slug], $locale),
                 ];
             });
 

@@ -277,7 +277,7 @@ class AboutUsController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Terima kasih, data Anda telah tercatat.',
+            'message' => __('Thank you, your data has been recorded.'),
             'download_url' => $downloadUrl,
         ]);
     }

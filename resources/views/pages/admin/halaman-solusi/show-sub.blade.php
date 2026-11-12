@@ -32,7 +32,7 @@
         <style>
             .solusi-content {
                 font-size: 1.0625rem;
-                line-height: 1.85;
+                line-height: 1.4em;
                 color: #475569;
             }
             .solusi-content h2, .solusi-content h3, .solusi-content h4 { color: #0f172a; font-weight: 700; margin: 2rem 0 .75rem; line-height: 1.3; }
@@ -91,7 +91,7 @@
                     <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
                     <span>{{ __('Solutions') }}</span>
                     <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
-                    <a href="{{ route('halaman-solusi.show', ['locale' => $locale, 'id' => $halamanSolusi->Slug]) }}"
+                    <a href="{{ \App\Services\LocalizedUrlService::route('halaman-solusi.show', ['id' => $halamanSolusi->Slug], $locale) }}"
                         class="hover:text-white transition-colors truncate max-w-[200px]">{{ Str::limit($halamanSolusi->t('Judul'), 30) }}</a>
                     <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
                     <span class="text-white font-semibold truncate max-w-[200px]">{{ Str::limit($subpage->t('Judul'), 30) }}</span>
@@ -406,11 +406,11 @@
                     </p>
 
                     <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                        <a href="{{ route('frontend.contact.index') }}"
+                        <a href="{{ \App\Services\LocalizedUrlService::route('frontend.contact.index', [], $locale) }}"
                             class="inline-flex items-center justify-center px-8 py-4 bg-brand-600 hover:bg-brand-500 text-white text-sm font-bold rounded-lg transition-all shadow-lg shadow-brand-600/30">
                             <i class="fa-solid fa-paper-plane mr-2"></i> {{ __('Request Quotation') }}
                         </a>
-                        <a href="{{ route('halaman-solusi.show', ['locale' => $locale, 'id' => $halamanSolusi->Slug]) }}"
+                        <a href="{{ \App\Services\LocalizedUrlService::route('halaman-solusi.show', ['id' => $halamanSolusi->Slug], $locale) }}"
                             class="inline-flex items-center justify-center px-8 py-4 border-2 border-white/30 text-white hover:bg-white/10 text-sm font-bold rounded-lg transition-all">
                             <i class="fa-solid fa-arrow-left mr-2"></i> {{ __('Back to Solutions') }}
                         </a>

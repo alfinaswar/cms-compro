@@ -42,8 +42,8 @@
 
         .select2-container--default .select2-selection--single .select2-selection__rendered {
             color: #334155 !important; /* text-slate-700 */
-            font-size: 0.875rem !important; /* text-sm */
-            line-height: normal !important;
+            font-size: 1rem !important;
+            line-height: 1.4em !important;
             padding-left: 0 !important;
             padding-right: 0 !important;
             width: 100% !important;
@@ -93,7 +93,8 @@
             border: 1px solid #cbd5e1 !important;
             border-radius: 0.5rem !important;
             padding: 8px 12px !important;
-            font-size: 0.875rem !important;
+            font-size: 1rem !important;
+            line-height: 1.4em !important;
             outline: none !important;
             background-color: #ffffff !important;
             width: 100% !important;
@@ -121,7 +122,8 @@
 
         .select2-results__option {
             padding: 9px 16px !important;
-            font-size: 0.875rem !important;
+            font-size: 1rem !important;
+            line-height: 1.4em !important;
             color: #334155 !important;
             transition: all 0.15s ease !important;
         }
@@ -262,7 +264,7 @@
                 </p>
 
                 <nav class="mt-8 flex items-center justify-center space-x-2 text-sm text-slate-300">
-                    <a href="{{ route('frontend.main') }}" class="hover:text-white transition-colors">
+                    <a href="{{ \App\Services\LocalizedUrlService::route('frontend.main', [], $contactLocale) }}" class="hover:text-white transition-colors">
                         <i class="fa-solid fa-house mr-1"></i> {{ __('Home') }}
                     </a>
                     <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
@@ -603,7 +605,7 @@
                             </div>
                         </div>
 
-                        <form id="contactForm" action="{{ route('frontend.contact.store') }}" method="POST">
+                        <form id="contactForm" action="{{ \App\Services\LocalizedUrlService::route('frontend.contact.store', [], $contactLocale) }}" method="POST">
                             @csrf
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">

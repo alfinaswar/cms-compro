@@ -35,7 +35,59 @@ class LocalizedUrlService
     public const PREFIX_MAP = [
         'berita' => 'news',
         'solusi' => 'solutions',
+        'karir' => 'career',
+        'halaman' => 'page',
     ];
+
+    /**
+     * Map canonical ID route names to EN route names.
+     * Format: 'id_route_name' => 'en_route_name'
+     */
+    public const ROUTE_LOCALE_MAP = [
+        'frontend.news.id' => 'frontend.news',
+        'frontend.detail.id' => 'frontend.detail',
+        'frontend.halaman-custom' => 'frontend.halaman-custom.en',
+        'frontend.laporan-keuangan' => 'frontend.laporan-keuangan.en',
+        'frontend.investor.informasi-finansial' => 'frontend.investor.informasi-finansial.en',
+        'frontend.investor.tata-kelola' => 'frontend.investor.tata-kelola.en',
+        'frontend.investor.informasi-lainnya' => 'frontend.investor.informasi-lainnya.en',
+        'frontend.investor.wbs.store' => 'frontend.investor.wbs.store.en',
+        'frontend.investor.permintaan-dokumen.store' => 'frontend.investor.permintaan-dokumen.store.en',
+        'frontend.about-us.id' => 'frontend.about-us',
+        'frontend.career.id' => 'frontend.career',
+        'frontend.career.detail.id' => 'frontend.career.detail',
+        'frontend.contact.index.id' => 'frontend.contact.index',
+        'halaman-solusi.show' => 'halaman-solusi.show.en',
+        'halaman-solusi.sub-show' => 'halaman-solusi.sub-show.en',
+        'frontend.sitemap' => 'frontend.sitemap.en',
+    ];
+
+    /**
+     * Resolve the canonical route name for a given route name and locale.
+     */
+    public static function routeName(string $routeName, ?string $locale = null): string
+    {
+        $locale = $locale ?? app()->getLocale();
+        if ($locale === 'en') {
+            return self::ROUTE_LOCALE_MAP[$routeName] ?? $routeName;
+        }
+        $reverse = array_flip(self::ROUTE_LOCALE_MAP);
+        return $reverse[$routeName] ?? $routeName;
+    }
+
+    /**
+     * Generate a canonical localized URL for a named route.
+     */
+    public static function route(string $routeName, array $params = [], ?string $locale = null): string
+    {
+        $locale = $locale ?? app()->getLocale();
+        $resolvedName = self::routeName($routeName, $locale);
+        $params['locale'] = $locale;
+        if ($resolvedName === 'static-pages.show' && !empty($params['slug'])) {
+            $params['slug'] = self::localizeSubPath((string) $params['slug'], $locale);
+        }
+        return route($resolvedName, $params);
+    }
 
     /**
      * Localize a path (after the locale segment) to the desired target locale.

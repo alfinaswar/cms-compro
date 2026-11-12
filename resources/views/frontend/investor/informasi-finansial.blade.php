@@ -257,21 +257,21 @@
                                     <div class="inline-flex p-1 bg-slate-100 rounded-xl border border-slate-200 gap-1" id="filter-ownership-btns">
                                         <button type="button" data-filter="all"
                                             class="filter-ownership-btn px-3 py-1 rounded-lg text-xs font-bold transition-all bg-[#0099ff] text-white shadow-2xs">
-                                            Semua
+                                            {{ __('investor.subs_filter_all') }}
                                         </button>
                                         <button type="button" data-filter="nasional"
                                             class="filter-ownership-btn px-3 py-1 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all">
-                                            Pemodal Nasional
+                                            {{ __('Domestic Investors') }}
                                         </button>
                                         <button type="button" data-filter="asing"
                                             class="filter-ownership-btn px-3 py-1 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all">
-                                            Pemodal Asing
+                                            {{ __('Foreign Investors') }}
                                         </button>
                                     </div>
                                 </div>
                                 <div class="relative w-full sm:w-64">
                                     <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                                    <input type="text" id="search-ownership" placeholder="Cari kategori pemegang saham..."
+                                    <input type="text" id="search-ownership" placeholder="{{ __('Search shareholder categories...') }}"
                                         class="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-700 focus:bg-white focus:border-[#0099ff] outline-none transition-all">
                                 </div>
                             </div>
@@ -543,29 +543,29 @@
                                             <th class="py-3.5 px-4 min-w-[200px]">
                                                 <button type="button" onclick="sortEntitasTable('nama')"
                                                     class="inline-flex items-center gap-1.5 font-bold uppercase hover:text-[#0099ff] transition-colors focus:outline-none">
-                                                    <span>Nama Entitas</span>
+                                                    <span>{{ __('Entity Name') }}</span>
                                                     <i id="sortIconNama" class="fa-solid fa-sort text-xs text-slate-400"></i>
                                                 </button>
                                             </th>
-                                            <th class="py-3.5 px-4 min-w-[120px]">Tipe Entitas</th>
+                                            <th class="py-3.5 px-4 min-w-[120px]">{{ __('Entity Type') }}</th>
                                             <th class="py-3.5 px-4 min-w-[150px]">
                                                 <button type="button" onclick="sortEntitasTable('tahun')"
                                                     class="inline-flex items-center gap-1.5 font-bold uppercase text-[#0099ff] hover:text-[#0099ff] transition-colors focus:outline-none"
-                                                    title="Tahun resmi bergabung atau didirikan dalam kelompok usaha perseroan">
-                                                    <span>Tahun Bergabung / Pendirian</span>
+                                                    title="{{ __('Official year joined or established in the corporate group') }}">
+                                                    <span>{{ __('Year Joined / Established') }}</span>
                                                     <i id="sortIconTahun" class="fa-solid fa-sort-up text-xs text-[#0099ff]"></i>
                                                 </button>
                                             </th>
-                                            <th class="py-3.5 px-4 min-w-[120px]">Domisili</th>
-                                            <th class="py-3.5 px-4 min-w-[220px]">Bidang Usaha</th>
+                                            <th class="py-3.5 px-4 min-w-[120px]">{{ __('Domicile') }}</th>
+                                            <th class="py-3.5 px-4 min-w-[220px]">{{ __('Line of Business') }}</th>
                                             <th class="py-3.5 px-4 text-right min-w-[170px]">
                                                 <button type="button" onclick="sortEntitasTable('persen')"
                                                     class="inline-flex items-center gap-1.5 font-bold uppercase hover:text-[#0099ff] transition-colors focus:outline-none">
-                                                    <span>Kepemilikan Saham</span>
+                                                    <span>{{ __('investor.subs_ownership_label') }}</span>
                                                     <i id="sortIconPersen" class="fa-solid fa-sort text-xs text-slate-400"></i>
                                                 </button>
                                             </th>
-                                            <th class="py-3.5 px-4 text-center w-24">Tautan</th>
+                                            <th class="py-3.5 px-4 text-center w-24">{{ __('Link') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody id="entitas-tbody" class="divide-y divide-slate-100">
@@ -589,7 +589,7 @@
                                                     @if ($anak->TahunBergabung)
                                                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-semibold text-[11px]">
                                                             <i class="fa-regular fa-calendar text-[10px] text-slate-400"></i>
-                                                            Tahun {{ $anak->TahunBergabung }}
+                                                            {{ __('investor.other_s2_year_prefix') }} {{ $anak->TahunBergabung }}
                                                         </span>
                                                     @else
                                                         <span class="text-slate-400">-</span>
@@ -619,7 +619,7 @@
                                                     @if ($anak->UrlWebsite)
                                                         <a href="{{ $anak->UrlWebsite }}" target="_blank"
                                                             class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-blue-50 text-[#0051d5] hover:bg-[#0099ff] hover:text-white transition-colors"
-                                                            title="Kunjungi Website">
+                                                            title="{{ __('investor.subs_visit_website') }}">
                                                             <i class="fa-solid fa-arrow-up-right-from-square text-[11px]"></i>
                                                         </a>
                                                     @else
@@ -630,7 +630,7 @@
                                         @empty
                                             <tr>
                                                 <td colspan="8" class="text-center py-8 text-slate-400">
-                                                    Belum ada data entitas anak yang terdaftar.
+                                                    {{ __('No subsidiary data registered yet.') }}
                                                 </td>
                                             </tr>
                                         @endforelse
@@ -648,7 +648,7 @@
                             <p class="text-xs md:text-sm text-sky-100 max-w-xl">{{ __('investor.cta_desc') }}</p>
                         </div>
                         <div class="flex flex-wrap gap-3">
-                            <a href="{{ route('frontend.contact.index', ['locale' => app()->getLocale()]) }}"
+                            <a href="{{ \App\Services\LocalizedUrlService::route('frontend.contact.index') }}"
                                 class="px-6 py-2.5 rounded-xl bg-white text-[#0a557a] hover:bg-sky-50 font-bold text-xs transition-colors shadow-sm whitespace-nowrap">
                                 {{ __('Contact Us') }}
                             </a>
@@ -799,7 +799,7 @@
                     container.innerHTML = `
                         <div class="p-12 text-center bg-white rounded-2xl border border-slate-200/80 shadow-sm">
                             <i class="fa-solid fa-circle-notch fa-spin text-2xl text-[#0099ff] mb-2"></i>
-                            <p class="text-xs text-slate-500">Memuat data periode ${bulan} ${tahun}...</p>
+                            <p class="text-xs text-slate-500">${@json(__('Loading period data'))} ${bulan} ${tahun}...</p>
                         </div>`;
                 }
 
@@ -825,7 +825,7 @@
                     })
                     .catch(() => {
                         if (container) container.innerHTML = originalContent;
-                        alert('Gagal memuat data kepemilikan. Silakan coba lagi.');
+                        alert(@json(__('Failed to load ownership data. Please try again.')));
                     });
             };
 

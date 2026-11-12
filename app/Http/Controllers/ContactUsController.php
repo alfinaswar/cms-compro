@@ -170,7 +170,7 @@ class ContactUsController extends Controller
         }
         return response()->json([
             'success' => true,
-            'message' => 'Pesan Anda telah berhasil terkirim. Terima kasih telah menghubungi kami!'
+            'message' => __('Your message has been sent successfully. Thank you for contacting us!')
         ]);
     }
     /**

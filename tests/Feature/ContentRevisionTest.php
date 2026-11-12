@@ -30,13 +30,13 @@ class ContentRevisionTest extends TestCase
         // EN
         $resEn = $this->get('/en/');
         $resEn->assertStatus(200);
-        $resEn->assertSee('Perusahaan Berbasis Teknologi');
-        $resEn->assertSee('Keamanan Tanpa Kompromi');
+        $resEn->assertSee('Technology-Driven Company');
+        $resEn->assertSee('Why Choose Us?');
         $resEn->assertSee('Physical Security Products');
         $resEn->assertSee('Our Services');
         $resEn->assertSee('We Build Security Into Every Layer');
         $resEn->assertSee('Multi-Layer Security');
-        $resEn->assertSee('Latest News &amp; knowledges', false);
+        $resEn->assertSee('Latest News &amp; Insights', false);
         $resEn->assertSee('Latest updates');
         $resEn->assertSee("Let&#039;s Find the Right Solution for You", false);
         $resEn->assertSee('Quotation &amp; Information Request', false);
@@ -55,7 +55,7 @@ class ContentRevisionTest extends TestCase
         $resId->assertSee('Struktur Kepemilikan Perusahaan Publik');
         $resId->assertSee('Klasifikasi Kepemilikan Saham Perusahaan');
         $resId->assertSee('Entitas Anak dan Perusahaan Asosiasi');
-        $resId->assertSee('Entitas anak serta Presentase Kepemilikan');
+        $resId->assertSee('Entitas anak serta Persentase Kepemilikan');
 
         // EN
         $resEn = $this->get('/en/investor-relations/financial-information/');
@@ -63,7 +63,7 @@ class ContentRevisionTest extends TestCase
         $resEn->assertSee('Public Company Ownership Structure');
         $resEn->assertSee('Classification of Company Share Ownership');
         $resEn->assertSee('Subsidiaries and Associated Companies');
-        $resEn->assertSee('The Subsidiaries and the Precentage of Ownership');
+        $resEn->assertSee('The Subsidiaries and the Percentage of Ownership');
     }
 
     /**
@@ -140,7 +140,7 @@ class ContentRevisionTest extends TestCase
         // EN
         $resEn = $this->get('/en/news/');
         $resEn->assertStatus(200);
-        $resEn->assertSee('Latest News &amp; knowledges', false);
+        $resEn->assertSee('Latest News &amp; Insights', false);
         $resEn->assertSee('Latest updates');
     }
 
@@ -158,7 +158,7 @@ class ContentRevisionTest extends TestCase
         $resId->assertSee('Hubungi Kami');
         $resId->assertSee('Informasi detail kontak');
         $resId->assertSee('Kontak');
-        $resId->assertSee('Hubungi kami - Ada pertanyaan atau membutuhkan penawaran harga? Kirimkan');
+        $resId->assertSee('Hubungi kami - Ada pertanyaan atau membutuhkan penawaran harga? Kirimkan pesan kepada kami.');
         $resId->assertSee('Lokasi kami');
         $resId->assertSee('Temukan kami');
 
@@ -320,6 +320,85 @@ class ContentRevisionTest extends TestCase
             } else {
                 $this->fail('Breadcrumb nav not found in Solusi subpage');
             }
+        }
+    }
+
+    /**
+     * Test 11: Frontend desktop typography enforces min 16px & 1.4em line-height except situational subheadlines, eyebrows, and small badges
+     */
+    public function test_frontend_desktop_typography_enforces_16px_and_14em_except_subheadlines_and_badges(): void
+    {
+        $this->withoutMiddleware(\App\Http\Middleware\EnforceTrailingSlash::class);
+
+        $resHome = $this->get('/id/');
+        $resHome->assertStatus(200);
+        $homeHtml = $resHome->getContent();
+
+        $resHome->assertDontSee('@import "tailwindcss";', false);
+        $this->assertMatchesRegularExpression('/@media\s*\(\s*min-width:\s*1024px\s*\)/', $homeHtml);
+        $this->assertStringContainsString('.text-\\[10px\\]', $homeHtml);
+        $this->assertStringContainsString(':not(.subheadline)', $homeHtml);
+        $this->assertStringContainsString(':not([class*="uppercase"][class*="tracking-"])', $homeHtml);
+        $this->assertStringContainsString(':not(span.rounded-full)', $homeHtml);
+        $this->assertMatchesRegularExpression('/font-size:\s*16px\s*!important;\s*line-height:\s*1\.4em\s*!important;/s', $homeHtml);
+
+        $resAbout = $this->get('/id/tentang-kami/');
+        $resAbout->assertStatus(200);
+        $resAbout->assertDontSee('.text-[10px],', false);
+
+        $resContact = $this->get('/id/hubungi-kami/');
+        $resContact->assertStatus(200);
+        $resContact->assertDontSee('font-size: 0.875rem !important;', false);
+    }
+
+    /**
+     * Test 12: Multi-language localized routes and translations
+     */
+    public function test_multilanguage_urls_and_translations(): void
+    {
+        $this->withoutMiddleware(\App\Http\Middleware\EnforceTrailingSlash::class);
+
+        // LocalizedUrlService route resolution
+        $this->assertStringEndsWith('/id/hubungi-kami/', \App\Services\LocalizedUrlService::route('frontend.contact.index', [], 'id'));
+        $this->assertStringEndsWith('/en/contact-us/', \App\Services\LocalizedUrlService::route('frontend.contact.index', [], 'en'));
+        $this->assertStringEndsWith('/id/halaman/profil-kami/', \App\Services\LocalizedUrlService::route('frontend.halaman-custom', ['slug' => 'profil-kami'], 'id'));
+        $this->assertStringEndsWith('/en/page/profil-kami/', \App\Services\LocalizedUrlService::route('frontend.halaman-custom', ['slug' => 'profil-kami'], 'en'));
+        $this->assertStringEndsWith('/en/page/profil-kami/', \App\Services\LocalizedUrlService::switchLocale('/id/halaman/profil-kami/', 'en'));
+        $this->assertStringEndsWith('/id/halaman/profil-kami/', \App\Services\LocalizedUrlService::switchLocale('/en/page/profil-kami/', 'id'));
+
+        // Other Information contact CTA points to canonical locale path
+        $resOtherId = $this->get('/id/laporan-investor/informasi-lainnya/');
+        $resOtherId->assertStatus(200);
+        $resOtherId->assertSee('/id/hubungi-kami/');
+        $resOtherId->assertSee('Dokumen Terarsip');
+
+        $resOtherEn = $this->get('/en/investor-relations/other-information/');
+        $resOtherEn->assertStatus(200);
+        $resOtherEn->assertSee('/en/contact-us/');
+
+        // Financial Reports & Information EN labels
+        $resInvEn = $this->get('/en/investor-relations/');
+        $resInvEn->assertStatus(200);
+        $resInvEn->assertSee('Prospectus');
+        $resInvEn->assertSee('COMPREHENSIVE INCOME STATEMENT (MILLION IDR)');
+
+        $resFinEn = $this->get('/en/investor-relations/financial-information/');
+        $resFinEn->assertStatus(200);
+        $resFinEn->assertSee('Entity Name');
+        $resFinEn->assertSee('Domestic Investors');
+
+        // About EN JS processing text
+        $resAboutEn = $this->get('/en/about-us/');
+        $resAboutEn->assertStatus(200);
+        $resAboutEn->assertSee('<span>Processing...</span>', false);
+
+        // Language JSON files are valid and have no duplicate keys
+        foreach ([base_path('lang/en.json'), base_path('lang/id.json')] as $langFile) {
+            $raw = file_get_contents($langFile);
+            $decoded = json_decode($raw, true, 512, JSON_THROW_ON_ERROR);
+            $this->assertNotEmpty($decoded);
+            preg_match_all('/^\s*"((?:\\\\.|[^"\\\\])*)"\s*:/m', $raw, $matches);
+            $this->assertSame(count($matches[1]), count(array_unique($matches[1])), "Duplicate keys found in {$langFile}");
         }
     }
 }

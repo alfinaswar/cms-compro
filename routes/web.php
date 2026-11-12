@@ -69,6 +69,7 @@ Route::group(['prefix' => '{locale}', 'where' => ['locale' => 'id|en']], functio
     Route::get('/news/{slug}/', [BeritaController::class, 'newsDetail'])->name('frontend.detail');
 
     Route::get('/halaman/{slug}/', [CustomPagesController::class, 'show'])->name('frontend.halaman-custom');
+    Route::get('/page/{slug}/', [CustomPagesController::class, 'show'])->name('frontend.halaman-custom.en');
 
     // === INVESTOR RELATIONS (4 TABS) - ID ===
     Route::get('/laporan-investor/', [InvestorFrontendController::class, 'laporanKeuangan'])->name('frontend.laporan-keuangan');

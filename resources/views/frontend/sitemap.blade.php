@@ -165,7 +165,7 @@
 
                 <!-- Breadcrumb -->
                 <nav class="mt-8 flex items-center justify-center space-x-2 text-sm text-slate-300">
-                    <a href="{{ url('/') }}" class="hover:text-white transition-colors">
+                    <a href="{{ \App\Services\LocalizedUrlService::route('frontend.main', [], $locale) }}" class="hover:text-white transition-colors">
                         <i class="fa-solid fa-house mr-1"></i>
                         {{ $locale === 'id' ? 'Beranda' : 'Home' }}
                     </a>

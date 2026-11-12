@@ -16,7 +16,7 @@
     @php
         // Build Breadcrumbs secara dinamis berdasarkan hirarki
         $breadcrumbs = [];
-        $breadcrumbs[] = ['title' => __('Home'), 'url' => url('/')];
+        $breadcrumbs[] = ['title' => __('Home'), 'url' => \App\Services\LocalizedUrlService::route('frontend.main', [], $locale)];
 
         $tempCrumbs = [];
         $currentPage = $page;
@@ -24,14 +24,9 @@
             $crumbTrans = $currentPage->translate($locale);
             $tempCrumbs[] = [
                 'title' => $crumbTrans->Judul ?: $currentPage->Judul,
-                'url' => $currentPage->Slug ? url('page/' . $currentPage->Slug) : '#',
-            ];
-            $currentPage = $currentPage->parent;
-        }
-        $breadcrumbs = array_merge($breadcrumbs, array_reverse($tempCrumbs));
-    @endphp
-                'title' => $crumbTrans->Judul ?: $currentPage->Judul,
-                'url' => $currentPage->Slug ? url('page/' . $currentPage->Slug) : '#',
+                'url' => $currentPage->Slug
+                    ? \App\Services\LocalizedUrlService::route('frontend.halaman-custom', ['slug' => $currentPage->Slug], $locale)
+                    : '#',
             ];
             $currentPage = $currentPage->parent;
         }
@@ -145,7 +140,7 @@
                                         </a>
                                         <button onclick="copyLink()" id="copyLinkBtn"
                                             class="w-9 h-9 bg-slate-100 hover:bg-brand-600 hover:text-white text-slate-600 rounded-lg flex items-center justify-center transition-colors"
-                                            title="Copy Link">
+                                            title="{{ __('Copy Link') }}">
                                             <i class="fa-solid fa-link"></i>
                                         </button>
                                     </div>
@@ -166,7 +161,7 @@
                                         $childTrans = $child->translate($locale);
                                         $childJudul = $childTrans->Judul ?: $child->Judul;
                                     @endphp
-                                    <a href="{{ url('page/' . $child->Slug) }}"
+                                    <a href="{{ \App\Services\LocalizedUrlService::route('frontend.halaman-custom', ['slug' => $child->Slug], $locale) }}"
                                         class="bg-white rounded-xl p-5 border border-slate-200 hover:border-brand-500 hover:shadow-md transition-all group flex items-center gap-4">
                                         <div
                                             class="w-12 h-12 bg-brand-50 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-brand-100 transition-colors">
@@ -195,7 +190,7 @@
                         <!-- Search Widget -->
                         <div class="bg-white rounded-xl p-6 border border-slate-200">
                             <h3 class="text-lg font-bold text-slate-900 mb-4">{{ __('Search') }}</h3>
-                            <form action="{{ url('news') }}" method="GET" class="relative">
+                            <form action="{{ \App\Services\LocalizedUrlService::route('frontend.news', [], $locale) }}" method="GET" class="relative">
                                 <input type="text" name="search" value="{{ request('search') }}"
                                     placeholder="{{ __('Search...') }}"
                                     class="w-full px-4 py-2.5 pr-10 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
@@ -209,12 +204,12 @@
                         <!-- Page Hierarchy Widget (Siblings/Children) -->
                         @if ($page->parent || $page->children->count() > 0)
                             <div class="bg-white rounded-xl p-6 border border-slate-200">
-                                <h3 class="text-lg font-bold text-slate-900 mb-4">{{ __('Navigasi Halaman') }}</h3>
+                                <h3 class="text-lg font-bold text-slate-900 mb-4">{{ __('Page Navigation') }}</h3>
                                 <ul class="space-y-2">
                                     @if ($page->parent)
                                         @php $parentTrans = $page->parent->translate($locale); @endphp
                                         <li>
-                                            <a href="{{ url('page/' . $page->parent->Slug) }}"
+                                            <a href="{{ \App\Services\LocalizedUrlService::route('frontend.halaman-custom', ['slug' => $page->parent->Slug], $locale) }}"
                                                 class="flex items-center py-2 px-3 rounded-lg hover:bg-slate-50 transition-colors group text-slate-600 hover:text-brand-600">
                                                 <i class="fa-solid fa-arrow-up mr-2 text-xs"></i>
                                                 <span
@@ -225,8 +220,8 @@
                                     @foreach ($page->children as $child)
                                         @php $childTrans = $child->translate($locale); @endphp
                                         <li>
-                                            <a href="{{ url('page/' . $child->Slug) }}"
-                                                class="flex items-center py-2 px-3 rounded-lg hover:bg-slate-50 transition-colors group {{ request()->is('page/' . $child->Slug) ? 'bg-brand-50 text-brand-600 font-semibold' : 'text-slate-600 hover:text-brand-600' }}">
+                                            <a href="{{ \App\Services\LocalizedUrlService::route('frontend.halaman-custom', ['slug' => $child->Slug], $locale) }}"
+                                                class="flex items-center py-2 px-3 rounded-lg hover:bg-slate-50 transition-colors group {{ request()->route('slug') === $child->Slug ? 'bg-brand-50 text-brand-600 font-semibold' : 'text-slate-600 hover:text-brand-600' }}">
                                                 <i class="fa-solid fa-chevron-right mr-2 text-xs"></i>
                                                 <span>{{ $childTrans->Judul ?: $child->Judul }}</span>
                                             </a>
@@ -250,7 +245,7 @@
                                                 : asset('img/no-image.png');
                                         @endphp
                                         <div class="flex gap-3">
-                                            <a href="{{ url('news/' . $recent->Slug) }}" class="flex-shrink-0">
+                                            <a href="{{ \App\Services\LocalizedUrlService::route('frontend.detail', ['slug' => $recent->Slug], $locale) }}" class="flex-shrink-0">
                                                 <img src="{{ $recentThumb }}" alt="{{ $recentJudul }}"
                                                     class="w-20 h-20 object-cover rounded-lg">
                                             </a>
@@ -261,7 +256,7 @@
                                                 </p>
                                                 <h4
                                                     class="text-sm font-semibold text-slate-900 hover:text-brand-600 line-clamp-2">
-                                                    <a href="{{ url('news/' . $recent->Slug) }}">
+                                                    <a href="{{ \App\Services\LocalizedUrlService::route('frontend.detail', ['slug' => $recent->Slug], $locale) }}">
                                                         {{ Str::limit($recentJudul, 40) }}
                                                     </a>
                                                 </h4>
@@ -282,7 +277,7 @@
                             <a href="tel:+62318910919" class="block text-xl font-bold mb-4 hover:text-brand-200">
                                 +62 31 8910919
                             </a>
-                            <a href="{{ url('contact') }}"
+                            <a href="{{ \App\Services\LocalizedUrlService::route('frontend.contact.index', [], $locale) }}"
                                 class="inline-flex items-center px-6 py-2.5 bg-white text-brand-700 font-semibold rounded-lg hover:bg-brand-50 transition-colors">
                                 {{ __('Contact Us') }}
                                 <i class="fa-solid fa-arrow-right ml-2"></i>

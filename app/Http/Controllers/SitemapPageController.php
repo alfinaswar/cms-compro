@@ -7,6 +7,7 @@ use App\Models\Berita;
 use App\Models\LowonganKerja;
 use App\Models\StaticPage;
 use App\Models\CustomPage;
+use App\Services\LocalizedUrlService;
 use Illuminate\Http\Request;
 
 class SitemapPageController extends Controller
@@ -19,27 +20,27 @@ class SitemapPageController extends Controller
         $mainPages = [
             [
                 'title' => $locale === 'id' ? 'Beranda' : 'Home',
-                'url' => url('/'),
+                'url' => LocalizedUrlService::route('frontend.main', [], $locale),
                 'icon' => 'fa-home',
             ],
             [
                 'title' => $locale === 'id' ? 'Tentang Kami' : 'About Us',
-                'url' => url($locale . '/tentang-kami'),
+                'url' => LocalizedUrlService::route('frontend.about-us', [], $locale),
                 'icon' => 'fa-building',
             ],
             [
                 'title' => $locale === 'id' ? 'Berita' : 'News',
-                'url' => url($locale . '/berita'),
+                'url' => LocalizedUrlService::route('frontend.news', [], $locale),
                 'icon' => 'fa-newspaper',
             ],
             [
                 'title' => $locale === 'id' ? 'Karir' : 'Career',
-                'url' => url($locale . '/karir'),
+                'url' => LocalizedUrlService::route('frontend.career', [], $locale),
                 'icon' => 'fa-briefcase',
             ],
             [
                 'title' => $locale === 'id' ? 'Kontak' : 'Contact',
-                'url' => url($locale . '/kontak'),
+                'url' => LocalizedUrlService::route('frontend.contact.index', [], $locale),
                 'icon' => 'fa-envelope',
             ],
         ];
@@ -51,8 +52,8 @@ class SitemapPageController extends Controller
                 $trans = $item->translations->firstWhere('Locale', $locale)
                     ?? $item->translations->firstWhere('Locale', 'id');
                 return [
-                    'title' => $trans->Judul ?? $item->Judul ?? 'Tanpa Judul',
-                    'url' => url($locale . '/berita/' . $item->Slug),
+                    'title' => $trans->Judul ?? $item->Judul ?? __('Untitled'),
+                    'url' => LocalizedUrlService::route('frontend.detail', ['slug' => $item->Slug], $locale),
                     'date' => $item->TanggalPublikasi ? $item->TanggalPublikasi->format('d M Y') : null,
                 ];
             });
@@ -66,8 +67,8 @@ class SitemapPageController extends Controller
                 $trans = $item->translations->firstWhere('Locale', $locale)
                     ?? $item->translations->firstWhere('Locale', 'id');
                 return [
-                    'title' => $trans->Judul ?? $item->Posisi ?? 'Tanpa Judul',
-                    'url' => url($locale . '/karir/' . $item->Slug),
+                    'title' => $trans->Posisi ?? $item->Posisi ?? __('Untitled'),
+                    'url' => LocalizedUrlService::route('frontend.career.detail', ['id' => $item->id, 'slug' => $item->slug], $locale),
                     'location' => $item->getKota->name ?? null,
                 ];
             });
@@ -80,7 +81,7 @@ class SitemapPageController extends Controller
                     ?? $page->translations->firstWhere('Locale', 'id');
                 return [
                     'title' => $trans->Judul ?? $page->Label,
-                    'url' => url($locale . '/' . $page->Slug),
+                    'url' => LocalizedUrlService::route('static-pages.show', ['slug' => $page->Slug], $locale),
                     'icon' => $page->Icon ?? 'fa-file-alt',
                 ];
             });
@@ -94,8 +95,8 @@ class SitemapPageController extends Controller
                     $trans = $page->translations->firstWhere('Locale', $locale)
                         ?? $page->translations->firstWhere('Locale', 'id');
                     return [
-                        'title' => $trans->Judul ?? 'Tanpa Judul',
-                        'url' => url($locale . '/page/' . $page->Slug),
+                        'title' => $trans->Judul ?? __('Untitled'),
+                        'url' => LocalizedUrlService::route('frontend.halaman-custom', ['slug' => $page->Slug], $locale),
                     ];
                 });
         }

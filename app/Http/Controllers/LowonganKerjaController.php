@@ -365,8 +365,8 @@ class LowonganKerjaController extends Controller
             'DeskripsiSingkat' => 'required|string|max:1000',
             'PathCv' => 'required|file|mimes:pdf|max:2048',
         ], [
-            'PathCv.mimes' => 'File CV harus berformat PDF.',
-            'PathCv.max' => 'Ukuran file CV maksimal 2MB.',
+            'PathCv.mimes' => __('The CV file must be in PDF format.'),
+            'PathCv.max' => __('The CV file size may not exceed 2MB.'),
         ]);
 
         $file = $request->file('PathCv');
@@ -397,7 +397,7 @@ class LowonganKerjaController extends Controller
             Log::error('Gagal mengirim email konfirmasi lamaran: LowonganKerja dengan ID ' . $id . ' tidak ditemukan.');
         }
 
-        return redirect()->back()->with('success', 'Lamaran Anda berhasil dikirim! Kami telah mengirim konfirmasi ke email Anda.');
+        return redirect()->back()->with('success', __('Your application has been submitted! We have sent a confirmation to your email.'));
     }
 
     public function pelamar(Request $request, $id)

@@ -105,7 +105,7 @@
 
                 <!-- Breadcrumb -->
                 <nav class="mt-8 flex items-center justify-center space-x-2 text-sm text-slate-300">
-                    <a href="{{ url('/') }}" class="hover:text-white transition-colors">
+                    <a href="{{ \App\Services\LocalizedUrlService::route('frontend.main') }}" class="hover:text-white transition-colors">
                         <i class="fa-solid fa-house mr-1"></i> {{ __('Home') }}
                     </a>
                     <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
@@ -159,7 +159,7 @@
                 <div class="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center">
 
                     <!-- Search Input -->
-                    <form method="GET" action="{{ route('frontend.career', app()->getLocale()) }}"
+                    <form method="GET" action="{{ \App\Services\LocalizedUrlService::route('frontend.career') }}"
                         class="flex-1 flex flex-col sm:flex-row gap-3">
 
                         <div class="relative flex-1">
@@ -213,7 +213,7 @@
 
                     <!-- Reset Button -->
                     @if (request()->hasAny(['search', 'kota', 'sort']))
-                        <a href="{{ route('frontend.career', app()->getLocale()) }}"
+                        <a href="{{ \App\Services\LocalizedUrlService::route('frontend.career') }}"
                             class="inline-flex items-center justify-center px-5 py-3 bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 rounded-xl font-medium transition-all whitespace-nowrap">
                             <i class="fa-solid fa-rotate-left mr-2"></i>
                             {{ __('Reset Filters') }}
@@ -377,7 +377,7 @@
                             </div>
 
                             <!-- Apply Button -->
-                            <a href="{{ route('frontend.career.detail', ['id' => $lowongan->id, 'slug' => $lowongan->slug]) }}"
+                            <a href="{{ \App\Services\LocalizedUrlService::route('frontend.career.detail', ['id' => $lowongan->id, 'slug' => $lowongan->slug]) }}"
                                 class="inline-flex items-center justify-center px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl transition-all shadow-md hover:shadow-lg {{ !$lowongan->masih_berlaku ? 'opacity-50 cursor-not-allowed pointer-events-none' : '' }}">
                                 {{ __('Apply Now') }}
                                 <i class="fa-solid fa-arrow-right ml-2 job-card-arrow transition-transform"></i>
@@ -405,7 +405,7 @@
                     <p class="text-slate-600 mb-6 max-w-md mx-auto">
                         {{ __('Currently there are no positions available. Please check back later or try different filters.') }}
                     </p>
-                    <a href="{{ route('frontend.career', app()->getLocale()) }}"
+                    <a href="{{ \App\Services\LocalizedUrlService::route('frontend.career') }}"
                         class="inline-flex items-center px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl transition-all shadow-md">
                         <i class="fa-solid fa-rotate-left mr-2"></i>
                         {{ __('Reset Filters') }}
@@ -562,7 +562,7 @@
                             <i class="fa-solid fa-envelope mr-2"></i>
                             {{ __('Send Your CV') }}
                         </a>
-                        <a href="{{ url('/') }}#kontak"
+                        <a href="{{ \App\Services\LocalizedUrlService::route('frontend.contact.index') }}"
                             class="inline-flex items-center justify-center px-8 py-4 bg-transparent border-2 border-white text-white font-bold rounded-xl hover:bg-white/10 transition-all">
                             <i class="fa-solid fa-phone mr-2"></i>
                             {{ __('Contact HR') }}

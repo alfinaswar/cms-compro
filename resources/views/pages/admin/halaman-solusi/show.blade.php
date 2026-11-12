@@ -41,7 +41,7 @@
             /* Tipografi konten WYSIWYG (Konten utama) */
             .solusi-content {
                 font-size: 1.0625rem;
-                line-height: 1.85;
+                line-height: 1.4em;
                 color: #475569;
             }
 
@@ -85,7 +85,7 @@
 
             .solusi-content li {
                 margin-bottom: .5rem;
-                line-height: 1.7;
+                line-height: 1.4em;
             }
 
             .solusi-content strong {
@@ -124,7 +124,7 @@
                 width: 100%;
                 border-collapse: collapse;
                 margin: 1.5rem 0;
-                font-size: 0.95rem;
+                font-size: 1rem;
             }
 
             .solusi-content table th,
@@ -141,8 +141,8 @@
 
             /* Tipografi keterangan pada kartu detail */
             .detail-text {
-                font-size: .9375rem;
-                line-height: 1.75;
+                font-size: 1rem;
+                line-height: 1.4em;
                 color: #475569;
             }
 
@@ -290,7 +290,7 @@
                                 // Kartu detail dapat diklik jika subhalaman ada (atau dibuat otomatis jika sudah ada subpage)
                                 $hasSub = $detail->subpage && filled($detail->subpage->Slug);
                                 $subUrl = $hasSub
-                                    ? route('halaman-solusi.sub-show', ['locale' => $locale, 'parent' => $halamanSolusi->Slug, 'sub' => $detail->subpage->Slug])
+                                    ? \App\Services\LocalizedUrlService::route('halaman-solusi.sub-show', ['parent' => $halamanSolusi->Slug, 'sub' => $detail->subpage->Slug], $locale)
                                     : null;
                                 $cardTag = $hasSub ? 'a' : 'div';
                             @endphp
@@ -520,7 +520,7 @@
                     </p>
 
                     <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                        <a href="{{ route('frontend.contact.index') }}"
+                        <a href="{{ \App\Services\LocalizedUrlService::route('frontend.contact.index', [], $locale) }}"
                             class="inline-flex items-center justify-center px-8 py-4 bg-brand-600 hover:bg-brand-500 text-white text-sm font-bold rounded-lg transition-all shadow-lg shadow-brand-600/30">
                             <i class="fa-solid fa-paper-plane mr-2"></i> {{ __('Request Quotation') }}
                         </a>

@@ -69,7 +69,7 @@
                 <!-- Breadcrumb -->
                 <nav class="mt-8 flex items-center justify-center space-x-2 text-sm text-slate-300">
                     <!-- ✅ PERBAIKAN 1: Gunakan route() -->
-                    <a href="{{ route('frontend.main') }}" class="hover:text-white transition-colors">
+                    <a href="{{ \App\Services\LocalizedUrlService::route('frontend.main', [], $newsLocale) }}" class="hover:text-white transition-colors">
                         <i class="fa-solid fa-house mr-1"></i> {{ __('Home') }}
                     </a>
                     <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
@@ -102,7 +102,7 @@
                             class="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 mb-6 hover:shadow-md transition-shadow">
                             <!-- Image -->
                             <!-- ✅ PERBAIKAN 2: Gunakan route('frontend.detail') -->
-                            <a href="{{ route('frontend.detail', ['slug' => $item->Slug]) }}" class="block overflow-hidden">
+                            <a href="{{ \App\Services\LocalizedUrlService::route('frontend.detail', ['slug' => $item->Slug], $newsLocale) }}" class="block overflow-hidden">
                                 <img src="{{ $thumbnailUrl }}" alt="{{ $displayJudul }}"
                                     class="w-full h-64 object-cover hover:scale-105 transition-transform duration-300">
                             </a>
@@ -123,7 +123,7 @@
                                 <!-- Title -->
                                 <h2 class="text-2xl font-bold text-slate-900 mb-3 hover:text-brand-600 transition-colors">
                                     <!-- ✅ PERBAIKAN 3: Gunakan route('frontend.detail') -->
-                                    <a href="{{ route('frontend.detail', $item->Slug) }}">
+                                    <a href="{{ \App\Services\LocalizedUrlService::route('frontend.detail', ['slug' => $item->Slug], $newsLocale) }}">
                                         {{ $displayJudul }}
                                     </a>
                                 </h2>
@@ -135,7 +135,7 @@
 
                                 <!-- Read More -->
                                 <!-- ✅ PERBAIKAN 4: Gunakan route('frontend.detail') -->
-                                <a href="{{ route('frontend.detail', ['slug' => $item->Slug]) }}"
+                                <a href="{{ \App\Services\LocalizedUrlService::route('frontend.detail', ['slug' => $item->Slug], $newsLocale) }}"
                                     class="inline-flex items-center text-brand-600 hover:text-brand-700 font-semibold">
                                     {{ __('Read More') }}
                                     <i class="fa-solid fa-arrow-right ml-2"></i>
@@ -168,7 +168,7 @@
                         <div class="bg-white rounded-xl p-6 border border-slate-200">
                             <h3 class="text-lg font-bold text-slate-900 mb-4">{{ __('Search') }}</h3>
                             <!-- ✅ PERBAIKAN 5: Gunakan route() untuk query string -->
-                            <form action="{{ route('frontend.news') }}" method="GET" class="relative">
+                            <form action="{{ \App\Services\LocalizedUrlService::route('frontend.news', [], $newsLocale) }}" method="GET" class="relative">
                                 <input type="text" name="search" value="{{ request('search') }}"
                                     placeholder="{{ __('Search news...') }}"
                                     class="w-full px-4 py-2.5 pr-10 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
@@ -186,7 +186,7 @@
                                 @foreach ($categories as $category)
                                     <li>
                                         <!-- ✅ PERBAIKAN 6: Gunakan route() dengan parameter query -->
-                                        <a href="{{ route('frontend.news', ['kategori' => $category]) }}"
+                                        <a href="{{ \App\Services\LocalizedUrlService::route('frontend.news', ['kategori' => $category], $newsLocale) }}"
                                             class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-slate-50 transition-colors group">
                                             <span
                                                 class="text-slate-700 group-hover:text-brand-600">{{ $category }}</span>
@@ -214,7 +214,7 @@
                                     @endphp
                                     <div class="flex gap-3">
                                         <!-- ✅ PERBAIKAN 7: Gunakan route('frontend.detail') -->
-                                        <a href="{{ route('frontend.detail', ['slug' => $recent->Slug]) }}"
+                                        <a href="{{ \App\Services\LocalizedUrlService::route('frontend.detail', ['slug' => $recent->Slug], $newsLocale) }}"
                                             class="flex-shrink-0">
                                             <img src="{{ $recentThumb }}" alt="{{ $recentJudul }}"
                                                 class="w-20 h-20 object-cover rounded-lg">
@@ -226,7 +226,7 @@
                                             </p>
                                             <h4
                                                 class="text-sm font-semibold text-slate-900 hover:text-brand-600 line-clamp-2">
-                                                <a href="{{ route('frontend.detail', ['slug' => $recent->Slug]) }}">
+                                                <a href="{{ \App\Services\LocalizedUrlService::route('frontend.detail', ['slug' => $recent->Slug], $newsLocale) }}">
                                                     {{ $recentJudul }}
                                                 </a>
                                             </h4>
@@ -255,7 +255,7 @@
 
                                 @forelse($allTags as $tag)
                                     <!-- ✅ PERBAIKAN 8: Gunakan route() dengan parameter query -->
-                                    <a href="{{ route('frontend.news', ['tag' => $tag]) }}"
+                                    <a href="{{ \App\Services\LocalizedUrlService::route('frontend.news', ['tag' => $tag], $newsLocale) }}"
                                         class="px-3 py-1.5 bg-slate-100 hover:bg-brand-600 text-slate-700 hover:text-white text-sm rounded-lg transition-colors">
                                         {{ $tag }}
                                     </a>
@@ -276,7 +276,7 @@
                                 +62 31 8910919
                             </a>
                             <!-- ✅ PERBAIKAN 9: Gunakan route('frontend.contact.index') -->
-                            <a href="{{ route('frontend.contact.index') }}"
+                            <a href="{{ \App\Services\LocalizedUrlService::route('frontend.contact.index', [], $newsLocale) }}"
                                 class="inline-flex items-center px-6 py-2.5 bg-white text-brand-700 font-semibold rounded-lg hover:bg-brand-50 transition-colors">
                                 {{ __('Contact Us') }}
                                 <i class="fa-solid fa-arrow-right ml-2"></i>

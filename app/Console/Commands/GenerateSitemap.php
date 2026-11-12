@@ -211,7 +211,7 @@ class GenerateSitemap extends Command
                 $this->addLocalizedPair(
                     $sitemap,
                     "id/halaman/{$page->Slug}",
-                    "en/halaman/{$page->Slug}",
+                    "en/page/{$page->Slug}",
                     $lastMod,
                     Url::CHANGE_FREQUENCY_MONTHLY,
                     0.6

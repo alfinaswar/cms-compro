@@ -52,19 +52,41 @@ class Menu extends Model
             ->orderBy('Urutan', 'asc');
     }
 
-    // Generate URL dinamis (Existing)
+    // Generate URL dinamis
     public function getLinkAttribute()
     {
+        $locale = app()->getLocale();
+
         if ($this->JenisLink === 'route' && $this->RouteName) {
             try {
-                return route($this->RouteName);
+                return \App\Services\LocalizedUrlService::route($this->RouteName, [], $locale);
             } catch (\Exception $e) {
                 return '#';
             }
         }
 
-        if ($this->JenisLink === 'page' && $this->Url) {
-            return url($this->Url);
+        if (!empty($this->Url) && $this->Url !== '#') {
+            $raw = trim($this->Url);
+            if (str_starts_with($raw, '#') || preg_match('#^(mailto:|tel:)#i', $raw)) {
+                return $raw;
+            }
+            if (preg_match('#^(https?:)?//#i', $raw)) {
+                $host = strtolower((string) parse_url($raw, PHP_URL_HOST));
+                $appHost = strtolower((string) parse_url(config('app.url'), PHP_URL_HOST));
+                $reqHost = app()->bound('request') ? strtolower((string) request()->getHost()) : '';
+                if ($host && $host !== $appHost && $host !== $reqHost) {
+                    return $raw;
+                }
+                $raw = (string) (parse_url($raw, PHP_URL_PATH) ?? '');
+            }
+
+            $clean = trim($raw, '/');
+            $segments = $clean === '' ? [] : explode('/', $clean);
+            if (!empty($segments[0]) && in_array($segments[0], ['id', 'en'], true)) {
+                array_shift($segments);
+            }
+            $sub = \App\Services\LocalizedUrlService::localizeSubPath(implode('/', $segments), $locale);
+            return url($locale . ($sub !== '' ? '/' . $sub : ''));
         }
 
         return $this->Url ?? '#';

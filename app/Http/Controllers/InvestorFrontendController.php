@@ -396,7 +396,7 @@ class InvestorFrontendController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Laporan Whistleblowing System (WBS) Anda berhasil dikirim dengan Nomor Tiket: ' . $validated['NomorTiket'] . '. Kerahasiaan identitas Anda terjamin.',
+            'message' => __('Your Whistleblowing System (WBS) report has been submitted with Ticket Number: :ticket. Your identity confidentiality is guaranteed.', ['ticket' => $validated['NomorTiket']]),
             'nomor_tiket' => $validated['NomorTiket']
         ]);
     }
@@ -423,7 +423,7 @@ class InvestorFrontendController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Permintaan salinan fisik dokumen telah diterima. Tim Hubungan Investor akan memverifikasi dan memproses pengiriman.'
+            'message' => __('Your physical document copy request has been received. Our Investor Relations team will verify and process the delivery.')
         ]);
     }
 }

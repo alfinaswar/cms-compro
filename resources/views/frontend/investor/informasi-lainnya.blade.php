@@ -101,7 +101,7 @@
                                     <i class="fa-solid fa-chevron-right text-[10px] text-slate-300 group-hover:text-[#0099ff] group-hover:translate-x-0.5 [.active_&]:text-[#0099ff] transition-transform"></i>
                                 </a>
 
-                                <a href="{{ route('frontend.contact.index', ['locale' => app()->getLocale()]) }}"
+                                <a href="{{ \App\Services\LocalizedUrlService::route('frontend.contact.index') }}"
                                     class="sidebar-link group flex items-center justify-between px-3.5 py-2.5 text-xs md:text-sm text-[#45464D] rounded-xl transition-all duration-200 hover:bg-blue-50 hover:text-[#0099ff] hover:translate-x-1.5">
                                     <span class="flex items-center gap-2.5">
                                         <i class="fa-solid fa-headset w-4 text-center text-[#45464D] group-hover:text-[#0099ff]"></i>
@@ -250,7 +250,7 @@
                         </div>
 
                         <form method="GET"
-                            action="{{ route('frontend.investor.informasi-lainnya', ['locale' => app()->getLocale()]) }}#keterbukaan-informasi"
+                            action="{{ \App\Services\LocalizedUrlService::route('frontend.investor.informasi-lainnya') }}#keterbukaan-informasi"
                             class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 mb-6">
                             <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
                                 <div class="sm:col-span-6 relative">
@@ -421,7 +421,7 @@
                         </div>
 
                         <div class="mt-4">
-                            <a href="{{ route('frontend.contact.index', ['locale' => app()->getLocale()]) }}"
+                            <a href="{{ \App\Services\LocalizedUrlService::route('frontend.contact.index') }}"
                                 class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0051d5] hover:bg-[#003ea8] text-white font-bold text-xs transition-colors shadow-sm">
                                 <i class="fa-solid fa-paper-plane text-xs"></i> {{ __('Contact Us') }}
                             </a>
@@ -571,7 +571,7 @@
                         submitBtn.disabled = true;
                         submitBtn.innerText = '{{ __('investor.modal_sending') }}';
 
-                        fetch("{{ route('frontend.investor.permintaan-dokumen.store', ['locale' => app()->getLocale()]) }}", {
+                        fetch("{{ \App\Services\LocalizedUrlService::route('frontend.investor.permintaan-dokumen.store') }}", {
                                 method: 'POST',
                                 body: formData,
                                 headers: {

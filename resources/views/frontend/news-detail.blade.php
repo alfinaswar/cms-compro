@@ -2,7 +2,7 @@
 
 @php
     $trans = $news->translate($locale) ?? ($news->translate('id') ?? $news->translations->first());
-    $displayJudul = $trans?->Judul ?: ($news->Judul ?: 'Berita');
+    $displayJudul = $trans?->Judul ?: ($news->Judul ?: __('News'));
     $displayKonten = $trans?->Konten ?: ($news->Konten ?: '');
     $displayDesc = Str::limit(strip_tags($displayKonten), 160);
     $thumbnailUrl = $news->PathThumbnail ? asset('storage/' . $news->PathThumbnail) : asset('img/no-image.png');
@@ -85,11 +85,11 @@
 
                 <!-- Breadcrumb -->
                 <nav class="mt-8 flex items-center justify-center space-x-2 text-sm text-slate-300">
-                    <a href="{{ route('frontend.main', ['locale' => $locale]) }}" class="hover:text-white transition-colors">
+                    <a href="{{ \App\Services\LocalizedUrlService::route('frontend.main', [], $locale) }}" class="hover:text-white transition-colors">
                         <i class="fa-solid fa-house mr-1"></i> {{ __('Home') }}
                     </a>
                     <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
-                    <a href="{{ route($newsRoute, ['locale' => $locale]) }}" class="hover:text-white transition-colors">{{ __('News') }}</a>
+                    <a href="{{ \App\Services\LocalizedUrlService::route('frontend.news', [], $locale) }}" class="hover:text-white transition-colors">{{ __('News') }}</a>
                     <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
                     <span class="text-white font-semibold">{{ Str::limit($displayJudul, 30) }}</span>
                 </nav>

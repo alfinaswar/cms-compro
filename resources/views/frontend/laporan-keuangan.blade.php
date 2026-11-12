@@ -138,7 +138,7 @@
                                     <span class="flex items-center gap-2.5">
                                         <i
                                             class="fa-regular fa-file-lines w-4 text-center text-slate-400 group-hover:text-[#0099ff] [.active_&]:text-[#0099ff]"></i>
-                                        Prospektus
+                                        {{ __('Prospectus') }}
                                     </span>
                                     <i
                                         class="fa-solid fa-chevron-right text-[10px] text-slate-300 group-hover:text-[#0099ff] group-hover:translate-x-0.5 [.active_&]:text-[#0099ff] transition-transform"></i>
@@ -214,7 +214,7 @@
                                     @endif
                                 </div>
 
-                                <a href="{{ route('frontend.investor.informasi-lainnya', ['locale' => $currentLocale]) }}#hubungi-investor"
+                                <a href="{{ \App\Services\LocalizedUrlService::route('frontend.investor.informasi-lainnya', [], $currentLocale) }}#hubungi-investor"
                                     class="mt-4 block w-full py-2 bg-white hover:bg-slate-50 text-[#0099ff] border border-[#0099ff]/30 text-center font-semibold text-xs rounded-xl transition-all shadow-sm">
                                     {{ $currentLocale === 'en' ? 'Request Physical Copy' : 'Permintaan Dokumen Fisik' }}
                                     &rarr;
@@ -270,7 +270,7 @@
                                                 <div class="flex items-center gap-2.5 mb-2 flex-wrap">
                                                     <span
                                                         class="px-3 py-1 rounded-md text-[11px] font-bold bg-[#2B1704] text-[#FFDEC9] tracking-wide uppercase">
-                                                        {{ $kat->jenisLaporan->NamaJenis ?? 'DOKUMEN' }}
+                                                        {{ $kat->jenisLaporan->NamaJenis ?? ($currentLocale === 'en' ? 'DOCUMENT' : 'DOKUMEN') }}
                                                     </span>
                                                     <span class="text-xs text-slate-500 font-normal">
                                                         {{ \Carbon\Carbon::parse($kat->TahunPeriode)->format('Y') }}
@@ -306,14 +306,14 @@
                                         <a href="{{ asset('storage/' . $kat->PathFile) }}" target="_blank"
                                             class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-[#0052CC] bg-white hover:bg-[#0052CC] hover:text-white rounded-xl transition-all shadow-sm border border-blue-200 hover:border-[#0052CC] hover:shadow-md">
                                             <i class="fa-solid fa-download text-sm"></i>
-                                            Unduh Berkas
+                                            {{ __('Download File') }}
                                         </a>
                                     </div>
                                 </div>
                             @empty
                                 <div class="col-span-full text-center py-12 text-slate-500">
                                     <i class="fa-regular fa-folder-open text-4xl mb-3 text-slate-300"></i>
-                                    <p class="text-sm">Belum ada dokumen pada kategori ini.</p>
+                                    <p class="text-sm">{{ __('No documents available in this category yet.') }}</p>
                                 </div>
                             @endforelse
 
@@ -473,7 +473,7 @@
                                         <div class="flex flex-wrap items-center gap-2">
                                             <span
                                                 class="px-3 py-0.5 rounded-full text-xs font-semibold bg-[#0051D5] text-white flex items-center gap-1.5">
-                                                {{ $report->Status ?? 'Aktif' }}
+                                                {{ ($report->Status === 'Aktif' || empty($report->Status)) ? __('Active') : $report->Status }}
                                             </span>
                                             <span class="px-3 py-1 text-xs font-semibold text-[#45464D]">
                                                 {{ $bahasaLabel }}
@@ -502,14 +502,14 @@
                                             </div>
                                             <div class="text-center sm:text-left border-x border-slate-100 px-3">
                                                 <span
-                                                    class="text-[10px] uppercase font-semibold text-slate-400 block">Ukuran</span>
+                                                    class="text-[10px] uppercase font-semibold text-slate-400 block">{{ __('Size') }}</span>
                                                 <span
                                                     class="text-sm font-extrabold text-slate-900 block">{{ $report->FileSize }}
                                                     MB</span>
                                             </div>
                                             <div class="text-center sm:text-left">
                                                 <span
-                                                    class="text-[10px] uppercase font-semibold text-slate-400 block">Periode</span>
+                                                    class="text-[10px] uppercase font-semibold text-slate-400 block">{{ __('Period') }}</span>
                                                 <span
                                                     class="text-sm font-extrabold text-slate-900 block">{{ $tahun }}</span>
                                             </div>
@@ -520,7 +520,7 @@
                                                 download
                                                 class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#0099ff] hover:bg-[#0080d6] text-white text-xs md:text-sm font-semibold rounded-xl shadow-sm shadow-[#0099ff]/30 transition-all">
                                                 <i class="fa-solid fa-arrow-down-to-bracket text-xs"></i>
-                                                Unduh Laporan (PDF)
+                                                {{ __('Download Report (PDF)') }}
                                             </a>
                                         </div>
                                     </div>
@@ -533,7 +533,7 @@
                                     class="w-16 h-16 mx-auto rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 text-2xl mb-4">
                                     <i class="fa-regular fa-folder-open"></i>
                                 </div>
-                                <p class="text-sm text-slate-500">Belum ada laporan tahunan yang tersedia.</p>
+                                <p class="text-sm text-slate-500">{{ __('No annual reports available yet.') }}</p>
                             </div>
                         @endforelse
                     </div>
@@ -605,14 +605,14 @@
                             $quarterMeta = [
                                 1 => [
                                     'label' => 'I',
-                                    'endDate' => '31 Maret',
+                                    'endDate' => $currentLocale === 'en' ? '31 March' : '31 Maret',
                                     'badge' => 'Audit',
                                     'badgeColor' => 'bg-emerald-100 text-emerald-800',
                                     'iconBg' => 'bg-blue-600',
                                 ],
                                 2 => [
                                     'label' => 'II',
-                                    'endDate' => '30 Juni',
+                                    'endDate' => $currentLocale === 'en' ? '30 June' : '30 Juni',
                                     'badge' => 'Review',
                                     'badgeColor' => 'bg-blue-100 text-blue-800',
                                     'iconBg' => 'bg-blue-600',
@@ -626,7 +626,7 @@
                                 ],
                                 4 => [
                                     'label' => 'IV',
-                                    'endDate' => '31 Desember',
+                                    'endDate' => $currentLocale === 'en' ? '31 December' : '31 Desember',
                                     'badge' => 'Audit',
                                     'badgeColor' => 'bg-emerald-100 text-emerald-800',
                                     'iconBg' => 'bg-blue-600',
@@ -676,10 +676,10 @@
                                                         </span>
                                                     </div>
                                                     <h4 class="font-bold text-slate-900 text-sm mb-1">
-                                                        Triwulan {{ $meta['label'] }} {{ $year }}
+                                                        {{ __('Quarter') }} {{ $meta['label'] }} {{ $year }}
                                                     </h4>
                                                     <p class="text-xs text-slate-500 mb-3">
-                                                        Per {{ $meta['endDate'] }} {{ $year }}
+                                                        {{ __('As of') }} {{ $meta['endDate'] }} {{ $year }}
                                                     </p>
                                                     @if ($report->Deskripsi)
                                                         <p
@@ -692,12 +692,12 @@
                                                     <div
                                                         class="pt-3 border-t border-slate-200/80 flex items-center justify-between text-xs text-[#45464D] mb-3">
                                                         <span>PDF &bull; {{ $report->FileSize }} MB</span>
-                                                        <span class="text-emerald-600 font-semibold">Tersedia</span>
+                                                        <span class="text-emerald-600 font-semibold">{{ __('Available') }}</span>
                                                     </div>
                                                     <a href="{{ asset('storage/' . $report->PathFile) }}" target="_blank"
                                                         download
                                                         class="w-full flex items-center justify-center gap-1.5 py-2 bg-white hover:bg-[#0080d6] text-[#0051D5] hover:text-white text-xs font-semibold rounded-xl shadow-xs transition-all">
-                                                        <i class="fa-solid fa-arrow-down-to-bracket text-xs"></i> Unduh PDF
+                                                        <i class="fa-solid fa-arrow-down-to-bracket text-xs"></i> {{ __('gcg.download_pdf') }}
                                                     </a>
                                                 </div>
                                             </div>
@@ -713,25 +713,25 @@
                                                         </div>
                                                         <span
                                                             class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">
-                                                            Segera
+                                                            {{ __('Soon') }}
                                                         </span>
                                                     </div>
                                                     <h4 class="font-bold text-slate-700 text-sm mb-1">
-                                                        Triwulan {{ $meta['label'] }} {{ $year }}
+                                                        {{ __('Quarter') }} {{ $meta['label'] }} {{ $year }}
                                                     </h4>
                                                     <p class="text-xs text-slate-400 mb-3">
-                                                        Per {{ $meta['endDate'] }} {{ $year }}
+                                                        {{ __('As of') }} {{ $meta['endDate'] }} {{ $year }}
                                                     </p>
                                                 </div>
                                                 <div>
                                                     <div
                                                         class="pt-3 border-t border-slate-200/80 flex items-center justify-between text-xs text-slate-400 mb-3">
-                                                        <span>Jadwal Rilis</span>
-                                                        <span class="text-amber-600 font-medium">Segera Hadir</span>
+                                                        <span>{{ __('Release Schedule') }}</span>
+                                                        <span class="text-amber-600 font-medium">{{ __('gcg.coming_soon') }}</span>
                                                     </div>
                                                     <button disabled
                                                         class="w-full flex items-center justify-center gap-1.5 py-2 bg-slate-100 text-slate-400 text-xs font-semibold rounded-xl cursor-not-allowed">
-                                                        <i class="fa-regular fa-clock text-xs"></i> Segera Hadir
+                                                        <i class="fa-regular fa-clock text-xs"></i> {{ __('gcg.coming_soon') }}
                                                     </button>
                                                 </div>
                                             </div>
@@ -746,7 +746,7 @@
                                     class="w-16 h-16 mx-auto rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 text-2xl mb-4">
                                     <i class="fa-regular fa-folder-open"></i>
                                 </div>
-                                <p class="text-sm text-slate-500">Belum ada laporan triwulanan yang tersedia.</p>
+                                <p class="text-sm text-slate-500">{{ __('No quarterly reports available yet.') }}</p>
                             </div>
                         @endif
                     </div>
@@ -793,7 +793,7 @@
                                         <div>
                                             <h4 class="font-bold text-slate-900 text-sm">
                                                 {{ $currentLocale === 'en' ? 'Revenue' : 'Pendapatan Usaha' }}</h4>
-                                            <span class="text-[11px] text-slate-500">Miliar IDR</span>
+                                            <span class="text-[11px] text-slate-500">{{ __('Billion IDR') }}</span>
                                         </div>
                                         <span
                                             class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-100 text-[#0099ff]">
@@ -836,7 +836,7 @@
                                             <h4 class="font-bold text-slate-900 text-sm">
                                                 {{ $currentLocale === 'en' ? 'Net Profit for the Year' : 'Laba Bersih Tahun Berjalan' }}
                                             </h4>
-                                            <span class="text-[11px] text-slate-500">Miliar IDR</span>
+                                            <span class="text-[11px] text-slate-500">{{ __('Billion IDR') }}</span>
                                         </div>
                                         <span
                                             class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800">
@@ -894,7 +894,7 @@
                                         <tr class="bg-slate-100/80 font-bold text-slate-900">
                                             <td colspan="{{ count($financialYears) + 1 }}"
                                                 class="py-2.5 px-4 text-xs tracking-wider uppercase text-blue-900 bg-blue-50/40">
-                                                LAPORAN LABA RUGI KOMPREHENSIF (JUTAAN IDR)
+                                                {{ __('COMPREHENSIVE INCOME STATEMENT (MILLION IDR)') }}
                                             </td>
                                         </tr>
                                         @foreach ($labaRugi as $row)
@@ -924,7 +924,7 @@
                                         <tr class="bg-slate-100/80 font-bold text-slate-900">
                                             <td colspan="{{ count($financialYears) + 1 }}"
                                                 class="py-2.5 px-4 text-xs tracking-wider uppercase text-blue-900 bg-blue-50/40">
-                                                LAPORAN POSISI KEUANGAN (JUTAAN IDR)
+                                                {{ __('STATEMENT OF FINANCIAL POSITION (MILLION IDR)') }}
                                             </td>
                                         </tr>
                                         @foreach ($posisiKeuangan as $row)
@@ -954,7 +954,7 @@
                                         <tr class="bg-slate-100/80 font-bold text-slate-900">
                                             <td colspan="{{ count($financialYears) + 1 }}"
                                                 class="py-2.5 px-4 text-xs tracking-wider uppercase text-blue-900 bg-blue-50/40">
-                                                RASIO - RASIO PENTING
+                                                {{ __('KEY FINANCIAL RATIOS') }}
                                             </td>
                                         </tr>
                                         @foreach ($rasioKeuangan as $row)
@@ -984,7 +984,7 @@
                                         <tr class="bg-slate-100/80 font-bold text-slate-900">
                                             <td colspan="{{ count($financialYears) + 1 }}"
                                                 class="py-2.5 px-4 text-xs tracking-wider uppercase text-blue-900 bg-blue-50/40">
-                                                INFORMASI SAHAM &amp; DIVIDEN
+                                                {{ __('SHARE & DIVIDEND INFORMATION') }}
                                             </td>
                                         </tr>
                                         @foreach ($sahamDividen as $row)
@@ -1029,7 +1029,7 @@
                     </p>
                 </div>
 
-                <a href="{{ route('frontend.investor.informasi-lainnya', ['locale' => $currentLocale]) }}#hubungi-investor"
+                <a href="{{ \App\Services\LocalizedUrlService::route('frontend.investor.informasi-lainnya', [], $currentLocale) }}#hubungi-investor"
                     class="px-6 py-3 bg-[#0099ff] hover:bg-[#0080d6] text-white font-semibold text-xs md:text-sm rounded-xl shadow-md transition-all whitespace-nowrap flex items-center gap-2">
                     <i class="fa-solid fa-paper-plane text-xs"></i>
                     {{ $currentLocale === 'en' ? 'Contact Investor Relations' : 'Hubungi Hubungan Investor' }}
@@ -1125,7 +1125,7 @@
                     </head>
                     <body>
                         <div class="header-title">PT JASUINDO TIGA PERKASA TBK - FINANCIAL HIGHLIGHT</div>
-                        <div class="header-sub">Ikhtisar Kinerja Keuangan & Rasio Penting</div>
+                        <div class="header-sub">${@json(__('Financial Performance Summary & Key Ratios'))}</div>
                         ${container.innerHTML}
                         <script>
                             window.onload = function() {

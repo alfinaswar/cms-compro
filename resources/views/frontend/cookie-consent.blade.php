@@ -2,7 +2,7 @@
     $cookieEnabled = !isset($websiteSettings) || (bool) ($websiteSettings->AktifkanCookieConsent ?? true);
     $privacyUrl = !empty($websiteSettings?->TautanKebijakanPrivasi)
         ? $websiteSettings->TautanKebijakanPrivasi
-        : url(app()->getLocale() . '/kebijakan-privasi');
+        : \App\Services\LocalizedUrlService::route('static-pages.show', ['slug' => 'kebijakan-privasi']);
     $customText = $websiteSettings?->TeksCookieConsent;
 @endphp
 

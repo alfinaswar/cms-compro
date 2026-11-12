@@ -6,7 +6,7 @@
     $displayDesc = $translation->SEODescription ?: Str::limit(strip_tags($displayKonten), 160);
     $wordCount = str_word_count(strip_tags($displayKonten));
     $readingTime = max(1, ceil($wordCount / 200));
-    $breadcrumbs = [['title' => __('Home'), 'url' => url('/')], ['title' => $displayJudul, 'url' => null]];
+    $breadcrumbs = [['title' => __('Home'), 'url' => \App\Services\LocalizedUrlService::route('frontend.main')], ['title' => $displayJudul, 'url' => null]];
     $shareUrl = url()->current();
 @endphp
 
@@ -88,30 +88,30 @@
                             <a href="https://wa.me/?text={{ urlencode($displayJudul . ' ' . $shareUrl) }}" target="_blank"
                                 rel="noopener"
                                 class="inline-flex items-center px-3 py-2 bg-green-500 hover:bg-green-600 text-white text-sm font-semibold rounded-full shadow transition-colors"
-                                title="Share to WhatsApp">
+                                title="{{ __('Share to WhatsApp') }}">
                                 <i class="fa-brands fa-whatsapp mr-2"></i> WhatsApp
                             </a>
                             <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode($shareUrl) }}"
                                 target="_blank" rel="noopener"
                                 class="inline-flex items-center px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-full shadow transition-colors"
-                                title="Share to Facebook">
+                                title="{{ __('Share to Facebook') }}">
                                 <i class="fa-brands fa-facebook-f mr-2"></i> Facebook
                             </a>
                             <a href="https://twitter.com/intent/tweet?url={{ urlencode($shareUrl) }}&text={{ urlencode($displayJudul) }}"
                                 target="_blank" rel="noopener"
                                 class="inline-flex items-center px-3 py-2 bg-sky-500 hover:bg-sky-700 text-white text-sm font-semibold rounded-full shadow transition-colors"
-                                title="Share to Twitter">
+                                title="{{ __('Share to Twitter') }}">
                                 <i class="fa-brands fa-x-twitter mr-2"></i> Twitter
                             </a>
                             <a href="https://t.me/share/url?url={{ urlencode($shareUrl) }}&text={{ urlencode($displayJudul) }}"
                                 target="_blank" rel="noopener"
                                 class="inline-flex items-center px-3 py-2 bg-cyan-500 hover:bg-cyan-700 text-white text-sm font-semibold rounded-full shadow transition-colors"
-                                title="Share via Telegram">
+                                title="{{ __('Share via Telegram') }}">
                                 <i class="fa-brands fa-telegram mr-2"></i> Telegram
                             </a>
                             <button onclick="navigator.clipboard.writeText('{{ $shareUrl }}');" type="button"
                                 class="inline-flex items-center px-3 py-2 bg-slate-400 hover:bg-slate-600 text-white text-sm font-semibold rounded-full shadow transition-colors"
-                                title="Copy Link">
+                                title="{{ __('Copy Link') }}">
                                 <i class="fa-regular fa-link mr-2"></i> {{ __('Copy Link') }}
                             </button>
                         </div>

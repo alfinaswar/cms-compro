@@ -3,11 +3,11 @@
 @php
     $cLocale = $locale ?? app()->getLocale();
     $trans = $lowongan->translate($cLocale);
-    $posisi = $trans?->Posisi ?: ($lowongan->Posisi ?: 'Lowongan');
+    $posisi = $trans?->Posisi ?: ($lowongan->Posisi ?: __('Job Opening'));
     $deskripsi = $trans?->Deskripsi ?: ($lowongan->Deskripsi ?: '');
     $descClean = Str::limit(strip_tags($deskripsi), 160);
     $siteName = $websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk';
-    $pageTitle = $posisi . ' (' . ($lowongan->Kota ?: 'Indonesia') . ') - Karir ' . $siteName;
+    $pageTitle = $posisi . ' (' . ($lowongan->Kota ?: 'Indonesia') . ') - ' . __('Career') . ' ' . $siteName;
     $datePosted = $lowongan->created_at ? $lowongan->created_at->toDateString() : now()->toDateString();
 @endphp
 
@@ -111,7 +111,7 @@
 
             .job-description-content p {
                 margin-bottom: 1rem;
-                line-height: 1.75;
+                line-height: 1.4em;
             }
 
             .job-description-content ul,
@@ -122,7 +122,7 @@
 
             .job-description-content li {
                 margin-bottom: 0.5rem;
-                line-height: 1.75;
+                line-height: 1.4em;
             }
 
             .job-description-content ul li {
@@ -150,7 +150,7 @@
     <section class="relative pt-32 pb-16 bg-gradient-to-br from-brand-900 via-brand-800 to-brand-900 overflow-hidden">
         <div class="absolute inset-0 opacity-10">
             <img src="https://images.unsplash.com/photo-1454165804606-c3d57f86697dd?q=80&w=2070&auto=format&fit=crop"
-                alt="Latar Belakang" class="w-full h-full object-cover">
+                alt="{{ __('Career Background') }}" class="w-full h-full object-cover">
         </div>
         <div
             class="absolute top-0 right-0 w-96 h-96 bg-brand-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10">
@@ -294,7 +294,7 @@
                                 <h2 class="text-2xl font-bold text-slate-900">{{ __('Apply for This Position') }}</h2>
                             </div>
 
-                            <form action="{{ route('frontend.career.apply', $lowongan->id) }}" method="POST"
+                            <form action="{{ \App\Services\LocalizedUrlService::route('frontend.career.apply', ['id' => $lowongan->id], $cLocale) }}" method="POST"
                                 enctype="multipart/form-data" id="applyForm" class="space-y-5">
                                 @csrf
 
@@ -324,7 +324,7 @@
                                                 class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                                 <i class="fa-solid fa-envelope text-slate-400"></i>
                                             </div>
-                                            <input type="email" name="Email" required placeholder="contoh@email.com"
+                                            <input type="email" name="Email" required placeholder="{{ $cLocale === 'en' ? 'example@email.com' : 'contoh@email.com' }}"
                                                 class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 focus:bg-white outline-none transition-all">
                                         </div>
                                     </div>
@@ -441,7 +441,7 @@
                                         <i class="fa-regular fa-paper-plane mr-2"></i>
                                         {{ __('Submit Application') }}
                                     </button>
-                                    <a href="{{ route('frontend.career', app()->getLocale()) }}"
+                                    <a href="{{ \App\Services\LocalizedUrlService::route('frontend.career') }}"
                                         class="flex-1 inline-flex items-center justify-center px-8 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all">
                                         <i class="fa-solid fa-arrow-left mr-2"></i>
                                         {{ __('Back') }}
@@ -463,7 +463,7 @@
                                     <p class="text-yellow-800 mb-4">
                                         {{ __('Sorry, this position is no longer accepting applications. Please check other openings.') }}
                                     </p>
-                                    <a href="{{ url('career') }}"
+                                    <a href="{{ \App\Services\LocalizedUrlService::route('frontend.career') }}"
                                         class="inline-flex items-center px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-xl transition-all">
                                         <i class="fa-solid fa-arrow-left mr-2"></i>
                                         {{ __('View Other Openings') }}

@@ -37,13 +37,13 @@
 
                 <!-- Action Buttons -->
                 <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <a href="{{ route('frontend.main') }}"
+                    <a href="{{ \App\Services\LocalizedUrlService::route('frontend.main') }}"
                         class="inline-flex items-center justify-center px-8 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl transition-all duration-200 shadow-lg hover:shadow-brand-500/30 w-full sm:w-auto">
                         <i class="fa-solid fa-house mr-2"></i>
                         {{ __('Go to Homepage') }}
                     </a>
 
-                    <a href="{{ route('frontend.contact.index') }}"
+                    <a href="{{ \App\Services\LocalizedUrlService::route('frontend.contact.index') }}"
                         class="inline-flex items-center justify-center px-8 py-3.5 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white hover:bg-white/20 font-bold rounded-xl transition-all duration-200 w-full sm:w-auto">
                         <i class="fa-solid fa-headset mr-2"></i>
                         {{ __('Contact Support') }}
@@ -53,7 +53,7 @@
                 <!-- Search Bar -->
                 <div class="mt-12 pt-8 border-t border-white/10">
                     <p class="text-sm text-slate-400 mb-4">{{ __('Or try searching for what you need:') }}</p>
-                    <form action="{{ route('frontend.news') }}" method="GET" class="max-w-md mx-auto relative">
+                    <form action="{{ \App\Services\LocalizedUrlService::route('frontend.news') }}" method="GET" class="max-w-md mx-auto relative">
                         <input type="text" name="search" placeholder="{{ __('Search news or solutions...') }}"
                             class="w-full pl-12 pr-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder-slate-400 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all">
                         <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>

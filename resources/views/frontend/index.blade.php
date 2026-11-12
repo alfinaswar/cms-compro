@@ -92,6 +92,8 @@
                     lineHeight: {
                         tight: '1.4em',
                         snug: '1.4em',
+                        normal: '1.4em',
+                        relaxed: '1.4em',
                         none: '1.4em',
                     },
                     colors: {
@@ -273,9 +275,46 @@
         }
 
         @media (min-width: 1024px) {
+            html {
+                font-size: 16px;
+            }
+
             body {
                 font-size: 16px;
                 line-height: 1.4em;
+            }
+
+            body p,
+            body li,
+            body dd,
+            body dt,
+            body td,
+            body th,
+            body label,
+            body blockquote,
+            .prose p,
+            .prose li {
+                line-height: 1.4em;
+            }
+
+            /* Desktop body minimum 16px & 1.4em line-height, excluding icons & situational subheadlines/eyebrows/badges */
+            body :is(
+                .text-xs,
+                .text-sm,
+                .md\:text-xs,
+                .md\:text-sm,
+                .lg\:text-xs,
+                .lg\:text-sm,
+                .text-\[9px\],
+                .text-\[10px\],
+                .text-\[11px\],
+                .text-\[12px\],
+                .text-\[13px\],
+                .text-\[14px\],
+                .text-\[15px\]
+            ):not(i):not(svg):not(kbd):not(.fa):not(.fa-solid):not(.fa-regular):not(.fa-brands):not(.subheadline):not(.sub-headline):not(.sec-subtitle):not(.box-subtitle):not(.subtitle):not(.sub-title):not(.mono-label):not(.badge):not([class*="uppercase"][class*="tracking-"]):not(span.rounded-full):not(span.rounded):not(div.rounded-full):not(.sitemap-meta):not(.count) {
+                font-size: 16px !important;
+                line-height: 1.4em !important;
             }
         }
 
@@ -306,17 +345,6 @@
         [class*="subjudul"],
         [class*="SubJudul"] {
             line-height: 1.4em !important;
-        }
-
-        @import "tailwindcss";
-
-        @theme {
-            --font-sans: "Plus Jakarta Sans", sans-serif;
-            --font-mono: "Plus Jakarta Sans", sans-serif;
-            --font-serif: "Plus Jakarta Sans", sans-serif;
-            --leading-none: 1.4em;
-            --leading-tight: 1.4em;
-            --leading-snug: 1.4em;
         }
     </style>
     <!-- GLightbox CSS -->
@@ -414,13 +442,20 @@
             ->with(['translations', 'children.translations'])
             ->get();
 
-        // Helper: normalisasi path URL (buang domain, query, fragment, trailing slash)
+        // Helper: normalisasi path URL (buang domain, query, fragment, trailing slash, dan prefix locale)
         $navNormalizePath = function ($url) {
             if (empty($url) || $url === '#') {
                 return null;
             }
             $u = strtolower(trim((string) parse_url((string) $url, PHP_URL_PATH), '/'));
-            return $u; // '' berarti homepage
+            if ($u === '') {
+                return '';
+            }
+            $segs = explode('/', $u);
+            if (in_array($segs[0] ?? '', ['id', 'en'], true)) {
+                array_shift($segs);
+            }
+            return implode('/', $segs); // '' berarti homepage
         };
 
         // Path saat ini tanpa prefix locale (mis. 'id/solution/payment' => 'solution/payment')
@@ -462,10 +497,15 @@
             return ltrim($u, '/');
         };
 
-        // Deteksi halaman "Solusi" via route halaman-solusi.show (child Solution dari DB admin)
-        $navOnSolutionPage = request()->routeIs('halaman-solusi.show');
+        // Deteksi halaman "Solusi" via route halaman-solusi.show / sub-show (ID & EN)
+        $navOnSolutionPage = request()->routeIs(
+            'halaman-solusi.show',
+            'halaman-solusi.show.en',
+            'halaman-solusi.sub-show',
+            'halaman-solusi.sub-show.en'
+        );
         $navSolutionSlug = $navOnSolutionPage
-            ? (string) (request()->route('id') ?? (request()->route('slug') ?? ''))
+            ? (string) (request()->route('parent') ?? (request()->route('id') ?? (request()->route('slug') ?? '')))
             : '';
     @endphp
 
@@ -478,7 +518,7 @@
 
                 <!-- Logo -->
                 <div class="flex-shrink-0 flex items-center">
-                    <a href="{{ route('frontend.main') }}" class="flex items-center space-x-2">
+                    <a href="{{ \App\Services\LocalizedUrlService::route('frontend.main', [], $currentLocale) }}" class="flex items-center space-x-2">
                         @if (!empty($websiteSettings) && !empty($websiteSettings->PathLogo))
                             {{-- Logo GELAP (putih/terang) — tampil saat navbar transparent (sebelum scroll) --}}
                             @php
@@ -522,48 +562,23 @@
                             $menuName = $translation ? $translation->NamaMenu : $menu->NamaMenu;
                             $hasChildren = $menu->children->count() > 0;
 
-                            // 2. URL
-                            if ($menu->JenisLink === 'route' && !empty($menu->RouteName)) {
-                                try {
-                                    $menuUrl = route($menu->RouteName);
-                                } catch (\Exception $e) {
-                                    $menuUrl = route('frontend.main');
-                                }
-                            } elseif (!empty($menu->Url) && $menu->Url !== '#') {
-                                $menuUrl = url($currentLocale . '/' . trim($menu->Url, '/'));
-                            } else {
-                                $menuUrl = '#';
+                            // 2. URL (canonical localized)
+                            $menuUrl = $menu->link;
+                            if ($menu->JenisLink === 'route' && $menuUrl === '#' && !empty($menu->RouteName)) {
+                                $menuUrl = \App\Services\LocalizedUrlService::route('frontend.main', [], $currentLocale);
                             }
 
-                            // 3. Cek Active State (termasuk jika salah satu child-nya aktif)
-                            $currentPath = trim(request()->path(), '/');
-                            $pathWithoutLocale = implode('/', array_slice(explode('/', $currentPath), 1));
-                            $pathWithSlash = $pathWithoutLocale . '/';
-
-                            // Helper: cocokkan path URL menu dengan path halaman saat ini
-                            // (mendukung trailing slash dari CustomUrlGenerator & prefix locale)
-                            $matchUrl = function ($url) use ($pathWithoutLocale, $pathWithSlash) {
-                                if (empty($url) || $url === '#') {
-                                    return false;
-                                }
-                                if (preg_match('#^(https?:)?//#i', $url)) {
-                                    $url = preg_replace('#^https?://[^/]+#i', '', $url);
-                                }
-                                $u = strtolower(trim(parse_url($url, PHP_URL_PATH) ?? '', '/'));
-                                $cur1 = strtolower($pathWithoutLocale);
-                                $cur2 = strtolower($pathWithSlash);
-                                if ($u === '' || $u === '/') {
-                                    return $cur1 === '' || $cur1 === 'id' || $cur1 === 'en';
-                                }
-                                return $u === $cur1 || $u === $cur2 || str_starts_with($cur1, $u . '/');
-                            };
-
                             if ($menu->JenisLink === 'route' && !empty($menu->RouteName)) {
-                                $isActive =
-                                    request()->routeIs($menu->RouteName) || request()->routeIs($menu->RouteName . '.*');
+                                $resolvedRoute = \App\Services\LocalizedUrlService::routeName($menu->RouteName, $currentLocale);
+                                $isActive = request()->routeIs(
+                                    $menu->RouteName,
+                                    $menu->RouteName . '.*',
+                                    $resolvedRoute,
+                                    $resolvedRoute . '.*'
+                                );
                             } else {
                                 // Exact match saja — parent dengan Url '#' tidak akan pernah aktif
-                                $isActive = $navIsActive($menu->Url);
+                                $isActive = $navIsActive($menuUrl);
                             }
 
                             // Helper cek aktif untuk child (memperbaiki false positive & self-domain URL admin)
@@ -572,14 +587,16 @@
                                 $navStoredPath,
                                 $navOnSolutionPage,
                                 $navSolutionSlug,
+                                $currentLocale,
                             ) {
                                 if ($child->JenisLink === 'route' && !empty($child->RouteName)) {
-                                    return request()->routeIs($child->RouteName);
+                                    $resolvedChildRoute = \App\Services\LocalizedUrlService::routeName($child->RouteName, $currentLocale);
+                                    return request()->routeIs($child->RouteName, $resolvedChildRoute);
                                 }
-                                if ($navIsActive($child->Url)) {
+                                if ($navIsActive($child->link)) {
                                     return true;
                                 }
-                                // Halaman Solusi (/solusi/{slug}/): cocokkan child berdasarkan slug di Url
+                                // Halaman Solusi (/solusi/{slug}/ atau /solutions/{slug}/): cocokkan child berdasarkan slug di Url
                                 if ($navOnSolutionPage && $navSolutionSlug !== '') {
                                     $stored = $navStoredPath($child->Url);
                                     if ($stored !== null && str_contains($stored, '/' . trim($navSolutionSlug, '/'))) {
@@ -637,22 +654,9 @@
                                                     : $child->NamaMenu;
 
                                                 // Generate the child URL properly
-                                                if ($child->JenisLink === 'route' && !empty($child->RouteName)) {
-                                                    try {
-                                                        $childUrl = route($child->RouteName);
-                                                        // Prefix locale segment if not already present
-                                                        $parsed = parse_url($childUrl);
-                                                    } catch (\Exception $e) {
-                                                        $childUrl = route('frontend.main');
-                                                    }
-                                                } elseif (!empty($child->Url) && $child->Url !== '#') {
-                                                    if (preg_match('/^https?:\/\//', $child->Url)) {
-                                                        $childUrl = $child->Url;
-                                                    } else {
-                                                        $childUrl = url($currentLocale . '/' . ltrim($child->Url, '/'));
-                                                    }
-                                                } else {
-                                                    $childUrl = '#';
+                                                $childUrl = $child->link;
+                                                if ($child->JenisLink === 'route' && $childUrl === '#' && !empty($child->RouteName)) {
+                                                    $childUrl = \App\Services\LocalizedUrlService::route('frontend.main', [], $currentLocale);
                                                 }
 
                                                 if ($childActiveCheck($child)) {
@@ -741,7 +745,7 @@
                         </div>
                     </div>
 
-                    <a href="{{ route('frontend.contact.index') }}"
+                    <a href="{{ \App\Services\LocalizedUrlService::route('frontend.contact.index', [], $currentLocale) }}"
                         class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-2.5 rounded-full font-medium transition-all duration-200 shadow-md hover:shadow-lg">
                         {{ __('Contact Us') }}
                     </a>
@@ -770,24 +774,22 @@
                             $translation = $menu->translations->firstWhere('Locale', $currentLocale);
                             $menuName = $translation ? $translation->NamaMenu : $menu->NamaMenu;
 
-                            if ($menu->JenisLink === 'route' && !empty($menu->RouteName)) {
-                                try {
-                                    $menuUrl = route($menu->RouteName);
-                                } catch (\Exception $e) {
-                                    $menuUrl = route('frontend.main');
-                                }
-                            } elseif (!empty($menu->Url) && $menu->Url !== '#') {
-                                $menuUrl = url($currentLocale . '/' . trim($menu->Url, '/'));
-                            } else {
-                                $menuUrl = '#';
+                            $menuUrl = $menu->link;
+                            if ($menu->JenisLink === 'route' && $menuUrl === '#' && !empty($menu->RouteName)) {
+                                $menuUrl = \App\Services\LocalizedUrlService::route('frontend.main', [], $currentLocale);
                             }
 
                             if ($menu->JenisLink === 'route' && !empty($menu->RouteName)) {
-                                $isActive =
-                                    request()->routeIs($menu->RouteName) || request()->routeIs($menu->RouteName . '.*');
+                                $resolvedRoute = \App\Services\LocalizedUrlService::routeName($menu->RouteName, $currentLocale);
+                                $isActive = request()->routeIs(
+                                    $menu->RouteName,
+                                    $menu->RouteName . '.*',
+                                    $resolvedRoute,
+                                    $resolvedRoute . '.*'
+                                );
                             } else {
                                 // Exact match saja — parent dropdown (Url '#') tidak pernah aktif
-                                $isActive = $navIsActive($menu->Url);
+                                $isActive = $navIsActive($menuUrl);
                             }
 
                             // Child aktif check yang sama dengan desktop menu
@@ -825,16 +827,9 @@
                                                 ? $childTranslation->NamaMenu
                                                 : $child->NamaMenu;
 
-                                            if ($child->JenisLink === 'route' && !empty($child->RouteName)) {
-                                                try {
-                                                    $childUrl = route($child->RouteName);
-                                                } catch (\Exception $e) {
-                                                    $childUrl = route('frontend.main');
-                                                }
-                                            } elseif (!empty($child->Url) && $child->Url !== '#') {
-                                                $childUrl = url($currentLocale . '/' . trim($child->Url, '/'));
-                                            } else {
-                                                $childUrl = '#';
+                                            $childUrl = $child->link;
+                                            if ($child->JenisLink === 'route' && $childUrl === '#' && !empty($child->RouteName)) {
+                                                $childUrl = \App\Services\LocalizedUrlService::route('frontend.main', [], $currentLocale);
                                             }
 
                                             if ($childActiveCheck($child)) {
@@ -880,7 +875,7 @@
                             <span class="font-medium">{{ __('English') }}</span>
                         </a>
 
-                        <a href="{{ route('frontend.contact.index') }}"
+                        <a href="{{ \App\Services\LocalizedUrlService::route('frontend.contact.index', [], $currentLocale) }}"
                             class="block w-full text-center bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
                             {{ __('Contact Us') }}
                         </a>
@@ -943,14 +938,14 @@
                                     : null);
                         @endphp
                         @if ($footerLogo)
-                            <a href="{{ route('frontend.main', ['locale' => $currentLocale]) }}"
+                            <a href="{{ \App\Services\LocalizedUrlService::route('frontend.main', [], $currentLocale) }}"
                                 class="inline-block">
                                 <img src="{{ $footerLogo }}"
                                     alt="{{ $websiteSettings->NamaPerusahaan ?? __('Logo') }}"
                                     class="h-10 w-auto object-contain">
                             </a>
                         @else
-                            <a href="{{ route('frontend.main', ['locale' => $currentLocale]) }}"
+                            <a href="{{ \App\Services\LocalizedUrlService::route('frontend.main', [], $currentLocale) }}"
                                 class="flex items-center space-x-2">
                                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -1041,16 +1036,16 @@
                                 </li>
                             @endforeach
                         @else
-                            <li><a href="{{ route('frontend.about-us', ['locale' => $currentLocale]) }}"
+                            <li><a href="{{ \App\Services\LocalizedUrlService::route('frontend.about-us', [], $currentLocale) }}"
                                     class="text-slate-400 hover:text-white transition-colors text-sm">{{ __('About Us') }}</a>
                             </li>
-                            <li><a href="{{ route('frontend.career', ['locale' => $currentLocale]) }}"
+                            <li><a href="{{ \App\Services\LocalizedUrlService::route('frontend.career', [], $currentLocale) }}"
                                     class="text-slate-400 hover:text-white transition-colors text-sm">{{ __('Career') }}</a>
                             </li>
-                            <li><a href="{{ route('frontend.news', ['locale' => $currentLocale]) }}"
+                            <li><a href="{{ \App\Services\LocalizedUrlService::route('frontend.news', [], $currentLocale) }}"
                                     class="text-slate-400 hover:text-white transition-colors text-sm">{{ __('News') }}</a>
                             </li>
-                            <li><a href="{{ route('frontend.contact.index', ['locale' => $currentLocale]) }}"
+                            <li><a href="{{ \App\Services\LocalizedUrlService::route('frontend.contact.index', [], $currentLocale) }}"
                                     class="text-slate-400 hover:text-white transition-colors text-sm">{{ __('Contact Us') }}</a>
                             </li>
                         @endif
@@ -1088,7 +1083,7 @@
                                 $sSlug = !empty($solusiItem->Slug) ? $solusiItem->Slug : $solusiItem->id;
                             @endphp
                             <li>
-                                <a href="{{ route('halaman-solusi.show', ['locale' => $currentLocale, 'id' => $sSlug]) }}"
+                                <a href="{{ \App\Services\LocalizedUrlService::route('halaman-solusi.show', ['id' => $sSlug], $currentLocale) }}"
                                     class="text-slate-400 hover:text-white transition-colors text-sm">
                                     {{ $sJudul }}
                                 </a>
@@ -1176,17 +1171,15 @@
                         @php
                             $termsUrl = !empty($websiteSettings?->TautanSyaratKetentuan)
                                 ? $websiteSettings->TautanSyaratKetentuan
-                                : route('static-pages.show', [
-                                    'locale' => $currentLocale,
+                                : \App\Services\LocalizedUrlService::route('static-pages.show', [
                                     'slug' => 'syarat-ketentuan',
-                                ]);
+                                ], $currentLocale);
                             $privacyUrl = !empty($websiteSettings?->TautanKebijakanPrivasi)
                                 ? $websiteSettings->TautanKebijakanPrivasi
-                                : route('static-pages.show', [
-                                    'locale' => $currentLocale,
+                                : \App\Services\LocalizedUrlService::route('static-pages.show', [
                                     'slug' => 'kebijakan-privasi',
-                                ]);
-                            $faqUrl = route('static-pages.show', ['locale' => $currentLocale, 'slug' => 'faq']);
+                                ], $currentLocale);
+                            $faqUrl = \App\Services\LocalizedUrlService::route('static-pages.show', ['slug' => 'faq'], $currentLocale);
                         @endphp
                         <a href="{{ $termsUrl }}"
                             class="text-slate-500 hover:text-white transition-colors">{{ __('Terms & Conditions') }}</a>
@@ -1194,7 +1187,7 @@
                             class="text-slate-500 hover:text-white transition-colors">{{ __('Privacy Policy') }}</a>
                         <a href="{{ $faqUrl }}"
                             class="text-slate-500 hover:text-white transition-colors">{{ __('Cookies') }}</a>
-                        <a href="{{ route('frontend.sitemap', ['locale' => $currentLocale]) }}"
+                        <a href="{{ \App\Services\LocalizedUrlService::route('frontend.sitemap', [], $currentLocale) }}"
                             class="text-slate-500 hover:text-white transition-colors">
                             {{ __('Sitemap') }}
                         </a>
@@ -1226,7 +1219,7 @@
             </div>
 
             {{-- Form --}}
-            <form id="searchModalForm" action="{{ route('frontend.news') }}" method="GET" class="p-6">
+            <form id="searchModalForm" action="{{ \App\Services\LocalizedUrlService::route('frontend.news', [], $currentLocale) }}" method="GET" class="p-6">
                 <div class="relative">
                     <i
                         class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
@@ -1487,7 +1480,7 @@
 
             try {
                 const response = await fetch(
-                    `{{ route('frontend.api.search-articles') }}?q=${encodeURIComponent(query)}`, {
+                    `{{ \App\Services\LocalizedUrlService::route('frontend.api.search-articles', [], $currentLocale) }}?q=${encodeURIComponent(query)}`, {
                         signal: currentAbortController.signal
                     });
 

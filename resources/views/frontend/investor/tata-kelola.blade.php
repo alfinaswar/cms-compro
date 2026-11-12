@@ -837,7 +837,7 @@
                         submitBtn.disabled = true;
                         submitBtn.innerText = '{{ __('gcg.wbs_sending') }}';
 
-                        fetch("{{ route('frontend.investor.wbs.store', ['locale' => app()->getLocale()]) }}", {
+                        fetch("{{ \App\Services\LocalizedUrlService::route('frontend.investor.wbs.store') }}", {
                                 method: 'POST',
                                 body: formData,
                                 headers: {
@@ -872,7 +872,7 @@
                         container.innerHTML = `
                             <div class="p-8 text-center bg-slate-50 rounded-xl">
                                 <i class="fa-solid fa-circle-notch fa-spin text-2xl text-[#0099ff] mb-2"></i>
-                                <p class="text-xs text-slate-500">Memuat data tahun ${tahun}...</p>
+                                <p class="text-xs text-slate-500">${@json(__('Loading year data'))} ${tahun}...</p>
                             </div>`;
                     }
 
@@ -897,7 +897,7 @@
                         })
                         .catch(() => {
                             if (container) container.innerHTML = originalContent;
-                            alert('Gagal memuat data. Silakan coba lagi.');
+                            alert(@json(__('Failed to load data. Please try again.')));
                         });
                 };
 

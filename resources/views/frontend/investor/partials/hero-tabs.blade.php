@@ -48,7 +48,7 @@
 
             <!-- Breadcrumb (Moved to Bottom) -->
             <nav class="mt-8 flex flex-wrap items-center justify-center gap-2 text-sm text-slate-300">
-                <a href="{{ url('/' . $currentLocale) }}" class="hover:text-white transition-colors">
+                <a href="{{ \App\Services\LocalizedUrlService::route('frontend.main', [], $currentLocale) }}" class="hover:text-white transition-colors">
                     <i class="fa-solid fa-house mr-1"></i> {{ __('Home') }}
                 </a>
                 <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
@@ -72,19 +72,19 @@
 <div class="bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm sticky top-20 z-40">
     <div class="flex items-center justify-center container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center overflow-x-auto py-3 no-scrollbar space-x-2">
-            <a href="{{ route('frontend.laporan-keuangan', ['locale' => $currentLocale]) }}"
+            <a href="{{ \App\Services\LocalizedUrlService::route('frontend.laporan-keuangan', [], $currentLocale) }}"
                 class="px-5 py-2 rounded-full text-xs md:text-sm font-semibold whitespace-nowrap transition-all duration-200 {{ ($activeTab ?? '') === 'laporan-keuangan' ? 'bg-[#0099ff] text-white shadow-sm' : 'text-[#45464d] hover:bg-slate-100 hover:text-slate-900' }}">
                 {{ __('investor.tab_financial_report') }}
             </a>
-            <a href="{{ route('frontend.investor.informasi-finansial', ['locale' => $currentLocale]) }}"
+            <a href="{{ \App\Services\LocalizedUrlService::route('frontend.investor.informasi-finansial', [], $currentLocale) }}"
                 class="px-5 py-2 rounded-full text-xs md:text-sm font-semibold whitespace-nowrap transition-all duration-200 {{ ($activeTab ?? '') === 'informasi-finansial' ? 'bg-[#0099ff] text-white shadow-sm' : 'text-[#45464d] hover:bg-slate-100 hover:text-slate-900' }}">
                 {{ __('investor.tab_financial_info') }}
             </a>
-            <a href="{{ route('frontend.investor.tata-kelola', ['locale' => $currentLocale]) }}"
+            <a href="{{ \App\Services\LocalizedUrlService::route('frontend.investor.tata-kelola', [], $currentLocale) }}"
                 class="px-5 py-2 rounded-full text-xs md:text-sm font-semibold whitespace-nowrap transition-all duration-200 {{ ($activeTab ?? '') === 'tata-kelola' ? 'bg-[#0099ff] text-white shadow-sm' : 'text-[#45464d] hover:bg-slate-100 hover:text-slate-900' }}">
                 {{ __('investor.tab_governance') }}
             </a>
-            <a href="{{ route('frontend.investor.informasi-lainnya', ['locale' => $currentLocale]) }}"
+            <a href="{{ \App\Services\LocalizedUrlService::route('frontend.investor.informasi-lainnya', [], $currentLocale) }}"
                 class="px-5 py-2 rounded-full text-xs md:text-sm font-semibold whitespace-nowrap transition-all duration-200 {{ ($activeTab ?? '') === 'informasi-lainnya' ? 'bg-[#0099ff] text-white shadow-sm' : 'text-[#45464d] hover:bg-slate-100 hover:text-slate-900' }}">
                 {{ __('investor.tab_other_info') }}
             </a>

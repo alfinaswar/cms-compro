@@ -443,7 +443,7 @@
                                 </ul>
                             @endif
 
-                            <a href="{{ route('halaman-solusi.show', $solusi->Slug) }}"
+                            <a href="{{ \App\Services\LocalizedUrlService::route('halaman-solusi.show', ['id' => $solusi->Slug], $locale) }}"
                                 class="mt-auto inline-flex items-center text-sm font-bold text-brand-600 hover:text-brand-700">
                                 {{ __('Explore') }} {{ $sJudul }} <i
                                     class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
@@ -535,7 +535,7 @@
 
             {{-- Tombol Pelajari Rekam Jejak Kami: warna footer #0F2854 --}}
             <div class="text-center mt-12">
-                <a href="{{ route('frontend.about-us', ['locale' => $locale]) }}"
+                <a href="{{ \App\Services\LocalizedUrlService::route('frontend.about-us', [], $locale) }}"
                     class="inline-flex items-center justify-center px-8 py-3 bg-[#0F2854] hover:bg-[#163a75] active:bg-[#0c1f42] text-white text-xs md:text-sm font-semibold rounded-full transition-all shadow-md shadow-[#0F2854]/20 group">
                     <span>{{ __('Learn Our Track Record') }}</span>
                     <i class="fa-solid fa-arrow-right ml-3 text-xs group-hover:translate-x-1 transition-transform"></i>
@@ -702,7 +702,7 @@
                                         class="text-xs text-slate-500">{{ \Carbon\Carbon::parse($featured->TanggalPublikasi)->isoFormat('D MMM Y') }}</span>
                                 </div>
 
-                                <a href="{{ route('frontend.detail', ['slug' => $featured->Slug]) }}"
+                                <a href="{{ \App\Services\LocalizedUrlService::route('frontend.detail', ['slug' => $featured->Slug], $locale) }}"
                                     class="block mb-5 rounded-xl overflow-hidden h-48 bg-slate-100 group">
                                     @if (!empty($featured->PathThumbnail) && Storage::disk('public')->exists($featured->PathThumbnail))
                                         <img src="{{ asset('storage/' . $featured->PathThumbnail) }}"
@@ -723,11 +723,11 @@
                                     {{ $fTrans->Ringkasan ?: $featured->Ringkasan }}</p>
 
                                 <div class="mt-auto space-y-3">
-                                    <a href="{{ route('frontend.detail', ['slug' => $featured->Slug]) }}"
+                                    <a href="{{ \App\Services\LocalizedUrlService::route('frontend.detail', ['slug' => $featured->Slug], $locale) }}"
                                         class="flex items-center justify-center w-full px-6 py-3 bg-[#0F2854] hover:bg-[#163a75] active:bg-[#0c1f42] text-white text-sm font-semibold rounded-lg transition-colors shadow-sm">
                                         {{ __('Read Full Article') }} <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
                                     </a>
-                                    <a href="{{ route('frontend.news') }}"
+                                    <a href="{{ \App\Services\LocalizedUrlService::route('frontend.news', [], $locale) }}"
                                         class="flex items-center justify-center w-full px-6 py-3 border border-slate-300 hover:border-[#0F2854] text-[#0F2854] hover:bg-slate-50 text-sm font-semibold rounded-lg transition-colors">
                                         {{ __('Browse All Topics') }} <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
                                     </a>
@@ -745,7 +745,7 @@
                                 <h2 class="text-2xl md:text-3xl font-extrabold text-[#111827] mt-1.5">
                                     {{ __('News & Regulatory Insights') }}</h2>
                             </div>
-                            <a href="{{ route('frontend.news') }}"
+                            <a href="{{ \App\Services\LocalizedUrlService::route('frontend.news', [], $locale) }}"
                                 class="text-sm font-bold text-[#0F2854] hover:text-blue-800 whitespace-nowrap inline-flex items-center gap-1.5">
                                 {{ __('View All News') }} <i class="fa-solid fa-arrow-right text-xs"></i>
                             </a>
@@ -756,7 +756,7 @@
                                 @php $nTrans = $n->translate($locale); @endphp
                                 <div
                                     class="bg-white rounded-xl border border-slate-200/90 p-5 flex gap-5 hover:shadow-md hover:border-slate-300 transition-all">
-                                    <a href="{{ route('frontend.detail', ['slug' => $n->Slug]) }}" class="flex-shrink-0">
+                                    <a href="{{ \App\Services\LocalizedUrlService::route('frontend.detail', ['slug' => $n->Slug], $locale) }}" class="flex-shrink-0">
                                         <img src="{{ $n->PathThumbnail ? asset('storage/' . $n->PathThumbnail) : asset('img/no-image.png') }}"
                                             alt="{{ $nTrans->Judul ?: $n->Judul }}"
                                             class="w-28 h-24 object-cover rounded-lg">
@@ -771,11 +771,11 @@
                                         <h4
                                             class="font-bold text-[#111827] leading-snug mb-1.5 line-clamp-2 hover:text-blue-700 transition-colors">
                                             <a
-                                                href="{{ route('frontend.detail', ['slug' => $n->Slug]) }}">{{ $nTrans->Judul ?: $n->Judul }}</a>
+                                                href="{{ \App\Services\LocalizedUrlService::route('frontend.detail', ['slug' => $n->Slug], $locale) }}">{{ $nTrans->Judul ?: $n->Judul }}</a>
                                         </h4>
                                         <p class="text-xs text-slate-500 leading-relaxed line-clamp-2 mb-2">
                                             {{ $nTrans->Ringkasan ?: $n->Ringkasan }}</p>
-                                        <a href="{{ route('frontend.detail', ['slug' => $n->Slug]) }}"
+                                        <a href="{{ \App\Services\LocalizedUrlService::route('frontend.detail', ['slug' => $n->Slug], $locale) }}"
                                             class="text-xs font-bold text-[#0F2854] hover:text-blue-800 inline-flex items-center gap-1">
                                             {{ __('Read More') }} <i class="fa-solid fa-arrow-right text-[10px]"></i>
                                         </a>
@@ -822,7 +822,7 @@
                                     <p class="text-sm font-bold text-slate-900 mb-0.5">
                                         {{ __('Product Consultation & Customization') }}</p>
                                     <p class="text-xs text-slate-500 leading-relaxed">
-                                        {{ __('Technical specifications, multi-layer security features, and materials can be custom-designed to meet specific requirements..') }}
+                                        {{ __('Technical specifications, multi-layer security features, and materials can be custom-designed to meet specific requirements.') }}
                                     </p>
                                 </div>
                             </div>
@@ -880,7 +880,7 @@
                                         class="fa-solid fa-bolt mr-1"></i>{{ __('Fast Response < 24 Hours') }}</span>
                             </div>
 
-                            <form action="{{ route('frontend.contact.store') }}" method="POST" id="rfqForm"
+                            <form action="{{ \App\Services\LocalizedUrlService::route('frontend.contact.store', [], $locale) }}" method="POST" id="rfqForm"
                                 class="flex flex-col flex-1">
                                 @csrf
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">

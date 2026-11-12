@@ -183,29 +183,6 @@
 
     @push('styles')
         <style>
-            html {
-                font-size: 16px !important;
-            }
-
-            body,
-            .text-base {
-                font-size: 16px !important;
-            }
-
-            .text-xs {
-                font-size: 16px !important;
-            }
-
-            .text-sm {
-                font-size: 16px !important;
-            }
-
-            .text-[10px],
-            .text-[9px],
-            .text-[11px] {
-                font-size: 13px !important;
-            }
-
             .mono-label {
                 font-family: 'Plus Jakarta Sans', sans-serif;
                 letter-spacing: .18em;
@@ -318,7 +295,7 @@
                 @endif
 
                 <nav class="mt-8 flex items-center justify-center space-x-2 text-sm text-slate-300">
-                    <a href="{{ route('frontend.main') }}" class="hover:text-white transition-colors">
+                    <a href="{{ \App\Services\LocalizedUrlService::route('frontend.main', [], $locale) }}" class="hover:text-white transition-colors">
                         <i class="fa-solid fa-house mr-1"></i>{{ __('Home') }}
                     </a>
                     <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
@@ -527,7 +504,7 @@
                         <div class="text-slate-600 leading-relaxed">{!! $tr($TanggungJawab, 'Deskripsi') !!}</div>
                     @endif
                 </div>
-                <a href="{{ route('frontend.news') }}"
+                <a href="{{ \App\Services\LocalizedUrlService::route('frontend.news') }}"
                     class="inline-flex items-center px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-full transition-colors whitespace-nowrap shadow-md">
                     {{ $en ? 'View More CSR' : 'Lihat CSR Lainnya' }} <i class="fa-solid fa-arrow-right ml-2"></i>
                 </a>
@@ -552,7 +529,7 @@
                             <div class="p-6 flex flex-col">
                                 <h3 class="font-extrabold text-slate-900 mb-2">{{ $tr($detail, 'Judul') }}</h3>
                                 <div class="text-xs text-slate-500 leading-relaxed flex-grow">{!! $tr($detail, 'Deskripsi') !!}</div>
-                                <a href="{{ route('frontend.news') }}"
+                                <a href="{{ \App\Services\LocalizedUrlService::route('frontend.news') }}"
                                     class="mono-label inline-flex items-center text-[10px] font-bold text-blue-600 uppercase tracking-widest mt-4 hover:text-blue-700">
                                     {{ __('Read More') }} <i class="fa-solid fa-arrow-right ml-2"></i>
                                 </a>
@@ -694,7 +671,7 @@
                     @endif
                     <div class="flex flex-col sm:flex-row gap-3.5">
                         @forelse ($ctaDetails as $i => $btn)
-                            <a href="{{ $tr($btn, 'Deskripsi') ?: route('frontend.contact.index') }}"
+                            <a href="{{ $tr($btn, 'Deskripsi') ?: \App\Services\LocalizedUrlService::route('frontend.contact.index') }}"
                                 class="inline-flex items-center justify-center px-6 py-3 {{ $i === 0 ? 'bg-[#1b2537] hover:bg-[#111827] text-white shadow-sm' : 'bg-white hover:bg-slate-50 border border-slate-300 text-slate-800' }} text-xs font-bold rounded-full transition-colors">
                                 {{ $tr($btn, 'Judul') }}
                                 @if ($i === 0)
@@ -704,7 +681,7 @@
                                 @endif
                             </a>
                         @empty
-                            <a href="{{ route('frontend.contact.index') }}"
+                            <a href="{{ \App\Services\LocalizedUrlService::route('frontend.contact.index') }}"
                                 class="inline-flex items-center justify-center px-6 py-3 bg-[#1b2537] hover:bg-[#111827] text-white text-xs font-bold rounded-full transition-colors shadow-sm">
                                 {{ $en ? 'Start Consultation' : 'Mulai Konsultasi' }}
                                 <i class="fa-brands fa-whatsapp ml-2 text-sm"></i>
@@ -920,12 +897,12 @@
                     const originalHtml = btn.innerHTML;
 
                     btn.disabled = true;
-                    btn.innerHTML = '<span>Memproses...</span> <i class="fa-solid fa-spinner fa-spin"></i>';
+                    btn.innerHTML = '<span>{{ __('Processing...') }}</span> <i class="fa-solid fa-spinner fa-spin"></i>';
                     errBox.classList.add('hidden');
 
                     const formData = new FormData(form);
 
-                    fetch("{{ route('frontend.about-us.download-profile', ['locale' => $locale]) }}", {
+                    fetch("{{ \App\Services\LocalizedUrlService::route('frontend.about-us.download-profile', [], $locale) }}", {
                             method: 'POST',
                             headers: {
                                 'X-Requested-With': 'XMLHttpRequest',
