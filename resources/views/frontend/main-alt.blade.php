@@ -701,8 +701,22 @@
                                     <span
                                         class="text-xs text-slate-500">{{ \Carbon\Carbon::parse($featured->TanggalPublikasi)->isoFormat('D MMM Y') }}</span>
                                 </div>
+
+                                <a href="{{ route('frontend.detail', ['slug' => $featured->Slug]) }}"
+                                    class="block mb-5 rounded-xl overflow-hidden h-48 bg-slate-100 group">
+                                    @if (!empty($featured->PathThumbnail) && Storage::disk('public')->exists($featured->PathThumbnail))
+                                        <img src="{{ asset('storage/' . $featured->PathThumbnail) }}"
+                                            alt="{{ $fTrans->Judul ?: $featured->Judul }}"
+                                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center text-slate-400">
+                                            <i class="fa-solid fa-image text-3xl"></i>
+                                        </div>
+                                    @endif
+                                </a>
+
                                 <span
-                                    class="text-[11px] font-bold text-blue-700 uppercase tracking-wider mb-2">{{ $featured->kategori->NamaKategori }}</span>
+                                    class="text-[11px] font-bold text-blue-700 uppercase tracking-wider mb-2">{{ optional($featured->kategori)->NamaKategori }}</span>
                                 <h3 class="text-2xl font-extrabold text-[#111827] leading-snug mb-3">
                                     {{ $fTrans->Judul ?: $featured->Judul }}</h3>
                                 <p class="text-sm text-slate-600 leading-relaxed mb-6 line-clamp-3">

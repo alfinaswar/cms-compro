@@ -33,13 +33,6 @@
 @section('content-frontend')
 
     @php
-        // URL breadcrumb "Solusi" (aman jika route index tidak ada)
-        try {
-            $solusiIndexUrl = route('halaman-solusi.index');
-        } catch (\Exception $e) {
-            $solusiIndexUrl = url($locale . '/#solusi');
-        }
-
         $details = $halamanSolusi->details ?? collect();
     @endphp
 
@@ -224,7 +217,7 @@
                         <i class="fa-solid fa-house mr-1"></i> {{ __('Home') }}
                     </a>
                     <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
-                    <a href="{{ $solusiIndexUrl }}" class="hover:text-white transition-colors">{{ __('Solutions') }}</a>
+                    <span>{{ __('Solutions') }}</span>
                     <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
                     <span
                         class="text-white font-semibold truncate max-w-[200px]">{{ Str::limit($tr($halamanSolusi, 'Judul'), 30) }}</span>
@@ -531,10 +524,10 @@
                             class="inline-flex items-center justify-center px-8 py-4 bg-brand-600 hover:bg-brand-500 text-white text-sm font-bold rounded-lg transition-all shadow-lg shadow-brand-600/30">
                             <i class="fa-solid fa-paper-plane mr-2"></i> {{ __('Request Quotation') }}
                         </a>
-                        <a href="{{ $solusiIndexUrl }}"
-                            class="inline-flex items-center justify-center px-8 py-4 border-2 border-white/30 text-white hover:bg-white/10 text-sm font-bold rounded-lg transition-all">
+                        <button type="button" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+                            class="inline-flex items-center justify-center px-8 py-4 border-2 border-white/30 text-white hover:bg-white/10 text-sm font-bold rounded-lg transition-all cursor-pointer">
                             <i class="fa-solid fa-arrow-left mr-2"></i> {{ __('Back to Solutions') }}
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>

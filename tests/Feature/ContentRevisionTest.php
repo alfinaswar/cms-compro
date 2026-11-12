@@ -208,4 +208,118 @@ class ContentRevisionTest extends TestCase
         $resEn->assertSee('Interested in This Solution?');
         $resEn->assertSee('Let&#039;s Collaborate', false);
     }
+
+    /**
+     * Test 8: Featured Article thumbnail on Homepage
+     */
+    public function test_homepage_featured_article_renders_thumbnail(): void
+    {
+        $this->withoutMiddleware(\App\Http\Middleware\EnforceTrailingSlash::class);
+
+        $featured = \App\Models\Berita::where('Status', 'Diterbitkan')
+            ->latest('TanggalPublikasi')
+            ->first();
+
+        if (
+            !$featured ||
+            empty($featured->PathThumbnail) ||
+            !\Illuminate\Support\Facades\Storage::disk('public')->exists($featured->PathThumbnail)
+        ) {
+            $this->markTestSkipped('No published Berita with existing PathThumbnail found');
+        }
+
+        $res = $this->get('/id/');
+        $res->assertStatus(200);
+        $res->assertSee('<img src="' . asset('storage/' . $featured->PathThumbnail) . '"', false);
+    }
+
+    /**
+     * Test 9: About page button icons sit on the right side of text
+     */
+    public function test_about_page_button_icons_are_positioned_on_right(): void
+    {
+        $this->withoutMiddleware(\App\Http\Middleware\EnforceTrailingSlash::class);
+
+        $resId = $this->get('/id/tentang-kami/');
+        $resId->assertStatus(200);
+        $htmlId = $resId->getContent();
+
+        $this->assertMatchesRegularExpression('/Unduh Profil\s*<i class="fa-solid fa-download ml-2"><\/i>/', $htmlId);
+        $this->assertMatchesRegularExpression('/<span>Kirim &amp; Unduh Dokumen<\/span>\s*<i class="fa-solid fa-download text-xs"><\/i>/', $htmlId);
+        $this->assertMatchesRegularExpression('/<span>Memproses\.\.\.<\/span>\s*<i class="fa-solid fa-spinner fa-spin"><\/i>/', $htmlId);
+        $this->assertDoesNotMatchRegularExpression('/<a\b[^>]*>\s*<i class="fa-regular fa-file-lines/', $htmlId);
+
+        if (preg_match('/<!-- 7\. CTA -->(.*?)<\/section>/s', $htmlId, $ctaMatch)) {
+            $this->assertDoesNotMatchRegularExpression('/<a\b[^>]*>\s*<i\b/', $ctaMatch[1]);
+        } else {
+            $this->fail('CTA section not found in About page HTML');
+        }
+
+        $resEn = $this->get('/en/about-us/');
+        $resEn->assertStatus(200);
+        $htmlEn = $resEn->getContent();
+
+        $this->assertMatchesRegularExpression('/Download Profile\s*<i class="fa-solid fa-download ml-2"><\/i>/', $htmlEn);
+        $this->assertMatchesRegularExpression('/<span>Submit &amp; Download File<\/span>\s*<i class="fa-solid fa-download text-xs"><\/i>/', $htmlEn);
+    }
+
+    /**
+     * Test 10: Solusi page "Back to Solutions" scrolls to top and never links to admin
+     */
+    public function test_solusi_back_button_scrolls_to_top_and_no_admin_link(): void
+    {
+        $this->withoutMiddleware(\App\Http\Middleware\EnforceTrailingSlash::class);
+
+        $solusi = \App\Models\HalamanSolusi::where('IsPublished', true)->first();
+        if (!$solusi) {
+            $this->markTestSkipped('No published HalamanSolusi found');
+        }
+
+        // ID
+        $resId = $this->get('/id/solusi/' . $solusi->Slug . '/');
+        $resId->assertStatus(200);
+        $resId->assertDontSee('landing-page/solusi/', false);
+        if (preg_match('/<!-- Breadcrumb -->\s*<nav\b[^>]*>(.*?)<\/nav>/s', $resId->getContent(), $bcId)) {
+            $this->assertStringContainsString('<span>Solusi</span>', $bcId[1]);
+            $this->assertDoesNotMatchRegularExpression('/<a\b[^>]*>\s*Solusi\s*<\/a>/', $bcId[1]);
+        } else {
+            $this->fail('Breadcrumb nav not found in ID Solusi page');
+        }
+        $this->assertMatchesRegularExpression(
+            '/<button\s+type="button"\s+onclick="window\.scrollTo\(\{\s*top:\s*0,\s*behavior:\s*\'smooth\'\s*\}\)"[^>]*>.*?Kembali ke Solusi\s*<\/button>/s',
+            $resId->getContent()
+        );
+
+        // EN
+        $resEn = $this->get('/en/solutions/' . $solusi->Slug . '/');
+        $resEn->assertStatus(200);
+        $resEn->assertDontSee('landing-page/solusi/', false);
+        if (preg_match('/<!-- Breadcrumb -->\s*<nav\b[^>]*>(.*?)<\/nav>/s', $resEn->getContent(), $bcEn)) {
+            $this->assertStringContainsString('<span>Solutions</span>', $bcEn[1]);
+            $this->assertDoesNotMatchRegularExpression('/<a\b[^>]*>\s*Solutions\s*<\/a>/', $bcEn[1]);
+        } else {
+            $this->fail('Breadcrumb nav not found in EN Solusi page');
+        }
+        $this->assertMatchesRegularExpression(
+            '/<button\s+type="button"\s+onclick="window\.scrollTo\(\{\s*top:\s*0,\s*behavior:\s*\'smooth\'\s*\}\)"[^>]*>.*?Back to Solutions\s*<\/button>/s',
+            $resEn->getContent()
+        );
+
+        // Subpage (jika ada) juga memakai breadcrumb Solusi non-clickable
+        $subpage = \App\Models\HalamanSolusiSubpage::where('IsPublished', true)
+            ->whereHas('detail.solusi', fn ($q) => $q->where('IsPublished', true))
+            ->with('detail.solusi')
+            ->first();
+        if ($subpage) {
+            $parentSlug = $subpage->detail->solusi->Slug;
+            $resSub = $this->get('/id/solusi/' . $parentSlug . '/' . $subpage->Slug . '/');
+            $resSub->assertStatus(200);
+            if (preg_match('/<!-- Breadcrumb -->\s*<nav\b[^>]*>(.*?)<\/nav>/s', $resSub->getContent(), $bcSub)) {
+                $this->assertStringContainsString('<span>Solusi</span>', $bcSub[1]);
+                $this->assertDoesNotMatchRegularExpression('/<a\b[^>]*>\s*Solusi\s*<\/a>/', $bcSub[1]);
+            } else {
+                $this->fail('Breadcrumb nav not found in Solusi subpage');
+            }
+        }
+    }
 }

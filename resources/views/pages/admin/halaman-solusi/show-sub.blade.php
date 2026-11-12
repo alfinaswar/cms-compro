@@ -26,8 +26,6 @@
         $detailTitle = ($subpage->detail?->translate($locale)->Judul)
             ?: ($subpage->detail?->Judul)
             ?: $subpage->t('Judul');
-
-        $solusiIndexUrl = url($locale . '/#solusi');
     @endphp
 
     @push('styles')
@@ -91,8 +89,7 @@
                         <i class="fa-solid fa-house mr-1"></i> {{ __('Home') }}
                     </a>
                     <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
-                    <a href="{{ route('halaman-solusi.show', ['locale' => $locale, 'id' => $halamanSolusi->Slug]) }}"
-                        class="hover:text-white transition-colors">{{ __('Solutions') }}</a>
+                    <span>{{ __('Solutions') }}</span>
                     <i class="fa-solid fa-chevron-right text-xs text-slate-500"></i>
                     <a href="{{ route('halaman-solusi.show', ['locale' => $locale, 'id' => $halamanSolusi->Slug]) }}"
                         class="hover:text-white transition-colors truncate max-w-[200px]">{{ Str::limit($halamanSolusi->t('Judul'), 30) }}</a>

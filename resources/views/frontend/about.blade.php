@@ -415,7 +415,7 @@
                             </span>
                             <button type="button" onclick="openDownloadModal()"
                                 class="inline-flex items-center px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-lg transition-colors cursor-pointer">
-                                <i class="fa-solid fa-download mr-2"></i> {{ $en ? 'Download Profile' : 'Unduh Profil' }}
+                                {{ $en ? 'Download Profile' : 'Unduh Profil' }} <i class="fa-solid fa-download ml-2"></i>
                             </button>
                         </div>
                     </div>
@@ -696,12 +696,11 @@
                         @forelse ($ctaDetails as $i => $btn)
                             <a href="{{ $tr($btn, 'Deskripsi') ?: route('frontend.contact.index') }}"
                                 class="inline-flex items-center justify-center px-6 py-3 {{ $i === 0 ? 'bg-[#1b2537] hover:bg-[#111827] text-white shadow-sm' : 'bg-white hover:bg-slate-50 border border-slate-300 text-slate-800' }} text-xs font-bold rounded-full transition-colors">
-                                @if ($i > 0)
-                                    <i class="fa-regular fa-file-lines mr-2 text-slate-500"></i>
-                                @endif
                                 {{ $tr($btn, 'Judul') }}
                                 @if ($i === 0)
                                     <i class="fa-brands fa-whatsapp ml-2 text-sm"></i>
+                                @else
+                                    <i class="fa-regular fa-file-lines ml-2 text-slate-500"></i>
                                 @endif
                             </a>
                         @empty
@@ -712,8 +711,8 @@
                             </a>
                             <a href="#sertifikasi"
                                 class="inline-flex items-center justify-center px-6 py-3 bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 text-xs font-bold rounded-full transition-colors">
-                                <i class="fa-regular fa-file-lines mr-2 text-slate-500"></i>
                                 {{ $en ? 'Review Compliance & Certification Documents' : 'Tinjau Dokumen Kepatuhan & Sertifikasi' }}
+                                <i class="fa-regular fa-file-lines ml-2 text-slate-500"></i>
                             </a>
                         @endforelse
                     </div>
@@ -802,8 +801,8 @@
                 <div class="pt-2">
                     <button type="submit" id="btnSubmitDownload"
                         class="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 active:bg-slate-950 text-white font-semibold text-sm rounded-lg transition-colors flex items-center justify-center gap-2 shadow-sm">
-                        <i class="fa-solid fa-download text-xs"></i>
                         <span>{{ $en ? 'Submit & Download File' : 'Kirim & Unduh Dokumen' }}</span>
+                        <i class="fa-solid fa-download text-xs"></i>
                     </button>
                 </div>
                 <p class="text-[11px] text-slate-400 text-center">
@@ -921,7 +920,7 @@
                     const originalHtml = btn.innerHTML;
 
                     btn.disabled = true;
-                    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Memproses...</span>';
+                    btn.innerHTML = '<span>Memproses...</span> <i class="fa-solid fa-spinner fa-spin"></i>';
                     errBox.classList.add('hidden');
 
                     const formData = new FormData(form);
