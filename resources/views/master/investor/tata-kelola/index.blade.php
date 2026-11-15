@@ -44,11 +44,6 @@
                             <i class="fas fa-calendar-check mr-1"></i> Rapat Umum Pemegang Saham (RUPS)
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link font-weight-bold text-danger" href="{{ route('admin.investor.tata-kelola.wbs-index') }}">
-                            <i class="fas fa-bullhorn mr-1"></i> Laporan WBS Masuk
-                        </a>
-                    </li>
                 </ul>
             </div>
 
@@ -99,21 +94,10 @@
                                         <textarea name="Keterangan" rows="3" class="form-control">{{ old('Keterangan', $bagan->Keterangan) }}</textarea>
                                     </div>
 
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Upload Gambar Bagan Organisasi (Opsional)</label>
-                                                <input type="file" name="GambarBagan" class="form-control-file">
-                                                <small class="text-muted">Jika diunggah, gambar ini akan menggantikan diagram visual bawaan.</small>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label>Upload PDF Dokumen Bagan (Opsional)</label>
-                                                <input type="file" name="FileBaganPdf" class="form-control-file">
-                                                <small class="text-muted">Untuk tombol "Unduh PDF" pada pengunjung.</small>
-                                            </div>
-                                        </div>
+                                    <div class="form-group">
+                                        <label>Upload Gambar Bagan Organisasi (Opsional)</label>
+                                        <input type="file" name="GambarBagan" class="form-control-file">
+                                        <small class="text-muted">Jika diunggah, gambar ini akan menggantikan diagram visual bawaan.</small>
                                     </div>
 
                                     <button type="submit" class="btn btn-primary px-4 mt-2">
@@ -132,14 +116,6 @@
                                                 <div class="p-4 bg-light border rounded text-muted text-xs">
                                                     <i class="fas fa-sitemap fa-3x mb-2 text-secondary"></i>
                                                     <p class="mb-0">Belum ada gambar kustom diunggah. Bagan HTML default aktif.</p>
-                                                </div>
-                                            @endif
-
-                                            @if($bagan->PathFilePdf)
-                                                <div class="mt-2 text-left">
-                                                    <a href="{{ asset('storage/' . $bagan->PathFilePdf) }}" target="_blank" class="btn btn-xs btn-outline-danger">
-                                                        <i class="fas fa-file-pdf"></i> Lihat PDF Tersimpan
-                                                    </a>
                                                 </div>
                                             @endif
                                         </div>
@@ -231,11 +207,22 @@
                     <!-- TAB 3: DOKUMEN GCG & KEBIJAKAN -->
                     <!-- ============================================ -->
                     <div class="tab-pane fade" id="tab-dokumen" role="tabpanel">
-                        <div class="d-flex justify-content-between mb-3">
-                            <h5 class="font-weight-bold text-secondary mb-0">Dokumen Piagam, Pedoman &amp; Kebijakan Operasional</h5>
-                            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalTambahDokumen">
-                                <i class="fas fa-plus mr-1"></i> Tambah Dokumen GCG
-                            </button>
+                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+                            <h5 class="font-weight-bold text-secondary mb-2 mb-md-0">Dokumen Piagam, Pedoman &amp; Kebijakan Operasional</h5>
+                            <div class="d-flex align-items-center">
+                                <div class="mr-2" style="min-width: 220px;">
+                                    <select id="filterKategoriDokumenAdmin" class="form-control form-control-sm">
+                                        <option value="">Semua Kategori</option>
+                                        <option value="Dokumen Tata Kelola">Dokumen Tata Kelola</option>
+                                        <option value="Kebijakan Operasional">Kebijakan Operasional</option>
+                                        <option value="Komite Audit">Komite Audit</option>
+                                        <option value="Satuan Audit Internal">Satuan Audit Internal</option>
+                                    </select>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalTambahDokumen">
+                                    <i class="fas fa-plus mr-1"></i> Tambah Dokumen GCG
+                                </button>
+                            </div>
                         </div>
 
                         <div class="table-responsive">
@@ -253,11 +240,20 @@
                                 </thead>
                                 <tbody>
                                     @forelse($dokumenList as $idx => $doc)
-                                        <tr>
+                                        <tr data-kategori="{{ $doc->Kategori }}">
                                             <td class="text-center">{{ $idx + 1 }}</td>
                                             <td class="font-weight-bold">{{ $doc->Judul }}</td>
                                             <td>
-                                                <span class="badge badge-info">{{ $doc->Kategori }}</span>
+                                                @php
+                                                    $badgeClass = match($doc->Kategori) {
+                                                        'Dokumen Tata Kelola' => 'badge-primary',
+                                                        'Kebijakan Operasional' => 'badge-success',
+                                                        'Komite Audit' => 'badge-warning text-dark',
+                                                        'Satuan Audit Internal' => 'badge-purple text-white',
+                                                        default => 'badge-info',
+                                                    };
+                                                @endphp
+                                                <span class="badge {{ $badgeClass }}">{{ $doc->Kategori }}</span>
                                             </td>
                                             <td class="small">{{ $doc->Deskripsi ?? '-' }}</td>
                                             <td class="text-center">
@@ -305,11 +301,24 @@
                     <!-- TAB 4: RUPS -->
                     <!-- ============================================ -->
                     <div class="tab-pane fade" id="tab-rups" role="tabpanel">
-                        <div class="d-flex justify-content-between mb-3">
-                            <h5 class="font-weight-bold text-secondary mb-0">Dokumen Rapat Umum Pemegang Saham (RUPS)</h5>
-                            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalTambahRups">
-                                <i class="fas fa-plus mr-1"></i> Tambah Dokumen RUPS
-                            </button>
+                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+                            <h5 class="font-weight-bold text-secondary mb-2 mb-md-0">Dokumen Rapat Umum Pemegang Saham (RUPS)</h5>
+                            <div class="d-flex align-items-center">
+                                <div class="mr-2" style="min-width: 180px;">
+                                    <select id="filterTahunRupsAdmin" class="form-control form-control-sm">
+                                        <option value="">Semua Tahun</option>
+                                        @php
+                                            $uniqueYears = $rupsList->pluck('Tahun')->unique()->sortDesc();
+                                        @endphp
+                                        @foreach($uniqueYears as $yr)
+                                            <option value="{{ $yr }}">{{ $yr }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalTambahRups">
+                                    <i class="fas fa-plus mr-1"></i> Tambah Dokumen RUPS
+                                </button>
+                            </div>
                         </div>
 
                         <div class="table-responsive">
@@ -327,7 +336,7 @@
                                 </thead>
                                 <tbody>
                                     @forelse($rupsList as $idx => $rups)
-                                        <tr>
+                                        <tr data-tahun="{{ $rups->Tahun }}">
                                             <td class="text-center">{{ $idx + 1 }}</td>
                                             <td class="text-center font-weight-bold text-primary">{{ $rups->Tahun }}</td>
                                             <td class="font-weight-bold">{{ $rups->Judul }}</td>
@@ -335,7 +344,7 @@
                                             <td class="text-center">
                                                 @if($rups->PathFile)
                                                     <a href="{{ asset('storage/' . $rups->PathFile) }}" target="_blank" class="btn btn-xs btn-outline-danger">
-                                                        <i class="fas fa-file-pdf"></i> Unduh
+                                                        <i class="fas fa-eye"></i> Lihat
                                                     </a>
                                                 @else
                                                     <span class="text-muted small">-</span>
@@ -352,7 +361,6 @@
                                                         data-tahun="{{ $rups->Tahun }}"
                                                         data-judul="{{ $rups->Judul }}"
                                                         data-kategori="{{ $rups->KategoriDokumen }}"
-                                                        data-kegiatan="{{ $rups->StatusKegiatan }}"
                                                         data-urutan="{{ $rups->Urutan }}"
                                                         data-status="{{ $rups->Status }}">
                                                     <i class="fas fa-edit"></i>
@@ -366,7 +374,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="8" class="text-center text-muted py-3">Belum ada dokumen RUPS.</td>
+                                            <td colspan="7" class="text-center text-muted py-3">Belum ada dokumen RUPS.</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -494,9 +502,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label>File Dokumen (PDF, DOCX, XLSX) <span class="text-danger">*</span></label>
-                        <input type="file" name="FileDokumen[]" class="form-control-file" multiple required>
-                        <small class="text-muted">Bisa memilih lebih dari 1 file sekaligus (multiple files)</small>
+                        <label>File Dokumen (PDF, DOCX, XLSX) (Opsional)</label>
+                        <input type="file" name="FileDokumen[]" class="form-control-file" multiple>
+                        <small class="text-muted">Bisa memilih lebih dari 1 file sekaligus (multiple files). Boleh dikosongkan jika dokumen belum tersedia.</small>
                     </div>
 
                     <div class="row">
@@ -746,22 +754,9 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-4">
-                            <div class="form-group">
-                                <label>Tahun Buku <span class="text-danger">*</span></label>
-                                <input type="number" name="Tahun" id="editTahunRups" class="form-control" required>
-                            </div>
-                        </div>
-                        <div class="col-8">
-                            <div class="form-group">
-                                <label>Status Kegiatan</label>
-                                <select name="StatusKegiatan" id="editStatusKegiatanRups" class="form-control">
-                                    <option value="Selesai">Selesai</option>
-                                    <option value="Terjadwal">Terjadwal</option>
-                                </select>
-                            </div>
-                        </div>
+                    <div class="form-group">
+                        <label>Tahun Buku <span class="text-danger">*</span></label>
+                        <input type="number" name="Tahun" id="editTahunRups" class="form-control" required>
                     </div>
 
                     <div class="form-group">
@@ -809,6 +804,15 @@
 
 @endsection
 
+@push('styles')
+<style>
+    .badge-purple {
+        background-color: #6f42c1 !important;
+        color: #ffffff !important;
+    }
+</style>
+@endpush
+
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -848,10 +852,35 @@
             $('#editTahunRups').val($(this).data('tahun'));
             $('#editJudulRups').val($(this).data('judul'));
             $('#editKategoriDokumenRups').val($(this).data('kategori'));
-            $('#editStatusKegiatanRups').val($(this).data('kegiatan'));
             $('#editUrutanRups').val($(this).data('urutan'));
             $('#editStatusRups').val($(this).data('status'));
             $('#modalEditRups').modal('show');
+        });
+
+        // Filter Kategori Dokumen Admin
+        $('#filterKategoriDokumenAdmin').on('change', function () {
+            const selected = $(this).val();
+            $('#tab-dokumen tbody tr[data-kategori]').each(function () {
+                const rowKategori = $(this).data('kategori');
+                if (!selected || rowKategori === selected) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+
+        // Filter Tahun RUPS Admin
+        $('#filterTahunRupsAdmin').on('change', function () {
+            const selected = $(this).val();
+            $('#tab-rups tbody tr[data-tahun]').each(function () {
+                const rowTahun = String($(this).data('tahun'));
+                if (!selected || rowTahun === selected) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
         });
 
         // Delete Row confirmation

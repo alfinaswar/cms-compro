@@ -41,7 +41,6 @@ class AdminInvestorTataKelolaController extends Controller
             'TeleponSekretariat' => 'required|string|max:50',
             'AlamatSekretariat' => 'nullable|string',
             'GambarBagan' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:5120',
-            'FileBaganPdf' => 'nullable|file|mimes:pdf|max:10240',
         ]);
 
         $bagan = BaganOrganisasi::first() ?? new BaganOrganisasi();
@@ -52,13 +51,6 @@ class AdminInvestorTataKelolaController extends Controller
                 Storage::disk('public')->delete($bagan->PathGambar);
             }
             $validated['PathGambar'] = $request->file('GambarBagan')->store('investor/bagan', 'public');
-        }
-
-        if ($request->hasFile('FileBaganPdf')) {
-            if ($bagan->PathFilePdf && Storage::disk('public')->exists($bagan->PathFilePdf)) {
-                Storage::disk('public')->delete($bagan->PathFilePdf);
-            }
-            $validated['PathFilePdf'] = $request->file('FileBaganPdf')->store('investor/bagan', 'public');
         }
 
         $validated['UserUpdate'] = auth()->user()->name;
@@ -187,6 +179,7 @@ class AdminInvestorTataKelolaController extends Controller
                 ]);
             }
         } else {
+            unset($validated['FileDokumen']);
             $validated['UserCreate'] = auth()->user()->name;
             DokumenTataKelola::create($validated);
         }
@@ -215,6 +208,7 @@ class AdminInvestorTataKelolaController extends Controller
             $validated['PathFile'] = $file->store('investor/dokumen-gcg', 'public');
             $validated['FileSize'] = round($file->getSize() / 1024 / 1024, 2) . ' MB';
         }
+        unset($validated['FileDokumen']);
 
         $validated['UserUpdate'] = auth()->user()->name;
         $doc->update($validated);
@@ -241,19 +235,19 @@ class AdminInvestorTataKelolaController extends Controller
             'Tahun' => 'required|integer|min:2000|max:2099',
             'Judul' => 'required|string|max:255',
             'KategoriDokumen' => 'nullable|string|max:100',
-            'StatusKegiatan' => 'nullable|string',
             'FileDokumen' => 'nullable|file|mimes:pdf|max:10240',
             'Urutan' => 'nullable|integer|min:0',
             'Status' => 'required|in:Aktif,Nonaktif',
         ]);
 
-        $validated['StatusKegiatan'] = $validated['StatusKegiatan'] ?? 'Selesai';
+        $validated['StatusKegiatan'] = 'Selesai';
 
         if ($request->hasFile('FileDokumen')) {
             $file = $request->file('FileDokumen');
             $validated['PathFile'] = $file->store('investor/rups', 'public');
             $validated['FileSize'] = round($file->getSize() / 1024 / 1024, 2) . ' MB';
         }
+        unset($validated['FileDokumen']);
 
         $validated['UserCreate'] = auth()->user()->name;
         RupsDokumen::create($validated);
@@ -269,13 +263,10 @@ class AdminInvestorTataKelolaController extends Controller
             'Tahun' => 'required|integer|min:2000|max:2099',
             'Judul' => 'required|string|max:255',
             'KategoriDokumen' => 'nullable|string|max:100',
-            'StatusKegiatan' => 'nullable|string',
             'FileDokumen' => 'nullable|file|mimes:pdf|max:10240',
             'Urutan' => 'nullable|integer|min:0',
             'Status' => 'required|in:Aktif,Nonaktif',
         ]);
-
-        $validated['StatusKegiatan'] = $validated['StatusKegiatan'] ?? 'Selesai';
 
         if ($request->hasFile('FileDokumen')) {
             if ($rups->PathFile && Storage::disk('public')->exists($rups->PathFile)) {
@@ -285,6 +276,7 @@ class AdminInvestorTataKelolaController extends Controller
             $validated['PathFile'] = $file->store('investor/rups', 'public');
             $validated['FileSize'] = round($file->getSize() / 1024 / 1024, 2) . ' MB';
         }
+        unset($validated['FileDokumen']);
 
         $validated['UserUpdate'] = auth()->user()->name;
         $rups->update($validated);

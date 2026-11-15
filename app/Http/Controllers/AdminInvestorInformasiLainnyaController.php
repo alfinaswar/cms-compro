@@ -30,11 +30,18 @@ class AdminInvestorInformasiLainnyaController extends Controller
     // --- 1. CRUD Lembaga Penunjang ---
     public function storeLembaga(Request $request)
     {
+        if ($request->filled('Website')) {
+            $website = trim($request->Website);
+            if (!preg_match('~^(?:f|ht)tps?://~i', $website)) {
+                $request->merge(['Website' => 'https://' . $website]);
+            }
+        }
+
         $validated = $request->validate([
             'NamaInstitusi' => 'required|string|max:255',
             'Kategori' => 'required|in:Kantor Akuntan Publik (KAP),Biro Administrasi Efek (BAE),Notaris,Konsultan Hukum,Lainnya',
             'Afiliasi' => 'nullable|string|max:255',
-            'Website' => 'nullable|url|max:255',
+            'Website' => 'nullable|string|max:255',
             'KantorPusat' => 'nullable|string',
             'Cabang' => 'nullable|string',
             'Layanan' => 'nullable|string|max:255',
@@ -42,7 +49,9 @@ class AdminInvestorInformasiLainnyaController extends Controller
             'Status' => 'required|in:Aktif,Nonaktif',
         ]);
 
-        $validated['UserCreate'] = auth()->user()->name;
+        $validated['Urutan'] = (int) ($validated['Urutan'] ?? 0);
+        $validated['Status'] = $validated['Status'] ?? 'Aktif';
+        $validated['UserCreate'] = auth()->user()?->name ?? 'Administrator';
         $lembaga = LembagaPenunjang::create($validated);
 
         activity()
@@ -58,11 +67,18 @@ class AdminInvestorInformasiLainnyaController extends Controller
     {
         $item = LembagaPenunjang::findOrFail($id);
 
+        if ($request->filled('Website')) {
+            $website = trim($request->Website);
+            if (!preg_match('~^(?:f|ht)tps?://~i', $website)) {
+                $request->merge(['Website' => 'https://' . $website]);
+            }
+        }
+
         $validated = $request->validate([
             'NamaInstitusi' => 'required|string|max:255',
             'Kategori' => 'required|in:Kantor Akuntan Publik (KAP),Biro Administrasi Efek (BAE),Notaris,Konsultan Hukum,Lainnya',
             'Afiliasi' => 'nullable|string|max:255',
-            'Website' => 'nullable|url|max:255',
+            'Website' => 'nullable|string|max:255',
             'KantorPusat' => 'nullable|string',
             'Cabang' => 'nullable|string',
             'Layanan' => 'nullable|string|max:255',
@@ -70,7 +86,8 @@ class AdminInvestorInformasiLainnyaController extends Controller
             'Status' => 'required|in:Aktif,Nonaktif',
         ]);
 
-        $validated['UserUpdate'] = auth()->user()->name;
+        $validated['Urutan'] = (int) ($validated['Urutan'] ?? 0);
+        $validated['UserUpdate'] = auth()->user()?->name ?? 'Administrator';
         $oldData = $item->getOriginal();
         $item->update($validated);
 
@@ -117,8 +134,10 @@ class AdminInvestorInformasiLainnyaController extends Controller
             $validated['PathFile'] = $file->store('investor/keterbukaan', 'public');
             $validated['FileSize'] = round($file->getSize() / 1024 / 1024, 2) . ' MB';
         }
+        unset($validated['FileDokumen']);
 
-        $validated['UserCreate'] = auth()->user()->name;
+        $validated['Urutan'] = (int) ($validated['Urutan'] ?? 0);
+        $validated['UserCreate'] = auth()->user()?->name ?? 'Administrator';
         $keterbukaan = KeterbukaanInformasi::create($validated);
 
         activity()
@@ -152,8 +171,10 @@ class AdminInvestorInformasiLainnyaController extends Controller
             $validated['PathFile'] = $file->store('investor/keterbukaan', 'public');
             $validated['FileSize'] = round($file->getSize() / 1024 / 1024, 2) . ' MB';
         }
+        unset($validated['FileDokumen']);
 
-        $validated['UserUpdate'] = auth()->user()->name;
+        $validated['Urutan'] = (int) ($validated['Urutan'] ?? 0);
+        $validated['UserUpdate'] = auth()->user()?->name ?? 'Administrator';
         $oldData = $item->getOriginal();
         $item->update($validated);
 

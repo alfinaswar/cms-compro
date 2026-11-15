@@ -21,6 +21,29 @@
 <section class="content">
     <div class="container-fluid">
 
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle mr-1"></i> {{ session('success') }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+
+        @if($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <h5><i class="icon fas fa-ban"></i> Terjadi Kesalahan!</h5>
+                <ul class="mb-0 pl-3">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+
         <div class="card card-primary card-outline card-outline-tabs">
             <div class="card-header p-0 border-bottom-0">
                 <ul class="nav nav-tabs" id="infoLainnyaTab" role="tablist">
@@ -32,14 +55,6 @@
                     <li class="nav-item">
                         <a class="nav-link font-weight-bold" id="keterbukaan-tab" data-toggle="pill" href="#tab-keterbukaan" role="tab">
                             <i class="fas fa-bullhorn mr-1"></i> Keterbukaan Informasi &amp; Pengumuman
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link font-weight-bold text-primary" href="{{ route('admin.investor.informasi-lainnya.permintaan-index') }}">
-                            <i class="fas fa-envelope-open-text mr-1"></i> Permintaan Salinan Fisik
-                            @if(isset($permintaanCount) && $permintaanCount > 0)
-                                <span class="badge badge-warning ml-1">{{ $permintaanCount }}</span>
-                            @endif
                         </a>
                     </li>
                 </ul>
@@ -130,11 +145,21 @@
                     <!-- TAB 2: KETERBUKAAN INFORMASI & PENGUMUMAN -->
                     <!-- ============================================ -->
                     <div class="tab-pane fade" id="tab-keterbukaan" role="tabpanel">
-                        <div class="d-flex justify-content-between mb-3">
-                            <h5 class="font-weight-bold text-secondary mb-0">Arsip Keterbukaan Informasi &amp; Fakta Material</h5>
-                            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalTambahKeterbukaan">
-                                <i class="fas fa-plus mr-1"></i> Tambah Dokumen Keterbukaan
-                            </button>
+                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+                            <h5 class="font-weight-bold text-secondary mb-2 mb-md-0">Arsip Keterbukaan Informasi &amp; Fakta Material</h5>
+                            <div class="d-flex align-items-center">
+                                <div class="mr-2" style="min-width: 250px;">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                        </div>
+                                        <input type="text" id="adminSearchKeterbukaan" class="form-control" placeholder="Cari judul atau kategori...">
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalTambahKeterbukaan">
+                                    <i class="fas fa-plus mr-1"></i> Tambah Dokumen Keterbukaan
+                                </button>
+                            </div>
                         </div>
 
                         <div class="table-responsive">
@@ -223,18 +248,18 @@
                         <div class="col-md-8">
                             <div class="form-group">
                                 <label>Nama Institusi / Kantor <span class="text-danger">*</span></label>
-                                <input type="text" name="NamaInstitusi" class="form-control" required placeholder="Contoh: Paul Hadiwinata, Hidajat Arsono, Retno Palilingan & Rekan">
+                                <input type="text" name="NamaInstitusi" class="form-control" value="{{ old('NamaInstitusi') }}" required placeholder="Contoh: Paul Hadiwinata, Hidajat Arsono, Retno Palilingan & Rekan">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Kategori <span class="text-danger">*</span></label>
                                 <select name="Kategori" class="form-control" required>
-                                    <option value="Kantor Akuntan Publik (KAP)">Kantor Akuntan Publik (KAP)</option>
-                                    <option value="Biro Administrasi Efek (BAE)">Biro Administrasi Efek (BAE)</option>
-                                    <option value="Notaris">Notaris</option>
-                                    <option value="Konsultan Hukum">Konsultan Hukum</option>
-                                    <option value="Lainnya">Lainnya</option>
+                                    <option value="Kantor Akuntan Publik (KAP)" {{ old('Kategori') == 'Kantor Akuntan Publik (KAP)' ? 'selected' : '' }}>Kantor Akuntan Publik (KAP)</option>
+                                    <option value="Biro Administrasi Efek (BAE)" {{ old('Kategori') == 'Biro Administrasi Efek (BAE)' ? 'selected' : '' }}>Biro Administrasi Efek (BAE)</option>
+                                    <option value="Notaris" {{ old('Kategori') == 'Notaris' ? 'selected' : '' }}>Notaris</option>
+                                    <option value="Konsultan Hukum" {{ old('Kategori') == 'Konsultan Hukum' ? 'selected' : '' }}>Konsultan Hukum</option>
+                                    <option value="Lainnya" {{ old('Kategori') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                                 </select>
                             </div>
                         </div>
@@ -244,46 +269,47 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Afiliasi / Jaringan Internasional</label>
-                                <input type="text" name="Afiliasi" class="form-control" placeholder="Contoh: Anggota Firma PKF International Limited">
+                                <input type="text" name="Afiliasi" class="form-control" value="{{ old('Afiliasi') }}" placeholder="Contoh: Anggota Firma PKF International Limited">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Website Resmi</label>
-                                <input type="url" name="Website" class="form-control" placeholder="https://pkf.co.id">
+                                <input type="text" name="Website" class="form-control" value="{{ old('Website') }}" placeholder="Contoh: https://pkf.co.id atau pkf.co.id">
+                                <small class="text-muted">Bisa dengan atau tanpa https://</small>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label>Alamat &amp; Kontak Kantor Pusat</label>
-                        <textarea name="KantorPusat" rows="2" class="form-control" placeholder="Alamat lengkap, nomor telepon, dan nomor faksimili..."></textarea>
+                        <textarea name="KantorPusat" rows="2" class="form-control" placeholder="Alamat lengkap, nomor telepon, dan nomor faksimili...">{{ old('KantorPusat') }}</textarea>
                     </div>
 
                     <div class="form-group">
                         <label>Alamat &amp; Kontak Kantor Cabang (Opsional)</label>
-                        <textarea name="Cabang" rows="2" class="form-control" placeholder="Cabang Surabaya atau kota lainnya jika ada..."></textarea>
+                        <textarea name="Cabang" rows="2" class="form-control" placeholder="Cabang Surabaya atau kota lainnya jika ada...">{{ old('Cabang') }}</textarea>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Ruang Lingkup Layanan</label>
-                                <input type="text" name="Layanan" class="form-control" placeholder="Contoh: Pemutakhiran DPS Saham">
+                                <input type="text" name="Layanan" class="form-control" value="{{ old('Layanan') }}" placeholder="Contoh: Pemutakhiran DPS Saham">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Urutan</label>
-                                <input type="number" name="Urutan" class="form-control" value="0">
+                                <input type="number" name="Urutan" class="form-control" value="{{ old('Urutan', 0) }}">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label>Status</label>
                                 <select name="Status" class="form-control">
-                                    <option value="Aktif">Aktif</option>
-                                    <option value="Nonaktif">Nonaktif</option>
+                                    <option value="Aktif" {{ old('Status') == 'Aktif' ? 'selected' : '' }}>Aktif</option>
+                                    <option value="Nonaktif" {{ old('Status') == 'Nonaktif' ? 'selected' : '' }}>Nonaktif</option>
                                 </select>
                             </div>
                         </div>
@@ -578,6 +604,40 @@
             $('#editStatusKeterbukaan').val($(this).data('status'));
             $('#modalEditKeterbukaan').modal('show');
         });
+
+        // Live Search Keterbukaan Informasi Admin
+        $('#adminSearchKeterbukaan').on('input', function () {
+            const q = $(this).val().toLowerCase().trim();
+            $('#tab-keterbukaan tbody tr').each(function () {
+                const text = $(this).text().toLowerCase();
+                if (!q || text.indexOf(q) !== -1) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+
+        @if($errors->any())
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal Menyimpan!',
+                html: '{!! implode("<br>", $errors->all()) !!}'
+            });
+            @if($errors->has('NamaInstitusi') || $errors->has('Kategori') || $errors->has('Website') || $errors->has('Urutan'))
+                $('#modalTambahLembaga').modal('show');
+            @endif
+        @endif
+
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        @endif
 
         // Delete Row confirmation
         $('.btn-delete-row').on('click', function () {

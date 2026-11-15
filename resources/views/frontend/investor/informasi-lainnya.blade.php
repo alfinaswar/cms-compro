@@ -230,6 +230,9 @@
                     <!-- SECTION 02: KETERBUKAAN INFORMASI -->
                     <!-- ------------------------------------------ -->
                     <section id="keterbukaan-informasi" class="scroll-mt-40">
+                        @php
+                            $itemsToDisplay = isset($allKeterbukaanList) && $allKeterbukaanList->isNotEmpty() ? $allKeterbukaanList : $keterbukaanList;
+                        @endphp
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                             <div>
                                 <span
@@ -245,25 +248,24 @@
                             <span
                                 class="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-xl self-start whitespace-nowrap">
                                 <i class="fa-solid fa-box-archive mr-1.5 text-slate-400"></i>
-                                {{ $keterbukaanList->total() }} {{ __('investor.other_s2_doc_count') }}
+                                <span id="keterbukaan-count-num">{{ $itemsToDisplay->count() }}</span> {{ __('investor.other_s2_doc_count') }}
                             </span>
                         </div>
 
-                        <form method="GET"
-                            action="{{ \App\Services\LocalizedUrlService::route('frontend.investor.informasi-lainnya') }}#keterbukaan-informasi"
-                            class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 mb-6">
+                        <!-- FILTER & LIVE SEARCH KETERBUKAAN INFORMASI (TANPA RELOAD) -->
+                        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 mb-6" id="form-keterbukaan-search-box">
                             <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
                                 <div class="sm:col-span-6 relative">
                                     <i
                                         class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                                    <input type="text" name="q" value="{{ request('q') }}"
+                                    <input type="text" id="search-keterbukaan" value="{{ request('q') }}"
                                         placeholder="{{ __('investor.other_s2_search_placeholder') }}"
-                                        class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:bg-white focus:border-[#0099ff] outline-none">
+                                        class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:bg-white focus:border-[#0099ff] outline-none transition-all">
                                 </div>
 
                                 <div class="sm:col-span-3">
                                     <div class="relative">
-                                        <select name="tahun"
+                                        <select id="filter-tahun-keterbukaan"
                                             class="w-full pl-3.5 pr-8 py-2 bg-[#EEF4FF] hover:bg-[#e1edff] border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 outline-none focus:border-[#0099ff] focus:ring-1 focus:ring-[#0099ff] appearance-none cursor-pointer transition-colors">
                                             <option value="all">{{ __('investor.other_s2_all_years') }}</option>
                                             @foreach ($tahunList as $th)
@@ -280,7 +282,7 @@
 
                                 <div class="sm:col-span-3 flex gap-2">
                                     <div class="relative w-full">
-                                        <select name="kategori"
+                                        <select id="filter-kategori-keterbukaan"
                                             class="w-full pl-3.5 pr-8 py-2 bg-[#EEF4FF] hover:bg-[#e1edff] border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 outline-none focus:border-[#0099ff] focus:ring-1 focus:ring-[#0099ff] appearance-none cursor-pointer transition-colors">
                                             <option value="all">{{ __('investor.other_s2_all_categories') }}</option>
                                             @foreach ($kategoriList as $kat)
@@ -293,17 +295,18 @@
                                             <i class="fa-solid fa-chevron-down text-[10px]"></i>
                                         </div>
                                     </div>
-                                    <button type="submit"
-                                        class="px-4 py-2 bg-[#0099ff] hover:bg-blue-600 text-white rounded-xl text-xs font-bold transition-colors shrink-0">
-                                        {{ __('Filter') }}
+                                    <button type="button" id="btn-reset-keterbukaan" title="Reset Filter"
+                                        class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-colors shrink-0">
+                                        <i class="fa-solid fa-rotate-left"></i>
                                     </button>
                                 </div>
                             </div>
-                        </form>
+                        </div>
 
-                        <div class="space-y-3 mb-6">
-                            @forelse($keterbukaanList as $item)
+                        <div class="space-y-3 mb-6" id="keterbukaan-cards-container">
+                            @forelse($itemsToDisplay as $item)
                                 @php
+                                    $itemTahun = $item->TanggalPublikasi ? $item->TanggalPublikasi->format('Y') : '';
                                     $badgeColor = 'bg-blue-50 text-[#0051d5] border-blue-200';
                                     if ($item->Kategori === 'Buyback Saham') {
                                         $badgeColor = 'bg-indigo-50 text-indigo-700 border-indigo-200';
@@ -317,7 +320,11 @@
                                 @endphp
 
                                 <div
-                                    class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 hover:border-[#0099ff] hover:shadow-md transition-all">
+                                    class="keterbukaan-card bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 hover:border-[#0099ff] hover:shadow-md transition-all"
+                                    data-judul="{{ strtolower($item->Judul) }}"
+                                    data-kategori="{{ $item->Kategori }}"
+                                    data-tahun="{{ $itemTahun }}"
+                                    data-deskripsi="{{ strtolower($item->Deskripsi ?? '') }}">
                                     <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                                         <div class="flex items-start gap-3.5">
                                             <div
@@ -363,13 +370,12 @@
                                     {{ __('investor.other_s2_empty') }}
                                 </div>
                             @endforelse
-                        </div>
 
-                        @if ($keterbukaanList->hasPages())
-                            <div class="flex justify-center mt-6">
-                                {{ $keterbukaanList->links() }}
+                            <div id="keterbukaan-empty-state" style="display: none;"
+                                class="p-8 text-center bg-white rounded-2xl border border-slate-200 text-slate-500 text-xs">
+                                {{ __('investor.other_s2_empty') }}
                             </div>
-                        @endif
+                        </div>
                     </section>
 
                     <!-- ------------------------------------------ -->
@@ -592,6 +598,73 @@
                                 submitBtn.innerText = '{{ __('investor.modal_submit') }}';
                             });
                     });
+                }
+
+                // LIVE SEARCH KETERBUKAAN INFORMASI (TANPA LOAD / RELOAD)
+                const searchKeterbukaan = document.getElementById('search-keterbukaan');
+                const tahunKeterbukaan = document.getElementById('filter-tahun-keterbukaan');
+                const kategoriKeterbukaan = document.getElementById('filter-kategori-keterbukaan');
+                const resetBtnKeterbukaan = document.getElementById('btn-reset-keterbukaan');
+                const keterbukaanCards = document.querySelectorAll('.keterbukaan-card');
+                const countNum = document.getElementById('keterbukaan-count-num');
+                const emptyState = document.getElementById('keterbukaan-empty-state');
+
+                function filterKeterbukaanList() {
+                    const query = searchKeterbukaan ? searchKeterbukaan.value.toLowerCase().trim() : '';
+                    const selectedTahun = tahunKeterbukaan ? tahunKeterbukaan.value : 'all';
+                    const selectedKategori = kategoriKeterbukaan ? kategoriKeterbukaan.value : 'all';
+
+                    let visibleCount = 0;
+                    keterbukaanCards.forEach(card => {
+                        const judul = card.getAttribute('data-judul') || '';
+                        const deskripsi = card.getAttribute('data-deskripsi') || '';
+                        const kategori = card.getAttribute('data-kategori') || '';
+                        const tahun = card.getAttribute('data-tahun') || '';
+
+                        const matchesQuery = !query || judul.includes(query) || deskripsi.includes(query);
+                        const matchesTahun = selectedTahun === 'all' || tahun === selectedTahun;
+                        const matchesKategori = selectedKategori === 'all' || kategori === selectedKategori;
+
+                        if (matchesQuery && matchesTahun && matchesKategori) {
+                            card.style.display = '';
+                            visibleCount++;
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+
+                    if (countNum) {
+                        countNum.textContent = visibleCount;
+                    }
+
+                    if (emptyState) {
+                        emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
+                    }
+                }
+
+                if (searchKeterbukaan) {
+                    searchKeterbukaan.addEventListener('input', filterKeterbukaanList);
+                }
+                if (tahunKeterbukaan) {
+                    tahunKeterbukaan.addEventListener('change', filterKeterbukaanList);
+                }
+                if (kategoriKeterbukaan) {
+                    kategoriKeterbukaan.addEventListener('change', filterKeterbukaanList);
+                }
+                if (resetBtnKeterbukaan) {
+                    resetBtnKeterbukaan.addEventListener('click', function() {
+                        if (searchKeterbukaan) searchKeterbukaan.value = '';
+                        if (tahunKeterbukaan) tahunKeterbukaan.value = 'all';
+                        if (kategoriKeterbukaan) kategoriKeterbukaan.value = 'all';
+                        filterKeterbukaanList();
+                    });
+                }
+
+                // Initial filter on load jika ada query param
+                if ((searchKeterbukaan && searchKeterbukaan.value) || 
+                    (tahunKeterbukaan && tahunKeterbukaan.value !== 'all') || 
+                    (kategoriKeterbukaan && kategoriKeterbukaan.value !== 'all')) {
+                    filterKeterbukaanList();
                 }
 
                 // SCROLLSPY & ACTIVE LINK

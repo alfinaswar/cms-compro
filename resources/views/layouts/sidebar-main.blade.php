@@ -314,7 +314,7 @@
                                     <a href="{{ route('admin.investor.informasi-lainnya.permintaan-index') }}"
                                         class="nav-link {{ request()->routeIs('admin.investor.informasi-lainnya.permintaan*') || request()->is('admin/investor/informasi-lainnya/permintaan*') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon text-info"></i>
-                                        <p>Permintaan Dokumen</p>
+                                        <p>Permintaan Laporan Fisik</p>
                                     </a>
                                 </li>
                             </ul>

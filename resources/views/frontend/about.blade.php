@@ -259,7 +259,12 @@
     <section class="relative pt-28 pb-16 bg-gradient-to-br from-brand-900 via-brand-800 to-brand-900 overflow-hidden">
         <!-- Background Image with Opacity -->
         <div class="absolute inset-0 opacity-10">
-            <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=2069&auto=format&fit=crop"
+            @php
+                $heroBgImg = !empty($Hero?->Gambar) && \Illuminate\Support\Facades\Storage::disk('public')->exists($Hero->Gambar)
+                    ? asset('storage/' . $Hero->Gambar)
+                    : 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=2069&auto=format&fit=crop';
+            @endphp
+            <img src="{{ $heroBgImg }}"
                 alt="{{ $en ? 'About Jasuindo' : 'Tentang Jasuindo' }}" class="w-full h-full object-cover">
         </div>
 
@@ -305,14 +310,35 @@
                 @if ($heroDetails->count())
                     <div class="flex flex-wrap justify-center gap-4 text-left mt-10">
                         @foreach ($heroDetails as $stat)
-                            @php [$statLabel, $statDesc] = $split($tr($stat, 'Deskripsi')); @endphp
+                            @php
+                                $rawSubJudul = trim((string) ($tr($stat, 'SubJudul') ?? ''));
+                                $rawJudul = trim((string) ($tr($stat, 'Judul') ?? ''));
+                                $rawDeskripsi = $tr($stat, 'Deskripsi');
+
+                                if ($rawSubJudul !== '') {
+                                    $statLabel = $rawSubJudul;
+                                    $statVal = $rawJudul;
+                                    $statDesc = trim((string) ($rawDeskripsi ?? ''));
+                                } elseif (str_contains((string) $rawDeskripsi, '|||')) {
+                                    [$statLabel, $statDesc] = $split($rawDeskripsi);
+                                    $statVal = $rawJudul;
+                                } else {
+                                    $statLabel = trim((string) ($rawDeskripsi ?? ''));
+                                    $statVal = $rawJudul;
+                                    $statDesc = '';
+                                }
+                            @endphp
                             <div
                                 class="w-[calc(50%-0.5rem)] md:w-[calc(33.333%-0.75rem)] lg:w-[calc(25%-0.75rem)] max-w-xs flex-1 min-w-[200px] bg-white/95 backdrop-blur-sm border border-white/20 rounded-lg px-5 py-4 shadow-lg shadow-brand-950/20 hover:shadow-xl hover:-translate-y-0.5 transition-all">
-                                <p class="mono-label text-[10px] font-bold text-blue-600 uppercase mb-2">
-                                    {{ $statLabel ?: $tr($stat, 'Judul') ?? '' }}
-                                </p>
-                                <p class="text-xl font-extrabold text-slate-900 mb-1">{{ $tr($stat, 'Judul') }}</p>
-                                @if ($statDesc)
+                                @if ($statLabel !== '')
+                                    <p class="mono-label text-[10px] font-bold text-blue-600 uppercase mb-2">
+                                        {{ $statLabel }}
+                                    </p>
+                                @endif
+                                @if ($statVal !== '')
+                                    <p class="text-xl font-extrabold text-slate-900 mb-1">{{ $statVal }}</p>
+                                @endif
+                                @if ($statDesc !== '')
                                     <p class="text-[11px] text-slate-500 leading-snug">{{ $statDesc }}</p>
                                 @endif
                             </div>

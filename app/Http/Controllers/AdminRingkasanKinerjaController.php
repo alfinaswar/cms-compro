@@ -60,17 +60,35 @@ class AdminRingkasanKinerjaController extends Controller
     {
         $validated = $request->validate([
             'ModeWindow' => 'required|in:Otomatis,Kustom',
-            'JumlahTahun' => 'required|integer|min:1|max:20',
-            'TahunMulai' => 'required|integer|min:1990|max:2100',
-            'TahunSelesai' => 'required|integer|min:1990|max:2100|gte:TahunMulai',
+            'JumlahTahun' => 'required_if:ModeWindow,Otomatis|nullable|integer|min:1|max:20',
+            'TahunMulai' => 'required_if:ModeWindow,Kustom|nullable|integer|min:1990|max:2100',
+            'TahunSelesai' => 'required_if:ModeWindow,Kustom|nullable|integer|min:1990|max:2100|gte:TahunMulai',
             'PertumbuhanRevenue' => 'nullable|string|max:100',
             'PertumbuhanProfit' => 'nullable|string|max:100',
             'Subjudul' => 'nullable|string|max:255',
         ]);
 
+        $pengaturan = PengaturanKinerjaKeuangan::first();
+
+        // Sinkronisasi data antar mode agar konsisten di database
+        if ($validated['ModeWindow'] === 'Kustom') {
+            $validated['JumlahTahun'] = ((int) $validated['TahunSelesai'] - (int) $validated['TahunMulai']) + 1;
+        } else {
+            // Mode Otomatis: Dapatkan estimasi range tahun dari data nilai database
+            $distinctYears = RingkasanKinerjaNilai::distinct()->orderBy('Tahun', 'desc')->pluck('Tahun')->toArray();
+            if (!empty($distinctYears)) {
+                $n = (int) ($validated['JumlahTahun'] ?? 5);
+                $slice = array_slice($distinctYears, 0, $n);
+                $validated['TahunSelesai'] = max($slice);
+                $validated['TahunMulai'] = min($slice);
+            } elseif ($pengaturan) {
+                $validated['TahunMulai'] = $pengaturan->TahunMulai ?? 2021;
+                $validated['TahunSelesai'] = $pengaturan->TahunSelesai ?? 2025;
+            }
+        }
+
         $validated['UserUpdate'] = auth()->user()->name ?? 'Administrator';
 
-        $pengaturan = PengaturanKinerjaKeuangan::first();
         $oldData = $pengaturan ? $pengaturan->toArray() : [];
         if ($pengaturan) {
             $pengaturan->update($validated);

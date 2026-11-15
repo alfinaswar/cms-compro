@@ -74,31 +74,32 @@
                         <div class="col-md-3 col-sm-6">
                             <div class="form-group">
                                 <label>Mode Penentuan Periode <span class="text-danger">*</span></label>
-                                <select name="ModeWindow" class="form-control form-control-sm">
+                                <select name="ModeWindow" id="selectModeWindow" class="form-control form-control-sm">
                                     <option value="Kustom" {{ old('ModeWindow', $pengaturan->ModeWindow) == 'Kustom' ? 'selected' : '' }}>Rentang Kustom (Mulai - Selesai)</option>
                                     <option value="Otomatis" {{ old('ModeWindow', $pengaturan->ModeWindow) == 'Otomatis' ? 'selected' : '' }}>Otomatis (N Tahun Terakhir)</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-2 col-sm-6">
+                        <div class="col-md-3 col-sm-6" id="wrapperJumlahTahun">
                             <div class="form-group">
                                 <label>Jumlah Tahun <span class="text-danger">*</span></label>
-                                <input type="number" name="JumlahTahun" class="form-control form-control-sm" min="1" max="20" value="{{ old('JumlahTahun', $pengaturan->JumlahTahun ?? 5) }}" required>
+                                <input type="number" name="JumlahTahun" id="inputJumlahTahun" class="form-control form-control-sm" min="1" max="20" value="{{ old('JumlahTahun', $pengaturan->JumlahTahun ?? 5) }}">
+                                <small class="text-muted d-block">Menampilkan N tahun data terbaru dari DB.</small>
                             </div>
                         </div>
-                        <div class="col-md-2 col-sm-6">
+                        <div class="col-md-3 col-sm-6" id="wrapperTahunMulai">
                             <div class="form-group">
                                 <label>Tahun Mulai <span class="text-danger">*</span></label>
-                                <input type="number" name="TahunMulai" class="form-control form-control-sm" min="1990" max="2100" value="{{ old('TahunMulai', $pengaturan->TahunMulai ?? 2021) }}" required>
+                                <input type="number" name="TahunMulai" id="inputTahunMulai" class="form-control form-control-sm" min="1990" max="2100" value="{{ old('TahunMulai', $pengaturan->TahunMulai ?? 2021) }}">
                             </div>
                         </div>
-                        <div class="col-md-2 col-sm-6">
+                        <div class="col-md-3 col-sm-6" id="wrapperTahunSelesai">
                             <div class="form-group">
                                 <label>Tahun Selesai (Terbaru) <span class="text-danger">*</span></label>
-                                <input type="number" name="TahunSelesai" class="form-control form-control-sm text-primary font-weight-bold" min="1990" max="2100" value="{{ old('TahunSelesai', $pengaturan->TahunSelesai ?? 2025) }}" required>
+                                <input type="number" name="TahunSelesai" id="inputTahunSelesai" class="form-control form-control-sm text-primary font-weight-bold" min="1990" max="2100" value="{{ old('TahunSelesai', $pengaturan->TahunSelesai ?? 2025) }}">
                             </div>
                         </div>
-                        <div class="col-md-3 col-sm-12">
+                        <div class="col-md-3 col-sm-12" id="wrapperPertumbuhanRevenue">
                             <div class="form-group">
                                 <label>Highlight Pertumbuhan Revenue</label>
                                 <input type="text" name="PertumbuhanRevenue" class="form-control form-control-sm" value="{{ old('PertumbuhanRevenue', $pengaturan->PertumbuhanRevenue ?? '+31.5% YoY (2025)') }}" placeholder="+31.5% YoY (2025)">
@@ -121,14 +122,46 @@
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-between align-items-center flex-wrap pt-2 border-top">
-                        <div class="mb-2">
-                            <span class="text-xs text-muted mr-1 font-weight-bold">Tahun yang tercatat di database:</span>
-                            @foreach ($allYears as $yr)
-                                <span class="badge {{ in_array($yr, $activeYears) ? 'badge-primary' : 'badge-secondary' }} px-2 py-1 mr-1">
-                                    {{ $yr }} {{ in_array($yr, $activeYears) ? '✓' : '' }}
-                                </span>
-                            @endforeach
+                    <div class="d-flex justify-content-between align-items-center flex-wrap pt-3 border-top">
+                        <div class="d-flex align-items-center flex-wrap mb-2" style="max-width: 75%;">
+                            <span class="badge badge-light border text-muted mr-2 py-1 px-2 font-weight-normal mb-1">
+                                <i class="fas fa-database text-info mr-1"></i> Database: <strong>{{ count($allYears) }} Tahun</strong> ({{ min($allYears) }} &ndash; {{ max($allYears) }})
+                            </span>
+                            <span class="badge badge-primary py-1 px-2 mr-2 mb-1">
+                                <i class="fas fa-globe mr-1"></i> Aktif di Web: <strong>{{ count($activeYears) }} Tahun</strong> ({{ min($activeYears) }} &ndash; {{ max($activeYears) }})
+                            </span>
+
+                            {{-- Inline Active Year Badges --}}
+                            <div class="d-inline-flex flex-wrap align-items-center mb-1">
+                                @foreach ($activeYears as $yr)
+                                    <span class="badge badge-primary px-2 py-1 mr-1 mb-1" title="Tampil di Web">
+                                        {{ $yr }} <i class="fas fa-check text-xs ml-1"></i>
+                                    </span>
+                                @endforeach
+
+                                @php
+                                    $arsipYears = array_values(array_diff($allYears, $activeYears));
+                                @endphp
+                                @if (!empty($arsipYears))
+                                    <button type="button" class="btn btn-xs btn-outline-secondary ml-1 mb-1 font-weight-bold" data-toggle="collapse" data-target="#collapseArsipTahun" aria-expanded="false" aria-controls="collapseArsipTahun">
+                                        <i class="fas fa-archive mr-1 text-secondary"></i> +{{ count($arsipYears) }} Tahun Arsip <i class="fas fa-chevron-down text-xs ml-1"></i>
+                                    </button>
+                                @endif
+                            </div>
+
+                            {{-- Collapsible Container untuk Tahun Arsip --}}
+                            @if (!empty($arsipYears))
+                                <div class="collapse w-100 mt-2" id="collapseArsipTahun">
+                                    <div class="p-2 bg-light border rounded text-xs">
+                                        <div class="d-flex align-items-center flex-wrap">
+                                            <span class="font-weight-bold text-muted mr-2 mb-1"><i class="fas fa-info-circle mr-1 text-info"></i>Tahun Tersimpan di Database (Arsip / Tidak Aktif):</span>
+                                            @foreach ($arsipYears as $yr)
+                                                <span class="badge badge-secondary px-2 py-1 mr-1 mb-1" title="Data tersimpan di database tetapi tidak aktif di web publik">{{ $yr }}</span>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                         <button type="submit" class="btn btn-sm btn-info font-weight-bold shadow-sm mb-2">
                             <i class="fas fa-save mr-1"></i> Simpan Pengaturan Periode
@@ -735,6 +768,30 @@
 <script>
     $(document).ready(function() {
         var activeYears = @json($activeYears);
+
+        // Toggle Mode Penentuan Periode (Otomatis vs Kustom)
+        function updateModeFields(mode) {
+            if (mode === 'Otomatis') {
+                $('#wrapperJumlahTahun').show();
+                $('#inputJumlahTahun').prop('disabled', false).prop('required', true);
+                $('#wrapperTahunMulai, #wrapperTahunSelesai').hide();
+                $('#inputTahunMulai, #inputTahunSelesai').prop('disabled', true).prop('required', false);
+                $('#wrapperPertumbuhanRevenue').removeClass('col-md-3').addClass('col-md-6');
+            } else {
+                $('#wrapperJumlahTahun').hide();
+                $('#inputJumlahTahun').prop('disabled', true).prop('required', false);
+                $('#wrapperTahunMulai, #wrapperTahunSelesai').show();
+                $('#inputTahunMulai, #inputTahunSelesai').prop('disabled', false).prop('required', true);
+                $('#wrapperPertumbuhanRevenue').removeClass('col-md-6').addClass('col-md-3');
+            }
+        }
+
+        $('#selectModeWindow').on('change', function() {
+            updateModeFields($(this).val());
+        });
+
+        // Inisialisasi tampilan sesuai nilai yang sedang aktif
+        updateModeFields($('#selectModeWindow').val());
 
         // Edit Row Modal
         $('.btn-edit-row').on('click', function() {

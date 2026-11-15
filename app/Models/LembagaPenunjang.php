@@ -15,6 +15,11 @@ class LembagaPenunjang extends Model
     protected $table = 'lembaga_penunjangs';
     protected $guarded = ['id'];
 
+    protected $attributes = [
+        'Urutan' => 0,
+        'Status' => 'Aktif',
+    ];
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()

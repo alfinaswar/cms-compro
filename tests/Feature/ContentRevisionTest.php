@@ -401,4 +401,45 @@ class ContentRevisionTest extends TestCase
             $this->assertSame(count($matches[1]), count(array_unique($matches[1])), "Duplicate keys found in {$langFile}");
         }
     }
+
+    /**
+     * Test 13: Berita thumbnail validation allows 328KB files and rejects >2MB
+     */
+    public function test_berita_thumbnail_validation_allows_up_to_2mb(): void
+    {
+        $admin = \App\Models\User::factory()->create();
+        \Spatie\Permission\Models\Permission::findOrCreate('berita.create');
+        $admin->givePermissionTo('berita.create');
+
+        $kategori = \App\Models\KategoriBerita::firstOrCreate(
+            ['NamaKategori' => 'Test Category'],
+            ['Slug' => 'test-category', 'Urutan' => 1]
+        );
+
+        // File 328KB webp (previously failed with max:307)
+        $file328kb = \Illuminate\Http\UploadedFile::fake()->create('thumb.webp', 328, 'image/webp');
+
+        $payload = [
+            'translations' => [
+                'id' => [
+                    'Judul' => 'Judul Berita Test 328KB',
+                    'Ringkasan' => 'Ringkasan',
+                ],
+            ],
+            'Kategori' => (string) $kategori->id,
+            'Status' => 'Draf',
+            'Konten' => 'Konten berita test',
+            'PathThumbnail' => $file328kb,
+        ];
+
+        $res = $this->actingAs($admin)->post(route('berita.store'), $payload);
+        $res->assertSessionDoesntHaveErrors('PathThumbnail');
+
+        // File 2500KB webp (exceeds 2MB)
+        $file2500kb = \Illuminate\Http\UploadedFile::fake()->create('large.webp', 2500, 'image/webp');
+        $payload['PathThumbnail'] = $file2500kb;
+
+        $resFail = $this->actingAs($admin)->post(route('berita.store'), $payload);
+        $resFail->assertSessionHasErrors('PathThumbnail');
+    }
 }

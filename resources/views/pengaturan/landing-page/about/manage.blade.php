@@ -257,12 +257,14 @@
                                         $dl = $config['detail_labels'];
                                         $hasIcon = !empty($dl['has_icon']);
                                         $hasSubJudul = !empty($dl['SubJudul']);
+                                        $hasImage = $dl['has_image'] ?? true;
                                     @endphp
                                     <hr>
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <h5 class="mb-0">Item Detail</h5>
                                         <button type="button" class="btn btn-sm btn-primary btn-tambah-detail"
                                             data-section="{{ $id }}"
+                                            data-has-image="{{ $hasImage ? '1' : '0' }}"
                                             data-has-icon="{{ $hasIcon ? '1' : '0' }}"
                                             data-label-subjudul="{{ $dl['SubJudul'] ?? '' }}"
                                             data-label-judul="{{ $dl['Judul'] }}"
@@ -275,11 +277,13 @@
                                             <thead class="bg-light">
                                                 <tr>
                                                     <th style="width:5%" class="text-center">#</th>
-                                                    <th style="width:{{ $hasSubJudul ? '18%' : '22%' }}">Gambar{{ $hasIcon ? ' / Icon FA' : '' }}</th>
-                                                    @if ($hasSubJudul)
-                                                        <th style="width:14%">{{ $dl['SubJudul'] }}</th>
+                                                    @if ($hasImage)
+                                                        <th style="width:{{ $hasSubJudul ? '18%' : '22%' }}">Gambar{{ $hasIcon ? ' / Icon FA' : '' }}</th>
                                                     @endif
-                                                    <th style="width:22%">{{ $dl['Judul'] }}</th>
+                                                    @if ($hasSubJudul)
+                                                        <th style="width:{{ $hasImage ? '14%' : '22%' }}">{{ $dl['SubJudul'] }}</th>
+                                                    @endif
+                                                    <th style="width:{{ $hasImage ? ($hasSubJudul ? '22%' : '28%') : '25%' }}">{{ $dl['Judul'] }}</th>
                                                     <th>{{ $dl['Deskripsi'] }}</th>
                                                     <th style="width:5%"></th>
                                                 </tr>
@@ -292,49 +296,53 @@
                                                         $dtEn = $detail->translations->firstWhere('Locale', 'en');
                                                     @endphp
                                                     <tr class="detail-row">
-                                                        <td class="text-center row-number">{{ $idx + 1 }}</td>
-                                                        <td>
+                                                        <td class="text-center row-number">
+                                                            <span class="row-idx">{{ $idx + 1 }}</span>
                                                             <input type="hidden"
                                                                 name="sections[{{ $id }}][details][{{ $idx }}][id]"
                                                                 value="{{ $detail->id }}">
-                                                            <div class="d-flex align-items-start">
-                                                                <div class="detail-preview mr-2">
-                                                                    @if ($detail->Gambar && !$isFa && \Illuminate\Support\Facades\Storage::disk('public')->exists($detail->Gambar))
-                                                                        <img src="{{ asset('storage/' . $detail->Gambar) }}"
-                                                                            class="img-preview" alt="">
-                                                                        <i class="fa fa-image text-muted preview-placeholder"
-                                                                            style="display:none;"></i>
-                                                                    @else
-                                                                        <img class="img-preview" style="display:none"
-                                                                            alt="">
-                                                                        <i
-                                                                            class="fa fa-image text-muted preview-placeholder"></i>
-                                                                    @endif
-                                                                </div>
-                                                                <div class="flex-grow-1">
-                                                                    <input type="file"
-                                                                        name="sections[{{ $id }}][details][{{ $idx }}][Gambar]"
-                                                                        class="form-control-file input-gambar mb-1"
-                                                                        accept="image/*">
-                                                                    @if ($hasIcon)
-                                                                        <div class="mt-1">
-                                                                            @include('partials.icon-picker', [
-                                                                                'name' => "sections[{$id}][details][{$idx}][IconFa]",
-                                                                                'value' => old("sections.{$id}.details.{$idx}.IconFa", $isFa ? $detail->Gambar : ''),
-                                                                                'placeholder' => 'fa-solid fa-gem',
-                                                                                'size' => 'sm',
-                                                                                'invalid' => $errors->has("sections.{$id}.details.{$idx}.IconFa"),
-                                                                            ])
-                                                                        </div>
-                                                                        @error("sections.{$id}.details.{$idx}.IconFa")
-                                                                            <span class="invalid-feedback d-block">{{ $message }}</span>
-                                                                        @enderror
-                                                                        <small class="text-muted">Pilih icon FA ATAU upload
-                                                                            gambar</small>
-                                                                    @endif
-                                                                </div>
-                                                            </div>
                                                         </td>
+                                                        @if ($hasImage)
+                                                            <td>
+                                                                <div class="d-flex align-items-start">
+                                                                    <div class="detail-preview mr-2">
+                                                                        @if ($detail->Gambar && !$isFa && \Illuminate\Support\Facades\Storage::disk('public')->exists($detail->Gambar))
+                                                                            <img src="{{ asset('storage/' . $detail->Gambar) }}"
+                                                                                class="img-preview" alt="">
+                                                                            <i class="fa fa-image text-muted preview-placeholder"
+                                                                                style="display:none;"></i>
+                                                                        @else
+                                                                            <img class="img-preview" style="display:none"
+                                                                                alt="">
+                                                                            <i
+                                                                                class="fa fa-image text-muted preview-placeholder"></i>
+                                                                        @endif
+                                                                    </div>
+                                                                    <div class="flex-grow-1">
+                                                                        <input type="file"
+                                                                            name="sections[{{ $id }}][details][{{ $idx }}][Gambar]"
+                                                                            class="form-control-file input-gambar mb-1"
+                                                                            accept="image/*">
+                                                                        @if ($hasIcon)
+                                                                            <div class="mt-1">
+                                                                                @include('partials.icon-picker', [
+                                                                                    'name' => "sections[{$id}][details][{$idx}][IconFa]",
+                                                                                    'value' => old("sections.{$id}.details.{$idx}.IconFa", $isFa ? $detail->Gambar : ''),
+                                                                                    'placeholder' => 'fa-solid fa-gem',
+                                                                                    'size' => 'sm',
+                                                                                    'invalid' => $errors->has("sections.{$id}.details.{$idx}.IconFa"),
+                                                                                ])
+                                                                            </div>
+                                                                            @error("sections.{$id}.details.{$idx}.IconFa")
+                                                                                <span class="invalid-feedback d-block">{{ $message }}</span>
+                                                                            @enderror
+                                                                            <small class="text-muted">Pilih icon FA ATAU upload
+                                                                                gambar</small>
+                                                                        @endif
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        @endif
                                                         @if ($hasSubJudul)
                                                             <td>
                                                                 <div class="lang-field active" data-lang="id">
@@ -492,12 +500,13 @@
 
             function updateRowNumbers(sectionId) {
                 $(`.detail-container[data-section="${sectionId}"] tr`).each(function(i) {
-                    $(this).find('.row-number').text(i + 1);
+                    $(this).find('.row-idx').text(i + 1);
                 });
             }
 
             $('.btn-tambah-detail').on('click', function() {
                 const sectionId = $(this).data('section');
+                const hasImage = $(this).data('has-image') != '0';
                 const hasIcon = $(this).data('has-icon') == '1';
                 const labelSubJudul = $(this).data('label-subjudul') || '';
                 const labelJudul = $(this).data('label-judul');
@@ -507,12 +516,29 @@
 
                 const currentLang = $('#globalLangToggle button.active').data('lang');
 
-                let iconField = '';
-                if (hasIcon) {
-                    const tpl = document.getElementById('tpl-about-icon-picker');
-                    iconField = tpl
-                        ? tpl.innerHTML.split('__SEC__').join(sectionId).split('__IDX__').join(idx)
-                        : '';
+                let imageCell = '';
+                if (hasImage) {
+                    let iconField = '';
+                    if (hasIcon) {
+                        const tpl = document.getElementById('tpl-about-icon-picker');
+                        iconField = tpl
+                            ? tpl.innerHTML.split('__SEC__').join(sectionId).split('__IDX__').join(idx)
+                            : '';
+                    }
+                    imageCell = `
+                        <td>
+                            <div class="d-flex align-items-start">
+                                <div class="detail-preview mr-2">
+                                    <img class="img-preview" style="display:none" alt="">
+                                    <i class="fa fa-image text-muted preview-placeholder"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <input type="file" name="sections[${sectionId}][details][${idx}][Gambar]"
+                                        class="form-control-file input-gambar mb-1" accept="image/*">
+                                    ${iconField}
+                                </div>
+                            </div>
+                        </td>`;
                 }
 
                 let subJudulCell = '';
@@ -532,20 +558,11 @@
 
                 const row = `
                     <tr class="detail-row">
-                        <td class="text-center row-number"></td>
-                        <td>
-                            <div class="d-flex align-items-start">
-                                <div class="detail-preview mr-2">
-                                    <img class="img-preview" style="display:none" alt="">
-                                    <i class="fa fa-image text-muted preview-placeholder"></i>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <input type="file" name="sections[${sectionId}][details][${idx}][Gambar]"
-                                        class="form-control-file input-gambar mb-1" accept="image/*">
-                                    ${iconField}
-                                </div>
-                            </div>
+                        <td class="text-center row-number">
+                            <span class="row-idx"></span>
+                            <input type="hidden" name="sections[${sectionId}][details][${idx}][id]" value="">
                         </td>
+                        ${imageCell}
                         ${subJudulCell}
                         <td>
                             <div class="lang-field ${currentLang === 'id' ? 'active' : ''}" data-lang="id">

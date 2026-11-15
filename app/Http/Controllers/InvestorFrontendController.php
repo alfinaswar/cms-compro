@@ -280,6 +280,10 @@ class InvestorFrontendController extends Controller
             ->orderBy('Urutan', 'asc')
             ->get();
 
+        $semuaDokumenGcg = DokumenTataKelola::where('Status', 'Aktif')
+            ->orderBy('Urutan', 'asc')
+            ->get();
+
         // RUPS Grouped by Year
         $rupsTahun = RupsDokumen::where('Status', 'Aktif')
             ->select('Tahun')
@@ -304,6 +308,7 @@ class InvestorFrontendController extends Controller
             'dokumenGcg',
             'kebijakan',
             'komiteAudit',
+            'semuaDokumenGcg',
             'rupsTahun',
             'selectedTahun',
             'rupsDokumen',
@@ -342,6 +347,11 @@ class InvestorFrontendController extends Controller
 
         $keterbukaanList = $keterbukaanQuery->paginate(6)->withQueryString();
 
+        $allKeterbukaanList = KeterbukaanInformasi::where('Status', 'Aktif')
+            ->orderBy('TanggalPublikasi', 'desc')
+            ->orderBy('Urutan', 'asc')
+            ->get();
+
         $kategoriList = KeterbukaanInformasi::where('Status', 'Aktif')
             ->select('Kategori')
             ->distinct()
@@ -359,6 +369,7 @@ class InvestorFrontendController extends Controller
         return view('frontend.investor.informasi-lainnya', compact(
             'lembagaList',
             'keterbukaanList',
+            'allKeterbukaanList',
             'kategoriList',
             'tahunList',
             'activeTab',

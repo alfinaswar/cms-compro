@@ -204,12 +204,6 @@
                                         {{ $bagan->TanggalDiperbarui->isoFormat('D MMM YYYY') }}
                                     </span>
                                 @endif
-                                @if ($bagan->PathFilePdf)
-                                    <a href="{{ asset('storage/' . $bagan->PathFilePdf) }}" target="_blank"
-                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 text-[#0051d5] font-semibold text-xs rounded-lg border border-slate-200 shadow-sm transition-colors whitespace-nowrap">
-                                        <i class="fa-solid fa-download text-xs"></i> {{ __('gcg.download_pdf') }}
-                                    </a>
-                                @endif
                             </div>
                         </div>
 
@@ -378,40 +372,110 @@
                             <p class="text-xs md:text-sm text-slate-500 mt-1">{{ __('gcg.s2_desc') }}</p>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-                            @foreach ($dokumenGcg as $doc)
-                                <div
-                                    class="bg-white rounded-xl p-5 shadow-sm border border-slate-200/80 flex flex-col justify-between hover:border-[#0099ff] hover:shadow-md transition-all">
+                        @php
+                            $docsToDisplay = isset($semuaDokumenGcg) && $semuaDokumenGcg->isNotEmpty() 
+                                ? $semuaDokumenGcg 
+                                : $dokumenGcg->concat($kebijakan)->concat($komiteAudit);
+                        @endphp
+
+                        {{-- Filter Kategori Dokumen --}}
+                        <div class="flex flex-wrap items-center gap-2 mb-6" id="filter-kategori-gcg">
+                            <button type="button" data-filter="all"
+                                class="btn-gcg-cat active px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-[#0051d5] text-white shadow-sm">
+                                {{ __('gcg.all_categories') }} ({{ $docsToDisplay->count() }})
+                            </button>
+                            <button type="button" data-filter="Dokumen Tata Kelola"
+                                class="btn-gcg-cat px-4 py-1.5 rounded-full text-xs font-semibold transition-all bg-slate-100 hover:bg-slate-200 text-slate-700">
+                                Dokumen Tata Kelola
+                            </button>
+                            <button type="button" data-filter="Kebijakan Operasional"
+                                class="btn-gcg-cat px-4 py-1.5 rounded-full text-xs font-semibold transition-all bg-slate-100 hover:bg-slate-200 text-slate-700">
+                                Kebijakan Operasional
+                            </button>
+                            <button type="button" data-filter="Komite Audit"
+                                class="btn-gcg-cat px-4 py-1.5 rounded-full text-xs font-semibold transition-all bg-slate-100 hover:bg-slate-200 text-slate-700">
+                                Komite Audit
+                            </button>
+                            <button type="button" data-filter="Satuan Audit Internal"
+                                class="btn-gcg-cat px-4 py-1.5 rounded-full text-xs font-semibold transition-all bg-slate-100 hover:bg-slate-200 text-slate-700">
+                                Satuan Audit Internal
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8" id="grid-dokumen-gcg">
+                            @foreach ($docsToDisplay as $doc)
+                                @php
+                                    $catStyle = match($doc->Kategori) {
+                                        'Dokumen Tata Kelola' => [
+                                            'badge' => 'bg-blue-100 text-blue-800 border-blue-200',
+                                            'border' => 'border-blue-100 hover:border-blue-400',
+                                            'iconBg' => 'bg-blue-50 text-[#0051d5]',
+                                            'icon' => 'fa-shield-halved',
+                                            'btn' => 'text-[#0051d5] hover:text-blue-800',
+                                        ],
+                                        'Kebijakan Operasional' => [
+                                            'badge' => 'bg-emerald-100 text-emerald-800 border-emerald-200',
+                                            'border' => 'border-emerald-100 hover:border-emerald-400',
+                                            'iconBg' => 'bg-emerald-50 text-emerald-600',
+                                            'icon' => 'fa-file-shield',
+                                            'btn' => 'text-emerald-700 hover:text-emerald-900',
+                                        ],
+                                        'Komite Audit' => [
+                                            'badge' => 'bg-amber-100 text-amber-900 border-amber-200',
+                                            'border' => 'border-amber-100 hover:border-amber-400',
+                                            'iconBg' => 'bg-amber-50 text-amber-600',
+                                            'icon' => 'fa-user-check',
+                                            'btn' => 'text-amber-700 hover:text-amber-900',
+                                        ],
+                                        'Satuan Audit Internal' => [
+                                            'badge' => 'bg-purple-100 text-purple-900 border-purple-200',
+                                            'border' => 'border-purple-100 hover:border-purple-400',
+                                            'iconBg' => 'bg-purple-50 text-purple-600',
+                                            'icon' => 'fa-clipboard-check',
+                                            'btn' => 'text-purple-700 hover:text-purple-900',
+                                        ],
+                                        default => [
+                                            'badge' => 'bg-slate-100 text-slate-800 border-slate-200',
+                                            'border' => 'border-slate-200 hover:border-slate-400',
+                                            'iconBg' => 'bg-slate-50 text-slate-600',
+                                            'icon' => 'fa-file-alt',
+                                            'btn' => 'text-slate-700 hover:text-slate-900',
+                                        ],
+                                    };
+                                @endphp
+                                <div data-kategori="{{ $doc->Kategori }}"
+                                    class="gcg-doc-card bg-white rounded-xl p-5 shadow-sm border {{ $catStyle['border'] }} flex flex-col justify-between hover:shadow-md transition-all">
                                     <div>
-                                        <div class="flex items-start justify-between mb-3">
-                                            <div
-                                                class="w-9 h-9 rounded-lg bg-blue-50 text-[#0051d5] flex items-center justify-center text-sm">
-                                                <i class="fa-solid fa-file-shield"></i>
+                                        <div class="flex items-start justify-between gap-2 mb-3">
+                                            <div class="flex items-center gap-2">
+                                                <div
+                                                    class="w-9 h-9 rounded-lg {{ $catStyle['iconBg'] }} flex items-center justify-center text-sm flex-shrink-0">
+                                                    <i class="fa-solid {{ $catStyle['icon'] }}"></i>
+                                                </div>
+                                                <span class="text-[10px] font-bold px-2 py-0.5 rounded border {{ $catStyle['badge'] }}">
+                                                    {{ $doc->Kategori }}
+                                                </span>
                                             </div>
                                             @if ($doc->FileSize)
                                                 <span
-                                                    class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded">
+                                                    class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded whitespace-nowrap">
                                                     PDF ({{ $doc->FileSize }})
                                                 </span>
                                             @endif
                                         </div>
-                                        <h4 class="font-bold text-slate-900 text-sm leading-snug mb-1">{{ $doc->Judul }}
-                                        </h4>
-                                        <!-- REVISI 1: Deskripsi utuh tanpa line-clamp -->
+                                        <h4 class="font-bold text-slate-900 text-sm leading-snug mb-1">{{ $doc->Judul }}</h4>
                                         @if ($doc->Deskripsi)
-                                            <p class="text-xs text-slate-500 mb-4 leading-relaxed">{{ $doc->Deskripsi }}
-                                            </p>
+                                            <p class="text-xs text-slate-500 mb-4 leading-relaxed">{{ $doc->Deskripsi }}</p>
                                         @endif
                                     </div>
                                     <div class="pt-3 border-t border-slate-100 flex items-center justify-end">
                                         @if ($doc->PathFile)
                                             <a href="{{ asset('storage/' . $doc->PathFile) }}" target="_blank"
-                                                class="inline-flex items-center gap-1.5 text-xs font-bold text-[#0051d5] hover:text-blue-800 transition-colors">
+                                                class="inline-flex items-center gap-1.5 text-xs font-bold {{ $catStyle['btn'] }} transition-colors">
                                                 <i class="fa-solid fa-download text-xs"></i> {{ __('gcg.download') }}
                                             </a>
                                         @else
-                                            <span
-                                                class="text-[11px] text-slate-400 italic">{{ __('gcg.coming_soon') }}</span>
+                                            <span class="text-[11px] text-slate-400 italic">{{ __('gcg.coming_soon') }}</span>
                                         @endif
                                     </div>
                                 </div>
@@ -514,8 +578,8 @@
                                                 @if ($item->PathFile)
                                                     <a href="{{ asset('storage/' . $item->PathFile) }}" target="_blank"
                                                         class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-50 hover:bg-[#0099ff] text-slate-700 hover:text-white font-semibold text-xs border border-slate-200 transition-colors">
-                                                        <i class="fa-solid fa-download text-xs"></i>
-                                                        {{ __('gcg.download') }}
+                                                        <i class="fa-solid fa-eye text-xs"></i>
+                                                        {{ __('gcg.view') }}
                                                     </a>
                                                 @else
                                                     <span
@@ -900,6 +964,31 @@
                             alert(@json(__('Failed to load data. Please try again.')));
                         });
                 };
+
+                // Filter Kategori Dokumen GCG Frontend
+                const catButtons = document.querySelectorAll('.btn-gcg-cat');
+                const docCards = document.querySelectorAll('.gcg-doc-card');
+
+                catButtons.forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        catButtons.forEach(b => {
+                            b.classList.remove('active', 'bg-[#0051d5]', 'text-white', 'shadow-sm');
+                            b.classList.add('bg-slate-100', 'text-slate-700');
+                        });
+                        this.classList.add('active', 'bg-[#0051d5]', 'text-white', 'shadow-sm');
+                        this.classList.remove('bg-slate-100', 'text-slate-700');
+
+                        const filter = this.getAttribute('data-filter');
+                        docCards.forEach(card => {
+                            const cardCat = card.getAttribute('data-kategori');
+                            if (filter === 'all' || cardCat === filter) {
+                                card.style.display = 'flex';
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        });
+                    });
+                });
 
                 // SCROLLSPY & ACTIVE LINK
                 const sidebarLinks = document.querySelectorAll('#sidebar-nav .sidebar-link');

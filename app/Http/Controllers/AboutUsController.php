@@ -29,8 +29,13 @@ class AboutUsController extends Controller
         5 => [
             'key' => 'hero',
             'label' => 'Hero',
-            'hint' => 'Judul baris 1, Sub Judul = teks biru baris 2, Deskripsi = paragraf. Detail = statistik (Judul=nilai, Deskripsi=label|||keterangan).',
-            'detail_labels' => ['Judul' => 'Nilai', 'Deskripsi' => 'Label|||Keterangan'],
+            'hint' => 'Judul baris 1, Sub Judul = teks biru baris 2, Deskripsi = paragraf. Detail = statistik (Label, Nilai, Deskripsi).',
+            'detail_labels' => [
+                'has_image' => false,
+                'SubJudul' => 'Label',
+                'Judul' => 'Nilai',
+                'Deskripsi' => 'Deskripsi',
+            ],
         ],
         1 => [
             'key' => 'profil',
