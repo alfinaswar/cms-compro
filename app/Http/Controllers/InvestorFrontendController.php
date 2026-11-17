@@ -50,7 +50,7 @@ class InvestorFrontendController extends Controller
 
         $activeTab = 'laporan-keuangan';
 
-        $prospektus = $categories->firstWhere('Slug', 'prospektus')?->details ?? collect();
+        $prospektus = $categories->firstWhere('Slug', 'prospektus-keterbukaan-informasi')?->details ?? collect();
         $annualReports = $categories->firstWhere('Slug', 'annual-report')?->details ?? collect();
         $quarterlyReports = $categories->firstWhere('Slug', 'quarterly-report')?->details ?? collect();
 
