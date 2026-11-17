@@ -149,6 +149,12 @@
                 transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             }
 
+            #hero-slider h1,
+            #hero-slider p,
+            #hero-slider h1 span {
+                text-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
+            }
+
             .line-clamp-2 {
                 display: -webkit-box;
                 -webkit-line-clamp: 2;
@@ -215,10 +221,6 @@
                                 <img src="https://images.unsplash.com/photo-1565945932315-ec82aa1b4b4d?q=80&w=2070&auto=format&fit=crop"
                                     alt="Manufacturing" class="hero-bg-media">
                             @endif
-                            {{-- Overlay navy agar teks terbaca --}}
-                            <div
-                                class="absolute inset-0 z-10 pointer-events-none bg-gradient-to-b from-[#0B192E] via-[#0B192E]/0 to-[#0B192E]/0">
-                            </div>
                         </div>
 
                         {{-- Konten --}}

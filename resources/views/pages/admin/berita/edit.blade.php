@@ -261,7 +261,7 @@
                                     value="{{ old('TanggalPublikasi', $berita->TanggalPublikasi ? \Carbon\Carbon::parse($berita->TanggalPublikasi)->format('Y-m-d\TH:i') : '') }}">
                                 <small class="text-muted">Kosongkan untuk publish sekarang.</small>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group d-none">
                                 <label><strong>Penulis</strong></label>
                                 <input type="text" name="Penulis" class="form-control"
                                     value="{{ old('Penulis', $berita->Penulis) }}">

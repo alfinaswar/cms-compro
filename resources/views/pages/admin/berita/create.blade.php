@@ -249,7 +249,7 @@
                                     value="{{ old('TanggalPublikasi') }}">
                                 <small class="text-muted">Kosongkan untuk publish sekarang.</small>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group d-none">
                                 <label><strong>Penulis</strong></label>
                                 <input type="text" name="Penulis" class="form-control"
                                     value="{{ old('Penulis', auth()->user()->name) }}">
