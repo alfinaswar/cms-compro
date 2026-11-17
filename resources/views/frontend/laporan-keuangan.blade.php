@@ -1,10 +1,14 @@
 @php
     $currentLocale = app()->getLocale();
     $siteName = $websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk';
-    $invTitle = ($currentLocale === 'en' ? 'Financial Reports - Investor Relations' : 'Laporan Keuangan - Hubungan Investor') . ' - ' . $siteName;
-    $invDesc = $currentLocale === 'en'
-        ? 'Access audited financial statements, annual reports, and investor disclosures of PT Jasuindo Tiga Perkasa Tbk.'
-        : 'Laporan keuangan audit, laporan tahunan, dan keterbukaan informasi investor PT Jasuindo Tiga Perkasa Tbk.';
+    $invTitle =
+        ($currentLocale === 'en' ? 'Financial Reports - Investor Relations' : 'Laporan Keuangan - Hubungan Investor') .
+        ' - ' .
+        $siteName;
+    $invDesc =
+        $currentLocale === 'en'
+            ? 'Access audited financial statements, annual reports, and investor disclosures of PT Jasuindo Tiga Perkasa Tbk.'
+            : 'Laporan keuangan audit, laporan tahunan, dan keterbukaan informasi investor PT Jasuindo Tiga Perkasa Tbk.';
 @endphp
 
 @extends('frontend.index')
@@ -252,7 +256,8 @@
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            @forelse ($categories as $kat)
+                            {{-- @dd($categories); --}}
+                            @forelse ($prospektus as $kat)
                                 <div
                                     class="report-card bg-[#EEF4FF] rounded-2xl p-6 flex flex-col justify-between border border-transparent hover:border-slate-200 transition-all">
                                     <div>
@@ -473,7 +478,7 @@
                                         <div class="flex flex-wrap items-center gap-2">
                                             <span
                                                 class="px-3 py-0.5 rounded-full text-xs font-semibold bg-[#0051D5] text-white flex items-center gap-1.5">
-                                                {{ ($report->Status === 'Aktif' || empty($report->Status)) ? __('Active') : $report->Status }}
+                                                {{ $report->Status === 'Aktif' || empty($report->Status) ? __('Active') : $report->Status }}
                                             </span>
                                             <span class="px-3 py-1 text-xs font-semibold text-[#45464D]">
                                                 {{ $bahasaLabel }}
@@ -692,12 +697,14 @@
                                                     <div
                                                         class="pt-3 border-t border-slate-200/80 flex items-center justify-between text-xs text-[#45464D] mb-3">
                                                         <span>PDF &bull; {{ $report->FileSize }} MB</span>
-                                                        <span class="text-emerald-600 font-semibold">{{ __('Available') }}</span>
+                                                        <span
+                                                            class="text-emerald-600 font-semibold">{{ __('Available') }}</span>
                                                     </div>
                                                     <a href="{{ asset('storage/' . $report->PathFile) }}" target="_blank"
                                                         download
                                                         class="w-full flex items-center justify-center gap-1.5 py-2 bg-white hover:bg-[#0080d6] text-[#0051D5] hover:text-white text-xs font-semibold rounded-xl shadow-xs transition-all">
-                                                        <i class="fa-solid fa-arrow-down-to-bracket text-xs"></i> {{ __('gcg.download_pdf') }}
+                                                        <i class="fa-solid fa-arrow-down-to-bracket text-xs"></i>
+                                                        {{ __('gcg.download_pdf') }}
                                                     </a>
                                                 </div>
                                             </div>
@@ -727,11 +734,13 @@
                                                     <div
                                                         class="pt-3 border-t border-slate-200/80 flex items-center justify-between text-xs text-slate-400 mb-3">
                                                         <span>{{ __('Release Schedule') }}</span>
-                                                        <span class="text-amber-600 font-medium">{{ __('gcg.coming_soon') }}</span>
+                                                        <span
+                                                            class="text-amber-600 font-medium">{{ __('gcg.coming_soon') }}</span>
                                                     </div>
                                                     <button disabled
                                                         class="w-full flex items-center justify-center gap-1.5 py-2 bg-slate-100 text-slate-400 text-xs font-semibold rounded-xl cursor-not-allowed">
-                                                        <i class="fa-regular fa-clock text-xs"></i> {{ __('gcg.coming_soon') }}
+                                                        <i class="fa-regular fa-clock text-xs"></i>
+                                                        {{ __('gcg.coming_soon') }}
                                                     </button>
                                                 </div>
                                             </div>
