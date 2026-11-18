@@ -314,12 +314,12 @@
                             <article class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-7 hover:bg-white/10 transition-all duration-300">
                                 <div class="w-12 h-12 rounded-xl bg-brand-500/20 flex items-center justify-center mb-5 overflow-hidden">
                                     @if ($item->Icon && \App\Support\IconHelper::isFontAwesome($item->Icon))
-                                        <i class="{{ $item->Icon }} text-lg text-brand-300"></i>
+                                        <i class="{{ $item->Icon }} text-lg text-white"></i>
                                     @elseif ($item->Icon && \Illuminate\Support\Facades\Storage::disk('public')->exists($item->Icon))
                                         <img src="{{ asset('storage/' . $item->Icon) }}" alt="{{ $item->t('Judul') }}"
                                             class="w-full h-full object-cover">
                                     @else
-                                        <i class="fa-solid fa-lock text-brand-300"></i>
+                                        <i class="fa-solid fa-lock text-white"></i>
                                     @endif
                                 </div>
                                 @if (filled($item->t('Judul')))
