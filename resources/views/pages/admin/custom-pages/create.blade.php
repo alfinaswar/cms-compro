@@ -190,25 +190,58 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label><strong>SEO Title</strong> <span class="float-right text-muted"
-                                        id="counterTitle">0/70</span></label>
-                                <input type="text" name="translations[id][SEOTitle]" id="inputSEOTitle"
-                                    class="form-control" maxlength="70" value="{{ old('translations.id.SEOTitle') }}"
-                                    placeholder="Kosongkan untuk pakai Judul">
-                            </div>
-                            <div class="form-group">
-                                <label><strong>Meta Description</strong> <span class="float-right text-muted"
-                                        id="counterDesc">0/160</span></label>
-                                <textarea name="translations[id][SEODescription]" id="inputSEODesc" class="form-control" rows="3"
-                                    maxlength="160" placeholder="Deskripsi untuk hasil pencarian Google">{{ old('translations.id.SEODescription') }}</textarea>
-                            </div>
-                            <div class="form-group mb-0">
-                                <label><strong>SEO Keywords</strong></label>
-                                <input type="text" name="translations[id][SEOKeywords]" class="form-control"
-                                    value="{{ old('translations.id.SEOKeywords') }}"
-                                    placeholder="Contoh: keyword1, keyword2, ...">
-                                <small class="text-muted">Pisahkan dengan koma.</small>
+                            <ul class="nav nav-tabs justify-content-end mb-3" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-toggle="tab" href="#seo-id" role="tab">ID</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#seo-en" role="tab">EN</a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="seo-id" role="tabpanel">
+                                    <div class="form-group">
+                                        <label><strong>SEO Title (ID)</strong> <span class="float-right text-muted"
+                                                id="counterTitle">0/70</span></label>
+                                        <input type="text" name="translations[id][SEOTitle]" id="inputSEOTitle"
+                                            class="form-control" maxlength="70" value="{{ old('translations.id.SEOTitle') }}"
+                                            placeholder="Kosongkan untuk pakai Judul">
+                                    </div>
+                                    <div class="form-group">
+                                        <label><strong>Meta Description (ID)</strong> <span class="float-right text-muted"
+                                                id="counterDesc">0/160</span></label>
+                                        <textarea name="translations[id][SEODescription]" id="inputSEODesc" class="form-control" rows="3"
+                                            maxlength="160" placeholder="Deskripsi untuk hasil pencarian Google">{{ old('translations.id.SEODescription') }}</textarea>
+                                    </div>
+                                    <div class="form-group mb-0">
+                                        <label><strong>SEO Keywords (ID)</strong></label>
+                                        <input type="text" name="translations[id][SEOKeywords]" class="form-control"
+                                            value="{{ old('translations.id.SEOKeywords') }}"
+                                            placeholder="Contoh: keyword1, keyword2, ...">
+                                        <small class="text-muted">Pisahkan dengan koma.</small>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="seo-en" role="tabpanel">
+                                    <div class="form-group">
+                                        <label><strong>SEO Title (EN)</strong></label>
+                                        <input type="text" name="translations[en][SEOTitle]"
+                                            class="form-control" maxlength="70" value="{{ old('translations.en.SEOTitle') }}"
+                                            placeholder="Leave blank to use English Title">
+                                    </div>
+                                    <div class="form-group">
+                                        <label><strong>Meta Description (EN)</strong></label>
+                                        <textarea name="translations[en][SEODescription]" class="form-control" rows="3"
+                                            maxlength="160" placeholder="Meta description for Google search">{{ old('translations.en.SEODescription') }}</textarea>
+                                    </div>
+                                    <div class="form-group mb-0">
+                                        <label><strong>SEO Keywords (EN)</strong></label>
+                                        <input type="text" name="translations[en][SEOKeywords]" class="form-control"
+                                            value="{{ old('translations.en.SEOKeywords') }}"
+                                            placeholder="Example: keyword1, keyword2, ...">
+                                        <small class="text-muted">Separate with commas.</small>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

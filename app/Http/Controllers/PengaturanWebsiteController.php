@@ -75,7 +75,9 @@ class PengaturanWebsiteController extends Controller
             'NamaPerusahaan' => 'required|string|max:255',
             'NamaSingkat' => 'nullable|string|max:100',
             'TaglineWebsite' => 'nullable|string|max:255',
+            'TaglineWebsiteEn' => 'nullable|string|max:255',
             'DeskripsiSingkat' => 'nullable|string|max:500',
+            'DeskripsiSingkatEn' => 'nullable|string|max:500',
             'TentangPerusahaan' => 'nullable|string',
             // Branding
             'WarnaUtama' => 'nullable|string|size:7',
@@ -112,6 +114,7 @@ class PengaturanWebsiteController extends Controller
             'RekeningBank' => 'nullable|string',
             // SEO & Analytics
             'KataKunciSEO' => 'nullable|string',
+            'KataKunciSEOEn' => 'nullable|string',
             'PenulisMeta' => 'nullable|string|max:255',
             'IdGoogleAnalytics' => 'nullable|string|max:50',
             'IdGoogleTagManager' => 'nullable|string|max:50',

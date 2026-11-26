@@ -204,39 +204,82 @@
 
                     <div class="card shadow-sm border-0">
                         <div class="card-header bg-white border-bottom">
-                            <h5 class="mb-0"><i class="fa fa-search text-warning mr-2"></i><strong>SEO
-                                    (Indonesia)</strong></h5>
+                            <h5 class="mb-0"><i class="fa fa-search text-warning mr-2"></i><strong>SEO</strong></h5>
                         </div>
                         <div class="card-body">
-                            <div class="form-group">
-                                <label>SEO Title</label>
-                                <input type="text" name="translations[id][SEOTitle]"
-                                    class="form-control @error('translations.id.SEOTitle') is-invalid @enderror"
-                                    maxlength="70"
-                                    value="{{ old('translations.id.SEOTitle', $page->translate('id')->SEOTitle) }}"
-                                    placeholder="Masukkan judul SEO (max 70 karakter)">
-                                @error('translations.id.SEOTitle')
-                                    <span class="invalid-feedback d-block">{{ $message }}</span>
-                                @enderror
-                            </div>
-                            <div class="form-group">
-                                <label>Meta Description</label>
-                                <textarea name="translations[id][SEODescription]"
-                                    class="form-control @error('translations.id.SEODescription') is-invalid @enderror" rows="3"
-                                    maxlength="160" placeholder="Tuliskan deskripsi SEO (max 160 karakter)">{{ old('translations.id.SEODescription', $page->translate('id')->SEODescription) }}</textarea>
-                                @error('translations.id.SEODescription')
-                                    <span class="invalid-feedback d-block">{{ $message }}</span>
-                                @enderror
-                            </div>
-                            <div class="form-group mb-0">
-                                <label>SEO Keywords</label>
-                                <input type="text" name="translations[id][SEOKeywords]"
-                                    class="form-control @error('translations.id.SEOKeywords') is-invalid @enderror"
-                                    value="{{ old('translations.id.SEOKeywords', $page->translate('id')->SEOKeywords) }}"
-                                    placeholder="Contoh: keyword1, keyword2, ...">
-                                @error('translations.id.SEOKeywords')
-                                    <span class="invalid-feedback d-block">{{ $message }}</span>
-                                @enderror
+                            <ul class="nav nav-tabs justify-content-end mb-3" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-toggle="tab" href="#seo-id" role="tab">ID</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#seo-en" role="tab">EN</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="seo-id" role="tabpanel">
+                                    <div class="form-group">
+                                        <label>SEO Title (ID)</label>
+                                        <input type="text" name="translations[id][SEOTitle]"
+                                            class="form-control @error('translations.id.SEOTitle') is-invalid @enderror"
+                                            maxlength="70"
+                                            value="{{ old('translations.id.SEOTitle', $page->translate('id')->SEOTitle) }}"
+                                            placeholder="Masukkan judul SEO (max 70 karakter)">
+                                        @error('translations.id.SEOTitle')
+                                            <span class="invalid-feedback d-block">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Meta Description (ID)</label>
+                                        <textarea name="translations[id][SEODescription]"
+                                            class="form-control @error('translations.id.SEODescription') is-invalid @enderror" rows="3"
+                                            maxlength="160" placeholder="Tuliskan deskripsi SEO (max 160 karakter)">{{ old('translations.id.SEODescription', $page->translate('id')->SEODescription) }}</textarea>
+                                        @error('translations.id.SEODescription')
+                                            <span class="invalid-feedback d-block">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group mb-0">
+                                        <label>SEO Keywords (ID)</label>
+                                        <input type="text" name="translations[id][SEOKeywords]"
+                                            class="form-control @error('translations.id.SEOKeywords') is-invalid @enderror"
+                                            value="{{ old('translations.id.SEOKeywords', $page->translate('id')->SEOKeywords) }}"
+                                            placeholder="Contoh: keyword1, keyword2, ...">
+                                        @error('translations.id.SEOKeywords')
+                                            <span class="invalid-feedback d-block">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="seo-en" role="tabpanel">
+                                    <div class="form-group">
+                                        <label>SEO Title (EN)</label>
+                                        <input type="text" name="translations[en][SEOTitle]"
+                                            class="form-control @error('translations.en.SEOTitle') is-invalid @enderror"
+                                            maxlength="70"
+                                            value="{{ old('translations.en.SEOTitle', $page->translate('en')->SEOTitle) }}"
+                                            placeholder="Enter SEO title (max 70 chars)">
+                                        @error('translations.en.SEOTitle')
+                                            <span class="invalid-feedback d-block">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Meta Description (EN)</label>
+                                        <textarea name="translations[en][SEODescription]"
+                                            class="form-control @error('translations.en.SEODescription') is-invalid @enderror" rows="3"
+                                            maxlength="160" placeholder="Enter SEO description (max 160 chars)">{{ old('translations.en.SEODescription', $page->translate('en')->SEODescription) }}</textarea>
+                                        @error('translations.en.SEODescription')
+                                            <span class="invalid-feedback d-block">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group mb-0">
+                                        <label>SEO Keywords (EN)</label>
+                                        <input type="text" name="translations[en][SEOKeywords]"
+                                            class="form-control @error('translations.en.SEOKeywords') is-invalid @enderror"
+                                            value="{{ old('translations.en.SEOKeywords', $page->translate('en')->SEOKeywords) }}"
+                                            placeholder="Example: keyword1, keyword2, ...">
+                                        @error('translations.en.SEOKeywords')
+                                            <span class="invalid-feedback d-block">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

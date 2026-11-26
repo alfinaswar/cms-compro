@@ -4,12 +4,17 @@
     $trans = $page->translate($locale);
     $displayJudul = $trans->Judul ?: $page->Judul;
     $displayKonten = $trans->Konten ?: $page->Konten;
-    $displayDesc = $trans->DeskripsiSingkat ?: ($page->DeskripsiSingkat ?: Str::limit(strip_tags($displayKonten), 160));
+    $displaySeoTitle = $trans->SEOTitle ?: $displayJudul;
+    $displayDesc = $trans->SEODescription ?: ($trans->DeskripsiSingkat ?: ($page->DeskripsiSingkat ?: Str::limit(strip_tags($displayKonten), 160)));
+    $displayKeywords = $trans->SEOKeywords;
     $thumbnailUrl = $page->Thumbnail ? asset('storage/' . $page->Thumbnail) : asset('img/no-image.png');
 @endphp
 
-@section('title', $displayJudul . ' - ' . ($websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk'))
+@section('title', $displaySeoTitle . ' - ' . ($websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk'))
 @section('meta_description', $displayDesc)
+@if (!empty($displayKeywords))
+    @section('meta_keywords', $displayKeywords)
+@endif
 @section('og_image', $thumbnailUrl)
 
 @section('content-frontend')

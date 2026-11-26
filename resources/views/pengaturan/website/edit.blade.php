@@ -94,11 +94,11 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Deskripsi Singkat</label>
+                                                <label>Deskripsi Singkat (ID)</label>
                                                 <input type="text" name="DeskripsiSingkat"
                                                     class="form-control @error('DeskripsiSingkat') is-invalid @enderror"
                                                     value="{{ old('DeskripsiSingkat', $pengaturan->DeskripsiSingkat) }}"
-                                                    placeholder="Masukkan deskripsi singkat perusahaan">
+                                                    placeholder="Masukkan deskripsi singkat perusahaan (Indonesia)">
                                                 @error('DeskripsiSingkat')
                                                     <span class="error invalid-feedback">{{ $message }}</span>
                                                 @enderror
@@ -106,10 +106,30 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Tagline Website</label>
+                                                <label>Deskripsi Singkat (EN)</label>
+                                                <input type="text" name="DeskripsiSingkatEn"
+                                                    class="form-control @error('DeskripsiSingkatEn') is-invalid @enderror"
+                                                    value="{{ old('DeskripsiSingkatEn', $pengaturan->DeskripsiSingkatEn) }}"
+                                                    placeholder="Short company description (English)">
+                                                @error('DeskripsiSingkatEn')
+                                                    <span class="error invalid-feedback">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Tagline Website (ID)</label>
                                                 <input type="text" name="TaglineWebsite" class="form-control"
                                                     value="{{ old('TaglineWebsite', $pengaturan->TaglineWebsite) }}"
                                                     placeholder="Contoh: Solusi Terbaik untuk Bisnis Anda">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Tagline Website (EN)</label>
+                                                <input type="text" name="TaglineWebsiteEn" class="form-control"
+                                                    value="{{ old('TaglineWebsiteEn', $pengaturan->TaglineWebsiteEn) }}"
+                                                    placeholder="Example: Integrated Digital Identity Solutions">
                                             </div>
                                         </div>
                                         <div class="col-12">
@@ -344,6 +364,24 @@
                                     <hr>
                                     <h5 class="mb-3 text-primary">SEO & Analytics</h5>
                                     <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Kata Kunci SEO Default (ID)</label>
+                                                <input type="text" name="KataKunciSEO" class="form-control"
+                                                    value="{{ old('KataKunciSEO', $pengaturan->KataKunciSEO) }}"
+                                                    placeholder="jasuindo, identitas digital, percetakan sekuriti">
+                                                <small class="text-muted">Pisahkan dengan koma.</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Kata Kunci SEO Default (EN)</label>
+                                                <input type="text" name="KataKunciSEOEn" class="form-control"
+                                                    value="{{ old('KataKunciSEOEn', $pengaturan->KataKunciSEOEn) }}"
+                                                    placeholder="jasuindo, digital identity, security printing">
+                                                <small class="text-muted">Separate with commas.</small>
+                                            </div>
+                                        </div>
                                         <div class="col-12">
                                             <div class="form-group">
                                                 <label>Google Analytics ID (G-XXXXXXXXXX)</label>

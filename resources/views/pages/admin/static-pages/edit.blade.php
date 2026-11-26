@@ -236,11 +236,10 @@
                         </div>
                     </div>
 
-                    {{-- SEO (INDONESIA) --}}
+                    {{-- SEO (INDONESIA & ENGLISH) --}}
                     <div class="card shadow-sm border-0">
                         <div class="card-header bg-white border-bottom">
-                            <h5 class="mb-0"><i class="fa fa-search text-warning mr-2"></i><strong>SEO
-                                    (Indonesia)</strong></h5>
+                            <h5 class="mb-0"><i class="fa fa-search text-warning mr-2"></i><strong>SEO</strong></h5>
                         </div>
                         <div class="card-body">
                             {{-- Preview Google --}}
@@ -258,32 +257,75 @@
                                 <div id="seoPreviewDesc" class="seo-desc">Deskripsi halaman akan muncul di sini...</div>
                             </div>
 
-                            <div class="form-group">
-                                <label>
-                                    SEO Title
-                                    <span class="float-right text-muted" id="counterTitle">0/70</span>
-                                </label>
-                                <input type="text" name="translations[id][SEOTitle]" id="inputSEOTitle"
-                                    class="form-control" maxlength="70"
-                                    value="{{ old('translations.id.SEOTitle', $page->translate('id')->SEOTitle) }}"
-                                    placeholder="Kosongkan untuk pakai Judul">
-                            </div>
+                            <ul class="nav nav-tabs justify-content-end mb-3" id="seoLangTabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="seo-id-tab" data-toggle="tab" href="#seo-id" role="tab">ID</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="seo-en-tab" data-toggle="tab" href="#seo-en" role="tab">EN</a>
+                                </li>
+                            </ul>
 
-                            <div class="form-group">
-                                <label>
-                                    Meta Description
-                                    <span class="float-right text-muted" id="counterDesc">0/160</span>
-                                </label>
-                                <textarea name="translations[id][SEODescription]" id="inputSEODesc" class="form-control" rows="3"
-                                    maxlength="160">{{ old('translations.id.SEODescription', $page->translate('id')->SEODescription) }}</textarea>
-                            </div>
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="seo-id" role="tabpanel">
+                                    <div class="form-group">
+                                        <label>
+                                            SEO Title (ID)
+                                            <span class="float-right text-muted" id="counterTitle">0/70</span>
+                                        </label>
+                                        <input type="text" name="translations[id][SEOTitle]" id="inputSEOTitle"
+                                            class="form-control" maxlength="70"
+                                            value="{{ old('translations.id.SEOTitle', $page->translate('id')->SEOTitle) }}"
+                                            placeholder="Kosongkan untuk pakai Judul">
+                                    </div>
 
-                            <div class="form-group mb-0">
-                                <label>SEO Keywords</label>
-                                <input type="text" name="translations[id][SEOKeywords]" class="form-control"
-                                    value="{{ old('translations.id.SEOKeywords', $page->translate('id')->SEOKeywords) }}"
-                                    placeholder="keyword1, keyword2">
-                                <small class="text-muted">Pisahkan dengan koma.</small>
+                                    <div class="form-group">
+                                        <label>
+                                            Meta Description (ID)
+                                            <span class="float-right text-muted" id="counterDesc">0/160</span>
+                                        </label>
+                                        <textarea name="translations[id][SEODescription]" id="inputSEODesc" class="form-control" rows="3"
+                                            maxlength="160">{{ old('translations.id.SEODescription', $page->translate('id')->SEODescription) }}</textarea>
+                                    </div>
+
+                                    <div class="form-group mb-0">
+                                        <label>SEO Keywords (ID)</label>
+                                        <input type="text" name="translations[id][SEOKeywords]" class="form-control"
+                                            value="{{ old('translations.id.SEOKeywords', $page->translate('id')->SEOKeywords) }}"
+                                            placeholder="keyword1, keyword2">
+                                        <small class="text-muted">Pisahkan dengan koma.</small>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane fade" id="seo-en" role="tabpanel">
+                                    <div class="form-group">
+                                        <label>
+                                            SEO Title (EN)
+                                            <span class="float-right text-muted" id="counterTitleEn">0/70</span>
+                                        </label>
+                                        <input type="text" name="translations[en][SEOTitle]" id="inputSEOTitleEn"
+                                            class="form-control" maxlength="70"
+                                            value="{{ old('translations.en.SEOTitle', $page->translate('en')->SEOTitle) }}"
+                                            placeholder="Leave blank to use English Title">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>
+                                            Meta Description (EN)
+                                            <span class="float-right text-muted" id="counterDescEn">0/160</span>
+                                        </label>
+                                        <textarea name="translations[en][SEODescription]" id="inputSEODescEn" class="form-control" rows="3"
+                                            maxlength="160" placeholder="Meta description for Google search...">{{ old('translations.en.SEODescription', $page->translate('en')->SEODescription) }}</textarea>
+                                    </div>
+
+                                    <div class="form-group mb-0">
+                                        <label>SEO Keywords (EN)</label>
+                                        <input type="text" name="translations[en][SEOKeywords]" class="form-control"
+                                            value="{{ old('translations.en.SEOKeywords', $page->translate('en')->SEOKeywords) }}"
+                                            placeholder="keyword1, keyword2">
+                                        <small class="text-muted">Separate with commas.</small>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -399,9 +441,11 @@
             function updateCounters() {
                 $('#counterTitle').text($('#inputSEOTitle').val().length + '/70');
                 $('#counterDesc').text($('#inputSEODesc').val().length + '/160');
+                $('#counterTitleEn').text($('#inputSEOTitleEn').val().length + '/70');
+                $('#counterDescEn').text($('#inputSEODescEn').val().length + '/160');
             }
 
-            $('#JudulId, #inputSEOTitle, #inputSEODesc, #Slug').on('input', function() {
+            $('#JudulId, #inputSEOTitle, #inputSEODesc, #inputSEOTitleEn, #inputSEODescEn, #Slug').on('input', function() {
                 updateSEOPreview();
                 updateCounters();
             });

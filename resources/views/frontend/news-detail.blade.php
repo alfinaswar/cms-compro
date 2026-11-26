@@ -4,7 +4,9 @@
     $trans = $news->translate($locale) ?? ($news->translate('id') ?? $news->translations->first());
     $displayJudul = $trans?->Judul ?: ($news->Judul ?: __('News'));
     $displayKonten = $trans?->Konten ?: ($news->Konten ?: '');
-    $displayDesc = Str::limit(strip_tags($displayKonten), 160);
+    $displayDesc = $trans?->SEODescription ?: ($news->SEODescription ?: Str::limit(strip_tags($displayKonten), 160));
+    $displaySeoTitle = $trans?->SEOTitle ?: ($news->SEOTitle ?: $displayJudul);
+    $displaySeoKeywords = $trans?->SEOKeywords ?: $news->SEOKeywords;
     $thumbnailUrl = $news->PathThumbnail ? asset('storage/' . $news->PathThumbnail) : asset('img/no-image.png');
     $siteName = $websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk';
     $publishedDate = $news->TanggalPublikasi ? $news->TanggalPublikasi->toIso8601String() : $news->created_at->toIso8601String();
@@ -18,10 +20,13 @@
     $contactRoute = $locale === 'id' ? 'frontend.contact.index.id' : 'frontend.contact.index';
 @endphp
 
-@section('title', $displayJudul . ' - ' . $siteName)
+@section('title', $displaySeoTitle . ' - ' . $siteName)
 @section('meta_description', $displayDesc)
+@if (!empty($displaySeoKeywords))
+    @section('meta_keywords', $displaySeoKeywords)
+@endif
 @section('og_type', 'article')
-@section('og_title', $displayJudul)
+@section('og_title', $displaySeoTitle)
 @section('og_description', $displayDesc)
 @section('og_image', $thumbnailUrl)
 

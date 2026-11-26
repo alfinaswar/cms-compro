@@ -20,12 +20,17 @@
 
     $solusiJudul = $tr($halamanSolusi, 'Judul') ?: 'Solusi';
     $solusiKonten = $tr($halamanSolusi, 'Konten') ?: '';
-    $solusiDesc = Str::limit(strip_tags($solusiKonten), 160);
+    $solusiSeoTitle = $tr($halamanSolusi, 'SEOTitle') ?: $solusiJudul;
+    $solusiDesc = $tr($halamanSolusi, 'SEODescription') ?: Str::limit(strip_tags($solusiKonten), 160);
+    $solusiKeywords = $tr($halamanSolusi, 'SEOKeywords');
     $siteName = $websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk';
 @endphp
 
-@section('title', $solusiJudul . ' - ' . $siteName)
+@section('title', $solusiSeoTitle . ' - ' . $siteName)
 @section('meta_description', $solusiDesc)
+@if (!empty($solusiKeywords))
+    @section('meta_keywords', $solusiKeywords)
+@endif
 @if(!empty($halamanSolusi->Thumbnail))
     @section('og_image', asset('storage/' . $halamanSolusi->Thumbnail))
 @endif

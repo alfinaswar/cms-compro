@@ -455,11 +455,10 @@
                         </div>
                     </div>
 
-                    {{-- SEO (KHUSUS INDONESIA) --}}
+                    {{-- SEO (INDONESIA & ENGLISH) --}}
                     <div class="card shadow-sm border-0">
                         <div class="card-header bg-white border-bottom">
-                            <h5 class="mb-0"><i class="fa fa-search text-warning mr-2"></i><strong>Pengaturan SEO
-                                    (ID)</strong></h5>
+                            <h5 class="mb-0"><i class="fa fa-search text-warning mr-2"></i><strong>Pengaturan SEO</strong></h5>
                         </div>
                         <div class="card-body">
                             {{-- Preview Google --}}
@@ -476,28 +475,66 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label><strong>SEO Title</strong> <span class="float-right text-muted"
-                                        id="counterTitle">0/70</span></label>
-                                <input type="text" name="translations[id][SEOTitle]" id="inputSEOTitle"
-                                    class="form-control" maxlength="70"
-                                    value="{{ old('translations.id.SEOTitle', $data->translate('id')->SEOTitle ?? $data->SEOTitle) }}"
-                                    placeholder="Kosongkan untuk pakai Judul">
-                            </div>
+                            <ul class="nav nav-tabs justify-content-end mb-3" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-toggle="tab" href="#seo-id" role="tab">ID</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#seo-en" role="tab">EN</a>
+                                </li>
+                            </ul>
 
-                            <div class="form-group">
-                                <label><strong>Meta Description</strong> <span class="float-right text-muted"
-                                        id="counterDesc">0/160</span></label>
-                                <textarea name="translations[id][SEODescription]" id="inputSEODesc" class="form-control" rows="3"
-                                    maxlength="160" placeholder="Deskripsi untuk hasil pencarian Google">{{ old('translations.id.SEODescription', $data->translate('id')->SEODescription ?? $data->SEODescription) }}</textarea>
-                            </div>
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="seo-id" role="tabpanel">
+                                    <div class="form-group">
+                                        <label><strong>SEO Title (ID)</strong> <span class="float-right text-muted"
+                                                id="counterTitle">0/70</span></label>
+                                        <input type="text" name="translations[id][SEOTitle]" id="inputSEOTitle"
+                                            class="form-control" maxlength="70"
+                                            value="{{ old('translations.id.SEOTitle', $data->translate('id')->SEOTitle ?? $data->SEOTitle) }}"
+                                            placeholder="Kosongkan untuk pakai Judul">
+                                    </div>
 
-                            <div class="form-group mb-0">
-                                <label><strong>SEO Keywords</strong></label>
-                                <input type="text" name="translations[id][SEOKeywords]" class="form-control"
-                                    value="{{ old('translations.id.SEOKeywords', $data->translate('id')->SEOKeywords ?? $data->SEOKeywords) }}"
-                                    placeholder="solusi, inovasi, keyword...">
-                                <small class="text-muted">Pisahkan dengan koma.</small>
+                                    <div class="form-group">
+                                        <label><strong>Meta Description (ID)</strong> <span class="float-right text-muted"
+                                                id="counterDesc">0/160</span></label>
+                                        <textarea name="translations[id][SEODescription]" id="inputSEODesc" class="form-control" rows="3"
+                                            maxlength="160" placeholder="Deskripsi untuk hasil pencarian Google">{{ old('translations.id.SEODescription', $data->translate('id')->SEODescription ?? $data->SEODescription) }}</textarea>
+                                    </div>
+
+                                    <div class="form-group mb-0">
+                                        <label><strong>SEO Keywords (ID)</strong></label>
+                                        <input type="text" name="translations[id][SEOKeywords]" class="form-control"
+                                            value="{{ old('translations.id.SEOKeywords', $data->translate('id')->SEOKeywords ?? $data->SEOKeywords) }}"
+                                            placeholder="solusi, inovasi, keyword...">
+                                        <small class="text-muted">Pisahkan dengan koma.</small>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane fade" id="seo-en" role="tabpanel">
+                                    @php $enSolusi = $data->translate('en'); @endphp
+                                    <div class="form-group">
+                                        <label><strong>SEO Title (EN)</strong></label>
+                                        <input type="text" name="translations[en][SEOTitle]"
+                                            class="form-control" maxlength="70"
+                                            value="{{ old('translations.en.SEOTitle', $enSolusi?->SEOTitle) }}"
+                                            placeholder="Leave blank to use English Title">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label><strong>Meta Description (EN)</strong></label>
+                                        <textarea name="translations[en][SEODescription]" class="form-control" rows="3"
+                                            maxlength="160" placeholder="Meta description for Google search">{{ old('translations.en.SEODescription', $enSolusi?->SEODescription) }}</textarea>
+                                    </div>
+
+                                    <div class="form-group mb-0">
+                                        <label><strong>SEO Keywords (EN)</strong></label>
+                                        <input type="text" name="translations[en][SEOKeywords]" class="form-control"
+                                            value="{{ old('translations.en.SEOKeywords', $enSolusi?->SEOKeywords) }}"
+                                            placeholder="solution, innovation, keyword...">
+                                        <small class="text-muted">Separate with commas.</small>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

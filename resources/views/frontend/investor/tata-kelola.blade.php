@@ -992,9 +992,15 @@
 
                 // SCROLLSPY & ACTIVE LINK
                 const sidebarLinks = document.querySelectorAll('#sidebar-nav .sidebar-link');
-                const sections = document.querySelectorAll('section[id], div[id]');
+                const sections = Array.from(sidebarLinks)
+                    .map(link => {
+                        const href = link.getAttribute('href');
+                        return href && href.startsWith('#') ? document.querySelector(href) : null;
+                    })
+                    .filter(Boolean);
 
                 function setActiveLink(activeLink) {
+                    if (!activeLink) return;
                     sidebarLinks.forEach(link => {
                         link.classList.remove('active');
                         link.removeAttribute('aria-current');
@@ -1003,28 +1009,43 @@
                     activeLink.setAttribute('aria-current', 'true');
                 }
 
+                let isClickScrolling = false;
+                let scrollTimer = null;
+
                 sidebarLinks.forEach(link => {
                     link.addEventListener('click', function() {
+                        isClickScrolling = true;
                         setActiveLink(this);
+                        clearTimeout(scrollTimer);
+                        scrollTimer = setTimeout(() => { isClickScrolling = false; }, 700);
                     });
                 });
 
-                window.addEventListener('scroll', function() {
-                    let currentSectionId = '';
+                function updateActiveOnScroll() {
+                    if (isClickScrolling || sections.length === 0) return;
+
+                    const offset = 210;
+                    let currentSection = sections[0];
+
                     sections.forEach(section => {
-                        const sectionTop = section.offsetTop - 195;
-                        if (window.scrollY >= sectionTop) {
-                            currentSectionId = section.getAttribute('id');
+                        if (section.getBoundingClientRect().top <= offset) {
+                            currentSection = section;
                         }
                     });
-                    if (currentSectionId) {
-                        sidebarLinks.forEach(link => {
-                            if (link.getAttribute('href') === `#${currentSectionId}`) {
-                                setActiveLink(link);
-                            }
-                        });
+
+                    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 20) {
+                        currentSection = sections[sections.length - 1];
                     }
-                });
+
+                    const currentId = currentSection.getAttribute('id');
+                    const matchedLink = Array.from(sidebarLinks).find(
+                        link => link.getAttribute('href') === `#${currentId}`
+                    );
+                    if (matchedLink) setActiveLink(matchedLink);
+                }
+
+                window.addEventListener('scroll', updateActiveOnScroll, { passive: true });
+                updateActiveOnScroll();
             });
         </script>
     @endpush

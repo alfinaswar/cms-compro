@@ -9,15 +9,17 @@
         $siteLocale = app()->getLocale();
         $siteName = $websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk';
         $defaultTagline = $siteLocale === 'en'
-            ? 'Integrated Digital Identity & Security Document Solutions'
+            ? ($websiteSettings->TaglineWebsiteEn ?: 'Integrated Digital Identity & Security Document Solutions')
             : ($websiteSettings->TaglineWebsite ?? 'Transformasi Digital Identitas & Pembayaran Nasional');
         $defaultTitle = $siteName . ' - ' . $defaultTagline;
 
         $defaultDescription = $siteLocale === 'en'
-            ? 'PT Jasuindo Tiga Perkasa Tbk is a leading security printing, digital identity, and card personalization company in Southeast Asia.'
+            ? ($websiteSettings->DeskripsiSingkatEn ?: 'PT Jasuindo Tiga Perkasa Tbk is a leading security printing, digital identity, and card personalization company in Southeast Asia.')
             : ($websiteSettings->DeskripsiSingkat ?? 'Perusahaan percetakan keamanan dan teknologi identitas terkemuka di Indonesia untuk dokumen sekuriti, kartu pembayaran, dan solusi digital.');
 
-        $defaultKeywords = $websiteSettings->KataKunciSEO ?? 'Jasuindo, identity, payment, security printing, card personalization, digital certificate, e-passport';
+        $defaultKeywords = $siteLocale === 'en'
+            ? ($websiteSettings->KataKunciSEOEn ?: ($websiteSettings->KataKunciSEO ?? 'Jasuindo, identity, payment, security printing, card personalization, digital certificate, e-passport'))
+            : ($websiteSettings->KataKunciSEO ?? 'Jasuindo, identitas digital, pembayaran, percetakan sekuriti, personalisasi kartu, sertifikat digital, e-paspor');
         $pageAuthor = $websiteSettings->PenulisMeta ?? $siteName;
 
         $currentCanonical = request()->url();

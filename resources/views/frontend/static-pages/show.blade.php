@@ -3,15 +3,20 @@
 @php
     $displayJudul = $translation->Judul ?: $page->Label;
     $displayKonten = $translation->Konten ?: '';
+    $displaySeoTitle = $translation->SEOTitle ?: $displayJudul;
     $displayDesc = $translation->SEODescription ?: Str::limit(strip_tags($displayKonten), 160);
+    $displayKeywords = $translation->SEOKeywords;
     $wordCount = str_word_count(strip_tags($displayKonten));
     $readingTime = max(1, ceil($wordCount / 200));
     $breadcrumbs = [['title' => __('Home'), 'url' => \App\Services\LocalizedUrlService::route('frontend.main')], ['title' => $displayJudul, 'url' => null]];
     $shareUrl = url()->current();
 @endphp
 
-@section('title', $displayJudul . ' - ' . ($websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk'))
+@section('title', $displaySeoTitle . ' - ' . ($websiteSettings->NamaPerusahaan ?? 'PT Jasuindo Tiga Perkasa Tbk'))
 @section('meta_description', $displayDesc)
+@if (!empty($displayKeywords))
+    @section('meta_keywords', $displayKeywords)
+@endif
 
 @section('content-frontend')
     <section

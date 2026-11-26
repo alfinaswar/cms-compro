@@ -340,9 +340,10 @@
             });
 
             function resetIdle() {
+                var wasIdle = idleFired;
                 idleFired = false;
                 clearTimeout(timer);
-                if (window.Swal) Swal.close();
+                if (wasIdle && window.Swal) Swal.close();
                 timer = setTimeout(startLogout, timeoutMs);
             }
 

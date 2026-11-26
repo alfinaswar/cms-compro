@@ -96,6 +96,9 @@ class CustomPagesController extends Controller
             'translations.en.Judul' => 'nullable|string|max:255',
             'translations.en.DeskripsiSingkat' => 'nullable|string',
             'translations.en.Konten' => 'nullable|string',
+            'translations.en.SEOTitle' => 'nullable|string|max:70',
+            'translations.en.SEODescription' => 'nullable|string|max:255',
+            'translations.en.SEOKeywords' => 'nullable|string|max:255',
 
             'ParentId' => 'nullable|exists:custom_pages,id',
             'Slug' => 'nullable|string|max:255',
@@ -186,6 +189,9 @@ class CustomPagesController extends Controller
             'translations.en.Judul' => 'nullable|string|max:255',
             'translations.en.DeskripsiSingkat' => 'nullable|string',
             'translations.en.Konten' => 'nullable|string',
+            'translations.en.SEOTitle' => 'nullable|string|max:70',
+            'translations.en.SEODescription' => 'nullable|string|max:255',
+            'translations.en.SEOKeywords' => 'nullable|string|max:255',
 
             'ParentId' => 'nullable|exists:CustomPages,id',
             'Slug' => 'nullable|string|max:255',
