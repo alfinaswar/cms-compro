@@ -132,11 +132,24 @@
                                                     placeholder="Example: Integrated Digital Identity Solutions">
                                             </div>
                                         </div>
-                                        <div class="col-12">
+                                        <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Tentang Perusahaan</label>
-                                                <textarea name="TentangPerusahaan" class="form-control" rows="4"
+                                                <label>Tentang Perusahaan (ID)</label>
+                                                <textarea name="TentangPerusahaan" class="form-control @error('TentangPerusahaan') is-invalid @enderror" rows="4"
                                                     placeholder="Deskripsikan perusahaan secara singkat...">{{ old('TentangPerusahaan', $pengaturan->TentangPerusahaan) }}</textarea>
+                                                @error('TentangPerusahaan')
+                                                    <span class="error invalid-feedback">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Tentang Perusahaan (EN)</label>
+                                                <textarea name="TentangPerusahaanEn" class="form-control @error('TentangPerusahaanEn') is-invalid @enderror" rows="4"
+                                                    placeholder="Briefly describe the company (English)...">{{ old('TentangPerusahaanEn', $pengaturan->TentangPerusahaanEn) }}</textarea>
+                                                @error('TentangPerusahaanEn')
+                                                    <span class="error invalid-feedback">{{ $message }}</span>
+                                                @enderror
                                             </div>
                                         </div>
                                     </div>

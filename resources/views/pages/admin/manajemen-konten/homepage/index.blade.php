@@ -342,44 +342,6 @@
             </div>
 
             {{-- ============================================
-             HALAMAN SOLUSI
-             ============================================ --}}
-            <div class="card-modern border-accent-green">
-                <div class="card-header-modern">
-                    <div class="card-header-left">
-                        <div class="card-header-icon bg-green">
-                            <i class="fa fa-lightbulb"></i>
-                        </div>
-                        <div class="card-header-info">
-                            <h3>Daftar Halaman Solusi</h3>
-                            <p>Manajemen produk & layanan yang ditawarkan perusahaan.</p>
-                        </div>
-                    </div>
-                    @can('solusi.create')
-                    <a href="{{ route('halaman-solusi.create') }}" class="btn-modern btn-modern-primary">
-                        <i class="fa fa-plus"></i> Tambah Solusi
-                    </a>
-                    @endcan
-                </div>
-
-                <div class="card-body-table">
-                    {{-- ⚠️ STRUKTUR TABLE TIDAK DIUBAH --}}
-                    <table id="tableHalamanSolusi" class="table table-bordered table-striped" style="width: 100%;">
-                        <thead class="bg-light">
-                            <tr>
-                                <th style="width: 40px;">No</th>
-                                <th>Judul</th>
-                                <th>Slug</th>
-                                <th>Konten</th>
-                                <th style="width: 120px;">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-
-            {{-- ============================================
              LAPISAN KEAMANAN (SECURITY TIERS)
              ============================================ --}}
             <div class="card-modern border-accent-indigo">
@@ -637,91 +599,6 @@
                         });
                     }
                 });
-            });
-        });
-    </script>
-
-    {{-- SOLUSI --}}
-    <script>
-        $(document).ready(function() {
-            $('body').on('click', '.btn-delete', function() {
-                var id = $(this).data('id');
-                Swal.fire({
-                    title: 'Hapus Halaman Solusi?',
-                    text: "Data akan dihapus secara permanen.",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Ya, Hapus!',
-                    cancelButtonText: 'Batal',
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: '{{ route('halaman-solusi.destroy', ':id') }}'.replace(
-                                ':id', id),
-                            type: 'DELETE',
-                            data: {
-                                _token: '{{ csrf_token() }}'
-                            },
-                            success: function(response) {
-                                if (response.status === 200) {
-                                    Swal.fire('Dihapus!', response.message, 'success');
-                                    $('#tableHalamanSolusi').DataTable().ajax.reload();
-                                } else {
-                                    Swal.fire('Gagal!', response.message, 'error');
-                                }
-                            },
-                            error: function(xhr) {
-                                Swal.fire('Gagal!', xhr.responseJSON?.message ??
-                                    'Terjadi kesalahan.', 'error');
-                            }
-                        });
-                    }
-                });
-            });
-
-            $('#tableHalamanSolusi').DataTable({
-                responsive: true,
-                serverSide: true,
-                processing: true,
-                bDestroy: true,
-                ajax: {
-                    url: "{{ route('halaman-solusi.index') }}"
-                },
-                language: {
-                    processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>',
-                    paginate: {
-                        next: '>>',
-                        previous: '<<'
-                    }
-                },
-                columns: [{
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex',
-                        orderable: false,
-                        searchable: false
-                    },
-                    {
-                        data: 'Judul',
-                        name: 'Judul'
-                    },
-                    {
-                        data: 'Slug',
-                        name: 'Slug'
-                    },
-                    {
-                        data: 'Konten',
-                        name: 'Konten',
-                        orderable: false,
-                        searchable: false
-                    },
-                    {
-                        data: 'action',
-                        name: 'action',
-                        orderable: false,
-                        searchable: false
-                    }
-                ]
             });
         });
     </script>

@@ -39,9 +39,10 @@
                             <thead class="bg-light">
                                 <tr>
                                     <th style="width: 5%" class="text-center">No</th>
-                                    <th style="width: 45%">Nama Kategori</th>
-                                    <th style="width: 30%">Slug</th>
-                                    <th style="width: 20%" class="text-center">Aksi</th>
+                                    <th style="width: 30%">Nama Kategori (ID)</th>
+                                    <th style="width: 25%">Nama Kategori (EN)</th>
+                                    <th style="width: 25%">Slug</th>
+                                    <th style="width: 15%" class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -54,7 +55,7 @@
 
     <!-- ==================== MODAL CREATE ==================== -->
     <div class="modal fade" id="modalCreateKategori" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title mb-0">
@@ -67,8 +68,8 @@
                 <form id="formCreateKategori">
                     @csrf
                     <div class="modal-body">
-                        <div class="form-group mb-0">
-                            <label for="create_kategori_nama">Nama Kategori <span class="text-danger">*</span></label>
+                        <div class="form-group">
+                            <label for="create_kategori_nama">Nama Kategori (ID) <span class="text-danger">*</span></label>
                             <input type="text" id="create_kategori_nama" name="NamaKategori"
                                 class="form-control @error('NamaKategori') is-invalid @enderror"
                                 placeholder="Contoh: Perusahaan, Produk, Event" required autofocus>
@@ -76,6 +77,13 @@
                             <small class="text-muted mt-1 d-block">
                                 <i class="fa fa-info-circle"></i> Nama kategori harus unik.
                             </small>
+                        </div>
+                        <div class="form-group mb-0">
+                            <label for="create_kategori_nama_en">Nama Kategori (EN)</label>
+                            <input type="text" id="create_kategori_nama_en" name="NamaKategoriEn"
+                                class="form-control"
+                                placeholder="Example: Corporate, Products, Event">
+                            <small class="text-muted mt-1 d-block">Opsional. Kosongkan untuk fallback ke Bahasa Indonesia.</small>
                         </div>
                     </div>
                     <div class="modal-footer justify-content-between">
@@ -93,7 +101,7 @@
 
     <!-- ==================== MODAL EDIT ==================== -->
     <div class="modal fade" id="modalEditKategori" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-warning text-white">
                     <h5 class="modal-title mb-0">
@@ -107,10 +115,15 @@
                     @csrf @method('PUT')
                     <div class="modal-body">
                         <input type="hidden" id="edit_kategori_id" name="id">
-                        <div class="form-group mb-0">
-                            <label for="edit_kategori_nama">Nama Kategori <span class="text-danger">*</span></label>
+                        <div class="form-group">
+                            <label for="edit_kategori_nama">Nama Kategori (ID) <span class="text-danger">*</span></label>
                             <input type="text" id="edit_kategori_nama" name="NamaKategori" class="form-control" required>
                             <span id="edit_error_msg" class="invalid-feedback d-block" style="display:none;"></span>
+                        </div>
+                        <div class="form-group mb-0">
+                            <label for="edit_kategori_nama_en">Nama Kategori (EN)</label>
+                            <input type="text" id="edit_kategori_nama_en" name="NamaKategoriEn" class="form-control" placeholder="Example: Corporate, Products, Event">
+                            <small class="text-muted mt-1 d-block">Opsional. Kosongkan untuk fallback ke Bahasa Indonesia.</small>
                         </div>
                     </div>
                     <div class="modal-footer justify-content-between">
@@ -160,6 +173,13 @@
                         name: 'NamaKategori',
                         render: function(data) {
                             return '<strong>' + data + '</strong>';
+                        }
+                    },
+                    {
+                        data: 'NamaKategoriEn',
+                        name: 'NamaKategoriEn',
+                        render: function(data) {
+                            return data ? data : '<span class="text-muted">-</span>';
                         }
                     },
                     {
@@ -261,9 +281,11 @@
             $('body').on('click', '.btn-edit', function() {
                 var id = $(this).data('id');
                 var nama = $(this).data('nama');
+                var namaEn = $(this).data('nama-en') || '';
 
                 $('#edit_kategori_id').val(id);
                 $('#edit_kategori_nama').val(nama);
+                $('#edit_kategori_nama_en').val(namaEn);
                 $('#edit_error_msg').hide().text('');
                 $('#edit_kategori_nama').removeClass('is-invalid');
                 $('#modalEditKategori').modal('show');

@@ -262,6 +262,9 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
         Route::post('/berita/upload-image/', [BeritaController::class, 'uploadImage'])->name('berita.upload-image');
         Route::post('/berita/kategori/store-ajax/', [BeritaController::class, 'storeKategoriAjax'])
             ->name('berita.store-ajax');
+        Route::resource('banner', \App\Http\Controllers\NewsBannerController::class)
+            ->except(['create', 'show', 'edit'])
+            ->names('news-banner');
     });
     Route::prefix('buat-halaman')->group(function () {
         Route::get('/custom-pages/', [CustomPagesController::class, 'index'])->name('custom-pages.index');

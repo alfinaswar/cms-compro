@@ -4,6 +4,20 @@
     $trans = $news->translate($locale) ?? ($news->translate('id') ?? $news->translations->first());
     $displayJudul = $trans?->Judul ?: ($news->Judul ?: __('News'));
     $displayKonten = $trans?->Konten ?: ($news->Konten ?: '');
+    if (!empty($displayKonten) && !empty($displayJudul)) {
+        $safeAlt = e($displayJudul);
+        $displayKonten = preg_replace_callback('/<img\b([^>]*)>/i', function ($m) use ($safeAlt) {
+            $attrs = $m[1];
+            if (preg_match('/\balt\s*=\s*(["\'])(.*?)\1/i', $attrs, $altMatch)) {
+                if (trim($altMatch[2]) !== '') {
+                    return $m[0];
+                }
+                $attrs = preg_replace('/\balt\s*=\s*(["\']).*?\1/i', 'alt="' . $safeAlt . '"', $attrs, 1);
+                return '<img' . $attrs . '>';
+            }
+            return '<img alt="' . $safeAlt . '"' . $attrs . '>';
+        }, $displayKonten);
+    }
     $displayDesc = $trans?->SEODescription ?: ($news->SEODescription ?: Str::limit(strip_tags($displayKonten), 160));
     $displaySeoTitle = $trans?->SEOTitle ?: ($news->SEOTitle ?: $displayJudul);
     $displaySeoKeywords = $trans?->SEOKeywords ?: $news->SEOKeywords;
@@ -127,7 +141,7 @@
                                 @if ($news->kategori)
                                     <a href="{{ route($newsRoute, ['locale' => $locale, 'kategori' => $news->kategori->NamaKategori]) }}"
                                         class="px-2 py-1 bg-brand-50 text-brand-700 text-xs font-semibold rounded hover:bg-brand-100 transition-colors">
-                                        {{ $news->kategori->NamaKategori }}
+                                        {{ $news->kategori->getDisplayName($locale) }}
                                     </a>
                                 @endif
                             </div>
@@ -327,16 +341,34 @@
 
                         </div>
 
+                        @if (!empty($newsBanners) && $newsBanners->count())
+                            @foreach ($newsBanners as $banner)
+                                <div class="bg-white rounded-xl p-3 border border-slate-200 shadow-sm">
+                                    @if (!empty($banner->LinkUrl))
+                                        <a href="{{ $banner->LinkUrl }}" target="_blank" rel="noopener noreferrer" class="block">
+                                            <img src="{{ asset('storage/' . $banner->ImagePath) }}"
+                                                alt="{{ $banner->Title ?: 'Banner' }}"
+                                                class="w-full max-h-[280px] object-contain mx-auto rounded-lg">
+                                        </a>
+                                    @else
+                                        <img src="{{ asset('storage/' . $banner->ImagePath) }}"
+                                            alt="{{ $banner->Title ?: 'Banner' }}"
+                                            class="w-full max-h-[280px] object-contain mx-auto rounded-lg">
+                                    @endif
+                                </div>
+                            @endforeach
+                        @endif
+
                         <!-- Categories Widget -->
                         <div class="bg-white rounded-xl p-6 border border-slate-200">
                             <h3 class="text-lg font-bold text-slate-900 mb-4">{{ __('Categories') }}</h3>
                             <ul class="space-y-2">
                                 @foreach ($categories as $category)
                                     <li>
-                                        <a href="{{ route($newsRoute, ['locale' => $locale, 'kategori' => $category]) }}"
+                                        <a href="{{ route($newsRoute, ['locale' => $locale, 'kategori' => $category->NamaKategori]) }}"
                                             class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-slate-50 transition-colors group">
                                             <span
-                                                class="text-slate-700 group-hover:text-brand-600">{{ __($category) }}</span>
+                                                class="text-slate-700 group-hover:text-brand-600">{{ $category->getDisplayName($locale) }}</span>
                                             <i
                                                 class="fa-solid fa-chevron-right text-xs text-slate-400 group-hover:text-brand-600"></i>
                                         </a>

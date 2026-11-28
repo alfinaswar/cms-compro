@@ -195,26 +195,28 @@
                                 </div>
 
                                 {{-- GAMBAR (TIDAK di-translate, single file) --}}
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>Gambar</label>
-                                            <input type="file" name="sections[{{ $id }}][Gambar]"
-                                                class="form-control-file" accept="image/*">
-                                            <small class="text-muted">Opsional. Maks. 2MB. (Gambar sama untuk semua
-                                                bahasa)</small>
-                                            @if (
-                                                !empty($about->Gambar) &&
-                                                    !str_contains($about->Gambar, 'fa-') &&
-                                                    \Illuminate\Support\Facades\Storage::disk('public')->exists($about->Gambar))
-                                                <div class="mt-2">
-                                                    <img src="{{ asset('storage/' . $about->Gambar) }}"
-                                                        class="img-thumbnail" style="max-height: 120px;" alt="Preview">
-                                                </div>
-                                            @endif
+                                @if (!in_array($config['key'] ?? null, ['hero', 'profil', 'csr'], true))
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Gambar</label>
+                                                <input type="file" name="sections[{{ $id }}][Gambar]"
+                                                    class="form-control-file" accept="image/*">
+                                                <small class="text-muted">Opsional. Maks. 2MB. (Gambar sama untuk semua
+                                                    bahasa)</small>
+                                                @if (
+                                                    !empty($about->Gambar) &&
+                                                        !str_contains($about->Gambar, 'fa-') &&
+                                                        \Illuminate\Support\Facades\Storage::disk('public')->exists($about->Gambar))
+                                                    <div class="mt-2">
+                                                        <img src="{{ asset('storage/' . $about->Gambar) }}"
+                                                            class="img-thumbnail" style="max-height: 120px;" alt="Preview">
+                                                    </div>
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                @endif
 
                                 {{-- META fields (Video & Quote) --}}
                                 @if ($isMeta)

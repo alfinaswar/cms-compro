@@ -88,10 +88,16 @@
                                     : $slider->Deskripsi;
                             $hTeksCTA =
                                 $locale === 'en' && !empty($slider->TeksCTAEn) ? $slider->TeksCTAEn : $slider->TeksCTA;
+                            $hLinkCTA =
+                                $locale === 'en' && !empty($slider->LinkCTAEn) ? $slider->LinkCTAEn : $slider->LinkCTA;
                             $hTeksCTA2 =
                                 $locale === 'en' && !empty($slider->TeksCTA2En)
                                     ? $slider->TeksCTA2En
                                     : $slider->TeksCTA2;
+                            $hLinkCTA2 =
+                                $locale === 'en' && !empty($slider->LinkCTA2En)
+                                    ? $slider->LinkCTA2En
+                                    : $slider->LinkCTA2;
                         @endphp
 
                         <div
@@ -172,8 +178,8 @@
                                         </p>
                                     @endif
                                     <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                                        @if (!empty($hTeksCTA) && !empty($slider->LinkCTA))
-                                            <a href="{{ $slider->LinkCTA }}"
+                                        @if (!empty($hTeksCTA) && !empty($hLinkCTA))
+                                            <a href="{{ $hLinkCTA }}"
                                                 class="inline-flex justify-center items-center px-8 py-4 text-base font-bold text-white transition-all duration-200 bg-slate-600 rounded-xl hover:bg-slate-500 hover:shadow-lg hover:shadow-slate-500/30 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-600 focus:ring-offset-slate-900">
                                                 {!! $hTeksCTA !!}
                                                 @if (Str::contains(strtolower($hTeksCTA), 'solusi') || Str::contains(strtolower($hTeksCTA), 'solution'))
@@ -181,8 +187,8 @@
                                                 @endif
                                             </a>
                                         @endif
-                                        @if (!empty($hTeksCTA2) && !empty($slider->LinkCTA2))
-                                            <a href="{{ $slider->LinkCTA2 }}"
+                                        @if (!empty($hTeksCTA2) && !empty($hLinkCTA2))
+                                            <a href="{{ $hLinkCTA2 }}"
                                                 class="inline-flex justify-center items-center px-8 py-4 text-base font-bold text-white transition-all duration-200 bg-transparent border-2 border-slate-600 rounded-xl hover:bg-white/10 hover:border-white focus:outline-none">
                                                 {!! $hTeksCTA2 !!}
                                             </a>

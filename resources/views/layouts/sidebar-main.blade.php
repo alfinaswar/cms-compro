@@ -116,6 +116,7 @@
                         $newsMenuActive =
                             request()->is('admin/publikasi-dan-berita*') ||
                             request()->routeIs('berita.*') ||
+                            request()->routeIs('news-banner.*') ||
                             request()->is('admin/data-master/kategori-berita*') ||
                             request()->routeIs('kategori-berita.*');
                     @endphp
@@ -154,6 +155,16 @@
                                         class="nav-link {{ request()->routeIs('kategori-berita.*') || request()->is('admin/data-master/kategori-berita*') ? 'active' : '' }}">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Kategori</p>
+                                    </a>
+                                </li>
+                            @endcan
+
+                            @can('berita.view')
+                                <li class="nav-item">
+                                    <a href="{{ route('news-banner.index') }}"
+                                        class="nav-link {{ request()->routeIs('news-banner.*') || request()->is('admin/publikasi-dan-berita/banner*') ? 'active' : '' }}">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Banner Artikel</p>
                                     </a>
                                 </li>
                             @endcan

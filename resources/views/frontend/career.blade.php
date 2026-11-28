@@ -328,7 +328,7 @@
                                     </span>
                                     <span class="inline-flex items-center">
                                         <i class="fa-regular fa-calendar mr-1.5 text-brand-500"></i>
-                                        {{ __('Posted') }} {{ $lowongan->BatasWaktuFormatted }}
+                                        {{ __('Posted') }} {{ $lowongan->created_at ? $lowongan->created_at->translatedFormat('j F Y') : $lowongan->BatasWaktuFormatted }}
                                     </span>
                                 </div>
                             </div>
@@ -344,14 +344,12 @@
                                 <div class="text-sm font-bold text-slate-900">
                                     @php
                                         $daysLeft = $lowongan->BatasWaktu
-                                            ? \Carbon\Carbon::now()->diffInDays(
-                                                \Carbon\Carbon::parse($lowongan->BatasWaktu),
+                                            ? (int) \Carbon\Carbon::today()->diffInDays(
+                                                \Carbon\Carbon::parse($lowongan->BatasWaktu)->startOfDay(),
                                                 false,
                                             )
                                             : 999;
                                     @endphp
-                                    {{-- hanya tampilkan angka hari --}}
-                                    <span>{{ $daysLeft }} hari</span>
 
                                     @if ($lowongan->masih_berlaku)
                                         @if ($daysLeft <= 7)

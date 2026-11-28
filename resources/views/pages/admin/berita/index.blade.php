@@ -270,7 +270,7 @@
                     },
                     {
                         data: 'TanggalPublikasi',
-                        name: 'created_at',
+                        name: 'TanggalPublikasi',
                         orderable: true // bisa sort
                     },
                     {
@@ -310,7 +310,7 @@
             });
 
             // Trigger Pencarian Custom Input
-            $('#customSearch').keyup(function() {
+            $('#customSearch').on('input', function() {
                 table.search($(this).val()).draw();
             });
 

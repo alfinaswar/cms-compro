@@ -75,12 +75,6 @@
                                         @enderror
                                     </div>
 
-                                    <div class="form-group">
-                                        <label><strong>Ringkasan (Excerpt)</strong></label>
-                                        <textarea name="Ringkasan" class="form-control" rows="3"
-                                            placeholder="Tulis ringkasan singkat berita (1-2 kalimat)...">{{ old('Ringkasan', $berita->translate('id')->Ringkasan) }}</textarea>
-                                    </div>
-
                                     {{-- ✅ SESUAI PERMINTAAN: name="Konten" dan id="summernote" --}}
                                     <div class="form-group">
                                         <label><strong>Konten Lengkap</strong> <span class="text-danger">*</span></label>
@@ -109,12 +103,6 @@
                                         @enderror
                                     </div>
 
-                                    <div class="form-group">
-                                        <label><strong>Summary (Excerpt)</strong></label>
-                                        <textarea name="translations[en][Ringkasan]" class="form-control" rows="3"
-                                            placeholder="Write a brief summary (1-2 sentences)...">{{ old('translations.en.Ringkasan', $berita->translate('en')->Ringkasan) }}</textarea>
-                                    </div>
-
                                     {{-- ✅ UNTUK INGGRIS: name="translations[en][Konten]" dan id="summernoteEN" --}}
                                     <div class="form-group">
                                         <label><strong>Full Content</strong></label>
@@ -141,6 +129,8 @@
                                                 <option value="">-- Pilih Kategori --</option>
                                                 @foreach ($kategoris as $kat)
                                                     <option value="{{ $kat->id }}"
+                                                        data-nama-id="{{ $kat->NamaKategori }}"
+                                                        data-nama-en="{{ $kat->NamaKategoriEn ?: $kat->NamaKategori }}"
                                                         {{ old('Kategori', $berita->Kategori) == $kat->id ? 'selected' : '' }}>
                                                         {{ $kat->NamaKategori }}
                                                     </option>
@@ -396,9 +386,20 @@
 @endsection
 
 @push('scripts')
+    @if (Session::get('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ Session::get('success') }}',
+                iconColor: '#4BCC1F',
+                confirmButtonColor: '#4BCC1F'
+            });
+        </script>
+    @endif
+
     <script src="{{ asset('assets/plugins/summernote/summernote-bs4.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/select2/js/select2.full.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         $.ajaxSetup({
@@ -472,11 +473,30 @@
             }
 
             // ========== 4. FITUR LAINNYA ==========
-            $('#selectKategori').select2({
-                theme: 'bootstrap4',
-                placeholder: '-- Pilih Kategori --',
-                allowClear: true
-            });
+            function initSelectKategori(placeholderText) {
+                $('#selectKategori').select2({
+                    theme: 'bootstrap4',
+                    placeholder: placeholderText || '-- Pilih Kategori --',
+                    allowClear: true
+                });
+            }
+            initSelectKategori('-- Pilih Kategori --');
+
+            function switchCategoryLocale(locale) {
+                var $sel = $('#selectKategori');
+                var currentVal = $sel.val();
+                $sel.find('option[data-nama-id]').each(function() {
+                    var label = locale === 'en' ? $(this).data('nama-en') : $(this).data('nama-id');
+                    $(this).text(label);
+                });
+                if ($sel.hasClass('select2-hidden-accessible')) {
+                    $sel.select2('destroy');
+                }
+                $sel.val(currentVal);
+                initSelectKategori(locale === 'en' ? '-- Select Category --' : '-- Pilih Kategori --');
+            }
+            $('#tab-id-tab').on('shown.bs.tab', function() { switchCategoryLocale('id'); });
+            $('#tab-en-tab').on('shown.bs.tab', function() { switchCategoryLocale('en'); });
 
             // SEO Preview Real-time (Mengacu ke Judul Indonesia)
             function updateSEOPreview() {
@@ -518,8 +538,15 @@
                     dataType: 'json',
                     success: function(response) {
                         if (response.status === 200) {
-                            var newOption = new Option(response.data.NamaKategori, response.data
-                                .NamaKategori, false, true);
+                            var activeLocale = $('#tab-en-tab').hasClass('active') ? 'en' : 'id';
+                            var namaId = response.data.NamaKategori;
+                            var namaEn = response.data.NamaKategoriEn || namaId;
+                            var displayNama = activeLocale === 'en' ? namaEn : namaId;
+                            var newOption = $('<option>', {
+                                value: response.data.id,
+                                text: displayNama,
+                                selected: true
+                            }).attr('data-nama-id', namaId).attr('data-nama-en', namaEn);
                             $('#selectKategori').append(newOption).trigger('change');
                             input.val('');
                             $('#modalTambahKategori').modal('hide');

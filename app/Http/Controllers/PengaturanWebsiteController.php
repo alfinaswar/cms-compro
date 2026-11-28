@@ -79,6 +79,7 @@ class PengaturanWebsiteController extends Controller
             'DeskripsiSingkat' => 'nullable|string|max:500',
             'DeskripsiSingkatEn' => 'nullable|string|max:500',
             'TentangPerusahaan' => 'nullable|string',
+            'TentangPerusahaanEn' => 'nullable|string',
             // Branding
             'WarnaUtama' => 'nullable|string|size:7',
             'WarnaSekunder' => 'nullable|string|size:7',

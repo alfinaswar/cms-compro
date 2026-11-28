@@ -86,7 +86,8 @@ class HeroSliderController extends Controller
      */
     public function create()
     {
-        return view('pengaturan.landing-page.hero-slider.create');
+        $nextUrutan = (HeroSlider::max('Urutan') ?? 0) + 1;
+        return view('pengaturan.landing-page.hero-slider.create', compact('nextUrutan'));
     }
 
     /**
@@ -97,8 +98,8 @@ class HeroSliderController extends Controller
         $request->validate([
             'SubJudul' => 'nullable|string|max:255',
             'SubJudulEn' => 'nullable|string|max:255',
-            'JudulUtama' => 'required_with:JudulUtamaEn|string|max:255',
-            'JudulUtamaEn' => 'required_with:JudulUtama|string|max:255',
+            'JudulUtama' => 'required|string|max:255',
+            'JudulUtamaEn' => 'nullable|string|max:255',
             'Highlight' => 'nullable|string|max:255',
             'HighlightEn' => 'nullable|string|max:255',
             'TeksPenuh' => 'nullable|string|max:255',
@@ -112,13 +113,14 @@ class HeroSliderController extends Controller
             'TeksCTA' => 'nullable|string|max:100',
             'TeksCTAEn' => 'nullable|string|max:100',
             'LinkCTA' => 'nullable|url|max:255',
+            'LinkCTAEn' => 'nullable|url|max:255',
             'TeksCTA2' => 'nullable|string|max:100',
             'TeksCTA2En' => 'nullable|string|max:100',
             'LinkCTA2' => 'nullable|url|max:255',
+            'LinkCTA2En' => 'nullable|url|max:255',
             'Status' => 'nullable|boolean',
         ], [
-            'JudulUtama.required_with' => 'Judul Utama (Bahasa Indonesia) wajib diisi.',
-            'JudulUtamaEn.required_with' => 'Main Title (English) wajib diisi.',
+            'JudulUtama.required' => 'Judul Utama (Bahasa Indonesia) wajib diisi.',
         ]);
 
         $data = [
@@ -136,9 +138,11 @@ class HeroSliderController extends Controller
             'TeksCTA' => $request->TeksCTA,
             'TeksCTAEn' => $request->TeksCTAEn,
             'LinkCTA' => $request->LinkCTA,
+            'LinkCTAEn' => $request->LinkCTAEn,
             'TeksCTA2' => $request->TeksCTA2,
             'TeksCTA2En' => $request->TeksCTA2En,
             'LinkCTA2' => $request->LinkCTA2,
+            'LinkCTA2En' => $request->LinkCTA2En,
             'Status' => $request->Status ? 1 : 0,
             'Urutan' => $request->Urutan ?? ((HeroSlider::max('Urutan') ?? 0) + 1),
             'UserCreate' => auth()->user()?->name,
@@ -202,8 +206,8 @@ class HeroSliderController extends Controller
             'TipeMedia' => 'required|in:image,video',
             'SubJudul' => 'nullable|string|max:255',
             'SubJudulEn' => 'nullable|string|max:255',
-            'JudulUtama' => 'required_with:JudulUtamaEn|string|max:255',
-            'JudulUtamaEn' => 'required_with:JudulUtama|string|max:255',
+            'JudulUtama' => 'required|string|max:255',
+            'JudulUtamaEn' => 'nullable|string|max:255',
             'Highlight' => 'nullable|string|max:255',
             'HighlightEn' => 'nullable|string|max:255',
             'TeksPenuh' => 'nullable|string|max:255',
@@ -216,14 +220,15 @@ class HeroSliderController extends Controller
             'TeksCTA' => 'nullable|string|max:100',
             'TeksCTAEn' => 'nullable|string|max:100',
             'LinkCTA' => 'nullable|url|max:255',
+            'LinkCTAEn' => 'nullable|url|max:255',
             'TeksCTA2' => 'nullable|string|max:100',
             'TeksCTA2En' => 'nullable|string|max:100',
             'LinkCTA2' => 'nullable|url|max:255',
+            'LinkCTA2En' => 'nullable|url|max:255',
             'Urutan' => 'required|integer|min:1',
             'Status' => 'nullable|boolean',
         ], [
-            'JudulUtama.required_with' => 'Judul Utama (Bahasa Indonesia) wajib diisi.',
-            'JudulUtamaEn.required_with' => 'Main Title (English) wajib diisi.',
+            'JudulUtama.required' => 'Judul Utama (Bahasa Indonesia) wajib diisi.',
         ]);
 
         $heroSlider = HeroSlider::findOrFail($id);
@@ -275,9 +280,11 @@ class HeroSliderController extends Controller
             'TeksCTA' => $request->TeksCTA,
             'TeksCTAEn' => $request->TeksCTAEn,
             'LinkCTA' => $request->LinkCTA,
+            'LinkCTAEn' => $request->LinkCTAEn,
             'TeksCTA2' => $request->TeksCTA2,
             'TeksCTA2En' => $request->TeksCTA2En,
             'LinkCTA2' => $request->LinkCTA2,
+            'LinkCTA2En' => $request->LinkCTA2En,
             'Urutan' => $request->Urutan,
             'Status' => $request->Status ? 1 : 0,
             'UserUpdate' => auth()->check() ? auth()->user()->name : 'System',

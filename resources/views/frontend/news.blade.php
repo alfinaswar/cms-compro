@@ -116,7 +116,7 @@
                                         {{ $item->TanggalPublikasi ? \Carbon\Carbon::parse($item->TanggalPublikasi)->isoFormat('D MMM, Y') : '-' }}
                                     </span>
                                     <span class="px-2 py-1 bg-brand-50 text-brand-700 text-xs font-semibold rounded">
-                                        {{ $item->kategori->NamaKategori }}
+                                        {{ $item->kategori->getDisplayName($newsLocale) }}
                                     </span>
                                 </div>
 
@@ -179,6 +179,24 @@
                             </form>
                         </div>
 
+                        @if (!empty($newsBanners) && $newsBanners->count())
+                            @foreach ($newsBanners as $banner)
+                                <div class="bg-white rounded-xl p-3 border border-slate-200 shadow-sm">
+                                    @if (!empty($banner->LinkUrl))
+                                        <a href="{{ $banner->LinkUrl }}" target="_blank" rel="noopener noreferrer" class="block">
+                                            <img src="{{ asset('storage/' . $banner->ImagePath) }}"
+                                                alt="{{ $banner->Title ?: 'Banner' }}"
+                                                class="w-full max-h-[280px] object-contain mx-auto rounded-lg">
+                                        </a>
+                                    @else
+                                        <img src="{{ asset('storage/' . $banner->ImagePath) }}"
+                                            alt="{{ $banner->Title ?: 'Banner' }}"
+                                            class="w-full max-h-[280px] object-contain mx-auto rounded-lg">
+                                    @endif
+                                </div>
+                            @endforeach
+                        @endif
+
                         <!-- Categories Widget -->
                         <div class="bg-white rounded-xl p-6 border border-slate-200">
                             <h3 class="text-lg font-bold text-slate-900 mb-4">{{ __('Categories') }}</h3>
@@ -186,10 +204,10 @@
                                 @foreach ($categories as $category)
                                     <li>
                                         <!-- ✅ PERBAIKAN 6: Gunakan route() dengan parameter query -->
-                                        <a href="{{ \App\Services\LocalizedUrlService::route('frontend.news', ['kategori' => $category], $newsLocale) }}"
+                                        <a href="{{ \App\Services\LocalizedUrlService::route('frontend.news', ['kategori' => $category->NamaKategori], $newsLocale) }}"
                                             class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-slate-50 transition-colors group">
                                             <span
-                                                class="text-slate-700 group-hover:text-brand-600">{{ $category }}</span>
+                                                class="text-slate-700 group-hover:text-brand-600">{{ $category->getDisplayName($newsLocale) }}</span>
                                             <i
                                                 class="fa-solid fa-chevron-right text-xs text-slate-400 group-hover:text-brand-600"></i>
                                         </a>

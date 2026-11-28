@@ -199,8 +199,12 @@
                                 : $slider->TeksPenuh;
                         $hTeksCTA =
                             $locale === 'en' && !empty($slider->TeksCTAEn) ? $slider->TeksCTAEn : $slider->TeksCTA;
+                        $hLinkCTA =
+                            $locale === 'en' && !empty($slider->LinkCTAEn) ? $slider->LinkCTAEn : $slider->LinkCTA;
                         $hTeksCTA2 =
                             $locale === 'en' && !empty($slider->TeksCTA2En) ? $slider->TeksCTA2En : $slider->TeksCTA2;
+                        $hLinkCTA2 =
+                            $locale === 'en' && !empty($slider->LinkCTA2En) ? $slider->LinkCTA2En : $slider->LinkCTA2;
                     @endphp
 
                     <div
@@ -228,6 +232,14 @@
 
                             <div class="max-w-6xl mx-auto text-center animate-fade-in-up">
 
+                                @if (!empty($hSubJudul))
+                                    <span
+                                        class="inline-block py-1.5 px-4 rounded-full bg-white/10 text-slate-100 text-sm font-semibold tracking-wide mb-6 border border-white/20 backdrop-blur-sm">
+                                        <i class="fa-solid fa-star mr-2 text-yellow-400"></i>
+                                        {{ $hSubJudul }}
+                                    </span>
+                                @endif
+
                                 <h1 class="text-[60px] md:text-6xl font-extrabold text-white leading-tight mb-6">
                                     @php
                                         $judulParts = explode(',', $hJudul, 2);
@@ -242,17 +254,16 @@
                                             {{ trim($judulParts[1]) }}
                                         </span>
                                     @endif
-                                </h1>
 
-                                @if (!empty($hHighlight))
-                                    <br>
-                                    <span class="text-brand-400">
-                                        {{ $hHighlight }}
-                                    </span>
-                                @endif
-                                @if (!empty($hTeksPenuh))
-                                    <span> {{ $hTeksPenuh }} </span>
-                                @endif
+                                    @if (!empty($hHighlight))
+                                        <br>
+                                        <span class="text-brand-400">
+                                            {{ $hHighlight }}
+                                        </span>
+                                    @endif
+                                    @if (!empty($hTeksPenuh))
+                                        <span> {{ $hTeksPenuh }} </span>
+                                    @endif
                                 </h1>
 
                                 @if (!empty($hDeskripsi))
@@ -264,8 +275,8 @@
 
                                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
 
-                                    @if (!empty($hTeksCTA) && !empty($slider->LinkCTA))
-                                        <a href="{{ $slider->LinkCTA }}"
+                                    @if (!empty($hTeksCTA) && !empty($hLinkCTA))
+                                        <a href="{{ $hLinkCTA }}"
                                             class="inline-flex justify-center items-center px-[15px] py-[8px] text-sm font-normal text-white bg-brand-600 hover:bg-brand-500 rounded-full transition-all shadow-lg shadow-brand-600/30">
 
                                             {!! $hTeksCTA !!}
@@ -274,8 +285,8 @@
                                         </a>
                                     @endif
 
-                                    @if (!empty($hTeksCTA2) && !empty($slider->LinkCTA2))
-                                        <a href="{{ $slider->LinkCTA2 }}"
+                                    @if (!empty($hTeksCTA2) && !empty($hLinkCTA2))
+                                        <a href="{{ $hLinkCTA2 }}"
                                             class="inline-flex justify-center items-center  px-[15px] py-[8px] text-sm font-normal text-white border-2 border-white/60 hover:bg-white/10 rounded-lg transition-all">
 
                                             {!! $hTeksCTA2 !!}

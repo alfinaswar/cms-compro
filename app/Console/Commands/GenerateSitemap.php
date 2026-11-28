@@ -219,12 +219,67 @@ class GenerateSitemap extends Command
             }
         }
 
-        // Simpan sitemap.xml ke public folder
-        $sitemap->writeToFile(public_path('sitemap.xml'));
+        // Simpan sitemap.xml ke public folder dengan format XML standar yang rapi
+        $this->writeFormattedXml($sitemap, public_path('sitemap.xml'));
 
         $this->info('✅ Sitemap berhasil di-generate: ' . public_path('sitemap.xml'));
         $this->info('📊 Total URL: ' . count($sitemap->getTags()));
 
         return Command::SUCCESS;
+    }
+
+    /**
+     * Tulis sitemap ke file XML dengan indentasi rapi dan schema standar sitemaps.org.
+     */
+    protected function writeFormattedXml(Sitemap $sitemap, string $path): void
+    {
+        $xml = new \XMLWriter();
+        $xml->openMemory();
+        $xml->setIndent(true);
+        $xml->setIndentString('  ');
+        $xml->startDocument('1.0', 'UTF-8');
+
+        $xml->startElement('urlset');
+        $xml->writeAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
+        $xml->writeAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+        $xml->writeAttribute('xmlns:xhtml', 'http://www.w3.org/1999/xhtml');
+        $xml->writeAttribute(
+            'xsi:schemaLocation',
+            'http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd'
+        );
+
+        foreach ($sitemap->getTags() as $tag) {
+            if (!$tag instanceof Url) {
+                continue;
+            }
+
+            $xml->startElement('url');
+            $xml->writeElement('loc', $tag->url);
+
+            if ($tag->lastModificationDate instanceof DateTimeInterface) {
+                $xml->writeElement('lastmod', $tag->lastModificationDate->format('c'));
+            }
+            if (!empty($tag->changeFrequency)) {
+                $xml->writeElement('changefreq', $tag->changeFrequency);
+            }
+            if ($tag->priority !== null) {
+                $xml->writeElement('priority', number_format((float) $tag->priority, 2, '.', ''));
+            }
+
+            foreach ($tag->alternates as $alternate) {
+                $xml->startElement('xhtml:link');
+                $xml->writeAttribute('rel', 'alternate');
+                $xml->writeAttribute('hreflang', $alternate->locale);
+                $xml->writeAttribute('href', $alternate->url);
+                $xml->endElement();
+            }
+
+            $xml->endElement();
+        }
+
+        $xml->endElement();
+        $xml->endDocument();
+
+        file_put_contents($path, $xml->outputMemory());
     }
 }

@@ -45,7 +45,7 @@ class LowonganKerja extends Model
 
     public function getBatasWaktuFormattedAttribute()
     {
-        return $this->BatasWaktu ? Carbon::parse($this->BatasWaktu)->format('jS F, Y') : 'Secepatnya';
+        return $this->BatasWaktu ? Carbon::parse($this->BatasWaktu)->translatedFormat('j F Y') : 'Secepatnya';
     }
 
     public function getMasihBerlakuAttribute()

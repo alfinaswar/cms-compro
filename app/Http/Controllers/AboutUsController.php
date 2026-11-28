@@ -72,8 +72,7 @@ class AboutUsController extends Controller
         3 => [
             'key' => 'csr',
             'label' => 'CSR',
-            'hint' => 'Header section CSR. Detail = kartu CSR (Gambar, Judul, Deskripsi).',
-            'detail_labels' => ['Judul' => 'Judul CSR', 'Deskripsi' => 'Deskripsi'],
+            'hint' => 'Header section CSR. Artikel CSR diambil otomatis dari Berita & Artikel berkategori CSR.',
         ],
         4 => [
             'key' => 'award',
@@ -222,6 +221,19 @@ class AboutUsController extends Controller
 
         $mediaMeta = $this->extractMeta($Media, self::SECTIONS[6]['meta_keys'] ?? []);
 
+        $csrCategory = \App\Models\KategoriBerita::where('NamaKategori', 'like', '%CSR%')
+            ->orWhere('Slug', 'like', '%csr%')
+            ->first();
+        $csrPosts = collect();
+        if ($csrCategory) {
+            $csrPosts = \App\Models\Berita::where('Status', 'Diterbitkan')
+                ->where('Kategori', $csrCategory->id)
+                ->with('translations')
+                ->latest('TanggalPublikasi')
+                ->take(4)
+                ->get();
+        }
+
         // Helper closure untuk akses translation per section di view
         $t = function ($section) use ($locale) {
             return $section ? $section->translate($locale) : null;
@@ -237,6 +249,8 @@ class AboutUsController extends Controller
             'Award',
             'Iso',
             'Cta',
+            'csrCategory',
+            'csrPosts',
             'locale',
             't'
         ));
@@ -368,12 +382,17 @@ class AboutUsController extends Controller
                     if ($request->hasFile("sections.{$sectionId}.meta.pdf_file")) {
                         $pdfPath = $request->file("sections.{$sectionId}.meta.pdf_file")->store('about-us/pdf', 'public');
                         $metaInput['pdf_file'] = $pdfPath;
+                    } else {
+                        $existingPdf = AboutUsDetail::where('IdAbout', $about->id)->where('Judul', 'pdf_file')->first();
+                        if ($existingPdf && !empty($existingPdf->Deskripsi)) {
+                            $metaInput['pdf_file'] = $existingPdf->Deskripsi;
+                        }
                     }
                     $beforeDetails = $this->extractMeta($about, $config['meta_keys']);
                     $this->syncMetaDetails($about, $metaInput, $config['meta_keys']);
                     $about->refresh();
                     $afterDetails = $this->extractMeta($about, $config['meta_keys']);
-                } else {
+                } elseif (!empty($config['detail_labels'])) {
                     $beforeDetails = AboutUsDetail::where('IdAbout', $about->id)->get()->toArray();
                     $this->syncDetails($about, $data['details'] ?? [], $request, $sectionId);
                     $afterDetails = AboutUsDetail::where('IdAbout', $about->id)->with('translations')->get()->toArray();

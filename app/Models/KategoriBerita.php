@@ -19,6 +19,15 @@ class KategoriBerita extends Model
      */
     protected $guarded = ['id'];
 
+    public function getDisplayName(?string $locale = null): string
+    {
+        $locale = $locale ?? app()->getLocale();
+
+        return ($locale === 'en' && !empty($this->NamaKategoriEn))
+            ? $this->NamaKategoriEn
+            : (string) $this->NamaKategori;
+    }
+
     // public static function boot()
     // {
     //     parent::boot();

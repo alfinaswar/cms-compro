@@ -31,7 +31,7 @@ class BeritaController extends Controller
                 'translations' => function ($q) {
                     $q->where('Locale', 'id');
                 }
-            ])->latest();
+            ]);
             if ($request->has('kategori') && !empty($request->kategori)) {
                 $query->where(function ($q) use ($request) {
                     $q->where('Kategori', $request->kategori)
@@ -113,6 +113,30 @@ class BeritaController extends Controller
                     return '<span class="badge badge-info px-2 py-1">' . e($row->Kategori ?? '-') . '</span>';
                 })
 
+                ->filterColumn('Judul', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('beritas.Judul', 'like', "%{$keyword}%")
+                            ->orWhere('beritas.Penulis', 'like', "%{$keyword}%")
+                            ->orWhereHas('translations', function ($tq) use ($keyword) {
+                                $tq->where('Judul', 'like', "%{$keyword}%");
+                            });
+                    });
+                })
+                ->filterColumn('Kategori', function ($query, $keyword) {
+                    $query->whereHas('kategori', function ($kq) use ($keyword) {
+                        $kq->where('NamaKategori', 'like', "%{$keyword}%")
+                            ->orWhere('NamaKategoriEn', 'like', "%{$keyword}%");
+                    });
+                })
+                ->orderColumn('Judul', function ($query, $order) {
+                    $query->orderByRaw("COALESCE((SELECT Judul FROM berita_translations WHERE berita_translations.BeritaId = beritas.id AND berita_translations.Locale = 'id' LIMIT 1), beritas.Judul) {$order}");
+                })
+                ->orderColumn('Kategori', function ($query, $order) {
+                    $query->orderByRaw("(SELECT NamaKategori FROM kategori_berita WHERE kategori_berita.id = beritas.Kategori LIMIT 1) {$order}");
+                })
+                ->orderColumn('TanggalPublikasi', function ($query, $order) {
+                    $query->orderByRaw("COALESCE(beritas.TanggalPublikasi, beritas.created_at) {$order}");
+                })
                 ->rawColumns(['Thumbnail', 'Judul', 'TanggalPublikasi', 'StatusBadge', 'action', 'Kategori', 'Tags'])
                 ->make(true);
         }
@@ -231,11 +255,13 @@ class BeritaController extends Controller
                     }
                 }
 
+                $kontenWithAlt = $this->injectDefaultImageAlt($data['Konten'] ?? null, $data['Judul'] ?? ($seoTitleDefault ?? ''));
+
                 $berita->translations()->create([
                     'Locale' => $locale,
                     'Judul' => $data['Judul'] ?? null,
                     'Ringkasan' => $data['Ringkasan'] ?? null,
-                    'Konten' => $data['Konten'] ?? null,
+                    'Konten' => $kontenWithAlt,
                     'SEOTitle' => $data['SEOTitle'] ?? null,
                     'SEODescription' => $data['SEODescription'] ?? null,
                     'SEOKeywords' => $data['SEOKeywords'] ?? null,
@@ -413,12 +439,14 @@ class BeritaController extends Controller
             }
 
             if (!empty($judul) || !empty($konten)) {
+                $kontenWithAlt = $this->injectDefaultImageAlt($konten, $judul ?? $validated['Judul']);
+
                 $berita->translations()->updateOrCreate(
                     ['Locale' => $locale],
                     [
                         'Judul' => $judul ?? null,
                         'Ringkasan' => $ringkasanT,
-                        'Konten' => $konten ?? null,
+                        'Konten' => $kontenWithAlt,
                         'SEOTitle' => $seoTitleT,
                         'SEODescription' => $seoDescT,
                         'SEOKeywords' => $seoKeywordsT,
@@ -433,7 +461,32 @@ class BeritaController extends Controller
             ->withProperties(['attributes' => $mainData, 'translations' => $translationsData])
             ->log('Mengupdate berita: ' . $validated['Judul']);
 
-        return redirect()->route('berita.index')->with('success', 'Berita berhasil diperbarui.');
+        return redirect()->route('berita.edit', $berita->Slug)->with('success', 'Perubahan berita berhasil disimpan.');
+    }
+
+    /**
+     * Isi atribut alt default pada tag <img> di dalam konten HTML menggunakan judul artikel jika alt kosong/belum ada.
+     */
+    private function injectDefaultImageAlt(?string $html, ?string $title): ?string
+    {
+        if (empty($html) || empty($title)) {
+            return $html;
+        }
+
+        $safeAlt = e(trim($title));
+
+        return preg_replace_callback('/<img\b([^>]*)>/i', function ($matches) use ($safeAlt) {
+            $attrs = $matches[1];
+            if (preg_match('/\balt\s*=\s*(["\'])(.*?)\1/i', $attrs, $altMatch)) {
+                if (trim($altMatch[2]) !== '') {
+                    return $matches[0];
+                }
+                $attrs = preg_replace('/\balt\s*=\s*(["\']).*?\1/i', 'alt="' . $safeAlt . '"', $attrs, 1);
+                return '<img' . $attrs . '>';
+            }
+
+            return '<img alt="' . $safeAlt . '"' . $attrs . '>';
+        }, $html);
     }
 
     /**
@@ -508,7 +561,10 @@ class BeritaController extends Controller
     public function news(Request $request)
     {
         // dd($request->all());
-        $kategori = KategoriBerita::where('NamaKategori', $request->kategori)->first();
+        $kategori = KategoriBerita::where('NamaKategori', $request->kategori)
+            ->orWhere('NamaKategoriEn', $request->kategori)
+            ->orWhere('Slug', $request->kategori)
+            ->first();
         $locale = app()->getLocale();
         $query = Berita::where('Status', 'Diterbitkan');
         $query->with([
@@ -544,9 +600,10 @@ class BeritaController extends Controller
             ->latest('TanggalPublikasi')
             ->take(3)
             ->get();
-        $categories = KategoriBerita::pluck('NamaKategori');
+        $categories = KategoriBerita::orderBy('NamaKategori')->get();
+        $newsBanners = \App\Models\NewsBanner::where('IsActive', true)->orderBy('Urutan')->latest('id')->get();
 
-        return view('frontend.news', compact('news', 'recentNews', 'categories', 'locale'));
+        return view('frontend.news', compact('news', 'recentNews', 'categories', 'newsBanners', 'locale'));
     }
 
     public function newsDetail($locale, $slug)
@@ -573,7 +630,7 @@ class BeritaController extends Controller
             ->take(3)
             ->get();
 
-        $categories = KategoriBerita::pluck('NamaKategori');
+        $categories = KategoriBerita::orderBy('NamaKategori')->get();
 
         if ($news->TanggalPublikasi) {
             $prevPost = Berita::with('translations')
@@ -631,6 +688,8 @@ class BeritaController extends Controller
             ->take(3)
             ->get();
 
+        $newsBanners = \App\Models\NewsBanner::where('IsActive', true)->orderBy('Urutan')->latest('id')->get();
+
         return view('frontend.news-detail', compact(
             'news',
             'authorUser',
@@ -639,6 +698,7 @@ class BeritaController extends Controller
             'prevPost',
             'nextPost',
             'relatedPosts',
+            'newsBanners',
             'locale'
         ));
     }

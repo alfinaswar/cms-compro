@@ -26,6 +26,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+                        <li class="breadcrumb-item">Homepage</li>
                         <li class="breadcrumb-item"><a href="{{ route('hero-slider.index') }}">Hero Slider</a></li>
                         <li class="breadcrumb-item active">Tambah</li>
                     </ol>
@@ -297,16 +298,25 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
+                                                <label for="LinkCTAEn"><strong>Button 1 Link (English)</strong></label>
+                                                <input type="url" name="LinkCTAEn" id="LinkCTAEn" class="form-control @error('LinkCTAEn') is-invalid @enderror" placeholder="https://... (kosongkan untuk pakai link ID)" value="{{ old('LinkCTAEn') }}">
+                                                @error('LinkCTAEn') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
                                                 <label for="TeksCTA2En"><strong>Button 2 Text (English - Optional)</strong></label>
                                                 <input type="text" name="TeksCTA2En" id="TeksCTA2En" class="form-control @error('TeksCTA2En') is-invalid @enderror" placeholder="e.g. Contact Us" value="{{ old('TeksCTA2En') }}">
                                                 @error('TeksCTA2En') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
                                             </div>
                                         </div>
-                                    </div>
-
-                                    <div class="alert alert-secondary py-2" style="font-size: 13px;">
-                                        <i class="fa fa-link mr-1"></i>
-                                        <strong>Catatan:</strong> Link tombol (URL) berlaku untuk kedua bahasa dan diatur pada tab Bahasa Indonesia.
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="LinkCTA2En"><strong>Button 2 Link (English - Optional)</strong></label>
+                                                <input type="url" name="LinkCTA2En" id="LinkCTA2En" class="form-control @error('LinkCTA2En') is-invalid @enderror" placeholder="https://... (kosongkan untuk pakai link ID)" value="{{ old('LinkCTA2En') }}">
+                                                @error('LinkCTA2En') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -329,7 +339,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="Urutan"><strong>Urutan Tampil</strong></label>
-                                        <input type="number" name="Urutan" id="Urutan" class="form-control @error('Urutan') is-invalid @enderror" value="{{ old('Urutan', 1) }}" min="1">
+                                        <input type="number" name="Urutan" id="Urutan" class="form-control @error('Urutan') is-invalid @enderror" value="{{ old('Urutan', $nextUrutan ?? 1) }}" min="1">
                                         @error('Urutan') <span class="invalid-feedback d-block">{{ $message }}</span> @enderror
                                         <small class="text-muted">Angka lebih kecil tampil lebih dulu.</small>
                                     </div>

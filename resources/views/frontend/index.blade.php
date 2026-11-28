@@ -158,7 +158,7 @@
     </style>
 
     <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     @stack('styles')
     <style>
         /* Navbar scroll effect */
@@ -298,6 +298,15 @@
             .prose li {
                 line-height: 1.4em;
             }
+
+            .prose h1 { font-size: 2rem !important; font-weight: 800 !important; line-height: 1.25 !important; margin: 1.5rem 0 0.75rem !important; color: #0f172a; }
+            .prose h2 { font-size: 1.5rem !important; font-weight: 700 !important; line-height: 1.3 !important; margin: 1.35rem 0 0.65rem !important; color: #0f172a; }
+            .prose h3 { font-size: 1.25rem !important; font-weight: 700 !important; line-height: 1.35 !important; margin: 1.15rem 0 0.5rem !important; color: #0f172a; }
+            .prose h4 { font-size: 1.125rem !important; font-weight: 600 !important; line-height: 1.4 !important; margin: 1rem 0 0.5rem !important; color: #0f172a; }
+            .prose h1 *, .prose h2 *, .prose h3 *, .prose h4 * { font-size: inherit !important; font-weight: inherit !important; line-height: inherit !important; font-family: inherit !important; }
+            .prose p { margin-bottom: 1rem; }
+            .prose ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+            .prose ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1rem; }
 
             /* Desktop body minimum 16px & 1.4em line-height, excluding icons & situational subheadlines/eyebrows/badges */
             body :is(
@@ -962,7 +971,7 @@
                         @endif
                     </div>
                     <p class="text-slate-400 text-sm leading-relaxed mb-4">
-                        {{ $websiteSettings->DeskripsiSingkat ?? __('Perusahaan percetakan keamanan terkemuka di Indonesia untuk dokumen sekuriti & solusi identitas.') }}
+                        {{ ($currentLocale === 'en' ? ($websiteSettings->DeskripsiSingkatEn ?: $websiteSettings->DeskripsiSingkat) : $websiteSettings->DeskripsiSingkat) ?? __('Perusahaan percetakan keamanan terkemuka di Indonesia untuk dokumen sekuriti & solusi identitas.') }}
                     </p>
                     <div class="flex flex-wrap gap-3">
                         @if (!empty($websiteSettings?->SosialFacebook))

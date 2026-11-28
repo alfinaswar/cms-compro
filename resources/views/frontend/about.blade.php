@@ -259,12 +259,7 @@
     <section class="relative pt-28 pb-16 bg-gradient-to-br from-brand-900 via-brand-800 to-brand-900 overflow-hidden">
         <!-- Background Image with Opacity -->
         <div class="absolute inset-0 opacity-10">
-            @php
-                $heroBgImg = !empty($Hero?->Gambar) && \Illuminate\Support\Facades\Storage::disk('public')->exists($Hero->Gambar)
-                    ? asset('storage/' . $Hero->Gambar)
-                    : 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=2069&auto=format&fit=crop';
-            @endphp
-            <img src="{{ $heroBgImg }}"
+            <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=2069&auto=format&fit=crop"
                 alt="{{ $en ? 'About Jasuindo' : 'Tentang Jasuindo' }}" class="w-full h-full object-cover">
         </div>
 
@@ -530,13 +525,50 @@
                         <div class="text-slate-600 leading-relaxed">{!! $tr($TanggungJawab, 'Deskripsi') !!}</div>
                     @endif
                 </div>
-                <a href="{{ \App\Services\LocalizedUrlService::route('frontend.news') }}"
+                @php
+                    $csrNewsUrl = !empty($csrCategory)
+                        ? \App\Services\LocalizedUrlService::route('frontend.news') . '?kategori=' . urlencode($csrCategory->NamaKategori)
+                        : \App\Services\LocalizedUrlService::route('frontend.news');
+                @endphp
+                <a href="{{ $csrNewsUrl }}"
                     class="inline-flex items-center px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-full transition-colors whitespace-nowrap shadow-md">
                     {{ $en ? 'View More CSR' : 'Lihat CSR Lainnya' }} <i class="fa-solid fa-arrow-right ml-2"></i>
                 </a>
             </div>
 
-            @if ($csrDetails->count())
+            @if (isset($csrPosts) && $csrPosts->count())
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    @foreach ($csrPosts as $post)
+                        @php
+                            $postTrans = $post->translate($locale);
+                            $postTitle = $postTrans?->Judul ?: $post->Judul;
+                            $postSummary = $postTrans?->Ringkasan ?: \Illuminate\Support\Str::limit(strip_tags($postTrans?->Konten ?: $post->Konten), 150);
+                        @endphp
+                        <div
+                            class="bg-white rounded-xl border border-slate-200 overflow-hidden flex flex-col sm:flex-row shadow-sm hover:shadow-lg hover:border-blue-200 transition-all group">
+                            <div class="sm:w-44 h-40 sm:h-auto flex-shrink-0 overflow-hidden">
+                                @if (!empty($post->PathThumbnail) && \Illuminate\Support\Facades\Storage::disk('public')->exists($post->PathThumbnail))
+                                    <img src="{{ asset('storage/' . $post->PathThumbnail) }}"
+                                        alt="{{ $postTitle }}"
+                                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                @else
+                                    <div class="w-full h-full bg-slate-100 flex items-center justify-center">
+                                        <i class="fa-solid fa-image text-3xl text-slate-300"></i>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="p-6 flex flex-col">
+                                <h3 class="font-extrabold text-slate-900 mb-2">{{ $postTitle }}</h3>
+                                <div class="text-xs text-slate-500 leading-relaxed flex-grow">{{ $postSummary }}</div>
+                                <a href="{{ \App\Services\LocalizedUrlService::route('frontend.detail', ['slug' => $post->Slug]) }}"
+                                    class="mono-label inline-flex items-center text-[10px] font-bold text-blue-600 uppercase tracking-widest mt-4 hover:text-blue-700">
+                                    {{ __('Read More') }} <i class="fa-solid fa-arrow-right ml-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @elseif ($csrDetails->count())
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     @foreach ($csrDetails as $detail)
                         <div
@@ -555,7 +587,7 @@
                             <div class="p-6 flex flex-col">
                                 <h3 class="font-extrabold text-slate-900 mb-2">{{ $tr($detail, 'Judul') }}</h3>
                                 <div class="text-xs text-slate-500 leading-relaxed flex-grow">{!! $tr($detail, 'Deskripsi') !!}</div>
-                                <a href="{{ \App\Services\LocalizedUrlService::route('frontend.news') }}"
+                                <a href="{{ $csrNewsUrl }}"
                                     class="mono-label inline-flex items-center text-[10px] font-bold text-blue-600 uppercase tracking-widest mt-4 hover:text-blue-700">
                                     {{ __('Read More') }} <i class="fa-solid fa-arrow-right ml-2"></i>
                                 </a>
@@ -599,7 +631,7 @@
                                 @endif
                             </div>
                             <h3 class="text-sm font-extrabold text-slate-900 mb-2">{{ $tr($cert, 'Judul') }}</h3>
-                            <div class="text-xs text-slate-500 leading-relaxed flex-grow">{!! Str::limit(strip_tags($tr($cert, 'Deskripsi')), 160) !!}</div>
+                            <div class="text-xs text-slate-500 leading-relaxed flex-grow">{!! $tr($cert, 'Deskripsi') !!}</div>
                         </div>
                     @endforeach
                 </div>
@@ -670,7 +702,7 @@
                                 @endif
                             </div>
                             <h3 class="text-sm font-extrabold text-slate-900 mb-2">{{ $tr($cert, 'Judul') }}</h3>
-                            <div class="text-xs text-slate-500 leading-relaxed flex-grow">{!! Str::limit(strip_tags($tr($cert, 'Deskripsi')), 160) !!}</div>
+                            <div class="text-xs text-slate-500 leading-relaxed flex-grow">{!! $tr($cert, 'Deskripsi') !!}</div>
                         </div>
                     @endforeach
                 </div>
@@ -948,8 +980,10 @@
                                 if (data.download_url) {
                                     const link = document.createElement('a');
                                     link.href = data.download_url;
-                                    link.target = '_blank';
-                                    link.download = '';
+                                    link.download = 'Company Profile Jasuindo Tiga Perkasa.pdf';
+                                    if (!data.download_url.startsWith(window.location.origin)) {
+                                        link.target = '_blank';
+                                    }
                                     document.body.appendChild(link);
                                     link.click();
                                     document.body.removeChild(link);
